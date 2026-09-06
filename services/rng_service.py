@@ -1,8 +1,10 @@
 """DETERMINISTIC_RNG_SERVICE（15/16 节）。
 
-随机流派生自：world_seed / simulation_version / subsystem / blessed_period / entity_scope。
+随机流派生自：world_id / simulation_version / subsystem / blessed_period_tick /
+entity_scope（blessed_period_tick = 该周期的 canonical blessed tick 起点，整数 µy）。
 每个 subsystem 独立 RNG Stream —— 不同子系统互不消耗同一随机序列；
-增加某子系统的随机调用不得改变其它子系统的结果。
+增加某子系统的随机调用不得改变其它子系统的结果；
+simulation_version 变更 = 全新随机空间（禁止旧版本流污染新版本）。
 禁止使用全局 random.seed()/random 实例做世界模拟随机。
 """
 from __future__ import annotations
@@ -15,10 +17,11 @@ SUBSYSTEMS = ("DEMOGRAPHY", "RESOURCE", "ECONOMY", "ECOLOGY",
 
 
 def derive_seed(*, world_id: str, simulation_version: str,
-                blessed_period: int, subsystem: str, entity_scope: str = "WORLD") -> int:
+                blessed_period_tick: int, subsystem: str,
+                entity_scope: str = "WORLD") -> int:
     if subsystem not in SUBSYSTEMS:
         raise ValueError(f"未知 subsystem: {subsystem}")
-    payload = "|".join([world_id, simulation_version, str(blessed_period),
+    payload = "|".join([world_id, simulation_version, str(blessed_period_tick),
                         subsystem, entity_scope]).encode("utf-8")
     return int.from_bytes(hashlib.sha256(payload).digest()[:8], "big")
 
@@ -44,16 +47,16 @@ class RngStream:
 
 
 class RngService:
-    """按 subsystem 提供独立流；每个 (period, subsystem, scope) 幂等派生。"""
+    """按 subsystem 提供独立流；每个 (period_tick, subsystem, scope) 幂等派生。"""
 
     def __init__(self, *, world_id: str, simulation_version: str):
         self.world_id = world_id
         self.simulation_version = simulation_version
 
-    def stream(self, *, subsystem: str, blessed_period: int,
+    def stream(self, *, subsystem: str, blessed_period_tick: int,
                entity_scope: str = "WORLD") -> RngStream:
         seed = derive_seed(world_id=self.world_id,
                            simulation_version=self.simulation_version,
-                           blessed_period=blessed_period,
+                           blessed_period_tick=blessed_period_tick,
                            subsystem=subsystem, entity_scope=entity_scope)
         return RngStream(seed)

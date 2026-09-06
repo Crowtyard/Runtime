@@ -262,7 +262,6 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['world_id'], ['world_runtime.world_id'], name=op.f('fk_world_events_world_id_world_runtime')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_world_events')),
-    sa.UniqueConstraint('event_uid', name='uq_world_events_event_uid'),
     sa.UniqueConstraint('event_uid', name=op.f('uq_world_events_event_uid'))
     )
     op.create_table('world_state_changes',

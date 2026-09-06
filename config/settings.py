@@ -24,7 +24,8 @@ class Settings:
     bible_dir: Path = field(
         default_factory=lambda: _PROJECT_ROOT.parent / "XIAOGUANG_CROW_KB" / "world_bible")
     writer_lease_seconds: int = 120
-    checkpoint_interval_years: int = 10  # M1 起使用；M0 仅配置
+    # M1 起使用；M0 仅配置。单位为福地年（使用处换算为 canonical tick）。
+    checkpoint_interval_blessed_years: int = 10
 
 
 def load_settings() -> Settings:

@@ -1,12 +1,16 @@
-"""时间基础服务（10 节）：UTC 统一、时钟异常、倍率区间分段接口（不做补算执行）。"""
+"""时间服务（10 节）：aware UTC、时钟异常、TIME_RATIO_HISTORY 分段积分。
+
+CANONICAL_BLESSED_TICK：世界时间一律为整数 canonical tick（µy，见
+domain/blessed_time）；本模块提供按 effective ratio 区间分段积分，
+禁止"拿最新 ratio 倒推全部历史"。
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
+from domain.blessed_time import blessed_tick_delta
 from domain.errors import ClockAnomaly
-
-SECONDS_PER_REAL_DAY = 86400
 
 
 def to_utc(dt: datetime) -> datetime:
@@ -25,14 +29,18 @@ class RatioSegment:
     reason: str
 
 
-def blessed_years_for_real_seconds(real_seconds: float, ratio_per_day: float) -> float:
-    """现实秒 → 福地年（浮点；M1 落整数刻度前使用）。
+def blessed_ticks_over_segments(segments: list[RatioSegment]) -> int:
+    """按多个 ratio 生效段分段积分，返回整数 canonical tick 总量。
 
-    ratio_per_day 语义：现实 1 天 = ratio 福地年（Bible WS-0201 自然态=365）。
+    - 每段独立用 :func:`blessed_tick_delta` 精确整数换算，总量只做整数加法，
+      不存在浮点累计世界时间。
+    - 禁止：拿当前 time_ratio 倒推全部过去时间 —— 调用方必须先从
+      time_ratio_history 查询 effective-dated 区间并切分为 segments。
     """
-    if ratio_per_day <= 0:
-        raise ValueError("ratio 必须为正")
-    return real_seconds / SECONDS_PER_REAL_DAY * ratio_per_day
+    total = 0
+    for seg in segments:
+        total += blessed_tick_delta(seg.real_start, seg.real_end, seg.ratio_value)
+    return total
 
 
 def check_clock_forward(now: datetime, last_simulated_real_time: datetime | None) -> None:
@@ -41,18 +49,3 @@ def check_clock_forward(now: datetime, last_simulated_real_time: datetime | None
         raise ClockAnomaly(
             "系统时间回拨：now < last_simulated_real_time",
             detail={"now": str(now), "last": str(last_simulated_real_time)})
-
-
-def blessed_elapsed_over_segments(segments: list[RatioSegment]) -> float:
-    """按多个 ratio 生效段分段积分（9 节 TIME_RATIO_HISTORY）。
-
-    禁止：拿当前 time_ratio 倒推全部过去时间——调用方必须先从
-    time_ratio_history 查询 effective-dated 区间并切分为 segments。
-    """
-    total = 0.0
-    for seg in segments:
-        seconds = (to_utc(seg.real_end) - to_utc(seg.real_start)).total_seconds()
-        if seconds <= 0:
-            continue
-        total += blessed_years_for_real_seconds(seconds, seg.ratio_value)
-    return total

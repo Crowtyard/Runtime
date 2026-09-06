@@ -1,4 +1,7 @@
-"""pytest 共享设施：临时库 + migrations + seeded 世界（FK 前置行）。"""
+"""pytest 共享设施：临时库 + migrations + seeded 世界（FK 前置行）。
+
+所有测试只用 tmp_path 临时库，绝不触碰正式 world.db。
+"""
 from __future__ import annotations
 
 import hashlib
@@ -9,14 +12,19 @@ from pathlib import Path
 import pytest
 from alembic import command
 from alembic.config import Config
+from sqlalchemy import select
 from sqlalchemy.orm import sessionmaker
 
 from config.settings import Settings  # noqa: F401
+from database.base import utcnow
 from database.db import create_db_engine, make_session_factory
+from database.models_core import WorldRuntime
+from domain.constants import RuntimeStatus
 from services.repositories import RuntimeRepository, TimeRatioRepository
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 BIBLE_DIR = PROJECT_ROOT.parent / "XIAOGUANG_CROW_KB" / "world_bible"
+HEAD_REVISION = "b2d4e8f9a6c3"  # m0_event_immutability_triggers（当前 head）
 
 
 def run_migrations(database_url: str) -> None:
@@ -52,12 +60,23 @@ def seeded_session_factory(session_factory):
             world_id="W", world_bible_version="1.0",
             simulation_version="0.1.0-dev", world_bible_manifest_hash="testhash")
         TimeRatioRepository(s).add(world_id="W",
-                                   real_effective_from=__import__(
-                                       "database.base", fromlist=["utcnow"]).utcnow(),
+                                   real_effective_from=utcnow(),
                                    ratio_value=365.0, reason="TEST",
                                    source="TEST")
         s.commit()
     return session_factory
+
+
+@pytest.fixture()
+def activated_session_factory(seeded_session_factory):
+    """测试专用：把世界置为 ACTIVE（仅测试库；正式库必须保持 NOT_ACTIVATED）。"""
+    with seeded_session_factory() as s:
+        row = s.execute(select(WorldRuntime)).scalar_one()
+        row.runtime_status = RuntimeStatus.ACTIVE
+        row.world_seed_version = "SEED-TEST-1"
+        row.current_blessed_tick = 0
+        s.commit()
+    return seeded_session_factory
 
 
 @pytest.fixture()

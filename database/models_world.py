@@ -1,13 +1,18 @@
 """业务实体表模型（M0 建表；实体字段按 PHASE_1_9 03 号核心列，扩展随 M1 引擎）。
-当前库必须保持 EMPTY_WORLD：本文件只定义结构，不产生任何行。"""
+当前库必须保持 EMPTY_WORLD：本文件只定义结构，不产生任何行。
+
+时间列约定：blessed 时间坐标 = CANONICAL_BLESSED_TICK（整数 µy，*_tick 列，BigInteger）；
+现实时间 = aware UTC（UtcDateTime）。
+"""
 from __future__ import annotations
 
 from datetime import datetime
 
-from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import (JSON, BigInteger, Boolean, Float, ForeignKey, Integer,
+                        String, Text, UniqueConstraint)
 from sqlalchemy.orm import Mapped, mapped_column
 
-from database.base import Base, utcnow
+from database.base import Base, UtcDateTime, utcnow
 
 
 class Settlement(Base):
@@ -34,7 +39,7 @@ class PopulationGroup(Base):
     occupation_group: Mapped[str | None] = mapped_column(String(64))
     household_stats: Mapped[dict | None] = mapped_column(JSON)
     count: Mapped[int] = mapped_column(Integer, default=0)
-    updated_blessed_time: Mapped[str | None] = mapped_column(String(24))
+    updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
 
 
 class Person(Base):
@@ -44,7 +49,7 @@ class Person(Base):
     world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
     name: Mapped[str | None] = mapped_column(String(128))
     species: Mapped[str | None] = mapped_column(String(32))
-    birth_blessed_time: Mapped[str | None] = mapped_column(String(24))
+    birth_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
     status: Mapped[str] = mapped_column(String(12), default="alive")
     residence_ref: Mapped[str | None] = mapped_column(String(64))
     occupation_ref: Mapped[str | None] = mapped_column(String(64))
@@ -128,8 +133,8 @@ class Tribulation(Base):
     window_type: Mapped[str] = mapped_column(String(16), nullable=False)  # REGULAR/MAJOR/CENTENNIAL
     phase: Mapped[str] = mapped_column(String(24), nullable=False)
     params: Mapped[dict | None] = mapped_column(JSON)
-    start_blessed_time: Mapped[str | None] = mapped_column(String(24))
-    end_blessed_time: Mapped[str | None] = mapped_column(String(24))
+    start_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+    end_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
     residual: Mapped[dict | None] = mapped_column(JSON)
 
 
@@ -137,13 +142,13 @@ class TimelineEntry(Base):
     __tablename__ = "timeline_entries"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
-    blessed_time: Mapped[str | None] = mapped_column(String(24))
-    real_time: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+    real_time: Mapped[datetime | None] = mapped_column(UtcDateTime())
     actor_type: Mapped[str] = mapped_column(String(16), nullable=False)
     spotlight: Mapped[bool] = mapped_column(Boolean, default=False)
     digest_text: Mapped[str | None] = mapped_column(Text)
     event_ref: Mapped[str | None] = mapped_column(String(64))
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    created_at: Mapped[datetime] = mapped_column(UtcDateTime(), default=utcnow)
 
 
 class CulturalElement(Base):
