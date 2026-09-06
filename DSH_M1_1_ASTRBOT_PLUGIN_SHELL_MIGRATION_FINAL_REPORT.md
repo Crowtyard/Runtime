@@ -168,7 +168,7 @@ Official World History = **NOT_STARTED**。
 
 ## 29. Git commits（迁移后）
 ```
-<M1.1>   DSH M1.1 AstrBot plugin shell migration: …, golden baseline tag m1-golden-baseline
+9a485f8  DSH M1.1 AstrBot plugin shell migration: metadata/main/_conf_schema, …   ← M1.1 提交
 f6cc39f  docs: finalize M1 report commit references        ← m1-golden-baseline
 6d586a7  DSH M1 time engine & offline catch-up
 717fd76  DSH M0 TIME_MODEL_UNIT_BLOCKER fix
