@@ -1,5 +1,11 @@
 # DSH_M0_INDEPENDENT_QA_REPORT
 
+> **【超集注记】** 本报告 §3.3 中的"自然态 ratio=365（现实 1 天 = 365 福地年）"表述有误：
+> 该数字是对 Bible WS-0201「现实约 1 天 ≈ 福地约 1 年（约 365 倍）」的误读（把派生展示语
+> 当成了核心倍率）。已由 `DSH_M0_TIME_MODEL_FINAL_REPORT.md` 修正为有量纲有理速率
+> `1,000,000 ticks / 86,400,000,000 µs`（现实 1 天 → 福地 1 年），迁移 e9f4b7c2d8a6。
+> 时间模型相关内容以 TIME_MODEL 报告为准；其余结论不受影响。
+
 > 执行方：DSH（Runtime 唯一实现与维护方）。日期：2026-09-06。
 > 对象：`D:\MY SELF\IKUN\小光\XiaoguangBlessedLandRuntime\`（M0 Foundation，前序 Agent 交付）。
 > 原则：前序报告不算证据；代码 + 实测才算证据。禁止为测试污染正式库（测试全部使用 tmp 临时库）。

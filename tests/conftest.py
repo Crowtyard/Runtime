@@ -24,7 +24,7 @@ from services.repositories import RuntimeRepository, TimeRatioRepository
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 BIBLE_DIR = PROJECT_ROOT.parent / "XIAOGUANG_CROW_KB" / "world_bible"
-HEAD_REVISION = "b2d4e8f9a6c3"  # m0_event_immutability_triggers（当前 head）
+HEAD_REVISION = "e9f4b7c2d8a6"  # m0_rational_time_rate（当前 head）
 
 
 def run_migrations(database_url: str) -> None:
@@ -54,15 +54,16 @@ def session_factory(migrated_db):
 
 @pytest.fixture()
 def seeded_session_factory(session_factory):
-    """播种 world_runtime(NOT_ACTIVATED) + 自然态 ratio——FK 前置（不做任何推进）。"""
+    """播种 world_runtime(NOT_ACTIVATED) + 自然态速率——FK 前置（不做任何推进）。"""
     with session_factory() as s:
         RuntimeRepository(s).create_not_activated(
             world_id="W", world_bible_version="1.0",
             simulation_version="0.1.0-dev", world_bible_manifest_hash="testhash")
         TimeRatioRepository(s).add(world_id="W",
                                    real_effective_from=utcnow(),
-                                   ratio_value=365.0, reason="TEST",
-                                   source="TEST")
+                                   rate_numerator=1_000_000,
+                                   rate_denominator=86_400_000_000,
+                                   reason="TEST", source="TEST")
         s.commit()
     return session_factory
 

@@ -40,9 +40,11 @@ class WorldRuntime(Base):
 class TimeRatioHistory(Base):
     """TIME_RATIO_HISTORY（9 节）：effective-dated；离线补算按区间分段积分。
 
-    ratio 语义：现实 1 天 = ratio_value 福地年。
+    有量纲有理速率（禁止 float）：rate_numerator [blessed ticks] /
+    rate_denominator [real µs]。自然态 = 1,000,000 / 86,400,000,000
+    （现实 1 天 → 福地 1 年，Bible WS-0201；"约 365 倍"仅是派生展示语）。
     blessed_effective_from_tick = NULL 表示"尚未开始计"（世界未激活）；
-    非空时表示该 ratio 从该 canonical tick 起对福地时间生效。
+    非空时表示该速率从该 canonical tick 起对福地时间生效。
     """
     __tablename__ = "time_ratio_history"
 
@@ -51,7 +53,8 @@ class TimeRatioHistory(Base):
                                           nullable=False)
     real_effective_from: Mapped[datetime] = mapped_column(UtcDateTime(), nullable=False)
     blessed_effective_from_tick: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
-    ratio_value: Mapped[float] = mapped_column(nullable=False)  # 自然状态 365.0（Bible WS-0201）
+    rate_numerator: Mapped[int] = mapped_column(BigInteger, nullable=False)    # blessed ticks
+    rate_denominator: Mapped[int] = mapped_column(BigInteger, nullable=False)  # real µs
     reason: Mapped[str] = mapped_column(String(128), nullable=False)
     source: Mapped[str] = mapped_column(String(128), nullable=False)
     created_at: Mapped[datetime] = mapped_column(UtcDateTime(), default=utcnow, nullable=False)

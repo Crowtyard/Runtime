@@ -92,11 +92,12 @@ def test_metadata_creation_does_not_activate(seeded_session_factory):
         assert row.current_blessed_tick is None
         with pytest.raises(WorldNotActivated):
             require_world_activated(s, "advance_world")
-        # 自然态 ratio 行 = World Rule 元数据（blessed_effective_from_tick=NULL=未开始计）
+        # 自然态速率行 = World Rule 元数据（blessed_effective_from_tick=NULL=未开始计）
         ratios = TimeRatioRepository(s).list_all()
         assert len(ratios) == 1
         assert ratios[0].blessed_effective_from_tick is None
-        assert ratios[0].ratio_value == 365.0
+        assert ratios[0].rate_numerator == 1_000_000
+        assert ratios[0].rate_denominator == 86_400_000_000
 
 
 def test_clock_anomaly():

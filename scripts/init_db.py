@@ -22,7 +22,8 @@ from config.settings import Settings  # noqa: E402
 from database.base import utcnow  # noqa: E402
 from database.db import create_db_engine, make_session_factory  # noqa: E402
 from database.invariants import verify_event_immutability  # noqa: E402
-from domain.constants import RatioReasons, SimulationVersion, WorldBibleVersion  # noqa: E402
+from domain.blessed_time import NATURAL_TIME_RATE  # noqa: E402
+from domain.constants import RateReasons, SimulationVersion, WorldBibleVersion  # noqa: E402
 from services.bible_integrity import verify_bible  # noqa: E402
 from services.repositories import (RuntimeRepository,  # noqa: E402
                                    TimeRatioRepository)
@@ -53,8 +54,9 @@ def seed(settings: Settings) -> None:
         if not tr.list_all():
             tr.add(world_id="BL-0001",
                    real_effective_from=utcnow(),
-                   ratio_value=365.0,
-                   reason=RatioReasons.BIBLE_NATURAL,
+                   rate_numerator=NATURAL_TIME_RATE.blessed_ticks,
+                   rate_denominator=NATURAL_TIME_RATE.real_micros,
+                   reason=RateReasons.BIBLE_NATURAL,
                    source="WORLD_BIBLE_V1.0_WS-0201",
                    blessed_effective_from_tick=None)
         session.commit()

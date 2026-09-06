@@ -24,6 +24,9 @@
 ## 3. 时间列（M0 DSH QA 修正后）
 - blessed 时间坐标：CANONICAL_BLESSED_TICK，一律 BigInteger（SQLite 64-bit INTEGER /
   PostgreSQL BIGINT）；不用 Integer（32-bit 会在 ~2147 福地年溢出）。年/月/日为投影。
+- 时间速率：time_ratio_history 的有量纲有理速率，rate_numerator/rate_denominator
+  一律 BigInteger（tick / real µs）；禁止 float 倍率；换算在应用层
+  domain/blessed_time.py（纯整数）。
 - 现实时间：database/base.py 的 UtcDateTime TypeDecorator（impl=DateTime(timezone=True)）：
   应用层 aware UTC；SQLite 落显式 ISO-8601（+00:00）文本；PG 落 TIMESTAMPTZ。
   naive 输入按 UTC 解释（与旧数据兼容）。
@@ -54,3 +57,10 @@
 - services/repositories.py：全部 ORM 访问；EventRepository 无 update/delete。
 - services/time_service.py + domain/blessed_time.py：时间换算在应用层（不依赖 DB 时间函数）。
 - database/invariants.py：跨方言触发器在位校验。
+
+## 8. M1 硬性门禁（World Seed Activation 前必须 PASS）
+1. FENCING_TOKEN：所有世界 Mutation Transaction 提交前必须校验当前 fencing token；
+   旧 Writer 在租约失效并被接管后，即使恢复执行也不得提交世界状态（跨方言语义必须一致：
+   SQLite 单写者 + PG 行级锁之上叠加 token 校验）。
+2. PG 实跑清单 §6 全部通过。
+3. 未来对 world_events 的任何 batch 结构变更后必须重新应用不可变触发器。

@@ -7,6 +7,8 @@
   committed_until_tick 不得阻止新版合法推进。
 - WORLD_NOT_ACTIVATED：默认强制激活校验（simulate_tick 在未激活世界失败）。
 - 失败事务不推进 committed_until_tick（同一事务内回滚）。
+- M1 硬性门禁（激活前必须 PASS）：提交前校验 fencing token（services/writer_lock.py
+  的 lease_token）—— 被接管的旧 Writer 不得提交任何世界状态。
 """
 from __future__ import annotations
 

@@ -65,19 +65,26 @@ class RuntimeRepository:
 
 
 class TimeRatioRepository:
-    """TIME_RATIO_HISTORY（9 节）：effective-dated，禁止只存当前值。"""
+    """TIME_RATIO_HISTORY（9 节）：effective-dated 有理速率，禁止只存当前值。
+
+    速率 = rate_numerator [blessed ticks] / rate_denominator [real µs]，
+    从 DB 起就是整数分子/分母（无 float 倍率真值，可审计、可复现）。
+    """
 
     def __init__(self, session: Session):
         self.session = session
 
     def add(self, *, world_id: str, real_effective_from: datetime,
-            ratio_value: float, reason: str, source: str,
+            rate_numerator: int, rate_denominator: int, reason: str, source: str,
             blessed_effective_from_tick: int | None = None) -> TimeRatioHistory:
+        if rate_numerator <= 0 or rate_denominator <= 0:
+            raise ValueError("速率分子/分母必须为正整数")
         row = TimeRatioHistory(
             world_id=world_id,
             real_effective_from=real_effective_from,
             blessed_effective_from_tick=blessed_effective_from_tick,
-            ratio_value=ratio_value,
+            rate_numerator=rate_numerator,
+            rate_denominator=rate_denominator,
             reason=reason,
             source=source,
         )

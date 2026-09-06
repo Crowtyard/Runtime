@@ -12,8 +12,10 @@
   释放失败不吞锁 —— 租约自然过期后下一 writer 接管。
 - STALE_WRITER_RECOVERY：进程异常退出 / 机器重启 / 僵尸进程只留下过期租约，
   最坏阻塞 lease_seconds；过期即 stale，世界不会永久锁死。
-- 边界说明：接管只校验"租约已过期"；对"旧 owner 仍存活但心跳丢失"的强 fencing
-  （接管前验证 owner 进程已死）属 M1 追加，M0 未激活世界无写负载，过期接管足够。
+- 边界说明（M1 硬性门禁，World Seed Activation 前必须 PASS）：接管只校验"租约已过期"；
+  M1 所有世界 Mutation Transaction 提交前必须校验当前 fencing token —— 旧 Writer 被
+  接管后即使恢复执行也不得提交任何世界状态（强 fencing）。本模块的 lease_token 即
+  fencing token 的载体；M1 在原子 tick 提交路径接入校验。M0 未激活世界无写负载。
 """
 from __future__ import annotations
 

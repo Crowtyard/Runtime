@@ -52,7 +52,7 @@ class ActorTypes:
     WORLD = "WORLD"
 
 
-class RatioReasons:
+class RateReasons:
     BIBLE_NATURAL = "BIBLE_V1_WS-0201_NATURAL_RATIO"
     ADJUSTMENT = "ADJUSTMENT"
 
