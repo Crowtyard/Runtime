@@ -173,8 +173,10 @@ UTC 边界 ×6、备份/恢复/checksum/pre-migration ×6、事件不可变（DB
 
 ```
 127523f  M0 Foundation: prior-agent delivery baseline for DSH independent QA   ← pre-handover commit
-56d75da  DSH M0 independent QA: canonical blessed tick, aware UTC, …           ← DSH QA/fix commit
+a135942  DSH M0 independent QA: canonical blessed tick, aware UTC, …           ← DSH QA/fix commit
 ```
+
+（QA/fix 提交经一次 amend 定稿；本哈希行由随后的 docs 提交最终记录。）
 
 pre-handover commit = 前序代码原样快照（仅加 .gitignore，排除 world.db/pycache/备份文件），
 不 squash 任何有价值历史（本仓库此前无历史，故基线为单次导入）。修复内容为独立 commit。
