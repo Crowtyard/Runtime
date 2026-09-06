@@ -80,6 +80,19 @@ def _to_utc(dt: datetime) -> datetime:
     return dt.astimezone(timezone.utc)
 
 
+_EPOCH = datetime(1970, 1, 1, tzinfo=timezone.utc)
+
+
+def datetime_to_epoch_us(dt: datetime) -> int:
+    """aware/naive UTC datetime → 整数 epoch 微秒（现实时间游标的规范整数形态）。"""
+    return (_to_utc(dt) - _EPOCH) // timedelta(microseconds=1)
+
+
+def epoch_us_to_datetime(us: int) -> datetime:
+    """epoch 微秒 → aware UTC datetime（display 用）。"""
+    return _EPOCH + timedelta(microseconds=us)
+
+
 def real_micros_between(real_start: datetime, real_end: datetime) -> int:
     """现实时间跨度 → 整数微秒（负/零跨度的结果为 0）。"""
     micros = (_to_utc(real_end) - _to_utc(real_start)) // timedelta(microseconds=1)

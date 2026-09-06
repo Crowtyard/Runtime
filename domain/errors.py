@@ -48,5 +48,10 @@ class WorldNotActivated(WorldRuntimeError):
     code = "WORLD_NOT_ACTIVATED"
 
 
+class FencingViolation(WorldRuntimeError):
+    """提交前 fencing token 校验失败：本 transaction 的写入授权已被撤销（M1）。"""
+    code = "FENCING_VIOLATION"
+
+
 class IntegrityError(WorldRuntimeError):
     code = "INTEGRITY_ERROR"

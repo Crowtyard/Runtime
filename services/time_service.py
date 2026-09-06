@@ -10,9 +10,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
-from domain.blessed_time import (TimeRate, blessed_tick_delta,
-                                 real_micros_between)
+from domain.blessed_time import TimeRate, datetime_to_epoch_us
 from domain.errors import ClockAnomaly
+from services.time_engine import Integrator
 
 
 def to_utc(dt: datetime) -> datetime:
@@ -41,22 +41,15 @@ def blessed_ticks_over_segments(segments: list[RateSegment]) -> int:
     - 禁止：拿当前 time_rate 倒推全部过去时间 —— 调用方必须先从
       time_ratio_history 查询 effective-dated 区间并切分为 segments。
     - 调用约定：segments 必须按时间有序、不重叠。
+    - 实现：委托 services/time_engine.Integrator（M1 时间引擎同一数学核心）。
     """
-    total = 0
-    carry = 0
-    prev_rate: tuple[int, int] | None = None
+    integrator = Integrator()
     for seg in segments:
-        rate_key = (seg.rate.blessed_ticks, seg.rate.real_micros)
-        micros = real_micros_between(seg.real_start, seg.real_end)
-        if micros == 0:
-            continue
-        if rate_key != prev_rate:
-            carry = 0  # 余数属于上一速率，量纲不同，不得跨速率传递
-            prev_rate = rate_key
-        num, den = rate_key
-        total += (carry + micros * num) // den
-        carry = (carry + micros * num) % den
-    return total
+        integrator.add_segment(
+            datetime_to_epoch_us(seg.real_start),
+            datetime_to_epoch_us(seg.real_end),
+            seg.rate)
+    return integrator.total_ticks
 
 
 def check_clock_forward(now: datetime, last_simulated_real_time: datetime | None) -> None:

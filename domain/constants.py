@@ -65,3 +65,11 @@ class TickSources:
 class WriterLockStatus:
     HELD = "HELD"
     FREE = "FREE"
+
+
+class RunStatus:
+    """SIMULATION RUN 生命周期（M1）：PENDING → RUNNING → COMMITTED；异常 RUNNING → FAILED。"""
+    PENDING = "PENDING"
+    RUNNING = "RUNNING"
+    COMMITTED = "COMMITTED"
+    FAILED = "FAILED"

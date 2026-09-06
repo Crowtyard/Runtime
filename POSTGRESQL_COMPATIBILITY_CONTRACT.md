@@ -21,12 +21,14 @@
 - SQLite 专用函数（date()/julianday()/FTS5 等）禁止进入 ORM 查询表达式；
   时间换算在应用层 time_service / domain.blessed_time 完成。
 
-## 3. 时间列（M0 DSH QA 修正后）
+## 3. 时间列（M0 DSH QA 修正后 + M1）
 - blessed 时间坐标：CANONICAL_BLESSED_TICK，一律 BigInteger（SQLite 64-bit INTEGER /
   PostgreSQL BIGINT）；不用 Integer（32-bit 会在 ~2147 福地年溢出）。年/月/日为投影。
 - 时间速率：time_ratio_history 的有量纲有理速率，rate_numerator/rate_denominator
   一律 BigInteger（tick / real µs）；禁止 float 倍率；换算在应用层
   domain/blessed_time.py（纯整数）。
+- M1 现实时间游标/边界：last_committed_real_us / real_effective_from_us /
+  real_interval_*_us 一律 BigInteger（epoch µs）；跨方言整数语义一致。
 - 现实时间：database/base.py 的 UtcDateTime TypeDecorator（impl=DateTime(timezone=True)）：
   应用层 aware UTC；SQLite 落显式 ISO-8601（+00:00）文本；PG 落 TIMESTAMPTZ。
   naive 输入按 UTC 解释（与旧数据兼容）。
@@ -58,9 +60,14 @@
 - services/time_service.py + domain/blessed_time.py：时间换算在应用层（不依赖 DB 时间函数）。
 - database/invariants.py：跨方言触发器在位校验。
 
-## 8. M1 硬性门禁（World Seed Activation 前必须 PASS）
-1. FENCING_TOKEN：所有世界 Mutation Transaction 提交前必须校验当前 fencing token；
-   旧 Writer 在租约失效并被接管后，即使恢复执行也不得提交世界状态（跨方言语义必须一致：
-   SQLite 单写者 + PG 行级锁之上叠加 token 校验）。
-2. PG 实跑清单 §6 全部通过。
-3. 未来对 world_events 的任何 batch 结构变更后必须重新应用不可变触发器。
+## 8. Fencing 与 M1 硬性门禁
+1. FENCING_TOKEN（M1 已实现）：所有世界 Mutation Transaction 经
+   services/fencing.py::WorldMutationContext —— 进入时 verify+refresh 心跳
+   （UPDATE runtime_lock WHERE token/owner/未过期 → 延长 expires_at；该写操作即取
+   写锁）；COMMIT 前 assert_current_fence() 重验。SQLite：写锁使接管 UPDATE 串行化
+   （不依赖 PG 行锁）；PG：同一行 UPDATE 行锁语义等价。被接管的旧 Writer 不得提交
+   任何世界状态。
+2. COMMITTED 区间唯一索引（migration e6c0f4a1b3d9）：partial unique index 同时提供
+   sqlite_where 与 postgresql_where（status='COMMITTED'）；NULL 区间行不受影响。
+3. PG 实跑清单 §6 全部通过（World Seed Activation 前）。
+4. 未来对 world_events 的任何 batch 结构变更后必须重新应用不可变触发器。

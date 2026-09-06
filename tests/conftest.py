@@ -7,6 +7,7 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -19,12 +20,18 @@ from config.settings import Settings  # noqa: F401
 from database.base import utcnow
 from database.db import create_db_engine, make_session_factory
 from database.models_core import WorldRuntime
+from domain.blessed_time import datetime_to_epoch_us
 from domain.constants import RuntimeStatus
 from services.repositories import RuntimeRepository, TimeRatioRepository
+from services.writer_lock import WriterLease
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 BIBLE_DIR = PROJECT_ROOT.parent / "XIAOGUANG_CROW_KB" / "world_bible"
-HEAD_REVISION = "e9f4b7c2d8a6"  # m0_rational_time_rate（当前 head）
+HEAD_REVISION = "e6c0f4a1b3d9"  # m1_checkpoint_extension_and_interval_unique（当前 head）
+
+EPOCH0 = datetime(2026, 1, 1, tzinfo=timezone.utc)
+EPOCH0_US = datetime_to_epoch_us(EPOCH0)
+W = "W"  # 测试世界 world_id
 
 
 def run_migrations(database_url: str) -> None:
@@ -78,6 +85,37 @@ def activated_session_factory(seeded_session_factory):
         row.current_blessed_tick = 0
         s.commit()
     return seeded_session_factory
+
+
+@pytest.fixture()
+def active_clock_factory(seeded_session_factory):
+    """测试专用 ACTIVATED 世界 + 已初始化时钟：
+    tick=0、现实游标=EPOCH0、自然态速率边界=EPOCH0、remainder=0。
+    （catch_up 的全部前置状态；正式库绝不进入该状态。）"""
+    with seeded_session_factory() as s:
+        row = s.execute(select(WorldRuntime)).scalar_one()
+        row.runtime_status = RuntimeStatus.ACTIVE
+        row.world_seed_version = "SEED-TEST-1"
+        row.current_blessed_tick = 0
+        row.last_committed_real_us = EPOCH0_US
+        row.time_rate_remainder = 0
+        rate = TimeRatioRepository(s).list_all()[0]
+        rate.real_effective_from = EPOCH0
+        rate.real_effective_from_us = EPOCH0_US
+        row.current_time_ratio_id = rate.ratio_id
+        s.commit()
+    return seeded_session_factory
+
+
+@pytest.fixture()
+def lease_helper(active_clock_factory):
+    """acquire 一个 WriterLease，返回 (session, lease)（测试用 fencing 凭据来源）。"""
+    def _acquire(seconds: int = 120):
+        s = active_clock_factory()
+        lease = WriterLease(s, W, seconds)
+        lease.acquire()
+        return s, lease
+    return _acquire
 
 
 @pytest.fixture()

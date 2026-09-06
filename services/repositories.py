@@ -18,6 +18,7 @@ from database.models_core import (
     WorldEvent,
     WorldRuntime,
 )
+from domain.blessed_time import datetime_to_epoch_us
 from domain.errors import IntegrityError
 
 
@@ -82,6 +83,7 @@ class TimeRatioRepository:
         row = TimeRatioHistory(
             world_id=world_id,
             real_effective_from=real_effective_from,
+            real_effective_from_us=datetime_to_epoch_us(real_effective_from),
             blessed_effective_from_tick=blessed_effective_from_tick,
             rate_numerator=rate_numerator,
             rate_denominator=rate_denominator,
@@ -94,7 +96,16 @@ class TimeRatioRepository:
 
     def list_all(self) -> list[TimeRatioHistory]:
         return list(self.session.execute(
-            select(TimeRatioHistory).order_by(TimeRatioHistory.real_effective_from)
+            select(TimeRatioHistory).order_by(TimeRatioHistory.real_effective_from_us)
+        ).scalars())
+
+    def list_effective_up_to(self, world_id: str, real_end_us: int) -> list[TimeRatioHistory]:
+        """所有 real_effective_from_us <= real_end_us 的速率行（分段积分的候选窗口集）。"""
+        return list(self.session.execute(
+            select(TimeRatioHistory)
+            .where(TimeRatioHistory.world_id == world_id,
+                   TimeRatioHistory.real_effective_from_us <= real_end_us)
+            .order_by(TimeRatioHistory.real_effective_from_us)
         ).scalars())
 
 
@@ -173,11 +184,28 @@ class CheckpointRepository:
 
     def create(self, *, world_id: str, blessed_tick: int,
                world_state_hash: str, meta: dict | None = None,
-               complete: bool = True) -> SimulationCheckpoint:
-        row = SimulationCheckpoint(world_id=world_id,
-                                   checkpoint_blessed_tick=blessed_tick,
-                                   world_state_hash=world_state_hash,
-                                   complete=complete, meta=meta or {})
+               complete: bool = True,
+               last_committed_real_us: int | None = None,
+               rate_id: int | None = None,
+               rate_remainder: int = 0,
+               simulation_version: str | None = None,
+               last_committed_run_id: str | None = None,
+               writer_id: str | None = None,
+               fencing_token: str | None = None) -> SimulationCheckpoint:
+        """持久化 checkpoint：crash 后仅依赖 DB 即可恢复时钟状态。"""
+        row = SimulationCheckpoint(
+            world_id=world_id,
+            checkpoint_blessed_tick=blessed_tick,
+            world_state_hash=world_state_hash,
+            complete=complete, meta=meta or {},
+            last_committed_real_us=last_committed_real_us,
+            rate_id=rate_id,
+            rate_remainder=rate_remainder,
+            simulation_version=simulation_version,
+            last_committed_run_id=last_committed_run_id,
+            writer_id=writer_id,
+            fencing_token=fencing_token,
+        )
         self.session.add(row)
         self.session.flush()
         return row

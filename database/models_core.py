@@ -33,6 +33,10 @@ class WorldRuntime(Base):
     last_simulated_real_time: Mapped[datetime | None] = mapped_column(UtcDateTime(), nullable=True)
     current_blessed_tick: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
     current_time_ratio_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # M1 时钟持久化（crash 后仅依赖 DB 恢复）：
+    last_committed_real_us: Mapped[int | None] = mapped_column(BigInteger, nullable=True)  # 已提交现实游标（epoch µs）
+    time_rate_remainder: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                     default=0, server_default="0")  # 积分进位（绑定 current_time_ratio_id）
     created_at: Mapped[datetime] = mapped_column(UtcDateTime(), default=utcnow,
                                                  nullable=False)
 
@@ -52,6 +56,7 @@ class TimeRatioHistory(Base):
     world_id: Mapped[str] = mapped_column(String(64), ForeignKey("world_runtime.world_id"),
                                           nullable=False)
     real_effective_from: Mapped[datetime] = mapped_column(UtcDateTime(), nullable=False)
+    real_effective_from_us: Mapped[int] = mapped_column(BigInteger, nullable=False)  # 真实时间边界（epoch µs，分段积分的整数边界）
     blessed_effective_from_tick: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
     rate_numerator: Mapped[int] = mapped_column(BigInteger, nullable=False)    # blessed ticks
     rate_denominator: Mapped[int] = mapped_column(BigInteger, nullable=False)  # real µs
@@ -78,6 +83,15 @@ class SimulationRun(Base):
     simulation_version: Mapped[str] = mapped_column(String(32), nullable=False)
     seed_context: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     finished_at: Mapped[datetime | None] = mapped_column(UtcDateTime(), nullable=True)
+    # M1 区间幂等身份（world_id + simulation_version + real_interval_start/end_us；
+    # COMMITTED 行受部分唯一索引约束，见 migration e6c0f4a1b3d9）：
+    real_interval_start_us: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    real_interval_end_us: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    blessed_tick_before: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    blessed_tick_delta: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    real_cursor_after_us: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    writer_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    fencing_token: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
 
 class SimulationCheckpoint(Base):
@@ -91,6 +105,15 @@ class SimulationCheckpoint(Base):
     complete: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     meta: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(UtcDateTime(), default=utcnow, nullable=False)
+    # M1 持久化 checkpoint（crash 后仅依赖 DB 恢复）：
+    last_committed_real_us: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
+    rate_id: Mapped[int | None] = mapped_column(Integer, nullable=True)  # 当前速率引用
+    rate_remainder: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                default=0, server_default="0")
+    simulation_version: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    last_committed_run_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    writer_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    fencing_token: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
 
 class WorldEvent(Base):

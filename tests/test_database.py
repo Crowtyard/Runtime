@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import pytest
+from alembic import command
+from alembic.config import Config
 from sqlalchemy import select, text
 
 from database.base import Base
@@ -13,7 +15,7 @@ from services.atomic_tick import run_atomic_tick
 from services.repositories import EventRepository
 from services.writer_lock import WriterLease, world_writer
 
-W = "W"
+from tests.conftest import HEAD_REVISION, PROJECT_ROOT, W
 
 
 def test_migration_creates_schema(migrated_db):
@@ -26,10 +28,25 @@ def test_migration_creates_schema(migrated_db):
 
 
 def test_migration_at_head(migrated_db):
-    from tests.conftest import HEAD_REVISION
     with migrated_db["engine"].connect() as c:
         v = c.execute(text("SELECT version_num FROM alembic_version")).fetchone()
         assert v is not None and v[0] == HEAD_REVISION
+
+
+def test_migration_downgrade_upgrade_cycle(migrated_db):
+    """M1 迁移基本验证：downgrade base → upgrade head 全链路可逆。"""
+    cfg = Config(str(PROJECT_ROOT / "alembic.ini"))
+    cfg.set_main_option("script_location", str(PROJECT_ROOT / "database" / "alembic"))
+    cfg.set_main_option("sqlalchemy.url", migrated_db["url"])
+    command.downgrade(cfg, "base")
+    command.upgrade(cfg, "head")
+    with migrated_db["engine"].connect() as c:
+        assert c.execute(text("SELECT version_num FROM alembic_version")).scalar() \
+            == HEAD_REVISION
+        triggers = c.execute(text(
+            "SELECT name FROM sqlite_master WHERE type='trigger' AND "
+            "tbl_name='world_events'")).fetchall()
+        assert len(triggers) == 2  # 不可变触发器随 upgrade 重建
 
 
 def test_canonical_tick_columns(migrated_db):
@@ -71,26 +88,34 @@ def test_session_rollback_on_error(seeded_session_factory):
         assert s.execute(select(Settlement)).scalars().all() == []
 
 
-def test_atomic_tick_rollback(activated_session_factory):
+def test_atomic_tick_rollback(activated_session_factory, lease_helper):
     """失败事务不推进 committed_until_tick：0 事件 0 run。"""
-    def bad_fn(session):
-        EventRepository(session).append(world_id=W, event_type="X",
-                                        source="SIM", blessed_tick=1)
-        raise RuntimeError("tick failed")
+    s, lease = lease_helper()
+    try:
+        def bad_fn(session):
+            EventRepository(session).append(world_id=W, event_type="X",
+                                            source="SIM", blessed_tick=1)
+            raise RuntimeError("tick failed")
 
-    with pytest.raises(RuntimeError):
-        run_atomic_tick(activated_session_factory, world_id=W,
-                        target_blessed_tick=1, simulate_fn=bad_fn)
-    with activated_session_factory() as s:
-        assert s.execute(select(WorldEvent)).scalars().all() == []
-        assert s.execute(select(SimulationRun)).scalars().all() == []
+        with pytest.raises(RuntimeError):
+            run_atomic_tick(activated_session_factory, world_id=W,
+                            target_blessed_tick=1, simulate_fn=bad_fn,
+                            writer_id=lease.owner,
+                            fencing_token=lease.token)
+        with activated_session_factory() as sess:
+            assert sess.execute(select(WorldEvent)).scalars().all() == []
+            assert sess.execute(select(SimulationRun)).scalars().all() == []
+    finally:
+        lease.release()
+        s.close()
 
 
 def test_atomic_tick_requires_activation(seeded_session_factory):
-    """simulate_tick 在未激活世界必须失败（WORLD_NOT_ACTIVATED）。"""
+    """simulate_tick 在未激活世界必须失败（WORLD_NOT_ACTIVATED，先于 fencing）。"""
     with pytest.raises(WorldNotActivated):
         run_atomic_tick(seeded_session_factory, world_id=W,
-                        target_blessed_tick=1, simulate_fn=lambda s: None)
+                        target_blessed_tick=1, simulate_fn=lambda s: None,
+                        writer_id="w", fencing_token="t")
     with seeded_session_factory() as s:
         assert s.execute(select(SimulationRun)).scalars().all() == []
 
@@ -114,41 +139,57 @@ def test_single_writer_exclusive(seeded_session_factory):
             pass
 
 
-def test_retry_idempotency_skip(activated_session_factory):
+def test_retry_idempotency_skip(activated_session_factory, lease_helper):
     """TICK_IDENTITY：同 world + 同 simulation_version 同 target → skip；run_id 稳定。"""
-    calls = []
+    s, lease = lease_helper()
+    try:
+        calls = []
 
-    def fn(session):
-        calls.append(1)
-        EventRepository(session).append(world_id=W, event_type="E",
-                                        source="SIM", blessed_tick=5_000_000)
+        def fn(session):
+            calls.append(1)
+            EventRepository(session).append(world_id=W, event_type="E",
+                                            source="SIM", blessed_tick=5_000_000)
 
-    r1 = run_atomic_tick(activated_session_factory, world_id=W,
-                         target_blessed_tick=5_000_000, simulate_fn=fn)
-    assert r1.skipped is False and r1.run_id is not None
-    r2 = run_atomic_tick(activated_session_factory, world_id=W,
-                         target_blessed_tick=5_000_000, simulate_fn=fn)
-    assert r2.skipped is True
-    assert r2.run_id == r1.run_id
-    assert len(calls) == 1
-    with activated_session_factory() as s:
-        assert len(s.execute(select(WorldEvent)).scalars().all()) == 1
-        run = s.execute(select(SimulationRun)).scalar_one()
-        assert run.committed_until_tick == 5_000_000
-        assert run.target_blessed_tick == 5_000_000
-        assert run.simulation_version == SimulationVersion.CURRENT
+        r1 = run_atomic_tick(activated_session_factory, world_id=W,
+                             target_blessed_tick=5_000_000, simulate_fn=fn,
+                             writer_id=lease.owner, fencing_token=lease.token)
+        assert r1.skipped is False and r1.run_id is not None
+        r2 = run_atomic_tick(activated_session_factory, world_id=W,
+                             target_blessed_tick=5_000_000, simulate_fn=fn,
+                             writer_id=lease.owner, fencing_token=lease.token)
+        assert r2.skipped is True
+        assert r2.run_id == r1.run_id
+        assert len(calls) == 1
+        with activated_session_factory() as sess:
+            assert len(sess.execute(select(WorldEvent)).scalars().all()) == 1
+            run = sess.execute(select(SimulationRun)).scalar_one()
+            assert run.committed_until_tick == 5_000_000
+            assert run.target_blessed_tick == 5_000_000
+            assert run.simulation_version == SimulationVersion.CURRENT
+    finally:
+        lease.release()
+        s.close()
 
 
-def test_idempotency_scoped_to_simulation_version(activated_session_factory):
+def test_idempotency_scoped_to_simulation_version(activated_session_factory,
+                                                  lease_helper):
     """旧 simulation_version 的 committed_until_tick 不得阻止新版合法推进。"""
-    with activated_session_factory() as s:
-        s.add(SimulationRun(
-            run_id="LEGACY-RUN-1", world_id=W, simulation_version="0.0.1-legacy",
-            status="COMMITTED", committed_until_tick=100_000_000,
-            target_blessed_tick=100_000_000, seed_context={}))
-        s.commit()
-    result = run_atomic_tick(activated_session_factory, world_id=W,
-                             target_blessed_tick=5_000_000,
-                             simulate_fn=lambda s: None)
-    assert result.skipped is False
-    assert result.committed_until_tick == 5_000_000
+    s, lease = lease_helper()
+    try:
+        with activated_session_factory() as sess:
+            sess.add(SimulationRun(
+                run_id="LEGACY-RUN-1", world_id=W,
+                simulation_version="0.0.1-legacy",
+                status="COMMITTED", committed_until_tick=100_000_000,
+                target_blessed_tick=100_000_000, seed_context={}))
+            sess.commit()
+        result = run_atomic_tick(activated_session_factory, world_id=W,
+                                 target_blessed_tick=5_000_000,
+                                 simulate_fn=lambda s: None,
+                                 writer_id=lease.owner,
+                                 fencing_token=lease.token)
+        assert result.skipped is False
+        assert result.committed_until_tick == 5_000_000
+    finally:
+        lease.release()
+        s.close()

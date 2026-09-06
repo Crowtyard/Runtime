@@ -1,14 +1,14 @@
 # XiaoguangBlessedLandRuntime
 
-Blessed Land Runtime —— 小光福地世界运行内核（M0 Foundation, PHASE_1_9_1 + DSH M0 独立 QA）。
+Blessed Land Runtime —— 小光福地世界运行内核（M0 Foundation + M1 Time Engine & Offline Catch-up）。
 架构：Knowledge/World Bible → **Runtime** → World Database → AstrBot Adapter（ASTRBOT != WORLD）。
 
-## 状态（DSH M0 独立 QA 完成后）
+## 状态（DSH M1 完成后）
 
 ```
 WORLD_BIBLE = v1.0 FROZEN（18 文件 MANIFEST SHA256 复算一致）
 RUNTIME_PROJECT = CREATED        （本目录，git 由 DSH 接管）
-DATABASE_SCHEMA = CREATED        （20 表, alembic 6 个 migration）
+DATABASE_SCHEMA = CREATED        （20 表, alembic 9 个 migration）
 WORLD_DATABASE = EMPTY           （业务表 0 行）
 WORLD_SEED = NOT_ACTIVATED
 CURRENT_BLESSED_TICK = NULL
@@ -20,7 +20,7 @@ OFFICIAL_POPULATION / HISTORY_EVENTS / NPCS / TRIBULATIONS = 0
 ```bash
 pip install sqlalchemy alembic pytest   # 依赖见 pyproject.toml
 python scripts/init_db.py               # migrate to head + seed 版本元数据（NOT_ACTIVATED）
-python -m pytest tests/                 # 65 tests
+python -m pytest tests/                 # 103 tests
 python scripts/backup_now.py            # 手动备份（--pre-migration 为迁移前备份）
 ```
 
@@ -28,16 +28,20 @@ python scripts/backup_now.py            # 手动备份（--pre-migration 为迁�
 
 - `database/`：SQLAlchemy 2.x 模型（20 表）+ Alembic migrations（0001 建表 / 0002 blessed 整数 /
   0003 canonical blessed tick / 0004 显式 ISO-8601 UTC / 0005 事件不可变触发器 /
-  0006 有理时间速率）+ `invariants.py`（DB 不变量校验）
-- `domain/`：常量、错误分类（9 类 code）、版本锁与 Bible 指纹校验、`blessed_time.py`
-  （CANONICAL_BLESSED_TICK 定义与换算）
+  0006 有理时间速率 / 0007 M1 时钟+速率整数边界 / 0008 run 区间身份 /
+  0009 checkpoint 扩展+COMMITTED 区间唯一索引）+ `invariants.py`（DB 不变量校验）
+- `domain/`：常量、错误分类（10 类 code）、版本锁与 Bible 指纹校验、`blessed_time.py`
+  （CANONICAL_BLESSED_TICK + TimeRate + epoch µs 转换）
 - `services/`：guard（WORLD_NOT_ACTIVATED + 受保护事件入口）、writer_lock（单写者租约 +
-  STALE_WRITER_RECOVERY）、atomic_tick（版本化幂等 + 事务 + 激活校验）、
-  time_service（aware UTC/时钟异常/ratio 分段积分）、rng_service（确定性独立流）、
+  STALE_WRITER_RECOVERY）、**fencing（WorldMutationContext 统一 Mutation Guard）**、
+  **time_engine（Integrator + 速率分段）**、**catchup（Offline Catch-up 编排）**、
+  **run_lifecycle（Simulation Run 生命周期）**、atomic_tick（fencing 统一入口）、
+  time_service（aware UTC/时钟异常/分段积分）、rng_service（确定性独立流）、
   backup_service（在线备份 + 安全恢复）、repositories（只追加事件库 + correction）、
   bible_integrity
 - `scripts/`：init_db（migrate+seed 幂等 + schema_version 校正 + 不变量校验）、backup_now
-- `tests/`：65 项（迁移/事务/原子tick/单写者/stale recovery/RNG/备份恢复/守卫/纠错/tick/UTC）
+- `tests/`：103 项（迁移/事务/原子tick/单写者/stale recovery/FENCING F1-F8/RNG/备份恢复/
+  守卫/纠错/tick/UTC/catch-up/crash A-G/幂等/生命周期）
 - `POSTGRESQL_COMPATIBILITY_CONTRACT.md`：跨方言约束契约
 
 ## 设计要点（DSH M0 独立 QA 修正后）
@@ -59,8 +63,19 @@ python scripts/backup_now.py            # 手动备份（--pre-migration 为迁�
 - **世界推进**：必须先激活（runtime_status=ACTIVE 且 world_seed 生效），
   否则 WORLD_NOT_ACTIVATED 拒绝 advance/simulate/catchup/create_event；
   创建 metadata / time rule ≠ 激活。
-- **单写者**：runtime_lock 租约（acquire 即时提交、owner identity、token fencing、
-  renew）；崩溃/重启后过期租约自动接管（STALE_WRITER_RECOVERY），世界不会永久锁死。
+- **单写者 + FENCING（M1 硬门槛已实现）**：runtime_lock 租约（acquire 即时提交、owner
+  identity、token fencing、renew）；所有 World State Mutation Transaction 必须经
+  `WorldMutationContext`——进入时 verify+refresh 心跳（即取写锁），COMMIT 前再次
+  assert_current_fence()（DB 中 token 必须仍等于本事务 token）。被接管的旧 Writer
+  即使恢复执行也不得提交任何世界状态。崩溃/重启后过期租约自动接管
+  （STALE_WRITER_RECOVERY），世界不会永久锁死。
+- **时间推进（M1 Time Engine + Offline Catch-up）**：`catch_up()` 按
+  time_ratio_history 的真实时间整数边界分段积分（A→B→C→D 多区间），remainder 持久化
+  于 world_runtime（重启后从 DB 恢复，结果与不重启一致）；权威现实游标在 DB
+  （陈旧调用方游标不会重复累计区间）；tick 与游标单调；Simulation Run 生命周期
+  PENDING→RUNNING→COMMITTED（异常 FAILED），同区间幂等（游标 skip + COMMITTED 区间
+  唯一索引双防线）；每次提交写持久化 checkpoint（crash 后仅依赖 DB 恢复）。
+  M1 不生成任何世界内容（仅 TIME_ADVANCE/CHECKPOINT/RUN_METADATA 基础设施记录）。
 - **幂等**：TICK_IDENTITY = world_id + simulation_version + status=COMMITTED +
   committed_until_tick；旧 simulation_version 不阻止新版推进；失败事务不推进 committed。
 - **RNG**：每子系统独立流（seed=sha256(world, sim_version, period_tick, subsystem, scope)）；
@@ -71,10 +86,9 @@ python scripts/backup_now.py            # 手动备份（--pre-migration 为迁�
 - M0 之后未经批准不得推进世界（M1+ 待 RUNTIME_ARCHITECTURE_REVIEW 后逐里程碑进行）。
 - 禁止把 DB 当第二套 Bible：Bible 内容由 knowledge 层管理，DB 只存版本+manifest hash。
 
-## M1 硬性门禁（World Seed Activation 前必须 PASS）
+## M1 之后的硬性门禁（World Seed Activation 前必须 PASS）
 
-1. **FENCING_TOKEN（强 fencing）**：M1 所有世界 Mutation Transaction 在提交前必须
-   校验当前 fencing token（租约持有者身份）；旧 Writer 在 lease 失效并被新 Writer
-   接管以后，即使恢复执行也**不得提交任何世界状态**。
+1. **FENCING_TOKEN**：已实现（M1）；Activation 前复审跨方言语义（PG for_update 等价性）。
 2. PG 实跑清单（POSTGRESQL_COMPATIBILITY_CONTRACT.md §6）。
 3. SQLite batch 重建 world_events 后必须重新应用不可变触发器（invariants 校验兜底）。
+4. M1 不得生成任何世界内容；正式世界推进必须等 World Seed Activation（M2+）。
