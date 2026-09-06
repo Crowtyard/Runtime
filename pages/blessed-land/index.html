@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>小光福地 Runtime</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="console">
+    <header>
+      <h1>小光福地 Runtime</h1>
+      <p class="subtitle">Blessed Land Runtime · 只读管理控制台（World First / Character Second）</p>
+    </header>
+
+    <section class="card" id="runtime-card">
+      <h2>[ Runtime ]</h2>
+      <dl>
+        <dt>Plugin Status</dt><dd id="plugin-status">…</dd>
+        <dt>Runtime Version</dt><dd id="runtime-version">…</dd>
+        <dt>Database</dt><dd id="db-integrity">…</dd>
+        <dt>World</dt><dd id="world-status">…</dd>
+      </dl>
+    </section>
+
+    <section class="card" id="time-card">
+      <h2>[ 时间 ]</h2>
+      <dl>
+        <dt>自然流速</dt><dd>现实约 1 天 ≈ 福地约 1 年</dd>
+        <dt>Tick Unit</dt><dd>1 tick = 1 µy（1e-6 福地年）</dd>
+        <dt>Current Blessed Tick</dt><dd id="blessed-tick">…</dd>
+        <dt>Current Rate</dt><dd id="current-rate">…</dd>
+      </dl>
+    </section>
+
+    <section class="card" id="writer-card">
+      <h2>[ Writer ]</h2>
+      <dl>
+        <dt>Lease</dt><dd id="writer-lease">…</dd>
+        <dt>Writer ID</dt><dd id="writer-id">…</dd>
+        <dt>Fencing Token</dt><dd id="fencing-token">…</dd>
+      </dl>
+    </section>
+
+    <section class="card" id="db-card">
+      <h2>[ Database ]</h2>
+      <dl>
+        <dt>Path</dt><dd id="db-path">…</dd>
+        <dt>Alembic Head</dt><dd id="schema-version">…</dd>
+        <dt>Integrity</dt><dd id="db-integrity-2">…</dd>
+        <dt>Last Backup</dt><dd id="last-backup">—（由备份脚本/未来入口生成）</dd>
+      </dl>
+    </section>
+
+    <section class="card" id="world-card">
+      <h2>[ World ]</h2>
+      <dl>
+        <dt>Status</dt><dd id="world-status-2">…</dd>
+        <dt>Seed</dt><dd id="seed">…</dd>
+        <dt>Persons</dt><dd id="c-persons">…</dd>
+        <dt>Population</dt><dd id="c-population_groups">…</dd>
+        <dt>Settlements</dt><dd id="c-settlements">…</dd>
+        <dt>Tribulations</dt><dd id="c-tribulations">…</dd>
+        <dt>Official Events</dt><dd id="c-world_events">…</dd>
+      </dl>
+    </section>
+
+    <section class="card" id="diag-card">
+      <h2>[ Diagnostics ]</h2>
+      <dl>
+        <dt>M0</dt><dd id="d-m0">…</dd>
+        <dt>M1</dt><dd id="d-m1">…</dd>
+        <dt>Time Engine</dt><dd id="d-time-engine">…</dd>
+        <dt>Offline Catch-up</dt><dd id="d-catchup">…</dd>
+        <dt>World Activation</dt><dd id="d-activation">…</dd>
+      </dl>
+    </section>
+
+    <footer>
+      <p>本页面为只读基础设施控制台。后台术语（Runtime/DB/Fencing）不会成为小光角色认知。</p>
+    </footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

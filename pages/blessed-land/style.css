@@ -1,0 +1,41 @@
+/* 小光福地 Runtime · 只读管理控制台 */
+:root {
+  --bg: #0f1420;
+  --card: #171d2b;
+  --border: #27324a;
+  --text: #dbe4f3;
+  --muted: #8b98b4;
+  --accent: #6fd3c7;
+  --warn: #e0b35f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.console { max-width: 780px; margin: 0 auto; padding: 24px 16px 48px; }
+header h1 { margin: 0; font-size: 22px; }
+.subtitle { color: var(--muted); font-size: 13px; margin: 4px 0 20px; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+}
+.card h2 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--accent);
+  font-weight: 600;
+}
+dl { display: grid; grid-template-columns: 180px 1fr; row-gap: 6px; margin: 0; }
+dt { color: var(--muted); font-size: 13px; }
+dd { margin: 0; font-size: 13px; word-break: break-all; font-family: Consolas, monospace; }
+footer p { color: var(--muted); font-size: 12px; }
+.ok { color: #7ecb8b; }
+.bad { color: #e06c6c; }
+.warn { color: var(--warn); }

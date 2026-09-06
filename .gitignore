@@ -1,8 +1,6 @@
 __pycache__/
 *.pyc
 .pytest_cache/
-world.db
-world.db-wal
-world.db-shm
+world.db*
 backups/*
 !backups/.gitkeep

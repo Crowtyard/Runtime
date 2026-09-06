@@ -1,0 +1,21 @@
+name: astrbot_plugin_blessed_land_runtime
+display_name: 小光福地 Runtime
+desc: 为小光福地提供长期世界时间、状态、历史与离线演化基础设施。
+description: >
+  小光福地世界运行内核（Runtime）。Blessed Time 使用整数 canonical tick（1 tick = 1 µy）；
+  时间速率使用有量纲有理速率（自然态 1,000,000 ticks / 86,400,000,000 µs，即现实约 1 天
+  ≈ 福地约 1 年）；包含 Single Writer + Fencing 提交门禁、Offline Catch-up、Simulation Run
+  生命周期、持久化 Checkpoint、不可变事件历史与备份/恢复。正式世界保持 NOT_ACTIVATED，
+  本插件只提供只读状态页与管理诊断，不提供任何激活/推进/生成端点。
+author: DSH
+version: 0.1.1
+astrbot_version: ">=4.22.0"
+category: 世界模拟
+tags:
+  - 福地
+  - 世界时间
+  - 离线演化
+  - 基础设施
+pages:
+  - name: blessed-land
+    title: 小光福地 Runtime
