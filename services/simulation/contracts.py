@@ -23,7 +23,8 @@ TRIBULATION_SLOT_STATE = "NOT_REGISTERED"
 ENGINE_OWNERSHIP: dict[str, frozenset[str]] = {
     "DEMOGRAPHY": frozenset({"population_groups"}),
     "RESOURCE": frozenset({"resource_nodes"}),
-    "ECONOMY": frozenset({"industries"}),
+    "ECONOMY": frozenset({"resource_stocks", "production_state",
+                          "economic_pressure_state"}),
     "ECOLOGY": frozenset({"ecological_regions"}),
     "SOCIAL": frozenset({"lineages", "institutions"}),
 }
@@ -79,7 +80,8 @@ class SimulationContext:
     snapshot: "WorldSnapshot"
     staged: "StagedWorld"
     rng: "RngStream"
-    modifiers: dict = field(default_factory=dict)  # 跨引擎 modifier 槽（M2a neutral）
+    modifiers: dict = field(default_factory=dict)  # 跨引擎 modifier 槽（M2b neutral）
+    crash_after: str | None = None  # 测试专用崩溃注入点（引擎可在此 raise）
 
 
 class Engine(Protocol):

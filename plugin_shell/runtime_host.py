@@ -43,7 +43,7 @@ RUNTIME_VERSION = "0.1.1"
 PLUGIN_NAME = "astrbot_plugin_blessed_land_runtime"
 DB_FILENAME = "blessed_land.sqlite"
 AUTHORITATIVE_MARKER = "authoritative_db.json"
-EXPECTED_SCHEMA_HEAD = "a7b3e9f1c5d2"  # M1 head（schema 无变更时不强行造 migration）
+EXPECTED_SCHEMA_HEAD = "b7d2f4e9c1a5"  # M2b head（resource-economy schema）
 
 BUSINESS_TABLES = {
     "persons": "persons",

@@ -16,8 +16,11 @@ from dataclasses import dataclass, field
 
 from sqlalchemy.orm import Session
 
-from ...database.models_world import (EcologicalRegion, Industry, Institution,
-                                     Lineage, PopulationGroup, ResourceNode,
+from ...database.models_world import (EcologicalRegion, EconomicPressureState,
+                                     Industry, Institution, Lineage,
+                                     PopulationGroup, ProductionRecipe,
+                                     ProductionState, ResourceNode,
+                                     ResourceProfile, ResourceStock,
                                      Settlement)
 from ...domain.errors import IntegrityError
 from ..repositories import CheckpointRepository, EventRepository
@@ -31,7 +34,7 @@ from .event_stream import (deterministic_event_uid,
 from .recovery import (WORLD_COMMITTED_KIND,
                        latest_authoritative_world_checkpoint)
 from .snapshot import StagedWorld, read_snapshot
-from .state_hash import world_state_hash_v2
+from .state_hash import world_state_hash_v2, world_state_hash_v3
 
 _MODEL_BY_TABLE = {
     "settlements": Settlement,
@@ -41,6 +44,11 @@ _MODEL_BY_TABLE = {
     "ecological_regions": EcologicalRegion,
     "lineages": Lineage,
     "institutions": Institution,
+    "resource_profiles": ResourceProfile,
+    "resource_stocks": ResourceStock,
+    "production_recipes": ProductionRecipe,
+    "production_state": ProductionState,
+    "economic_pressure_state": EconomicPressureState,
 }
 
 
@@ -123,7 +131,7 @@ class SimulationCoordinator:
                 real_interval_start_us=real_interval_start_us,
                 real_interval_end_us=real_interval_end_us,
                 snapshot=snapshot, staged=staged, rng=rng,
-                modifiers={})
+                modifiers={}, crash_after=crash_after)
             result: EngineResult = engine.simulate(ctx)
             _validate_result(engine.engine_id, result)
             for change in result.proposed_changes:
@@ -192,11 +200,21 @@ class SimulationCoordinator:
             simulation_version=self.simulation_version, events=emitted)
 
         final_snapshot = read_snapshot(session, world_id)
-        state_hash = world_state_hash_v2(
-            snapshot=final_snapshot,
-            simulation_version=self.simulation_version,
-            pipeline_version=self.pipeline_version,
-            engine_versions=self.engine_versions)
+        # 哈希 schema 版本由管线状态域决定（不静默改语义）：
+        #   - 含 RESOURCE/ECONOMY → v3（覆盖 resource/economy 状态域）
+        #   - 仅 DEMOGRAPHY（M2a 回归）→ v2（M2a 冻结语义，基线逐字节复现）
+        if {"RESOURCE", "ECONOMY"} & set(self.engine_versions):
+            state_hash = world_state_hash_v3(
+                snapshot=final_snapshot,
+                simulation_version=self.simulation_version,
+                pipeline_version=self.pipeline_version,
+                engine_versions=self.engine_versions)
+        else:
+            state_hash = world_state_hash_v2(
+                snapshot=final_snapshot,
+                simulation_version=self.simulation_version,
+                pipeline_version=self.pipeline_version,
+                engine_versions=self.engine_versions)
         CheckpointRepository(session).create(
             world_id=world_id,
             blessed_tick=blessed_end_tick,

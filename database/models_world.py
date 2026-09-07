@@ -104,7 +104,7 @@ class Industry(Base):
 
 
 class ResourceNode(Base):
-    """资源节点（WS-0703 八态）。"""
+    """资源节点（WS-0703 八态；M2b 只关心可用性/储量/开采）。"""
     __tablename__ = "resource_nodes"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
@@ -113,6 +113,152 @@ class ResourceNode(Base):
     state: Mapped[str] = mapped_column(String(16), default="STABLE")
     yield_model: Mapped[dict | None] = mapped_column(JSON)
     history_ref: Mapped[str | None] = mapped_column(String(64))
+    # ---- M2b Resource Engine（整数 minor units；无 float 权威量） ----
+    resource_profile_ref: Mapped[str | None] = mapped_column(String(64))  # 资源 profile 引用（NULL=UNCONFIGURED）
+    settlement_relation: Mapped[str | None] = mapped_column(String(64))  # 开采归属聚落
+    remaining_reserve: Mapped[int | None] = mapped_column(BigInteger)  # 剩余储量（minor units；NULL=未定级）
+    extraction_capacity: Mapped[int | None] = mapped_column(BigInteger)  # 名义开采容量（minor units/福地年）
+    extraction_carry: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")  # 亚年开采进位（整数）
+    last_extracted_minor: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")  # 本步开采量（staged feed-forward 给 ECONOMY）
+    engine_version: Mapped[str | None] = mapped_column(String(32))
+    state_version: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                               default=0, server_default="0")
+    updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+
+
+class ResourceProfile(Base):
+    """资源 profile（M2b：TEST_FIXTURE_ONLY 参数；正式资源保持 UNCONFIGURED）。
+
+    权威数量 = 整数 minor units；1 canonical unit = quantity_scale minor units。
+    """
+    __tablename__ = "resource_profiles"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    resource_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    unit: Mapped[str] = mapped_column(String(16), nullable=False, default="unit")
+    quantity_scale: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                default=1_000_000)
+    renewability: Mapped[str] = mapped_column(String(16), nullable=False,
+                                              default="FINITE")
+    extractability: Mapped[str | None] = mapped_column(String(16))
+    consumption_category: Mapped[str | None] = mapped_column(String(32))  # CONSUMPTION/NULL
+    production_usability: Mapped[str | None] = mapped_column(String(32))  # INPUT/OUTPUT/NULL
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+
+    __table_args__ = (UniqueConstraint("world_id", "resource_id",
+                                       name="uq_resource_profiles_world_resource"),)
+
+
+class ResourceStock(Base):
+    """聚落库存（integer minor units；含 stock-flow ledger 累计计数器）。
+
+    RE_INV_14：end = start + extracted + produced + imported
+                     − input − consumed − exported − lost（全整数可对账）。
+    """
+    __tablename__ = "resource_stocks"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    settlement_ref: Mapped[str] = mapped_column(String(64), nullable=False)
+    resource_profile_ref: Mapped[str] = mapped_column(String(64), nullable=False)
+    quantity: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                          default=0, server_default="0")
+    consumption_carry: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")  # 亚年需求进位
+    cum_extracted_minor: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                     default=0, server_default="0")
+    cum_produced_minor: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                    default=0, server_default="0")
+    cum_input_minor: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                 default=0, server_default="0")
+    cum_imported_minor: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                    default=0, server_default="0")
+    cum_exported_minor: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                    default=0, server_default="0")
+    cum_consumed_minor: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                    default=0, server_default="0")
+    cum_lost_minor: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                default=0, server_default="0")
+    engine_version: Mapped[str | None] = mapped_column(String(32))
+    updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+
+    __table_args__ = (UniqueConstraint("world_id", "settlement_ref",
+                                       "resource_profile_ref",
+                                       name="uq_resource_stocks_world_settlement_resource"),)
+
+
+class ProductionRecipe(Base):
+    """Aggregate Production Recipe（input → output 显式守恒；loss 显式声明）。"""
+    __tablename__ = "production_recipes"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    recipe_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    input_resource_ref: Mapped[str | None] = mapped_column(String(64))
+    input_qty_minor: Mapped[int | None] = mapped_column(BigInteger)  # 每 batch 输入
+    output_resource_ref: Mapped[str | None] = mapped_column(String(64))
+    output_qty_minor: Mapped[int | None] = mapped_column(BigInteger)  # 每 batch 产出
+    capacity_batches_per_year: Mapped[int | None] = mapped_column(BigInteger)  # NULL=不设上限
+    labor_per_batch: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                 default=0, server_default="0")  # 0=无劳动力约束
+    loss_num: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                          default=0, server_default="0")
+    loss_den: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                          default=1, server_default="1")
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+
+    __table_args__ = (UniqueConstraint("world_id", "recipe_id",
+                                       name="uq_production_recipes_world_recipe"),)
+
+
+class ProductionState(Base):
+    """聚落 × recipe 的生产进位状态（整数 carry；重启/切块不丢失）。"""
+    __tablename__ = "production_state"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    settlement_ref: Mapped[str] = mapped_column(String(64), nullable=False)
+    recipe_ref: Mapped[str] = mapped_column(String(32), nullable=False)
+    production_carry: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                  default=0, server_default="0")
+    engine_version: Mapped[str | None] = mapped_column(String(32))
+    updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+
+    __table_args__ = (UniqueConstraint("world_id", "settlement_ref", "recipe_ref",
+                                       name="uq_production_state_world_settlement_recipe"),)
+
+
+class EconomicPressureState(Base):
+    """经济压力状态（committed authoritative state；restart 可完整恢复）。
+
+    反馈延迟冻结：ECONOMY 于 step N 写本表 → DEMOGRAPHY 于 step N+1 经
+    snapshot 读取（CROSS_ENGINE_FEEDBACK_LATENCY = NEXT_COMMITTED_STEP）。
+    shortage_ratio = unmet/demand 的 fixed-point（num/den 已约分）。
+    """
+    __tablename__ = "economic_pressure_state"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    settlement_ref: Mapped[str] = mapped_column(String(64), nullable=False)
+    resource_profile_ref: Mapped[str] = mapped_column(String(64), nullable=False)
+    demand_minor: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                              default=0, server_default="0")
+    fulfilled_minor: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                 default=0, server_default="0")
+    unmet_minor: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                             default=0, server_default="0")
+    shortage_ratio_num: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                    default=0, server_default="0")
+    shortage_ratio_den: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                    default=1, server_default="1")
+    sustained_shortage_steps: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    stress_level: Mapped[str] = mapped_column(String(16), nullable=False,
+                                              default="NONE", server_default="NONE")
+    engine_version: Mapped[str | None] = mapped_column(String(32))
+    updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+
+    __table_args__ = (UniqueConstraint(
+        "world_id", "settlement_ref", "resource_profile_ref",
+        name="uq_economic_pressure_state_world_settlement_resource"),)
 
 
 class EcologicalRegion(Base):

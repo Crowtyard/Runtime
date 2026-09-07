@@ -1,0 +1,75 @@
+{
+ "fixture_version": "mini_world_v1",
+ "simulation_version": "0.2.0-preflight",
+ "population_engine_version": "m2a-1",
+ "resource_engine_version": "m2b-resource-1",
+ "economy_engine_version": "m2b-economy-1",
+ "rng_schema_version": "m1-derive-seed-v1",
+ "event_uid_schema_version": 1,
+ "event_stream_hash_schema_version": 1,
+ "world_state_hash_schema_version": 3,
+ "initial_state": {
+  "population": 400,
+  "settlements": 2,
+  "species": "TEST-SPECIES-001",
+  "resource_reserve_units": 400000,
+  "ore_capacity_units": 1200,
+  "recipe": "TEST-RECIPE-ORE-FOOD-001"
+ },
+ "final_state": {
+  "population": 455,
+  "resource_reserve_units": 265120,
+  "stock_minor_by_resource": {
+   "TEST-RESOURCE-001": 0,
+   "TEST-RESOURCE-002": 0
+  }
+ },
+ "population_metrics": {
+  "start": 400,
+  "end": 455,
+  "births": 923,
+  "deaths": 868,
+  "immigration": 528,
+  "emigration": 528
+ },
+ "resource_metrics": {
+  "initial_reserve": 400000000000,
+  "final_reserve": 265120000000,
+  "total_extracted": 134880000000
+ },
+ "economy_metrics": {
+  "initial_stock": {
+   "TEST-RESOURCE-001": 1000000000,
+   "TEST-RESOURCE-002": 100000000
+  },
+  "final_stock": {
+   "TEST-RESOURCE-001": 49480000000,
+   "TEST-RESOURCE-002": 0
+  },
+  "production_input": 86400000000,
+  "production_output": 42768000000,
+  "demand": 61974500068,
+  "fulfilled": 42868000000,
+  "unmet": 19106500068,
+  "imports": 112100001,
+  "exports": 112100001,
+  "transfers": 112100001,
+  "shortage_steps": 231
+ },
+ "final_world_state_hash": "0c6dbb58c5028522f3778b9a02c574e90adbf502df4b2c7dff0a1ceb8ff1341c",
+ "final_event_stream_hash": "5c9a375fe52e877f068d4a05464a40f6d8cb1d908b764c66cc75139873ca8254",
+ "runs": 120,
+ "steps": 120,
+ "checkpoints": 240,
+ "event_counts": {
+  "total": 1557,
+  "resource_extracted": 120,
+  "production_completed": 120,
+  "consumption_fulfilled": 240,
+  "resource_transferred": 9,
+  "resource_shortage": 231
+ },
+ "performance": {
+  "wall_seconds": 8.229
+ }
+}

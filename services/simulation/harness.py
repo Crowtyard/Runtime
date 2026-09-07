@@ -19,8 +19,11 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from ..catchup import catch_up
 from ...database.models_core import SimulationCheckpoint, WorldEvent
-from ...database.models_world import (EcologicalRegion, Institution, Lineage,
-                                     PopulationGroup, ResourceNode, Settlement)
+from ...database.models_world import (EcologicalRegion, EconomicPressureState,
+                                     Institution, Lineage, PopulationGroup,
+                                     ProductionRecipe, ProductionState,
+                                     ResourceNode, ResourceProfile,
+                                     ResourceStock, Settlement)
 from ...domain.blessed_time import datetime_to_epoch_us
 from ..writer_lock import WriterLease
 from .contracts import PREFLIGHT_SIMULATION_VERSION, Engine, NoOpEngine
@@ -46,6 +49,7 @@ class MiniWorldReport:
     engine_metrics: dict = field(default_factory=dict)
     entity_counts: dict = field(default_factory=dict)
     population: dict = field(default_factory=dict)
+    resource: dict = field(default_factory=dict)
     economy: dict = field(default_factory=dict)
     ecology: dict = field(default_factory=dict)
     society: dict = field(default_factory=dict)
@@ -84,6 +88,8 @@ def run_mini_world_120y(
 
     with session_factory() as s0:
         population_start = _population_total(s0, world_id)
+        reserve_start = _reserve_total(s0, world_id)
+        stock_start = _stock_totals(s0, world_id)
 
     total_events = 0
     engine_metrics: dict = {e.engine_id: {} for e in engines}
@@ -138,12 +144,26 @@ def run_mini_world_120y(
                 select(EcologicalRegion)).scalars().all()),
             "lineages": len(s.execute(select(Lineage)).scalars().all()),
             "institutions": len(s.execute(select(Institution)).scalars().all()),
+            "resource_profiles": len(s.execute(
+                select(ResourceProfile)).scalars().all()),
+            "resource_stocks": len(s.execute(
+                select(ResourceStock)).scalars().all()),
+            "production_recipes": len(s.execute(
+                select(ProductionRecipe)).scalars().all()),
+            "production_state": len(s.execute(
+                select(ProductionState)).scalars().all()),
+            "economic_pressure_state": len(s.execute(
+                select(EconomicPressureState)).scalars().all()),
         }
         events_total = len(s.execute(select(WorldEvent)).scalars().all())
         ckpts = len(s.execute(select(SimulationCheckpoint)).scalars().all())
         runs = s.execute(text("SELECT COUNT(*) FROM simulation_run")).scalar()
         population_end = _population_total(s, world_id)
+        reserve_end = _reserve_total(s, world_id)
+        stock_end = _stock_totals(s, world_id)
 
+    eco = engine_metrics.get("ECONOMY", {})
+    res = engine_metrics.get("RESOURCE", {})
     return MiniWorldReport(
         world_id=world_id, years=years, steps=years, runs=runs,
         events=events_total, checkpoints=ckpts,
@@ -158,9 +178,39 @@ def run_mini_world_120y(
                         "deaths", 0)),
                     "migrations": int(engine_metrics.get("DEMOGRAPHY", {}).get(
                         "emigration", 0))},
-        economy={"stock": None, "production": None, "consumption": None,
-                 "shortages": None},
+        resource={"initial_reserve": reserve_start,
+                  "final_reserve": reserve_end,
+                  "total_extracted": int(res.get("extracted_minor", 0)),
+                  "depleted_nodes": int(res.get("depleted", 0))},
+        economy={"initial_stock": stock_start,
+                 "final_stock": stock_end,
+                 "production_input": int(eco.get("production_input_minor", 0)),
+                 "production_output": int(eco.get("production_output_minor", 0)),
+                 "loss": int(eco.get("loss_minor", 0)),
+                 "demand": int(eco.get("demand_minor", 0)),
+                 "fulfilled": int(eco.get("fulfilled_minor", 0)),
+                 "unmet": int(eco.get("unmet_minor", 0)),
+                 "imports": int(eco.get("imported_minor", 0)),
+                 "exports": int(eco.get("exported_minor", 0)),
+                 "transfers": int(eco.get("transfer_quantity_minor", 0)),
+                 "shortage_steps": int(eco.get("shortage_pairs", 0))},
         ecology={"state": None, "pressure": None},
         society={"households": None, "lineages": counts["lineages"],
                  "institution_events": None},
     )
+
+
+def _reserve_total(session: Session, world_id: str) -> int:
+    return sum(
+        int(n.remaining_reserve or 0) for n in session.execute(
+            select(ResourceNode).where(
+                ResourceNode.world_id == world_id)).scalars())
+
+
+def _stock_totals(session: Session, world_id: str) -> dict:
+    totals: dict[str, int] = {}
+    for r in session.execute(select(ResourceStock).where(
+            ResourceStock.world_id == world_id)).scalars():
+        totals[r.resource_profile_ref] = totals.get(
+            r.resource_profile_ref, 0) + int(r.quantity or 0)
+    return totals

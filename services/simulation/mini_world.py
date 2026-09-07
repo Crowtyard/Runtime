@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""mini_world_v1 —— 合成确定性测试夹具（M2 Preflight）。
+"""mini_world_v1 —— 合成确定性测试夹具（M2 Preflight；M2b integrated）。
 
 TEST_FIXTURE_ONLY：全部数值只具测试意义，不读取/不复制正式 Seed Package，
 不冒充 Local Canon，绝不写入正式 DB。
@@ -8,17 +8,27 @@ TEST_FIXTURE_ONLY：全部数值只具测试意义，不读取/不复制正式 S
   2 settlements（1 MAIN + 1 SATELLITE）/ 1 species / 1 resource node。
 M2a：population_groups = cohort 行（06 号设计；TEST_SPECIES_001 的 40 个
 1 福地年 bucket，15..39 均匀分布；A=300、B=100）。
+M2b integrated：1 个 TEST-ORE 节点（finite reserve，归属 A 开采）+
+2 个 TEST resource profile（ORE/FOOD）+ 库存行 + 1 条合成配方
+（2 ORE → 1 FOOD，容量 450 batch/年，loss 1/100）+ 生产进位行 +
+经济压力行（2 聚落 × 2 资源）。
 """
 from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
-from ...database.models_world import (EcologicalRegion, PopulationGroup,
-                                     ResourceNode, Settlement)
+from ...database.models_world import (EcologicalRegion, EconomicPressureState,
+                                     PopulationGroup, ProductionRecipe,
+                                     ProductionState, ResourceNode,
+                                     ResourceProfile, ResourceStock,
+                                     Settlement)
+from .economy import ENGINE_VERSION as ECONOMY_ENGINE_VERSION
 from .population import (DEMOGRAPHY_PROFILE_REF, ENGINE_VERSION,
                          TEST_INITIAL_BUCKETS, TEST_INITIAL_COUNT_A_PER_BUCKET,
                          TEST_INITIAL_COUNT_B_PER_BUCKET,
                          TEST_SPECIES_PROFILE)
+from .resource import ENGINE_VERSION as RESOURCE_ENGINE_VERSION
+from .resource import RESOURCE_PROFILES
 
 MINI_WORLD_ID = "MINIWORLD-TEST-001"
 MINI_SPECIES = "TEST-SPECIES-001"
@@ -41,6 +51,31 @@ MINI_ECOLOGY = {
     "terrain": "TEST-PLAINS", "climate": "TEST-TEMPERATE",
     "water": "TEST-RIVER", "danger_level": "LOW",
     "carrying_capacity": 1000, "state": "STABLE"}
+
+# ---- M2b integrated fixture（TEST_FIXTURE_ONLY；整数 minor units）----
+# 储量：400,000 canonical units（120 年开采 ~1000/年 绰绰有余，finite）
+MINI_ORE_RESERVE_UNITS = 400_000
+# 开采容量：1,200 canonical units / 福地年
+MINI_ORE_CAPACITY_UNITS = 1_200
+# 初始库存（canonical units）：A ore=1000、food=100；B ore=0、food=0
+# （A 产能 360 > A 需求 ~350 但有 100 缓冲 → A 每年少量盈余转给 B；
+#   B 零库存零生产 → 持续短缺 → 基线覆盖 transfer + shortage + feedback）
+MINI_STOCK_UNITS = {
+    ("TEST-MAIN-A", "TEST-RESOURCE-001"): 1_000,
+    ("TEST-MAIN-A", "TEST-RESOURCE-002"): 100,
+    ("TEST-SATELLITE-B", "TEST-RESOURCE-001"): 0,
+    ("TEST-SATELLITE-B", "TEST-RESOURCE-002"): 0,
+}
+# 合成配方：2 ORE → 1 FOOD；容量 360 batch/年；loss 1/100；无劳动力约束
+MINI_RECIPE = {
+    "recipe_id": "TEST-RECIPE-ORE-FOOD-001",
+    "input_resource_ref": "TEST-RESOURCE-001", "input_qty_minor": 2_000_000,
+    "output_resource_ref": "TEST-RESOURCE-002", "output_qty_minor": 1_000_000,
+    "capacity_batches_per_year": 360, "labor_per_batch": 0,
+    "loss_num": 1, "loss_den": 100, "semantic_version": "test-recipe-1",
+}
+
+MINI_SCALE = RESOURCE_PROFILES["TEST-RESOURCE-001"].quantity_scale
 
 
 def seed_mini_world(session: Session) -> None:
@@ -76,6 +111,42 @@ def seed_mini_world(session: Session) -> None:
             age_advance_carry_ticks=0,
             species_profile_ref=DEMOGRAPHY_PROFILE_REF,
             demography_version=ENGINE_VERSION))
-    session.add(ResourceNode(world_id=MINI_WORLD_ID, **MINI_RESOURCE_NODE))
+    session.add(ResourceNode(
+        world_id=MINI_WORLD_ID, **MINI_RESOURCE_NODE,
+        resource_profile_ref="TEST-RESOURCE-001",
+        settlement_relation="TEST-MAIN-A",
+        remaining_reserve=MINI_ORE_RESERVE_UNITS * MINI_SCALE,
+        extraction_capacity=MINI_ORE_CAPACITY_UNITS * MINI_SCALE,
+        extraction_carry=0, last_extracted_minor=0,
+        engine_version=RESOURCE_ENGINE_VERSION, state_version=0))
     session.add(EcologicalRegion(world_id=MINI_WORLD_ID, **MINI_ECOLOGY))
+
+    # M2b：resource profiles / stocks / recipe / production state / pressure
+    for rid, profile in sorted(RESOURCE_PROFILES.items()):
+        session.add(ResourceProfile(
+            world_id=MINI_WORLD_ID, resource_id=profile.resource_id,
+            unit=profile.unit, quantity_scale=profile.quantity_scale,
+            renewability=profile.renewability,
+            extractability=profile.extractability,
+            consumption_category=profile.consumption_category,
+            production_usability=profile.production_usability,
+            semantic_version=profile.semantic_version))
+    for (sref, ref), units in sorted(MINI_STOCK_UNITS.items()):
+        session.add(ResourceStock(
+            world_id=MINI_WORLD_ID, settlement_ref=sref,
+            resource_profile_ref=ref, quantity=units * MINI_SCALE,
+            consumption_carry=0, engine_version=ECONOMY_ENGINE_VERSION))
+    session.add(ProductionRecipe(world_id=MINI_WORLD_ID, **MINI_RECIPE))
+    for sref in ("TEST-MAIN-A", "TEST-SATELLITE-B"):
+        session.add(ProductionState(
+            world_id=MINI_WORLD_ID, settlement_ref=sref,
+            recipe_ref=MINI_RECIPE["recipe_id"], production_carry=0,
+            engine_version=ECONOMY_ENGINE_VERSION))
+        for ref in sorted(RESOURCE_PROFILES):
+            session.add(EconomicPressureState(
+                world_id=MINI_WORLD_ID, settlement_ref=sref,
+                resource_profile_ref=ref, demand_minor=0, fulfilled_minor=0,
+                unmet_minor=0, shortage_ratio_num=0, shortage_ratio_den=1,
+                sustained_shortage_steps=0, stress_level="NONE",
+                engine_version=ECONOMY_ENGINE_VERSION))
     session.flush()

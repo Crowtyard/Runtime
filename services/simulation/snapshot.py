@@ -14,15 +14,21 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ...database.models_core import WorldRuntime
-from ...database.models_world import (EcologicalRegion, Industry, Institution,
-                                     Lineage, PopulationGroup, ResourceNode,
-                                     Settlement)
+from ...database.models_world import (EcologicalRegion, EconomicPressureState,
+                                      Industry, Institution, Lineage,
+                                      PopulationGroup, ProductionRecipe,
+                                      ProductionState, ResourceNode,
+                                      ResourceProfile, ResourceStock,
+                                      Settlement)
 from ...domain.errors import IntegrityError
 from .contracts import ENGINE_OWNERSHIP, StateChange
 
 SNAPSHOT_TABLES = (
     "settlements", "population_groups", "resource_nodes", "industries",
-    "ecological_regions", "lineages", "institutions")
+    "ecological_regions", "lineages", "institutions",
+    # M2b Resource-Economy：
+    "resource_profiles", "resource_stocks", "production_recipes",
+    "production_state", "economic_pressure_state")
 
 _MODEL_BY_TABLE = {
     "settlements": Settlement,
@@ -32,6 +38,11 @@ _MODEL_BY_TABLE = {
     "ecological_regions": EcologicalRegion,
     "lineages": Lineage,
     "institutions": Institution,
+    "resource_profiles": ResourceProfile,
+    "resource_stocks": ResourceStock,
+    "production_recipes": ProductionRecipe,
+    "production_state": ProductionState,
+    "economic_pressure_state": EconomicPressureState,
 }
 
 _FIELDS = {
@@ -41,7 +52,12 @@ _FIELDS = {
                           "age_cohort", "occupation_group", "count",
                           "age_advance_carry_ticks", "species_profile_ref",
                           "demography_version", "updated_blessed_tick"),
-    "resource_nodes": ("id", "world_id", "kind", "region_ref", "state"),
+    "resource_nodes": ("id", "world_id", "kind", "region_ref", "state",
+                       "resource_profile_ref", "settlement_relation",
+                       "remaining_reserve", "extraction_capacity",
+                       "extraction_carry", "last_extracted_minor",
+                       "engine_version", "state_version",
+                       "updated_blessed_tick"),
     "industries": ("id", "world_id", "kind", "node_ref", "labor",
                    "capacity", "state"),
     "ecological_regions": ("id", "world_id", "terrain", "climate", "water",
@@ -50,6 +66,31 @@ _FIELDS = {
                  "member_ids"),
     "institutions": ("id", "world_id", "kind", "settlement_ref",
                      "owner_ref", "state", "capacity"),
+    "resource_profiles": ("id", "world_id", "resource_id", "unit",
+                          "quantity_scale", "renewability", "extractability",
+                          "consumption_category", "production_usability",
+                          "semantic_version"),
+    "resource_stocks": ("id", "world_id", "settlement_ref",
+                        "resource_profile_ref", "quantity",
+                        "consumption_carry", "cum_extracted_minor",
+                        "cum_produced_minor", "cum_input_minor",
+                        "cum_imported_minor", "cum_exported_minor",
+                        "cum_consumed_minor", "cum_lost_minor",
+                        "engine_version", "updated_blessed_tick"),
+    "production_recipes": ("id", "world_id", "recipe_id",
+                           "input_resource_ref", "input_qty_minor",
+                           "output_resource_ref", "output_qty_minor",
+                           "capacity_batches_per_year", "labor_per_batch",
+                           "loss_num", "loss_den", "semantic_version"),
+    "production_state": ("id", "world_id", "settlement_ref", "recipe_ref",
+                         "production_carry", "engine_version",
+                         "updated_blessed_tick"),
+    "economic_pressure_state": ("id", "world_id", "settlement_ref",
+                                "resource_profile_ref", "demand_minor",
+                                "fulfilled_minor", "unmet_minor",
+                                "shortage_ratio_num", "shortage_ratio_den",
+                                "sustained_shortage_steps", "stress_level",
+                                "engine_version", "updated_blessed_tick"),
 }
 
 
@@ -74,6 +115,11 @@ def _canonical(row: dict, table: str) -> Any:
         "ecological_regions": ("terrain", "climate", "water"),
         "lineages": ("lineage_type", "head_person_ref"),
         "institutions": ("kind", "settlement_ref", "owner_ref"),
+        "resource_profiles": ("resource_id",),
+        "resource_stocks": ("settlement_ref", "resource_profile_ref"),
+        "production_recipes": ("recipe_id",),
+        "production_state": ("settlement_ref", "recipe_ref"),
+        "economic_pressure_state": ("settlement_ref", "resource_profile_ref"),
     }
     return tuple(_norm(row[k]) for k in key_specs[table])
 

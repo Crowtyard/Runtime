@@ -28,6 +28,8 @@ from fractions import Fraction
 from ...domain.errors import WorldRuntimeError
 from .contracts import (DomainEventDraft, EngineResult, SimulationContext,
                         StateChange)
+from .feedback import (demography_mortality_pressure_modifier,
+                       settlement_pressure_stress)
 
 ENGINE_ID = "DEMOGRAPHY"
 ENGINE_VERSION = "m2a-1"
@@ -239,13 +241,21 @@ class PopulationGroupEngine:
                 field="updated_blessed_tick", old_value=None,
                 new_value=ctx.blessed_end_tick))
 
+        stress_map = {key[0]: settlement_pressure_stress(ctx.snapshot, key[0])
+                      for key in group_keys}
+        _order = {"NONE": 0, "LOW": 1, "HIGH": 2}
+        max_stress = max((s for s in stress_map.values()), key=_order.get,
+                         default="NONE")
+        pressured = sum(1 for s in stress_map.values() if s != "NONE")
         return EngineResult(
             engine_id=ENGINE_ID, engine_version=ENGINE_VERSION,
             proposed_changes=proposed, domain_events=events,
             metrics={"births": totals["births"], "deaths": totals["deaths"],
                      "immigration": totals["immigration"],
                      "emigration": totals["emigration"],
-                     "groups": len(outcomes)})
+                     "groups": len(outcomes),
+                     "max_pressure_level": _order[max_stress],
+                     "pressured_settlements": pressured})
 
     # ------------------------------------------------------------ 内部步骤
     def _step_group(self, ctx: SimulationContext, rows, settlement_ref,
@@ -271,14 +281,19 @@ class PopulationGroupEngine:
         for b, n in bucket_counts.items():
             target = min(b + years, profile.cohort_buckets - 1)
             aged[target] = aged.get(target, 0) + n
-        # 2) 死亡（floor + Bernoulli(余数)）
+        # 2) 死亡（floor + Bernoulli(余数)；含上一 committed step 的经济压力
+        #    —— CROSS_ENGINE_FEEDBACK_LATENCY = NEXT_COMMITTED_STEP，
+        #    绝不读取本步 staged ECONOMY 结果）
         deaths = 0
+        pressure_modifier = demography_mortality_pressure_modifier(
+            ctx.snapshot, species=species, settlement_ref=settlement_ref)
         for b in range(profile.cohort_buckets):
             n = aged.get(b, 0)
             if n <= 0:
                 continue
             q = profile.mortality_of(b) \
-                + self._modifiers.external_mortality_modifier
+                + self._modifiers.external_mortality_modifier \
+                + pressure_modifier
             if q < 0:
                 q = Fraction(0)
             expected = Fraction(n) * q
