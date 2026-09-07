@@ -180,7 +180,9 @@ def _advance_and_commit(
     runtime.current_time_ratio_id = integrator.ratio_id
     runtime.last_simulated_real_time = epoch_us_to_datetime(now_real_us)
 
-    # TIME_ADVANCE 基础设施事件（M1 唯一允许的事件类型，不含世界内容）
+    # TIME_ADVANCE 基础设施事件（M1 唯一允许的事件类型，不含世界内容）。
+    # 确定性 uid（M2 Hardening：事件流哈希需要稳定事件身份）。
+    from .simulation.event_stream import deterministic_event_uid
     EventRepository(session).append(
         world_id=world_id, event_type="TIME_ADVANCE",
         source=EventSources.SIMULATION, blessed_tick=new_tick, scope="WORLD",
@@ -189,7 +191,11 @@ def _advance_and_commit(
                "elapsed_real_us": integrator.elapsed_real_us},
         effect={"delta_ticks": delta, "remainder": integrator.remainder,
                 "rate_id": integrator.ratio_id,
-                "simulation_version": simulation_version})
+                "simulation_version": simulation_version},
+        event_uid=deterministic_event_uid(
+            world_id=world_id, simulation_version=simulation_version,
+            real_start_us=cursor, real_end_us=now_real_us,
+            engine_id="TIME", event_type="TIME_ADVANCE", seq=0))
 
     simulate_result = None
     if simulate_fn is not None:  # M2 内容推演钩子；M1 恒 None
@@ -209,7 +215,9 @@ def _advance_and_commit(
         world_state_hash=_clock_state_hash(
             world_id, new_tick, now_real_us, integrator.ratio_id,
             integrator.remainder, simulation_version),
-        complete=True, meta={"kind": "CATCHUP"},
+        complete=True, meta={"kind": "CATCHUP",
+                             "checkpoint_kind": "TIME_COMMITTED",
+                             "phase": "COMMITTED"},
         last_committed_real_us=now_real_us, rate_id=integrator.ratio_id,
         rate_remainder=integrator.remainder,
         simulation_version=simulation_version,

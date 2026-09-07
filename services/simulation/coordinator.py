@@ -12,7 +12,6 @@
 """
 from __future__ import annotations
 
-import hashlib
 from dataclasses import dataclass, field
 
 from sqlalchemy.orm import Session
@@ -27,6 +26,10 @@ from .contracts import (ENGINE_ORDER, PREFLIGHT_PIPELINE_VERSION,
                         PREFLIGHT_SIMULATION_VERSION, TRIBULATION_SLOT,
                         TRIBULATION_SLOT_STATE, DomainEventDraft, Engine,
                         EngineResult, SimulationContext)
+from .event_stream import (deterministic_event_uid,
+                           step_event_stream_hash)
+from .recovery import (WORLD_COMMITTED_KIND,
+                       latest_authoritative_world_checkpoint)
 from .snapshot import StagedWorld, read_snapshot
 from .state_hash import world_state_hash_v2
 
@@ -50,16 +53,8 @@ class StepReport:
     change_count: int
     metrics: dict = field(default_factory=dict)
     world_state_hash: str = ""
+    event_stream_hash: str = ""
     warnings: list[str] = field(default_factory=list)
-
-
-def deterministic_event_uid(*, world_id: str, simulation_version: str,
-                            real_start_us: int, real_end_us: int,
-                            engine_id: str, seq: int) -> str:
-    """重试幂等的事件 identity（禁止 UUID4；见契约 §7）。"""
-    payload = "|".join([world_id, simulation_version, str(real_start_us),
-                        str(real_end_us), engine_id, str(seq)])
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:12]
 
 
 class SimulationCoordinator:
@@ -152,7 +147,15 @@ class SimulationCoordinator:
 
         event_repo = EventRepository(session)
         event_count = 0
+        emitted: list[dict] = []
         for seq, draft in enumerate(all_events):
+            uid = deterministic_event_uid(
+                world_id=world_id,
+                simulation_version=self.simulation_version,
+                real_start_us=real_interval_start_us,
+                real_end_us=real_interval_end_us,
+                engine_id=draft.engine_id,
+                event_type=draft.event_type, seq=seq)
             event_repo.append(
                 world_id=world_id,
                 event_type=draft.event_type,
@@ -162,16 +165,30 @@ class SimulationCoordinator:
                 scope=draft.scope,
                 cause=dict(draft.cause),
                 effect=dict(draft.effect),
-                event_uid=deterministic_event_uid(
-                    world_id=world_id,
-                    simulation_version=self.simulation_version,
-                    real_start_us=real_interval_start_us,
-                    real_end_us=real_interval_end_us,
-                    engine_id=draft.engine_id, seq=seq))
+                event_uid=uid)
+            emitted.append({
+                "event_uid": uid,
+                "blessed_tick": blessed_end_tick,
+                "event_type": draft.event_type,
+                "source": "SIMULATION",
+                "cause": dict(draft.cause),
+                "effect": dict(draft.effect),
+                "severity": draft.severity,
+                "scope": draft.scope,
+            })
             event_count += 1
 
         if crash_after == "before_checkpoint":
             raise RuntimeError("crash: before_checkpoint")
+
+        # Event Stream Hash（增量链；与 world_state_hash 语义分离）
+        prev_checkpoint = latest_authoritative_world_checkpoint(
+            session, world_id)
+        prev_stream_hash = (prev_checkpoint.meta.get("event_stream_hash")
+                            if prev_checkpoint is not None else None)
+        stream_hash = step_event_stream_hash(
+            prev_stream_hash, world_id=world_id,
+            simulation_version=self.simulation_version, events=emitted)
 
         final_snapshot = read_snapshot(session, world_id)
         state_hash = world_state_hash_v2(
@@ -185,6 +202,10 @@ class SimulationCoordinator:
             world_state_hash=state_hash,
             complete=True,
             meta={"kind": "M2_PREFLIGHT",
+                  "checkpoint_kind": WORLD_COMMITTED_KIND,
+                  "phase": "COMMITTED",
+                  "event_stream_hash": stream_hash,
+                  "prev_event_stream_hash": prev_stream_hash,
                   "pipeline_version": self.pipeline_version,
                   "engine_versions": self.engine_versions,
                   "simulation_version": self.simulation_version,
@@ -206,6 +227,7 @@ class SimulationCoordinator:
             change_count=len(staged.changes),
             metrics=step_metrics,
             world_state_hash=state_hash,
+            event_stream_hash=stream_hash,
             warnings=warnings)
 
 

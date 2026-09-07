@@ -109,10 +109,27 @@ coordinator 强制：`mutation.entity_type ∉ 引擎所有权表 → INTEGRITY_
 - **Domain Event**：机器级领域事件（POPULATION_CHANGE 等），写入不可变
   world_events；M2 不创建正式历史叙事系统（历史叙事属后续阶段）。
 - **Diagnostic Log**：只进日志，永远不成为正式历史。
-- 事件确定性 identity（重试幂等）：`event_uid = sha256(world_id |
-  simulation_version | real_interval_start_us | real_interval_end_us |
-  engine_id | step_local_seq)[:12]` —— 禁止随机 UUID；同一 run 重试不产生重复
-  domain event（双防线：M1 区间幂等 skip + 确定性 uid 唯一约束）。
+- 事件确定性 identity（重试幂等，**EVENT_UID_SCHEMA_VERSION=1，≥128-bit**）：
+  `event_uid = sha256("v1|world_id|simulation_version|interval_start|
+  interval_end|engine_id|event_type|stable_local_sequence") 的 hex 前 32 字符`。
+  禁止 UUID4 / wall clock / DB autoincrement / 随机值；event_type 参与语义身份
+  （不同 event_type 不得同 identity）。TIME_ADVANCE 基础设施事件同样使用
+  确定性 uid（engine_id="TIME", event_type="TIME_ADVANCE", seq=0）。
+  重试幂等双防线：M1 区间幂等 skip + 确定性 uid 唯一约束。
+
+## 7b. Event Stream Hash（EVENT_STREAM_HASH_SCHEMA_VERSION=1）
+
+- 与 world_state_hash **语义分离**：state hash = authoritative state digest；
+  event_stream_hash = 截至某 simulation run 的机器级 Domain Event Stream 的
+  确定内容与顺序证明。
+- 增量链：`h_0 = H("event-stream-v1|world_id|simulation_version")`；
+  `h_i = H(schema|world_id|simver|h_{i-1}|step_i 的 domain events（发射顺序）)`；
+  每事件 canonical 字段 = event_uid/blessed_tick/event_type/source/cause/
+  effect/severity/scope（无 wall-clock/行 id）。Diagnostic Log 永不进入。
+- 存储：M2 世界 checkpoint meta.event_stream_hash（+ prev_event_stream_hash）。
+- 不变量：相同 initial state + semantics + RNG → state hash 相同 **且**
+  event stream hash 相同；最终 State 相同而事件序列不同 → state hash 可以
+  相同、event stream hash 必须不同。
 
 ## 8. simulation_version Contract
 
@@ -140,11 +157,20 @@ Snapshot 契约变化。只改 UI/日志/注释不得升级。M2_PREFLIGHT 测�
 
 ## 10. Checkpoint Contract（M1 扩展，无强制 migration）
 
-M2 世界 checkpoint（每 step 一行，与 M1 时间 checkpoint 同一事务）至少可恢复：
-last committed run / world_state_hash v2 / simulation_version /
-engine_pipeline_version（meta JSON：pipeline_version + engine_versions）/
-tick-cursor 状态（M1 列）。真实 schema 扩展留到 M2a 需要时单独迁移与报告；
-本阶段全部增量字段写入 meta JSON。
+checkpoint_kind 语义（冻结）：
+- **TIME_COMMITTED（M1 CATCHUP 层，kind="CATCHUP"）**：时间引擎 checkpoint ——
+  现实游标/进位的最低限度恢复（快速时钟恢复）。
+- **WORLD_COMMITTED（M2 层，kind="M2_PREFLIGHT" + checkpoint_kind=
+  "WORLD_COMMITTED" + phase="COMMITTED"）**：世界语义 checkpoint ——
+  world_state_hash v2 + event_stream_hash + simulation_version +
+  engine_pipeline_version（meta）—— **crash recovery 的权威 checkpoint**。
+
+规则：每 1 个 committed simulation step 严格产生 1 TIME_COMMITTED +
+1 WORLD_COMMITTED（共 2 个；120 steps → 240 为契约内预期，非重复写入）。
+恢复一律以 complete=True 且 checkpoint_kind=WORLD_COMMITTED 的最新 M2
+checkpoint 为准（CATCHUP 行不参与世界语义恢复；
+`latest_authoritative_world_checkpoint`）。真实 schema 扩展留到 M2a 需要时
+单独迁移与报告；本阶段全部增量字段写入 meta JSON。
 
 ## 11. Crash Boundaries（C1–C10 harness）
 
