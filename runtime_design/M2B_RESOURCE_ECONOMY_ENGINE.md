@@ -166,14 +166,20 @@ Writer A 完成 population+resource+economy 后 lease 丢失 → 提交被
 FENCING_VIOLATION 拒绝，population/resource/inventory/events/checkpoint/
 hash 全部 0 authoritative write（RB36 实测）。
 
-## 24. Crash Recovery（R1–R8）
+## 24. Crash Recovery（R1–R8 + CA1–CA13）
 R1 after DEMOGRAPHY staged（engine:RESOURCE）；R2 mid RESOURCE；
 R3 after RESOURCE staged（engine:ECONOMY）；R4 mid ECONOMY；
 R5 after ECONOMY staged（after_engines）；R6 during authoritative write
 （during_apply）；R7 checkpoint 前（事件已写/世界 checkpoint 未建 ——
-原子对，TIME 绝无机会先于 WORLD 存在）；R8 commit ack lost
-（after_checkpoint）。任何 crash 后：tick/population/reserve/inventory/
+原子对，TIME 绝无机会先于 WORLD 存在）；R8（真实语义 = **PRE_COMMIT_-
+AFTER_WORLD_CHECKPOINT_STAGED**，注入点 after_checkpoint，位于 DB
+commit 之前）。任何 crash 后：tick/population/reserve/inventory/
 pressure/events/双哈希全一致，干净重试 == 一次成功（参数化矩阵实测）。
+**真实 COMMIT ACK LOST（commit 已 durable、ack 丢失）** 不在 R1–R8
+语义内，由 tests/test_m2b_commit_ambiguity.py CA1–CA13 覆盖：commit
+durable 后 DB 状态必须已 COMMITTED（tick/储量/事件/checkpoint 全在）；
+同区间重启（同 token 或新 writer 接管）必须识别 ALREADY_COMMITTED，
+零追加 mutation/事件/checkpoint/时间推进，双哈希稳定（CA3–CA13 实测）。
 
 ## 25. Idempotency
 同 interval retry（M1 区间 skip + 确定性 uid 唯一约束）：零重复开采/
@@ -199,6 +205,11 @@ agent。120y wall time 记录于基线 performance 字段（不进哈希）。
 - 核心算法不依赖 SQLite json_extract / 隐式类型 / rowid /
   INSERT OR REPLACE；唯一约束全部显式命名（uq_*）。
 - 生产代码不执行 SQLite-only 语法（测试内 json_extract 仅用于断言）。
+- **PRE_ACTIVATION_PG_COMMIT_AMBIGUITY_GATE = REQUIRED**：真正的
+  COMMIT ACK ambiguity 是数据库事务层问题 —— 当前以 SQLite 实跑
+  （CA1–CA13）；未来 PostgreSQL 部署的 Pre-Activation Gate 必须重跑
+  同类 COMMIT ACK LOST / ambiguous outcome 场景，SQLite 结果不得声称
+  PostgreSQL 已验证。
 
 ## 29. Ecology Boundary（M2c）
 禁止实现：资源再生生态/承载力生态/污染/土壤肥力/森林生命周期/水循环/

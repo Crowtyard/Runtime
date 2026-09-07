@@ -165,7 +165,9 @@ R1 after DEMOGRAPHY staged（engine:RESOURCE）/ R2 mid RESOURCE /
 R3 after RESOURCE staged（engine:ECONOMY）/ R4 mid ECONOMY /
 R5 after ECONOMY staged（after_engines）/ R6 during authoritative write
 （during_apply）/ R7 before WORLD checkpoint（事件已写未提交，原子对）
-/ R8 commit ack lost（after_checkpoint）。每个注入点：tick=0、储量
+/ R8（真实语义 = **PRE_COMMIT_AFTER_WORLD_CHECKPOINT_STAGED**，
+注入点 after_checkpoint，位于 DB commit 之前；真正的 COMMIT ACK LOST
+由追加任务 M2B_COMMIT_AMBIGUITY_HARDENING 的 CA1–CA13 覆盖）。每个注入点：tick=0、储量
 未动、无 M2 checkpoint、事件零残留；干净重试 == 参考一次成功（终态
 哈希相等）。
 
@@ -212,6 +214,10 @@ perf_counter/time_ns/date.today。引擎只认 SimulationInterval。
 BigInteger 全整数权威列（SQLite INTEGER 64-bit ↔ PG BIGINT）；核心
 算法不依赖 json_extract/隐式类型/rowid/INSERT OR REPLACE；唯一约束
 显式命名。未实跑 PG —— 如实标注风险（代码级审计结论）。
+**PRE_ACTIVATION_PG_COMMIT_AMBIGUITY_GATE = REQUIRED**（追加任务
+M2B_COMMIT_AMBIGUITY_HARDENING 登记）：真实 COMMIT ACK ambiguity 为
+数据库事务层问题，PG 部署的 Pre-Activation Gate 必须重跑同类场景，
+SQLite 实测不得声称 PG 已验证。
 
 ## 36. Formal DB Audit
 迁移前 pre-m2b 备份（blessed_land.sqlite.pre-m2b-backup，与

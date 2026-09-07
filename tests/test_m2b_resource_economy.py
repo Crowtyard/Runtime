@@ -715,7 +715,10 @@ def test_rb42_time_world_checkpoint_split_consistency(tmp_path):
             real_interval_end_us=info["real_interval_end_us"],
             step_index=1, crash_after=_ca)
 
-    # R8：M2 checkpoint 已建、commit ack 丢失 → 回滚后两层都不存在
+    # R8（真实语义 = PRE_COMMIT_AFTER_WORLD_CHECKPOINT_STAGED）：
+    # M2 checkpoint 已 stage、DB commit 尚未发生 → 回滚后两层都不存在。
+    # 注：这不是 COMMIT ACK LOST；真实 ack-lost（commit 已 durable）由
+    # tests/test_m2b_commit_ambiguity.py CA2 覆盖。
     with pytest.raises(RuntimeError):
         catch_up(factory, world_id=MINI_WORLD_ID,
                  now_real_us=EPOCH0_US + YEAR_US,
@@ -748,16 +751,26 @@ def test_rb42_time_world_checkpoint_split_consistency(tmp_path):
 
 # ------------------------------------------------------------ R1-R8 崩溃矩阵
 @pytest.mark.parametrize("crash_after", [
-    "engine:RESOURCE",    # R1：after DEMOGRAPHY staged
-    "mid:RESOURCE",       # R2：mid RESOURCE
-    "engine:ECONOMY",     # R3：after RESOURCE staged
-    "mid:ECONOMY",        # R4：mid ECONOMY
-    "after_engines",      # R5：after ECONOMY staged
-    "during_apply",       # R6：during authoritative write
-    "before_checkpoint",  # R7：事件已写、世界 checkpoint 未建（原子对）
-    "after_checkpoint",   # R8：commit ack lost
+    pytest.param("engine:RESOURCE",
+                 id="R1-after-demography-staged"),
+    pytest.param("mid:RESOURCE", id="R2-mid-resource"),
+    pytest.param("engine:ECONOMY",
+                 id="R3-after-resource-staged"),
+    pytest.param("mid:ECONOMY", id="R4-mid-economy"),
+    pytest.param("after_engines",
+                 id="R5-after-economy-staged"),
+    pytest.param("during_apply",
+                 id="R6-during-authoritative-write"),
+    pytest.param("before_checkpoint",
+                 id="R7-before-world-checkpoint"),
+    pytest.param("after_checkpoint",
+                 id="R8-pre-commit-after-world-checkpoint-staged"),
 ])
 def test_rb_crash_matrix_r1_r8(tmp_path, crash_after):
+    """R1–R8 注入点全部位于 DB commit 之前（PRE_COMMIT 语义）：
+    异常 → 整个事务回滚 → 零 durable 残留。
+    真实的 COMMIT ACK LOST（commit 已 durable、ack 丢失）由
+    tests/test_m2b_commit_ambiguity.py（CA1–CA13）覆盖。"""
     _crash_and_recover(tmp_path, 100 + hash(crash_after) % 200, crash_after)
 
 
