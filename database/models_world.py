@@ -40,6 +40,11 @@ class PopulationGroup(Base):
     household_stats: Mapped[dict | None] = mapped_column(JSON)
     count: Mapped[int] = mapped_column(Integer, default=0)
     updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+    # M2a Population Group Engine（cohort 即 population_groups 行，06 号设计）：
+    age_advance_carry_ticks: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")  # 亚年区间进位（整数）
+    species_profile_ref: Mapped[str | None] = mapped_column(String(64))  # 人口学 profile 引用（NULL=UNCONFIGURED）
+    demography_version: Mapped[str | None] = mapped_column(String(32))  # 人口引擎语义版本
 
 
 class Person(Base):

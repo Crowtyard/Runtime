@@ -122,7 +122,8 @@ class SimulationCoordinator:
                 blessed_end_tick=blessed_end_tick,
                 real_interval_start_us=real_interval_start_us,
                 real_interval_end_us=real_interval_end_us,
-                snapshot=snapshot, staged=staged, rng=rng)
+                snapshot=snapshot, staged=staged, rng=rng,
+                modifiers={})
             result: EngineResult = engine.simulate(ctx)
             _validate_result(engine.engine_id, result)
             for change in result.proposed_changes:

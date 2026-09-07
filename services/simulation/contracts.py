@@ -79,6 +79,7 @@ class SimulationContext:
     snapshot: "WorldSnapshot"
     staged: "StagedWorld"
     rng: "RngStream"
+    modifiers: dict = field(default_factory=dict)  # 跨引擎 modifier 槽（M2a neutral）
 
 
 class Engine(Protocol):

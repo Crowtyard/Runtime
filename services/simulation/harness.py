@@ -152,7 +152,12 @@ def run_mini_world_120y(
         engine_metrics=engine_metrics,
         entity_counts=counts,
         population={"start": population_start, "end": population_end,
-                    "births": 0, "deaths": 0, "migrations": 0},
+                    "births": int(engine_metrics.get("DEMOGRAPHY", {}).get(
+                        "births", 0)),
+                    "deaths": int(engine_metrics.get("DEMOGRAPHY", {}).get(
+                        "deaths", 0)),
+                    "migrations": int(engine_metrics.get("DEMOGRAPHY", {}).get(
+                        "emigration", 0))},
         economy={"stock": None, "production": None, "consumption": None,
                  "shortages": None},
         ecology={"state": None, "pressure": None},

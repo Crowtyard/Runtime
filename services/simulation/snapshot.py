@@ -38,7 +38,9 @@ _FIELDS = {
     "settlements": ("id", "world_id", "settlement_type", "region_ref",
                     "working_name", "state", "population_capacity", "meta"),
     "population_groups": ("id", "world_id", "species", "settlement_ref",
-                          "age_cohort", "occupation_group", "count"),
+                          "age_cohort", "occupation_group", "count",
+                          "age_advance_carry_ticks", "species_profile_ref",
+                          "demography_version", "updated_blessed_tick"),
     "resource_nodes": ("id", "world_id", "kind", "region_ref", "state"),
     "industries": ("id", "world_id", "kind", "node_ref", "labor",
                    "capacity", "state"),
@@ -57,10 +59,16 @@ def _row_dict(model, fields) -> dict:
 
 def _canonical(row: dict, table: str) -> Any:
     """语义键元组（哈希规范化排序用；见契约 §9）。"""
+    if table == "population_groups":
+        # age_cohort 存 bucket 序号字符串：按整数排序，避免 "10" < "2"
+        try:
+            bucket = int(row["age_cohort"])
+        except (TypeError, ValueError):
+            bucket = -1
+        return (_norm(row["species"]), _norm(row["settlement_ref"]), bucket,
+                _norm(row["occupation_group"]))
     key_specs = {
         "settlements": ("settlement_type", "working_name"),
-        "population_groups": ("species", "settlement_ref", "age_cohort",
-                              "occupation_group"),
         "resource_nodes": ("kind", "region_ref"),
         "industries": ("kind", "node_ref"),
         "ecological_regions": ("terrain", "climate", "water"),

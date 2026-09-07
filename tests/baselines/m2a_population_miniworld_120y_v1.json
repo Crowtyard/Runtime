@@ -1,0 +1,440 @@
+{
+ "fixture_version": "mini_world_v1",
+ "simulation_version": "0.2.0-preflight",
+ "population_engine_version": "m2a-1",
+ "rng_schema_version": "m1-derive-seed-v1",
+ "state_hash_schema_version": 2,
+ "event_hash_schema_version": 1,
+ "event_uid_schema_version": 1,
+ "initial_state": {
+  "population": 400,
+  "settlements": 2,
+  "species": "TEST-SPECIES-001"
+ },
+ "final_state": {
+  "population": 552,
+  "settlement_sums": {
+   "TEST-MAIN-A": 374,
+   "TEST-SATELLITE-B": 178
+  },
+  "cohorts": [
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "0",
+    "count": 5
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "0",
+    "count": 1
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "1",
+    "count": 3
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "1",
+    "count": 1
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "2",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "2",
+    "count": 1
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "3",
+    "count": 5
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "3",
+    "count": 1
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "4",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "4",
+    "count": 1
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "5",
+    "count": 5
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "5",
+    "count": 2
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "6",
+    "count": 5
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "6",
+    "count": 1
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "7",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "7",
+    "count": 1
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "8",
+    "count": 5
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "8",
+    "count": 2
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "9",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "9",
+    "count": 1
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "10",
+    "count": 5
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "10",
+    "count": 2
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "11",
+    "count": 3
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "11",
+    "count": 2
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "12",
+    "count": 5
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "12",
+    "count": 2
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "13",
+    "count": 5
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "13",
+    "count": 1
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "14",
+    "count": 5
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "14",
+    "count": 1
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "15",
+    "count": 7
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "15",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "16",
+    "count": 8
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "16",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "17",
+    "count": 7
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "17",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "18",
+    "count": 7
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "18",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "19",
+    "count": 6
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "19",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "20",
+    "count": 8
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "20",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "21",
+    "count": 8
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "21",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "22",
+    "count": 6
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "22",
+    "count": 3
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "23",
+    "count": 8
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "23",
+    "count": 5
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "24",
+    "count": 8
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "24",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "25",
+    "count": 7
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "25",
+    "count": 2
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "26",
+    "count": 7
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "26",
+    "count": 3
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "27",
+    "count": 8
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "27",
+    "count": 3
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "28",
+    "count": 6
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "28",
+    "count": 3
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "29",
+    "count": 7
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "29",
+    "count": 3
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "30",
+    "count": 8
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "30",
+    "count": 3
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "31",
+    "count": 7
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "31",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "32",
+    "count": 7
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "32",
+    "count": 3
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "33",
+    "count": 7
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "33",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "34",
+    "count": 7
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "34",
+    "count": 3
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "35",
+    "count": 8
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "35",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "36",
+    "count": 7
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "36",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "37",
+    "count": 5
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "37",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "38",
+    "count": 7
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "38",
+    "count": 4
+   },
+   {
+    "settlement": "TEST-MAIN-A",
+    "age_cohort": "39",
+    "count": 136
+   },
+   {
+    "settlement": "TEST-SATELLITE-B",
+    "age_cohort": "39",
+    "count": 71
+   }
+  ]
+ },
+ "metrics": {
+  "births": 790,
+  "deaths": 638,
+  "immigration": 624,
+  "emigration": 624,
+  "population_start": 400,
+  "population_end": 552,
+  "event_count": 832
+ },
+ "final_world_state_hash": "1d126d0395485c328094a5edd38ee1fbac5b0db7edde20d5049567a84f49eb89",
+ "final_event_stream_hash": "5d7a4434856906d10b34e6e22fe2eb75f4d2b8d180a960f209fda28fe1d45c12",
+ "runs": 120,
+ "steps": 120,
+ "checkpoints": 240,
+ "performance": {
+  "wall_seconds": 7.358
+ }
+}
