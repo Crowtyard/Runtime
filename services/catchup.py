@@ -44,6 +44,7 @@ class CatchUpResult:
     new_blessed_tick: int | None
     new_cursor_us: int | None
     remainder: int | None
+    simulate_result: object = None  # simulate_fn 返回值透传（M2 协调器）
 
 
 def _clock_state_hash(world_id: str, tick: int, cursor_us: int, rate_id: int,
@@ -190,8 +191,9 @@ def _advance_and_commit(
                 "rate_id": integrator.ratio_id,
                 "simulation_version": simulation_version})
 
+    simulate_result = None
     if simulate_fn is not None:  # M2 内容推演钩子；M1 恒 None
-        simulate_fn(session, {
+        simulate_result = simulate_fn(session, {
             "world_id": world_id, "delta_ticks": delta,
             "new_blessed_tick": new_tick,
             "real_interval_start_us": cursor,
@@ -217,7 +219,8 @@ def _advance_and_commit(
     return CatchUpResult(skipped=False, run_id=run.run_id, delta_ticks=delta,
                          new_blessed_tick=new_tick,
                          new_cursor_us=now_real_us,
-                         remainder=integrator.remainder)
+                         remainder=integrator.remainder,
+                         simulate_result=simulate_result)
 
 
 def _try_mark_failed(session_factory: sessionmaker[Session], world_id: str,

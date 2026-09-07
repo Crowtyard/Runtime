@@ -125,12 +125,13 @@ class EventRepository:
                parent_event_ref: str | None = None,
                supersedes_event_id: str | None = None,
                reverses_event_id: str | None = None,
-               correction_reason: str | None = None) -> WorldEvent:
+               correction_reason: str | None = None,
+               event_uid: str | None = None) -> WorldEvent:
         from ..database.base import utcnow as _utcnow
         if real_time is None:
             real_time = _utcnow()
         event = WorldEvent(
-            event_uid=str(uuid.uuid4())[:12],
+            event_uid=event_uid or str(uuid.uuid4())[:12],
             world_id=world_id,
             event_type=event_type,
             source=source,

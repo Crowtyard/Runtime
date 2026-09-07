@@ -20,6 +20,7 @@ importlib.import_module(_PKG_NAME)
 
 import hashlib  # noqa: E402
 import json  # noqa: E402
+import os  # noqa: E402
 import shutil  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
 
@@ -158,3 +159,15 @@ def manifest_hash_of(bible_dir: Path) -> str:
         entries.append((name, h))
     return hashlib.sha256(
         json.dumps(sorted(entries), ensure_ascii=False).encode("utf-8")).hexdigest()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def formal_db_guard():
+    """会话级正式库守护：记录 BLR_FORMAL_DB_PATH 的初始 checksum，
+    由 zz_formal_db_guard.py 在套件末尾校验（测试全程不得触碰正式库）。"""
+    path = os.environ.get("BLR_FORMAL_DB_PATH", "")
+    if path and Path(path).exists():
+        before = hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    else:
+        before = None
+    yield before
