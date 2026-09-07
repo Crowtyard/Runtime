@@ -1,7 +1,7 @@
 """测试 5-6：RNG 确定性 + 子系统隔离 + scope/version/world 隔离 + 调用数隔离。"""
 from __future__ import annotations
 
-from services.rng_service import RngService, derive_seed
+from XiaoguangBlessedLandRuntime.services.rng_service import RngService, derive_seed
 
 
 def _draws(service, subsystem, period_tick, n=3, scope="WORLD"):

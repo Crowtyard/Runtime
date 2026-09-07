@@ -7,9 +7,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from domain.versions import BibleFingerprint, check_bible_version, load_bible_fingerprint
-from services.logging_setup import get_logger
-from services.repositories import RuntimeRepository
+from ..domain.versions import BibleFingerprint, check_bible_version, load_bible_fingerprint
+from .logging_setup import get_logger
+from .repositories import RuntimeRepository
 
 log = get_logger("INTEGRITY")
 
@@ -26,7 +26,7 @@ def verify_runtime_binds_bible(repo: RuntimeRepository, fp: BibleFingerprint) ->
 
     hash 列必填且严格相等：空串/缺失也视为不一致（M0 DSH QA 收紧）。
     """
-    from domain.errors import WorldBibleHashMismatch
+    from ..domain.errors import WorldBibleHashMismatch
     row = repo.get()
     if row is None:
         return

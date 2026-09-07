@@ -6,12 +6,12 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from sqlalchemy import select, update
 
-from database.models_core import WorldEvent, WorldRuntime
-from domain.errors import ClockAnomaly, WorldBibleHashMismatch, WorldNotActivated
-from services.bible_integrity import verify_bible, verify_runtime_binds_bible
-from services.guard import create_simulation_event, require_world_activated
-from services.repositories import RuntimeRepository, TimeRatioRepository
-from services.time_service import check_clock_forward
+from XiaoguangBlessedLandRuntime.database.models_core import WorldEvent, WorldRuntime
+from XiaoguangBlessedLandRuntime.domain.errors import ClockAnomaly, WorldBibleHashMismatch, WorldNotActivated
+from XiaoguangBlessedLandRuntime.services.bible_integrity import verify_bible, verify_runtime_binds_bible
+from XiaoguangBlessedLandRuntime.services.guard import create_simulation_event, require_world_activated
+from XiaoguangBlessedLandRuntime.services.repositories import RuntimeRepository, TimeRatioRepository
+from XiaoguangBlessedLandRuntime.services.time_service import check_clock_forward
 
 
 def test_bible_integrity_ok(real_bible_dir):

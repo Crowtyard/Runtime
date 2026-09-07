@@ -23,10 +23,10 @@ from typing import ContextManager
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
-from config.settings import Settings
-from database.base import utcnow
-from database.models_core import RuntimeLock
-from domain.errors import FencingViolation
+from ..config.settings import Settings
+from ..database.base import utcnow
+from ..database.models_core import RuntimeLock
+from ..domain.errors import FencingViolation
 
 
 class WorldMutationContext(ContextManager["WorldMutationContext"]):

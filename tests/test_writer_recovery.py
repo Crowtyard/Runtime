@@ -8,9 +8,9 @@ from __future__ import annotations
 import pytest
 from sqlalchemy import select, text
 
-from database.models_core import RuntimeLock
-from domain.errors import WriterLockConflict
-from services.writer_lock import WriterLease, world_writer
+from XiaoguangBlessedLandRuntime.database.models_core import RuntimeLock
+from XiaoguangBlessedLandRuntime.domain.errors import WriterLockConflict
+from XiaoguangBlessedLandRuntime.services.writer_lock import WriterLease, world_writer
 
 W = "W"
 

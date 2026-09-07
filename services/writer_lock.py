@@ -30,11 +30,11 @@ from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from config.settings import Settings
-from database.base import utcnow
-from database.models_core import RuntimeLock
-from domain.errors import WriterLockConflict
-from services.logging_setup import get_logger
+from ..config.settings import Settings
+from ..database.base import utcnow
+from ..database.models_core import RuntimeLock
+from ..domain.errors import WriterLockConflict
+from .logging_setup import get_logger
 
 log = get_logger("LOCK")
 

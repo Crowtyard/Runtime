@@ -26,6 +26,13 @@ AstrBot
 - main.py：生命周期 + 只读 Web API + Page 支撑。不塞任何时间引擎/领域逻辑。
 - runtime_host.py：boot / status / diagnostics / runtime_info / backup_now / shutdown。
 - domain/services/database：M1 验收原样（Golden Baseline 保护）。
+- **包内导入约定（M1.1 LIVE 修复）**：核心模块之间一律使用插件包内相对导入
+  （部署时 AstrBot 以 `data.plugins.astrbot_plugin_blessed_land_runtime.*` 导入，
+  顶层包名无关；避免向 sys.path 注入插件根导致跨插件命名冲突）；开发测试用
+  包限定导入 `XiaoguangBlessedLandRuntime.*`。database/alembic/env.py 自举
+  sys.path（迁移入口除外）。
+- **配置注意（v4.28 实测）**：官方 `Star.__init__(context, config)` 不保存
+  config 属性，插件必须自行保存（main.py 已处理）。
 
 ## 3. 持久数据路径（最高级硬门禁）
 

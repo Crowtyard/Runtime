@@ -5,7 +5,7 @@
  * 只读：只调用 GET /status 与 /diagnostics。 */
 "use strict";
 
-const HTTP_API = "/astrbot_plugin_blessed_land_runtime/page";
+const HTTP_API = "/api/v1/plugins/extensions/astrbot_plugin_blessed_land_runtime";
 const REFRESH_SECONDS = 30;
 
 function getBridge() {

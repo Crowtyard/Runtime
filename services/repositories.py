@@ -12,14 +12,14 @@ from datetime import datetime
 from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
-from database.models_core import (
+from ..database.models_core import (
     SimulationCheckpoint,
     TimeRatioHistory,
     WorldEvent,
     WorldRuntime,
 )
-from domain.blessed_time import datetime_to_epoch_us
-from domain.errors import IntegrityError
+from ..domain.blessed_time import datetime_to_epoch_us
+from ..domain.errors import IntegrityError
 
 
 def _current_schema_version(session: Session) -> str:
@@ -126,7 +126,7 @@ class EventRepository:
                supersedes_event_id: str | None = None,
                reverses_event_id: str | None = None,
                correction_reason: str | None = None) -> WorldEvent:
-        from database.base import utcnow as _utcnow
+        from ..database.base import utcnow as _utcnow
         if real_time is None:
             real_time = _utcnow()
         event = WorldEvent(

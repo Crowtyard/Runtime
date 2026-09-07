@@ -14,10 +14,10 @@ from alembic.config import Config
 from sqlalchemy import Engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
-from database.base import utcnow
-from domain.blessed_time import NATURAL_TIME_RATE
-from domain.constants import RateReasons, SimulationVersion, WorldBibleVersion
-from services.repositories import RuntimeRepository, TimeRatioRepository
+from ..database.base import utcnow
+from ..domain.blessed_time import NATURAL_TIME_RATE
+from ..domain.constants import RateReasons, SimulationVersion, WorldBibleVersion
+from .repositories import RuntimeRepository, TimeRatioRepository
 
 
 def migrate_database(database_url: str, *, project_root: Path) -> None:
@@ -55,7 +55,7 @@ def seed_database(engine: Engine, session_factory: sessionmaker[Session], *,
     with session_factory() as session:
         repo = RuntimeRepository(session)
         if bible_dir is not None:
-            from services.bible_integrity import verify_bible
+            from .bible_integrity import verify_bible
             fp = verify_bible(bible_dir)
             if repo.get() is None:
                 repo.create_not_activated(

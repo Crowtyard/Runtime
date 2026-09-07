@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from sqlalchemy import Engine, text
 
-from domain.errors import IntegrityError
+from ..domain.errors import IntegrityError
 
 
 def event_immutability_triggers_present(engine: Engine) -> bool:

@@ -10,11 +10,11 @@ from fractions import Fraction
 
 import pytest
 
-from domain.blessed_time import (MAX_TICK, NATURAL_TIME_RATE, TICKS_PER_BLESSED_YEAR,
+from XiaoguangBlessedLandRuntime.domain.blessed_time import (MAX_TICK, NATURAL_TIME_RATE, TICKS_PER_BLESSED_YEAR,
                                  TimeRate, blessed_subyear_tick, blessed_tick_delta,
                                  blessed_year_index, blessed_years_per_real_day,
                                  format_blessed_tick)
-from services.time_service import RateSegment, blessed_ticks_over_segments
+from XiaoguangBlessedLandRuntime.services.time_service import RateSegment, blessed_ticks_over_segments
 
 DAY = timedelta(days=1)
 HOUR = timedelta(hours=1)

@@ -5,15 +5,15 @@ import pytest
 import sqlalchemy as sa
 from sqlalchemy import select
 
-from database.models_core import (SimulationCheckpoint, SimulationRun,
+from XiaoguangBlessedLandRuntime.database.models_core import (SimulationCheckpoint, SimulationRun,
                                   WorldEvent, WorldRuntime)
-from domain.blessed_time import epoch_us_to_datetime
-from domain.constants import RunStatus, SimulationVersion
-from domain.errors import FencingViolation, WorldNotActivated
-from services.catchup import catch_up
-from services.fencing import WorldMutationContext
-from services.repositories import CheckpointRepository, TimeRatioRepository
-from services.run_lifecycle import SimulationRunRepository
+from XiaoguangBlessedLandRuntime.domain.blessed_time import epoch_us_to_datetime
+from XiaoguangBlessedLandRuntime.domain.constants import RunStatus, SimulationVersion
+from XiaoguangBlessedLandRuntime.domain.errors import FencingViolation, WorldNotActivated
+from XiaoguangBlessedLandRuntime.services.catchup import catch_up
+from XiaoguangBlessedLandRuntime.services.fencing import WorldMutationContext
+from XiaoguangBlessedLandRuntime.services.repositories import CheckpointRepository, TimeRatioRepository
+from XiaoguangBlessedLandRuntime.services.run_lifecycle import SimulationRunRepository
 
 from tests.conftest import EPOCH0_US, W
 
@@ -282,8 +282,8 @@ def test_crash_case_d_checkpoint_half_written(active_clock_factory, lease_helper
 def test_crash_case_e_old_writer_recovery_rejected(active_clock_factory,
                                                    lease_helper):
     """旧 Writer crash 后恢复：stale token 的 mutation 被 fencing 拒绝。"""
-    from services.catchup import catch_up as _cu
-    from services.writer_lock import WriterLease
+    from XiaoguangBlessedLandRuntime.services.catchup import catch_up as _cu
+    from XiaoguangBlessedLandRuntime.services.writer_lock import WriterLease
     s1, lease1 = lease_helper()
     try:
         with active_clock_factory() as s2:
@@ -308,7 +308,7 @@ def test_crash_case_e_old_writer_recovery_rejected(active_clock_factory,
 
 def test_crash_case_f_takeover_single_timeline(active_clock_factory, lease_helper):
     """新 Writer 接管旧 Writer → 唯一时间线（时间只推进一次）。"""
-    from services.writer_lock import WriterLease
+    from XiaoguangBlessedLandRuntime.services.writer_lock import WriterLease
     s1, lease1 = lease_helper()
     s1.close()  # A 崩溃
     with active_clock_factory() as s2:
@@ -333,7 +333,7 @@ def test_crash_case_f_takeover_single_timeline(active_clock_factory, lease_helpe
 
 def test_crash_case_g_stale_running_recovered(active_clock_factory, lease_helper):
     """stale RUNNING run：新 writer 明确 FAIL 后重试，不重复时间。"""
-    from services.writer_lock import WriterLease
+    from XiaoguangBlessedLandRuntime.services.writer_lock import WriterLease
     s1, lease1 = lease_helper()
     try:
         with WorldMutationContext(active_clock_factory(), world_id=W,

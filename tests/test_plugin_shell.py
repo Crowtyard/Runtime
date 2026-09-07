@@ -21,9 +21,9 @@ from pathlib import Path
 import pytest
 from sqlalchemy import select, text
 
-from database.models_core import (SimulationRun, TimeRatioHistory, WorldEvent,
+from XiaoguangBlessedLandRuntime.database.models_core import (SimulationRun, TimeRatioHistory, WorldEvent,
                                   WorldRuntime)
-from services.db_lifecycle import migrate_database, seed_database
+from XiaoguangBlessedLandRuntime.services.db_lifecycle import migrate_database, seed_database
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 STUB_DIR = REPO_ROOT / "tests" / "stub_astrbot"
@@ -57,7 +57,7 @@ def plugin_env(monkeypatch, tmp_path):
 
 
 def _make_not_activated_world_db(db_path: Path, bible_dir: Path) -> None:
-    from database.db import create_db_engine, make_session_factory
+    from XiaoguangBlessedLandRuntime.database.db import create_db_engine, make_session_factory
     db_path.parent.mkdir(parents=True, exist_ok=True)
     url = "sqlite:///" + str(db_path).replace("\\", "/")
     migrate_database(url, project_root=REPO_ROOT)
@@ -302,7 +302,7 @@ def test_pl12_plugin_code_replacement_preserves_data(plugin_env,
                 shutil.copyfile(src, dst / name)
         return dst
 
-    from plugin_shell.runtime_host import RuntimeHost
+    from XiaoguangBlessedLandRuntime.plugin_shell.runtime_host import RuntimeHost
     code_dir = _copy_code(tmp_path / "code")
     host = RuntimeHost(plugin_data_dir, project_root=code_dir)
     host.boot()
@@ -350,15 +350,22 @@ def test_pl15_diagnostics_api_does_not_mutate_world(booted_plugin):
 def test_pl16_no_world_seed_activation_endpoint(booted_plugin, plugin_env):
     """PL16/PL17: 只注册 3 个只读 GET 端点；无 activate/advance/seed/create。"""
     routes = booted_plugin.context.routes
-    assert set(routes) == {"/status", "/diagnostics", "/runtime-info"}
+    expected = {
+        f"/{PLUGIN_DATA_NAME}/status",
+        f"/{PLUGIN_DATA_NAME}/diagnostics",
+        f"/{PLUGIN_DATA_NAME}/runtime-info",
+    }
+    assert set(routes) == expected
     for route, (handler, methods, desc) in routes.items():
         assert methods == ["GET"], (route, methods)
     main_src = (plugin_env["repo_root"] / "main.py").read_text(
         encoding="utf-8")
     # 只统计真实注册调用（docstring 中的禁词不算）
     import re
-    registrations = re.findall(r'reg\("(/[^"]+)"', main_src)
-    assert registrations == ["/status", "/diagnostics", "/runtime-info"]
+    registrations = re.findall(r'reg\(f?"(/[^"]+)"', main_src)
+    assert registrations == [f"/{{PLUGIN_NAME}}/status",
+                             f"/{{PLUGIN_NAME}}/diagnostics",
+                             f"/{{PLUGIN_NAME}}/runtime-info"]
 
 
 def test_pl17_no_manual_tick_advancement_endpoint(booted_plugin):

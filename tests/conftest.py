@@ -1,31 +1,49 @@
 """pytest 共享设施：临时库 + migrations + seeded 世界（FK 前置行）。
 
 所有测试只用 tmp_path 临时库，绝不触碰正式 world.db。
+
+导入约定：核心模块使用插件包内相对导入（部署形态），开发测试统一用
+包限定导入 `XiaoguangBlessedLandRuntime.*`（部署时顶层包名为
+astrbot_plugin_blessed_land_runtime，包内相对导入与顶层名无关）。
 """
 from __future__ import annotations
 
-import hashlib
-import json
-import shutil
-from datetime import datetime, timezone
+import importlib
+import sys
 from pathlib import Path
 
-import pytest
-from alembic import command
-from alembic.config import Config
-from sqlalchemy import select
-from sqlalchemy.orm import sessionmaker
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(_PROJECT_ROOT.parent) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT.parent))
+_PKG_NAME = _PROJECT_ROOT.name
+importlib.import_module(_PKG_NAME)
 
-from config.settings import Settings  # noqa: F401
-from database.base import utcnow
-from database.db import create_db_engine, make_session_factory
-from database.models_core import WorldRuntime
-from domain.blessed_time import datetime_to_epoch_us
-from domain.constants import RuntimeStatus
-from services.repositories import RuntimeRepository, TimeRatioRepository
-from services.writer_lock import WriterLease
+import hashlib  # noqa: E402
+import json  # noqa: E402
+import shutil  # noqa: E402
+from datetime import datetime, timezone  # noqa: E402
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+import pytest  # noqa: E402
+from alembic import command  # noqa: E402
+from alembic.config import Config  # noqa: E402
+from sqlalchemy import select  # noqa: E402
+from sqlalchemy.orm import sessionmaker  # noqa: E402
+
+from XiaoguangBlessedLandRuntime.config.settings import Settings  # noqa: E402, F401
+from XiaoguangBlessedLandRuntime.database.base import utcnow  # noqa: E402
+from XiaoguangBlessedLandRuntime.database.db import (  # noqa: E402
+    create_db_engine, make_session_factory)
+from XiaoguangBlessedLandRuntime.database.models_core import (  # noqa: E402
+    WorldRuntime)
+from XiaoguangBlessedLandRuntime.domain.blessed_time import (  # noqa: E402
+    datetime_to_epoch_us)
+from XiaoguangBlessedLandRuntime.domain.constants import RuntimeStatus  # noqa: E402
+from XiaoguangBlessedLandRuntime.services.repositories import (  # noqa: E402
+    RuntimeRepository, TimeRatioRepository)
+from XiaoguangBlessedLandRuntime.services.writer_lock import (  # noqa: E402
+    WriterLease)
+
+PROJECT_ROOT = _PROJECT_ROOT
 BIBLE_DIR = PROJECT_ROOT.parent / "XIAOGUANG_CROW_KB" / "world_bible"
 HEAD_REVISION = "e6c0f4a1b3d9"  # m1_checkpoint_extension_and_interval_unique（当前 head）
 

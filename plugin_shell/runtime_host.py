@@ -24,18 +24,18 @@ from sqlalchemy import select, text
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from database.db import create_db_engine, make_session_factory
-from database.invariants import (event_immutability_triggers_present,
+from ..database.db import create_db_engine, make_session_factory
+from ..database.invariants import (event_immutability_triggers_present,
                                  verify_event_immutability)
-from database.models_core import (RuntimeLock, SimulationCheckpoint,
+from ..database.models_core import (RuntimeLock, SimulationCheckpoint,
                                   SimulationRun, TimeRatioHistory, WorldEvent,
                                   WorldRuntime)
-from domain.blessed_time import NATURAL_TIME_RATE
-from domain.constants import RuntimeStatus
-from services.backup_service import backup_sqlite, integrity_check
-from services.db_lifecycle import (current_schema_version, migrate_database,
+from ..domain.blessed_time import NATURAL_TIME_RATE
+from ..domain.constants import RuntimeStatus
+from ..services.backup_service import backup_sqlite, integrity_check
+from ..services.db_lifecycle import (current_schema_version, migrate_database,
                                    sync_runtime_schema_version)
-from services.logging_setup import get_logger
+from ..services.logging_setup import get_logger
 
 log = get_logger("RUNTIME")
 

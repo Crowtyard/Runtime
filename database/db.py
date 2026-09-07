@@ -11,7 +11,7 @@ from pathlib import Path
 from sqlalchemy import Engine, create_engine, event
 from sqlalchemy.orm import Session, sessionmaker
 
-from config.settings import Settings
+from ..config.settings import Settings
 
 
 def create_db_engine(database_url: str | None = None, *, sqlite_file: Path | None = None) -> Engine:

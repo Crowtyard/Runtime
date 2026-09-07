@@ -6,8 +6,8 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from domain.constants import SimulationVersion, WorldBibleVersion
-from domain.errors import WorldBibleHashMismatch
+from .constants import SimulationVersion, WorldBibleVersion
+from .errors import WorldBibleHashMismatch
 
 
 @dataclass(frozen=True)

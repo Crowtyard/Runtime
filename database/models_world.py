@@ -12,7 +12,7 @@ from sqlalchemy import (JSON, BigInteger, Boolean, Float, ForeignKey, Integer,
                         String, Text, UniqueConstraint)
 from sqlalchemy.orm import Mapped, mapped_column
 
-from database.base import Base, UtcDateTime, utcnow
+from .base import Base, UtcDateTime, utcnow
 
 
 class Settlement(Base):

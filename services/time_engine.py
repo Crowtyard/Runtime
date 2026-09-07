@@ -17,8 +17,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from domain.blessed_time import TimeRate
-from domain.errors import IntegrityError
+from ..domain.blessed_time import TimeRate
+from ..domain.errors import IntegrityError
 
 
 @dataclass(frozen=True)

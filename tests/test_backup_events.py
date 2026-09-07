@@ -9,10 +9,10 @@ import pytest
 import sqlalchemy as sa
 from sqlalchemy import select
 
-from database.invariants import verify_event_immutability
-from services.backup_service import (backup_sqlite, integrity_check,
+from XiaoguangBlessedLandRuntime.database.invariants import verify_event_immutability
+from XiaoguangBlessedLandRuntime.services.backup_service import (backup_sqlite, integrity_check,
                                      pre_migration_backup, restore_from_backup)
-from services.repositories import EventRepository
+from XiaoguangBlessedLandRuntime.services.repositories import EventRepository
 
 W = "W"
 

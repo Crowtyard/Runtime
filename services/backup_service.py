@@ -17,9 +17,9 @@ from pathlib import Path
 
 from sqlalchemy import Engine, text
 
-from database.base import utcnow
-from domain.errors import BackupError
-from services.logging_setup import get_logger
+from ..database.base import utcnow
+from ..domain.errors import BackupError
+from .logging_setup import get_logger
 
 log = get_logger("BACKUP")
 

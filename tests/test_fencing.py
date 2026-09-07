@@ -8,14 +8,14 @@ from __future__ import annotations
 import pytest
 from sqlalchemy import select, text
 
-from database.models_core import (RuntimeLock, SimulationCheckpoint,
+from XiaoguangBlessedLandRuntime.database.models_core import (RuntimeLock, SimulationCheckpoint,
                                   SimulationRun, WorldRuntime)
-from domain.constants import RunStatus
-from domain.errors import FencingViolation, WriterLockConflict
-from services.fencing import WorldMutationContext
-from services.repositories import CheckpointRepository
-from services.run_lifecycle import SimulationRunRepository
-from services.writer_lock import WriterLease
+from XiaoguangBlessedLandRuntime.domain.constants import RunStatus
+from XiaoguangBlessedLandRuntime.domain.errors import FencingViolation, WriterLockConflict
+from XiaoguangBlessedLandRuntime.services.fencing import WorldMutationContext
+from XiaoguangBlessedLandRuntime.services.repositories import CheckpointRepository
+from XiaoguangBlessedLandRuntime.services.run_lifecycle import SimulationRunRepository
+from XiaoguangBlessedLandRuntime.services.writer_lock import WriterLease
 
 from tests.conftest import EPOCH0_US, W
 
@@ -200,7 +200,7 @@ def test_f7_stale_writer_cannot_finalize_run(active_clock_factory, lease_helper)
 
 def test_f8_two_writers_single_timeline(active_clock_factory, lease_helper):
     """并发两 Writer：最终 blessed time 只能增加一次（唯一时间线）。"""
-    from services.catchup import catch_up
+    from XiaoguangBlessedLandRuntime.services.catchup import catch_up
     s1, lease1 = lease_helper()
     try:
         _expire_lock(active_clock_factory)

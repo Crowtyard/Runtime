@@ -6,9 +6,9 @@ from fractions import Fraction
 
 import pytest
 
-from domain.blessed_time import NATURAL_TIME_RATE, TimeRate
-from domain.errors import IntegrityError
-from services.time_engine import Integrator, RateWindow, rate_at, segment_interval
+from XiaoguangBlessedLandRuntime.domain.blessed_time import NATURAL_TIME_RATE, TimeRate
+from XiaoguangBlessedLandRuntime.domain.errors import IntegrityError
+from XiaoguangBlessedLandRuntime.services.time_engine import Integrator, RateWindow, rate_at, segment_interval
 
 DAY_US = 86_400_000_000
 HALF = TimeRate(blessed_ticks=500_000, real_micros=86_400_000_000)

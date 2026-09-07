@@ -26,6 +26,9 @@ PLUGIN_NAME = "astrbot_plugin_blessed_land_runtime"
 class BlessedLandRuntimePlugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context, config)
+        # 注意：官方 Star.__init__ 不保存 config —— 插件必须自行保存
+        # （AstrBot v4.28 实测行为；config 为 dict-like AstrBotConfig）。
+        self.config = config if config is not None else {}
         self._host: runtime_host.RuntimeHost | None = None
 
     async def initialize(self) -> None:
@@ -67,11 +70,15 @@ class BlessedLandRuntimePlugin(Star):
 
     # ---------------------------------------------------------------- 只读 Web API
     def _register_apis(self) -> None:
+        # AstrBot v4.28 契约：路由必须包含插件名段 —— WebUI 调用
+        # /api/v1/plugins/extensions/<plugin>/<route>，后端以 <plugin>/<route>
+        # 匹配注册路由（页面桥 bridge.apiGet("/status") 由 WebUI 自动加插件前缀）。
         reg = self.context.register_web_api
-        reg("/status", self._api_status, ["GET"], "福地 Runtime 状态（只读）")
-        reg("/diagnostics", self._api_diagnostics, ["GET"],
+        reg(f"/{PLUGIN_NAME}/status", self._api_status, ["GET"],
+            "福地 Runtime 状态（只读）")
+        reg(f"/{PLUGIN_NAME}/diagnostics", self._api_diagnostics, ["GET"],
             "福地 Runtime 诊断（只读）")
-        reg("/runtime-info", self._api_runtime_info, ["GET"],
+        reg(f"/{PLUGIN_NAME}/runtime-info", self._api_runtime_info, ["GET"],
             "福地 Runtime 运行信息（只读）")
 
     @staticmethod

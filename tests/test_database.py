@@ -6,14 +6,14 @@ from alembic import command
 from alembic.config import Config
 from sqlalchemy import select, text
 
-from database.base import Base
-from database.models_core import SimulationRun, WorldEvent
-from database.models_world import Settlement
-from domain.constants import SimulationVersion
-from domain.errors import WriterLockConflict, WorldNotActivated
-from services.atomic_tick import run_atomic_tick
-from services.repositories import EventRepository
-from services.writer_lock import WriterLease, world_writer
+from XiaoguangBlessedLandRuntime.database.base import Base
+from XiaoguangBlessedLandRuntime.database.models_core import SimulationRun, WorldEvent
+from XiaoguangBlessedLandRuntime.database.models_world import Settlement
+from XiaoguangBlessedLandRuntime.domain.constants import SimulationVersion
+from XiaoguangBlessedLandRuntime.domain.errors import WriterLockConflict, WorldNotActivated
+from XiaoguangBlessedLandRuntime.services.atomic_tick import run_atomic_tick
+from XiaoguangBlessedLandRuntime.services.repositories import EventRepository
+from XiaoguangBlessedLandRuntime.services.writer_lock import WriterLease, world_writer
 
 from tests.conftest import HEAD_REVISION, PROJECT_ROOT, W
 

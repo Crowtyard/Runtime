@@ -5,8 +5,8 @@ from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import select, text
 
-from database.base import utcnow
-from database.models_core import WorldRuntime
+from XiaoguangBlessedLandRuntime.database.base import utcnow
+from XiaoguangBlessedLandRuntime.database.models_core import WorldRuntime
 
 
 def test_utcnow_is_aware():

@@ -18,9 +18,9 @@ from datetime import datetime
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
-from database.base import utcnow
-from database.models_core import SimulationRun
-from domain.constants import RunStatus, TickSources
+from ..database.base import utcnow
+from ..database.models_core import SimulationRun
+from ..domain.constants import RunStatus, TickSources
 
 
 class SimulationRunRepository:

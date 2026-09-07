@@ -10,9 +10,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
-from domain.blessed_time import TimeRate, datetime_to_epoch_us
-from domain.errors import ClockAnomaly
-from services.time_engine import Integrator
+from ..domain.blessed_time import TimeRate, datetime_to_epoch_us
+from ..domain.errors import ClockAnomaly
+from .time_engine import Integrator
 
 
 def to_utc(dt: datetime) -> datetime:

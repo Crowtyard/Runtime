@@ -1,5 +1,19 @@
 # DSH_M1_1_ASTRBOT_PLUGIN_SHELL_MIGRATION_FINAL_REPORT
 
+> **【M1.1 LIVE 补记（DSH_PRE_M2_LIVE_AND_SCOPE_RECOVERY）】**
+> 本报告形成后，已在真实 AstrBot v4.28.0-beta.1（本机 launcher 实例，隔离
+> ASTRBOT_ROOT）完成实载验收，并修复 3 个实载暴露的问题：
+> 1) 核心模块绝对导入在部署环境失败 → 全部改为插件包内相对导入
+>    （开发测试改用包限定导入，125/125 PASS）；
+> 2) 官方 Star.__init__ 不保存 config → main.py 自行保存；
+> 3) v4.28 Web API 路由契约：必须注册含插件名的路由
+>    `/<plugin>/status` 等（WebUI 调 /api/v1/plugins/extensions/<plugin>/<route>），
+>    Plugin Page 资源经 /api/plugin/page/content/... 服务（实测 200）。
+> 实载全项（initialize/plugin_data/权威 DB/head/三 API/Page 资源/reload/restart/
+> disable/enable/uninstall/reinstall/数据持久化）全部通过；
+> LIVE_ACTIVATION_TRAP=PASS（smoke 副本与权威库逐字节一致）。
+> 详见 `DSH_PRE_M2_LIVE_VERIFICATION_REPORT.md`。
+
 > 执行方：DSH。任务：M1.1_ASTRBOT_PLUGIN_SHELL_MIGRATION（架构迁移/打包/集成壳，非 M2）。
 > 原则：WRAP / MIGRATE，不 REWRITE；正式世界保持 NOT_ACTIVATED。
 
