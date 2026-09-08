@@ -14,12 +14,13 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ...database.models_core import WorldRuntime
-from ...database.models_world import (EcologicalRegion, EconomicPressureState,
-                                      Industry, Institution, Lineage,
-                                      PopulationGroup, ProductionRecipe,
-                                      ProductionState, ResourceNode,
-                                      ResourceProfile, ResourceStock,
-                                      Settlement)
+from ...database.models_world import (EcologicalRegion, EcologyFeedbackState,
+                                      EcologyState, EcologyZone,
+                                      EconomicPressureState, Industry,
+                                      Institution, Lineage, PopulationGroup,
+                                      ProductionRecipe, ProductionState,
+                                      ResourceNode, ResourceProfile,
+                                      ResourceStock, Settlement)
 from ...domain.errors import IntegrityError
 from .contracts import ENGINE_OWNERSHIP, StateChange
 
@@ -28,7 +29,9 @@ SNAPSHOT_TABLES = (
     "ecological_regions", "lineages", "institutions",
     # M2b Resource-Economy：
     "resource_profiles", "resource_stocks", "production_recipes",
-    "production_state", "economic_pressure_state")
+    "production_state", "economic_pressure_state",
+    # M2c Ecology：
+    "ecology_zones", "ecology_state", "ecology_feedback_state")
 
 _MODEL_BY_TABLE = {
     "settlements": Settlement,
@@ -43,6 +46,9 @@ _MODEL_BY_TABLE = {
     "production_recipes": ProductionRecipe,
     "production_state": ProductionState,
     "economic_pressure_state": EconomicPressureState,
+    "ecology_zones": EcologyZone,
+    "ecology_state": EcologyState,
+    "ecology_feedback_state": EcologyFeedbackState,
 }
 
 _FIELDS = {
@@ -57,7 +63,8 @@ _FIELDS = {
                        "remaining_reserve", "extraction_capacity",
                        "extraction_carry", "last_extracted_minor",
                        "engine_version", "state_version",
-                       "updated_blessed_tick"),
+                       "updated_blessed_tick", "reserve_ceiling_minor",
+                       "regeneration_carry"),
     "industries": ("id", "world_id", "kind", "node_ref", "labor",
                    "capacity", "state"),
     "ecological_regions": ("id", "world_id", "terrain", "climate", "water",
@@ -91,6 +98,26 @@ _FIELDS = {
                                 "shortage_ratio_num", "shortage_ratio_den",
                                 "sustained_shortage_steps", "stress_level",
                                 "engine_version", "updated_blessed_tick"),
+    "ecology_zones": ("id", "world_id", "zone_id", "region_ref",
+                      "settlement_relation", "profile_ref",
+                      "semantic_version"),
+    "ecology_state": ("id", "world_id", "zone_ref", "habitat_quality",
+                      "regeneration_capacity", "ecological_stress",
+                      "population_pressure", "extraction_pressure",
+                      "production_pressure", "depletion_pressure",
+                      "external_pressure", "degradation_carry",
+                      "recovery_carry", "quality_min_seen",
+                      "quality_max_seen", "engine_version",
+                      "updated_blessed_tick"),
+    "ecology_feedback_state": ("id", "world_id", "zone_ref",
+                               "regeneration_capacity_minor_per_year",
+                               "yield_modifier_num", "yield_modifier_den",
+                               "extraction_modifier_num",
+                               "extraction_modifier_den",
+                               "habitat_stress_level",
+                               "environmental_stress_num",
+                               "environmental_stress_den", "engine_version",
+                               "updated_blessed_tick"),
 }
 
 
@@ -120,6 +147,9 @@ def _canonical(row: dict, table: str) -> Any:
         "production_recipes": ("recipe_id",),
         "production_state": ("settlement_ref", "recipe_ref"),
         "economic_pressure_state": ("settlement_ref", "resource_profile_ref"),
+        "ecology_zones": ("zone_id",),
+        "ecology_state": ("zone_ref",),
+        "ecology_feedback_state": ("zone_ref",),
     }
     return tuple(_norm(row[k]) for k in key_specs[table])
 

@@ -25,7 +25,10 @@ ENGINE_OWNERSHIP: dict[str, frozenset[str]] = {
     "RESOURCE": frozenset({"resource_nodes"}),
     "ECONOMY": frozenset({"resource_stocks", "production_state",
                           "economic_pressure_state"}),
-    "ECOLOGY": frozenset({"ecological_regions"}),
+    # ecological_regions = M0 遗留生态表（Preflight 所有权契约保留；
+    # M2c EcologyEngine 实际只写 ecology_state / ecology_feedback_state）
+    "ECOLOGY": frozenset({"ecological_regions", "ecology_state",
+                          "ecology_feedback_state"}),
     "SOCIAL": frozenset({"lineages", "institutions"}),
 }
 

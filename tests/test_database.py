@@ -23,7 +23,7 @@ def test_migration_creates_schema(migrated_db):
         rows = c.execute(text(
             "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'alembic%'"
         )).fetchall()
-        assert len(rows) == 25  # M0 20 表 + M2b 5 表（resource_profiles/stocks/recipes/state/pressure）
+        assert len(rows) == 28  # M0 20 + M2b 5 + M2c 3（ecology_zones/state/feedback）
         assert {r[0] for r in rows} == set(Base.metadata.tables)
 
 

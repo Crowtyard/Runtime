@@ -27,6 +27,11 @@ PRESSURE_TO_MORTALITY = {
 SYNTHETIC_SPECIES = "TEST-SPECIES-001"
 STRESS_ORDER = {"NONE": 0, "LOW": 1, "HIGH": 2}
 
+# M2c：生态压力 → 人口外部死亡率敏感性（TEST_FIXTURE_ONLY；正式种族=0）
+ECOLOGY_MORTALITY_SENSITIVITY = Fraction(1, 500)
+ECOLOGY_STRESS_LEVEL_ORDER = {
+    "NONE": 0, "HEALTHY": 0, "STRESSED": 1, "DEGRADED": 2, "CRITICAL": 3}
+
 
 def settlement_pressure_stress(snapshot: WorldSnapshot,
                                settlement_ref: str | None) -> str:
@@ -54,3 +59,44 @@ def demography_mortality_pressure_modifier(snapshot: WorldSnapshot, *,
         return Fraction(0)
     stress = settlement_pressure_stress(snapshot, settlement_ref)
     return PRESSURE_TO_MORTALITY.get(stress, Fraction(0))
+
+
+def demography_ecology_pressure_modifier(snapshot: WorldSnapshot, *,
+                                         species: str,
+                                         settlement_ref: str | None,
+                                         ) -> Fraction:
+    """把上一 committed step 的生态压力（ecology_feedback_state.
+    environmental_stress）映射为外部死亡率修正（M2c）。
+
+    - species != TEST-SPECIES-001 → Fraction(0)（正式种族 UNCONFIGURED）。
+    - 无生态反馈行（M2a/M2b 世界）→ Fraction(0)。
+    - 映射 = environmental_stress × ECOLOGY_MORTALITY_SENSITIVITY
+      （TEST_FIXTURE_ONLY）。
+    """
+    if species != SYNTHETIC_SPECIES:
+        return Fraction(0)
+    zone_ids = {z.get("zone_id") for z in snapshot.rows("ecology_zones")
+                if z.get("settlement_relation") == settlement_ref}
+    worst = Fraction(0)
+    for fb in snapshot.rows("ecology_feedback_state"):
+        if fb.get("zone_ref") not in zone_ids:
+            continue
+        stress = Fraction(int(fb.get("environmental_stress_num") or 0),
+                          int(fb.get("environmental_stress_den") or 1))
+        if stress > worst:
+            worst = stress
+    return worst * ECOLOGY_MORTALITY_SENSITIVITY
+
+
+def demography_ecology_stress_level(snapshot: WorldSnapshot, *,
+                                    settlement_ref: str | None) -> int:
+    """聚落关联生态区的最高 habitat_stress_level（int 0..3；metrics 用）。"""
+    zone_ids = {z.get("zone_id") for z in snapshot.rows("ecology_zones")
+                if z.get("settlement_relation") == settlement_ref}
+    worst = 0
+    for fb in snapshot.rows("ecology_feedback_state"):
+        if fb.get("zone_ref") not in zone_ids:
+            continue
+        level = fb.get("habitat_stress_level") or "NONE"
+        worst = max(worst, ECOLOGY_STRESS_LEVEL_ORDER.get(level, 0))
+    return worst

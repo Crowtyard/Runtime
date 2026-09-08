@@ -75,10 +75,16 @@ TEST_RESOURCE_PROFILE_FOOD = ResourceProfile(
     consumption_category="CONSUMPTION",
     production_usability="PRODUCTION_OUTPUT",
     semantic_version="test-profile-1")
+TEST_RESOURCE_PROFILE_TIMBER = ResourceProfile(
+    resource_id="TEST-RESOURCE-003", unit="unit", quantity_scale=1_000_000,
+    renewability="RENEWABLE", extractability="EXTRACTABLE",
+    consumption_category=None, production_usability="PRODUCTION_INPUT",
+    semantic_version="test-profile-1")
 
 RESOURCE_PROFILES: dict[str, ResourceProfile] = {
     "TEST-RESOURCE-001": TEST_RESOURCE_PROFILE_ORE,
     "TEST-RESOURCE-002": TEST_RESOURCE_PROFILE_FOOD,
+    "TEST-RESOURCE-003": TEST_RESOURCE_PROFILE_TIMBER,
 }
 
 
@@ -132,12 +138,24 @@ class ResourceEngine:
         if not nodes:
             return EngineResult(
                 engine_id=ENGINE_ID, engine_version=ENGINE_VERSION,
-                metrics={"extracted_minor": 0, "depleted": 0, "nodes": 0})
+                metrics={"extracted_minor": 0, "depleted": 0, "nodes": 0,
+                         "regeneration_applied_minor": 0})
+
+        # M2c：读取上一 committed step 的生态反馈（NEXT_COMMITTED_STEP）。
+        # 无生态区/无反馈行（M2b 世界）→ neutral（yield=1/1、再生=0）。
+        zone_by_id = {z.get("zone_id"): z
+                      for z in ctx.snapshot.rows("ecology_zones")}
+        feedback_by_region: dict[str, dict] = {}
+        for fb in ctx.snapshot.rows("ecology_feedback_state"):
+            zone = zone_by_id.get(fb.get("zone_ref"))
+            if zone is not None and zone.get("region_ref"):
+                feedback_by_region[zone["region_ref"]] = fb
 
         delta_ticks = ctx.blessed_end_tick - ctx.blessed_start_tick
         proposed: list[StateChange] = []
         events: list[DomainEventDraft] = []
         extracted_total = 0
+        regenerated_total = 0
         depleted = 0
 
         for node in nodes:
@@ -146,7 +164,10 @@ class ResourceEngine:
                 raise ResourceProfileUnconfigured(
                     f"资源节点 {node['kind']!r} 无 resource_profile_ref",
                     detail=node["kind"])
-            self._profile_of(ref)
+            profile = self._profile_of(ref)
+            fb = feedback_by_region.get(node.get("region_ref")) or {}
+            yield_num = int(fb.get("yield_modifier_num") or 1)
+            yield_den = int(fb.get("yield_modifier_den") or 1)
 
             capacity = node.get("extraction_capacity") or 0
             reserve = node.get("remaining_reserve")
@@ -155,11 +176,13 @@ class ResourceEngine:
                 extracted = 0
                 new_carry = int(node.get("extraction_carry", 0))
                 reserve_after = None
+                regen_carry_new = int(node.get("regeneration_carry", 0))
             else:
-                # 离散效率抽样（RESOURCE substream）
+                # 离散效率抽样（RESOURCE substream）× 生态 yield modifier
                 idx = ctx.rng.randint(0, len(EFFICIENCY_TABLE) - 1)
                 eff_num, eff_den = EFFICIENCY_TABLE[idx]
-                eff_capacity = capacity * eff_num // eff_den
+                eff_capacity = capacity * yield_num // yield_den \
+                    * eff_num // eff_den
                 carry = int(node.get("extraction_carry", 0)) \
                     + eff_capacity * delta_ticks
                 attempt = carry // TICKS_PER_BLESSED_YEAR
@@ -170,6 +193,29 @@ class ResourceEngine:
                 if reserve_after < 0:
                     reserve_after = 0
                     extracted = reserve
+
+                # M2c 可再生再生：Ecology 决定"环境允许恢复多少"，
+                # Resource 决定 authoritative reserve 怎么变化。
+                # 非可再生（renewability != RENEWABLE 或无 ceiling）→ 再生=0。
+                regen = 0
+                regen_carry_new = int(node.get("regeneration_carry", 0))
+                ceiling = node.get("reserve_ceiling_minor")
+                if profile.renewability == "RENEWABLE" \
+                        and ceiling is not None:
+                    regen_rate = int(fb.get(
+                        "regeneration_capacity_minor_per_year") or 0)
+                    if regen_rate > 0:
+                        rcarry = regen_carry_new + regen_rate * delta_ticks
+                        regen_attempt = rcarry // TICKS_PER_BLESSED_YEAR
+                        regen_carry_new = rcarry % TICKS_PER_BLESSED_YEAR
+                        regen = min(regen_attempt,
+                                    max(int(ceiling) - reserve_after, 0))
+                        reserve_after += regen
+                        regenerated_total += regen
+                proposed.append(StateChange(
+                    table="resource_nodes", entity_id=node["id"],
+                    field="regeneration_carry", old_value=None,
+                    new_value=regen_carry_new))
 
             new_state = node.get("state")
             state_version = int(node.get("state_version", 0))
@@ -182,6 +228,11 @@ class ResourceEngine:
                     cause={"node_kind": node["kind"],
                            "profile_ref": node.get("resource_profile_ref")},
                     effect={"reserve_minor": 0}))
+            elif (node.get("state") == "EXHAUSTED" and reserve_after is not None
+                  and reserve_after > 0):
+                # 可再生资源经生态再生后储量回正 → STABLE（状态机纠正）
+                new_state = "STABLE"
+                state_version += 1
 
             extracted_total += extracted
             proposed.append(StateChange(
@@ -232,4 +283,5 @@ class ResourceEngine:
             proposed_changes=proposed, domain_events=events,
             draw_count=len(nodes) + self._extra_draws,
             metrics={"extracted_minor": extracted_total,
-                     "depleted": depleted, "nodes": len(nodes)})
+                     "depleted": depleted, "nodes": len(nodes),
+                     "regeneration_applied_minor": regenerated_total})

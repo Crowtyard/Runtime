@@ -19,8 +19,10 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from ..catchup import catch_up
 from ...database.models_core import SimulationCheckpoint, WorldEvent
-from ...database.models_world import (EcologicalRegion, EconomicPressureState,
-                                     Institution, Lineage, PopulationGroup,
+from ...database.models_world import (EcologicalRegion, EcologyFeedbackState,
+                                     EcologyState, EcologyZone,
+                                     EconomicPressureState, Institution,
+                                     Lineage, PopulationGroup,
                                      ProductionRecipe, ProductionState,
                                      ResourceNode, ResourceProfile,
                                      ResourceStock, Settlement)
@@ -90,6 +92,7 @@ def run_mini_world_120y(
         population_start = _population_total(s0, world_id)
         reserve_start = _reserve_total(s0, world_id)
         stock_start = _stock_totals(s0, world_id)
+        quality_start = _quality_totals(s0, world_id)
 
     total_events = 0
     engine_metrics: dict = {e.engine_id: {} for e in engines}
@@ -154,6 +157,12 @@ def run_mini_world_120y(
                 select(ProductionState)).scalars().all()),
             "economic_pressure_state": len(s.execute(
                 select(EconomicPressureState)).scalars().all()),
+            "ecology_zones": len(s.execute(
+                select(EcologyZone)).scalars().all()),
+            "ecology_state": len(s.execute(
+                select(EcologyState)).scalars().all()),
+            "ecology_feedback_state": len(s.execute(
+                select(EcologyFeedbackState)).scalars().all()),
         }
         events_total = len(s.execute(select(WorldEvent)).scalars().all())
         ckpts = len(s.execute(select(SimulationCheckpoint)).scalars().all())
@@ -161,9 +170,11 @@ def run_mini_world_120y(
         population_end = _population_total(s, world_id)
         reserve_end = _reserve_total(s, world_id)
         stock_end = _stock_totals(s, world_id)
+        quality_end = _quality_totals(s, world_id)
 
     eco = engine_metrics.get("ECONOMY", {})
     res = engine_metrics.get("RESOURCE", {})
+    ecol = engine_metrics.get("ECOLOGY", {})
     return MiniWorldReport(
         world_id=world_id, years=years, steps=years, runs=runs,
         events=events_total, checkpoints=ckpts,
@@ -181,7 +192,9 @@ def run_mini_world_120y(
         resource={"initial_reserve": reserve_start,
                   "final_reserve": reserve_end,
                   "total_extracted": int(res.get("extracted_minor", 0)),
-                  "depleted_nodes": int(res.get("depleted", 0))},
+                  "depleted_nodes": int(res.get("depleted", 0)),
+                  "regeneration_applied": int(res.get(
+                      "regeneration_applied_minor", 0))},
         economy={"initial_stock": stock_start,
                  "final_stock": stock_end,
                  "production_input": int(eco.get("production_input_minor", 0)),
@@ -194,7 +207,13 @@ def run_mini_world_120y(
                  "exports": int(eco.get("exported_minor", 0)),
                  "transfers": int(eco.get("transfer_quantity_minor", 0)),
                  "shortage_steps": int(eco.get("shortage_pairs", 0))},
-        ecology={"state": None, "pressure": None},
+        ecology={"initial_quality": quality_start,
+                 "final_quality": quality_end,
+                 "degradation": int(ecol.get("degradation_minor", 0)),
+                 "recovery": int(ecol.get("recovery_minor", 0)),
+                 "threshold_crossings": int(ecol.get("threshold_crossings", 0)),
+                 "feedback_applications": int(ecol.get(
+                     "feedback_applications", 0))},
         society={"households": None, "lineages": counts["lineages"],
                  "institution_events": None},
     )
@@ -205,6 +224,14 @@ def _reserve_total(session: Session, world_id: str) -> int:
         int(n.remaining_reserve or 0) for n in session.execute(
             select(ResourceNode).where(
                 ResourceNode.world_id == world_id)).scalars())
+
+
+def _quality_totals(session: Session, world_id: str) -> dict:
+    totals: dict[str, int] = {}
+    for r in session.execute(select(EcologyState).where(
+            EcologyState.world_id == world_id)).scalars():
+        totals[r.zone_ref] = int(r.habitat_quality or 0)
+    return totals
 
 
 def _stock_totals(session: Session, world_id: str) -> dict:

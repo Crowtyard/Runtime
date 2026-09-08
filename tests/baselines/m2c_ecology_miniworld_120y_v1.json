@@ -1,0 +1,128 @@
+{
+ "fixture_version": "mini_world_v1",
+ "simulation_version": "0.2.0-preflight",
+ "population_engine_version": "m2a-1",
+ "resource_engine_version": "m2b-resource-1",
+ "economy_engine_version": "m2b-economy-1",
+ "ecology_engine_version": "m2c-ecology-1",
+ "rng_schema_version": "m1-derive-seed-v1",
+ "event_uid_schema_version": 1,
+ "event_hash_schema_version": 1,
+ "world_state_hash_schema_version": 4,
+ "ecology_state_scale_version": "m2c-scale-1",
+ "initial_state": {
+  "population": 400,
+  "settlements": 2,
+  "species": "TEST-SPECIES-001",
+  "ecology_quality": 900000,
+  "timber_reserve_units": 5000
+ },
+ "final_state": {
+  "population": 456,
+  "reserve_minor_by_node": {
+   "TEST-ORE-001": 273442476820,
+   "TEST-TIMBER-001": 4998986053
+  },
+  "ecology_state_by_zone": {
+   "TEST-ZONE-A": {
+    "quality": 657322,
+    "min": 657322,
+    "max": 900000,
+    "stress": 654041
+   },
+   "TEST-ZONE-B": {
+    "quality": 819995,
+    "min": 819971,
+    "max": 900000,
+    "stress": 380865
+   }
+  },
+  "feedback_by_zone": {
+   "TEST-ZONE-A": {
+    "regen_per_year": 144610840,
+    "yield": [
+     1828661,
+     2000000
+    ],
+    "level": "STRESSED"
+   },
+   "TEST-ZONE-B": {
+    "regen_per_year": 180398900,
+    "yield": [
+     763999,
+     800000
+    ],
+    "level": "HEALTHY"
+   }
+  }
+ },
+ "population_metrics": {
+  "start": 400,
+  "end": 456,
+  "births": 928,
+  "deaths": 872,
+  "immigration": 526,
+  "emigration": 526
+ },
+ "resource_metrics": {
+  "initial_reserve": 405000000000,
+  "final_reserve": 278441462873,
+  "total_extracted": 147779958673,
+  "regeneration_applied": 21221421546
+ },
+ "economy_metrics": {
+  "initial_stock": {
+   "TEST-RESOURCE-001": 1000000000,
+   "TEST-RESOURCE-002": 100000000,
+   "TEST-RESOURCE-003": 100000000
+  },
+  "final_stock": {
+   "TEST-RESOURCE-001": 41157523180,
+   "TEST-RESOURCE-002": 0,
+   "TEST-RESOURCE-003": 21322435493
+  },
+  "production_input": 86400000000,
+  "production_output": 42768000000,
+  "demand": 61607000061,
+  "fulfilled": 42868000000,
+  "unmet": 18739000061,
+  "imports": 161466665,
+  "exports": 161466665,
+  "transfers": 161466665,
+  "shortage_steps": 218
+ },
+ "ecology_metrics": {
+  "initial_quality": {
+   "TEST-ZONE-A": 900000,
+   "TEST-ZONE-B": 900000
+  },
+  "final_quality": {
+   "TEST-ZONE-A": 657322,
+   "TEST-ZONE-B": 819995
+  },
+  "degradation": 751150,
+  "recovery": 428467,
+  "threshold_crossings": 1,
+  "feedback_applications": 240,
+  "min_quality": {
+   "TEST-ZONE-A": 657322,
+   "TEST-ZONE-B": 819971
+  },
+  "max_quality": {
+   "TEST-ZONE-A": 900000,
+   "TEST-ZONE-B": 900000
+  }
+ },
+ "final_world_state_hash": "4168f1774e73aafdcadeb5c8f348cf79304799de4bf6a0cccec346cdca392729",
+ "final_event_stream_hash": "84b826fcf848a189956cda559850aae5f026808c14d3e4596613dbd97b005cba",
+ "runs": 120,
+ "steps": 120,
+ "checkpoints": 240,
+ "event_counts": {
+  "total": 1678,
+  "ecology_threshold_crossed": 1
+ },
+ "performance": {
+  "wall_seconds": 8.481
+ }
+}

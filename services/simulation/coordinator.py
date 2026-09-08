@@ -16,12 +16,13 @@ from dataclasses import dataclass, field
 
 from sqlalchemy.orm import Session
 
-from ...database.models_world import (EcologicalRegion, EconomicPressureState,
-                                     Industry, Institution, Lineage,
-                                     PopulationGroup, ProductionRecipe,
-                                     ProductionState, ResourceNode,
-                                     ResourceProfile, ResourceStock,
-                                     Settlement)
+from ...database.models_world import (EcologicalRegion, EcologyFeedbackState,
+                                     EcologyState, EcologyZone,
+                                     EconomicPressureState, Industry,
+                                     Institution, Lineage, PopulationGroup,
+                                     ProductionRecipe, ProductionState,
+                                     ResourceNode, ResourceProfile,
+                                     ResourceStock, Settlement)
 from ...domain.errors import IntegrityError
 from ..repositories import CheckpointRepository, EventRepository
 from ..rng_service import RngService
@@ -34,7 +35,8 @@ from .event_stream import (deterministic_event_uid,
 from .recovery import (WORLD_COMMITTED_KIND,
                        latest_authoritative_world_checkpoint)
 from .snapshot import StagedWorld, read_snapshot
-from .state_hash import world_state_hash_v2, world_state_hash_v3
+from .state_hash import (world_state_hash_v2, world_state_hash_v3,
+                         world_state_hash_v4)
 
 _MODEL_BY_TABLE = {
     "settlements": Settlement,
@@ -49,6 +51,9 @@ _MODEL_BY_TABLE = {
     "production_recipes": ProductionRecipe,
     "production_state": ProductionState,
     "economic_pressure_state": EconomicPressureState,
+    "ecology_zones": EcologyZone,
+    "ecology_state": EcologyState,
+    "ecology_feedback_state": EcologyFeedbackState,
 }
 
 
@@ -201,9 +206,16 @@ class SimulationCoordinator:
 
         final_snapshot = read_snapshot(session, world_id)
         # 哈希 schema 版本由管线状态域决定（不静默改语义）：
-        #   - 含 RESOURCE/ECONOMY → v3（覆盖 resource/economy 状态域）
-        #   - 仅 DEMOGRAPHY（M2a 回归）→ v2（M2a 冻结语义，基线逐字节复现）
-        if {"RESOURCE", "ECONOMY"} & set(self.engine_versions):
+        #   - 含 ECOLOGY → v4（覆盖 ecology 状态域）
+        #   - 含 RESOURCE/ECONOMY → v3（M2b 冻结语义，基线逐字节复现）
+        #   - 仅 DEMOGRAPHY（M2a 回归）→ v2（M2a 冻结语义）
+        if "ECOLOGY" in self.engine_versions:
+            state_hash = world_state_hash_v4(
+                snapshot=final_snapshot,
+                simulation_version=self.simulation_version,
+                pipeline_version=self.pipeline_version,
+                engine_versions=self.engine_versions)
+        elif {"RESOURCE", "ECONOMY"} & set(self.engine_versions):
             state_hash = world_state_hash_v3(
                 snapshot=final_snapshot,
                 simulation_version=self.simulation_version,

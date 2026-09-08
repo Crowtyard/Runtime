@@ -126,6 +126,11 @@ class ResourceNode(Base):
     state_version: Mapped[int] = mapped_column(BigInteger, nullable=False,
                                                default=0, server_default="0")
     updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+    # ---- M2c Ecology 反馈（Resource 侧持久化状态）----
+    reserve_ceiling_minor: Mapped[int | None] = mapped_column(
+        BigInteger)  # 可再生资源储量上限（NULL=非可再生/无上限）
+    regeneration_carry: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")  # 亚年再生进位（整数）
 
 
 class ResourceProfile(Base):
@@ -259,6 +264,97 @@ class EconomicPressureState(Base):
     __table_args__ = (UniqueConstraint(
         "world_id", "settlement_ref", "resource_profile_ref",
         name="uq_economic_pressure_state_world_settlement_resource"),)
+
+
+class EcologyZone(Base):
+    """生态区（M2c）：聚合环境单元。独立领域概念 —— 不等于 Settlement，
+    也不等于 Resource Node；经 region_ref / settlement_relation 关联。"""
+    __tablename__ = "ecology_zones"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    zone_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    region_ref: Mapped[str | None] = mapped_column(String(64))
+    settlement_relation: Mapped[str | None] = mapped_column(String(64))
+    profile_ref: Mapped[str | None] = mapped_column(String(64))  # NULL=UNCONFIGURED
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+
+    __table_args__ = (UniqueConstraint("world_id", "zone_id",
+                                       name="uq_ecology_zones_world_zone"),)
+
+
+class EcologyState(Base):
+    """生态区状态（M2c）：整数 fixed-point 0..ECOLOGY_STATE_SCALE。
+
+    质量/压力/再生容量全整数；退化/恢复亚年进位持久化；min/max 见证值
+    持久化（restart 不丢失）。"""
+    __tablename__ = "ecology_state"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    zone_ref: Mapped[str] = mapped_column(String(32), nullable=False)
+    habitat_quality: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                 default=0, server_default="0")
+    regeneration_capacity: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    ecological_stress: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    population_pressure: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    extraction_pressure: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    production_pressure: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    depletion_pressure: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    external_pressure: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    degradation_carry: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    recovery_carry: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    quality_min_seen: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                  default=0, server_default="0")
+    quality_max_seen: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                  default=0, server_default="0")
+    engine_version: Mapped[str | None] = mapped_column(String(32))
+    updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+
+    __table_args__ = (UniqueConstraint("world_id", "zone_ref",
+                                       name="uq_ecology_state_world_zone"),)
+
+
+class EcologyFeedbackState(Base):
+    """生态反馈状态（M2c）：committed authoritative feedback。
+
+    RESOURCE / DEMOGRAPHY 于下一 committed step 经 snapshot 读取
+    （ECOLOGY_FEEDBACK_LATENCY = NEXT_COMMITTED_STEP）。
+    """
+    __tablename__ = "ecology_feedback_state"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    zone_ref: Mapped[str] = mapped_column(String(32), nullable=False)
+    regeneration_capacity_minor_per_year: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    yield_modifier_num: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                    default=1, server_default="1")
+    yield_modifier_den: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                    default=1, server_default="1")
+    extraction_modifier_num: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    extraction_modifier_den: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    habitat_stress_level: Mapped[str] = mapped_column(String(16), nullable=False,
+                                                      default="NONE",
+                                                      server_default="NONE")
+    environmental_stress_num: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    environmental_stress_den: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    engine_version: Mapped[str | None] = mapped_column(String(32))
+    updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+
+    __table_args__ = (UniqueConstraint(
+        "world_id", "zone_ref",
+        name="uq_ecology_feedback_state_world_zone"),)
 
 
 class EcologicalRegion(Base):

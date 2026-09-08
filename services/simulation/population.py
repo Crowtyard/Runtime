@@ -28,7 +28,9 @@ from fractions import Fraction
 from ...domain.errors import WorldRuntimeError
 from .contracts import (DomainEventDraft, EngineResult, SimulationContext,
                         StateChange)
-from .feedback import (demography_mortality_pressure_modifier,
+from .feedback import (demography_ecology_pressure_modifier,
+                       demography_ecology_stress_level,
+                       demography_mortality_pressure_modifier,
                        settlement_pressure_stress)
 
 ENGINE_ID = "DEMOGRAPHY"
@@ -247,6 +249,9 @@ class PopulationGroupEngine:
         max_stress = max((s for s in stress_map.values()), key=_order.get,
                          default="NONE")
         pressured = sum(1 for s in stress_map.values() if s != "NONE")
+        max_eco_level = max((demography_ecology_stress_level(
+            ctx.snapshot, settlement_ref=key[0]) for key in group_keys),
+            default=0)
         return EngineResult(
             engine_id=ENGINE_ID, engine_version=ENGINE_VERSION,
             proposed_changes=proposed, domain_events=events,
@@ -255,7 +260,8 @@ class PopulationGroupEngine:
                      "emigration": totals["emigration"],
                      "groups": len(outcomes),
                      "max_pressure_level": _order[max_stress],
-                     "pressured_settlements": pressured})
+                     "pressured_settlements": pressured,
+                     "max_ecology_stress_level": max_eco_level})
 
     # ------------------------------------------------------------ 内部步骤
     def _step_group(self, ctx: SimulationContext, rows, settlement_ref,
@@ -282,10 +288,12 @@ class PopulationGroupEngine:
             target = min(b + years, profile.cohort_buckets - 1)
             aged[target] = aged.get(target, 0) + n
         # 2) 死亡（floor + Bernoulli(余数)；含上一 committed step 的经济压力
-        #    —— CROSS_ENGINE_FEEDBACK_LATENCY = NEXT_COMMITTED_STEP，
-        #    绝不读取本步 staged ECONOMY 结果）
+        #    与生态压力 —— CROSS_ENGINE_FEEDBACK_LATENCY = NEXT_COMMITTED_STEP，
+        #    绝不读取本步 staged ECONOMY/ECOLOGY 结果）
         deaths = 0
         pressure_modifier = demography_mortality_pressure_modifier(
+            ctx.snapshot, species=species, settlement_ref=settlement_ref)
+        ecology_modifier = demography_ecology_pressure_modifier(
             ctx.snapshot, species=species, settlement_ref=settlement_ref)
         for b in range(profile.cohort_buckets):
             n = aged.get(b, 0)
@@ -293,7 +301,7 @@ class PopulationGroupEngine:
                 continue
             q = profile.mortality_of(b) \
                 + self._modifiers.external_mortality_modifier \
-                + pressure_modifier
+                + pressure_modifier + ecology_modifier
             if q < 0:
                 q = Fraction(0)
             expected = Fraction(n) * q
