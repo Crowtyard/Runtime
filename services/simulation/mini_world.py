@@ -25,7 +25,9 @@ from ...database.models_world import (EcologicalRegion, EcologyFeedbackState,
                                      ResourceNode, ResourceProfile,
                                      ResourceStock, Settlement,
                                      SettlementSocialState,
-                                     SocialFeedbackState)
+                                     SocialFeedbackState,
+                                     TribulationProfile,
+                                     TribulationSchedule)
 from .ecology import (ECOLOGY_STATE_SCALE, ENGINE_VERSION
                       as ECOLOGY_ENGINE_VERSION)
 from .ecology import TEST_ECOLOGY_PROFILE
@@ -128,14 +130,15 @@ MINI_INSTITUTIONS = [
 
 def seed_mini_world(session: Session, *, with_ecology: bool = False,
                     with_social: bool = False,
+                    with_tribulation: bool = False,
                     world_id: str = MINI_WORLD_ID) -> None:
     """向当前（测试）库播种 mini_world 实体（幂等）。
 
     with_ecology=False：M2a/M2b 精确夹具（不新增任何行 —— 基线复现依赖）。
-    with_ecology=True：M2c integrated 夹具（追加生态区/生态状态/生态反馈 +
-    可再生 TEST-TIMBER 节点与库存）。
-    with_social=True：M2d integrated 夹具（追加聚合家庭/lineage/institution/
-    聚落社会状态/社会反馈；要求 with_ecology=True）。
+    with_ecology=True：M2c integrated 夹具。
+    with_social=True：M2d integrated 夹具（要求 with_ecology=True）。
+    with_tribulation=True：M3a integrated 夹具（TEST profiles ×3 +
+    TEST_TRIBULATION_SCHEDULE_001；要求 with_social=True）。
     world_id：默认 MINI_WORLD_ID；long-horizon 压力测试用独立合成世界 ID。"""
     from sqlalchemy import select
 
@@ -297,4 +300,43 @@ def seed_mini_world(session: Session, *, with_ecology: bool = False,
                 social_support_num=1, social_support_den=1,
                 social_stress_num=0, social_stress_den=1,
                 engine_version=SOCIAL_ENGINE_VERSION, updated_blessed_tick=0))
+
+    # M3a：TEST tribulation profiles + TEST_TRIBULATION_SCHEDULE_001
+    if with_tribulation:
+        from .tribulation import TEST_PROFILES, TEST_SCHEDULE, TEST_SCHEDULE_ID
+        for spec in TEST_PROFILES.values():
+            session.add(TribulationProfile(
+                world_id=wid, profile_id=spec.profile_id, tier=spec.tier,
+                theme=spec.theme, intensity_min=spec.intensity_min,
+                intensity_max=spec.intensity_max,
+                precursor_steps=spec.precursor_steps,
+                preparation_steps=spec.preparation_steps,
+                impact_steps=spec.impact_steps,
+                population_risk_num=spec.population_risk.numerator,
+                population_risk_den=spec.population_risk.denominator,
+                resource_damage_num=spec.resource_damage.numerator,
+                resource_damage_den=spec.resource_damage.denominator,
+                inventory_damage_num=spec.inventory_damage.numerator,
+                inventory_damage_den=spec.inventory_damage.denominator,
+                production_disruption_num=
+                spec.production_disruption.numerator,
+                production_disruption_den=
+                spec.production_disruption.denominator,
+                social_displacement_num=spec.social_displacement.numerator,
+                social_displacement_den=spec.social_displacement.denominator,
+                institution_disruption_num=
+                spec.institution_disruption.numerator,
+                institution_disruption_den=
+                spec.institution_disruption.denominator,
+                ecology_pressure=spec.ecology_pressure,
+                recovery_steps=spec.recovery_steps,
+                targeting_rules=spec.targeting_rules,
+                succession_rules=spec.succession_rules,
+                status="TEST_FIXTURE_ONLY", source_refs=spec.source_refs,
+                semantic_version="test-trib-profile-1"))
+        for tier, period in TEST_SCHEDULE:
+            session.add(TribulationSchedule(
+                world_id=wid, schedule_id=TEST_SCHEDULE_ID, tier=tier,
+                period_years=period, enabled=True,
+                semantic_version="test-schedule-001"))
     session.flush()

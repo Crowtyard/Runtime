@@ -23,8 +23,17 @@ from ...database.models_world import (EcologicalRegion, EcologyFeedbackState,
                                      PopulationGroup, ProductionRecipe,
                                      ProductionState, ResourceNode,
                                      ResourceProfile, ResourceStock,
+                                     ResourceSuccessionCandidate,
                                      Settlement, SettlementSocialState,
-                                     SocialFeedbackState)
+                                     SocialFeedbackState,
+                                     TribulationCausalLink,
+                                     TribulationDecision,
+                                     TribulationEpisode,
+                                     TribulationImpactPlan,
+                                     TribulationProfile,
+                                     TribulationRecoveryState,
+                                     TribulationResidualChange,
+                                     TribulationSchedule)
 from ...domain.errors import IntegrityError
 from ..repositories import CheckpointRepository, EventRepository
 from ..rng_service import RngService
@@ -38,7 +47,8 @@ from .recovery import (WORLD_COMMITTED_KIND,
                        latest_authoritative_world_checkpoint)
 from .snapshot import StagedWorld, read_snapshot
 from .state_hash import (world_state_hash_v2, world_state_hash_v3,
-                         world_state_hash_v4, world_state_hash_v5)
+                         world_state_hash_v4, world_state_hash_v5,
+                         world_state_hash_v6)
 
 _MODEL_BY_TABLE = {
     "settlements": Settlement,
@@ -59,6 +69,15 @@ _MODEL_BY_TABLE = {
     "households": Household,
     "settlement_social_state": SettlementSocialState,
     "social_feedback_state": SocialFeedbackState,
+    "tribulation_profiles": TribulationProfile,
+    "tribulation_schedules": TribulationSchedule,
+    "tribulation_episodes": TribulationEpisode,
+    "tribulation_decisions": TribulationDecision,
+    "tribulation_impact_plans": TribulationImpactPlan,
+    "tribulation_recovery_states": TribulationRecoveryState,
+    "tribulation_residual_changes": TribulationResidualChange,
+    "resource_succession_candidates": ResourceSuccessionCandidate,
+    "tribulation_causal_links": TribulationCausalLink,
 }
 
 
@@ -80,7 +99,8 @@ class SimulationCoordinator:
 
     def __init__(self, engines: list[Engine], *,
                  simulation_version: str = PREFLIGHT_SIMULATION_VERSION,
-                 pipeline_version: str = PREFLIGHT_PIPELINE_VERSION):
+                 pipeline_version: str = PREFLIGHT_PIPELINE_VERSION,
+                 tribulation_engine=None, tribulation_adapters=None):
         self._by_id = {e.engine_id: e for e in engines}
         ordered = [self._by_id.get(eid) for eid in ENGINE_ORDER
                    if eid in self._by_id]
@@ -96,6 +116,13 @@ class SimulationCoordinator:
         self.pipeline_version = pipeline_version
         self.engine_versions = {e.engine_id: e.engine_version
                                 for e in ordered}
+        # M3a：可选 TRIBULATION 槽位（仅 0.3.x simulation_version 下构造；
+        # M2 调用方不传 → 行为与 M2 frozen 逐字节一致）
+        self.tribulation_engine = tribulation_engine
+        self.tribulation_adapters = tribulation_adapters or {}
+        if tribulation_engine is not None:
+            self.engine_versions[tribulation_engine.engine_id] = \
+                tribulation_engine.engine_version
 
     def run_step(self, session: Session, *, world_id: str,
                  blessed_start_tick: int, blessed_end_tick: int,
@@ -161,6 +188,60 @@ class SimulationCoordinator:
             step_metrics[engine.engine_id] = dict(result.metrics)
             warnings.extend(result.warnings)
 
+        # ---- M3a：TRIBULATION 引擎 + Domain Impact Adapters（方案 B）----
+        adapter_results = []
+        tribulation_plan_for_step = None
+        if self.tribulation_engine is not None:
+            if crash_after == "engine:TRIBULATION":
+                raise RuntimeError("crash: engine:TRIBULATION")
+            trng = rng_service.stream(
+                subsystem=self.tribulation_engine.engine_id,
+                blessed_period_tick=blessed_start_tick)
+            tctx = SimulationContext(
+                world_id=world_id,
+                simulation_version=self.simulation_version,
+                pipeline_version=self.pipeline_version,
+                step_index=step_index,
+                blessed_start_tick=blessed_start_tick,
+                blessed_end_tick=blessed_end_tick,
+                real_interval_start_us=real_interval_start_us,
+                real_interval_end_us=real_interval_end_us,
+                snapshot=snapshot, staged=staged, rng=trng,
+                modifiers={}, crash_after=crash_after)
+            tresult: EngineResult = self.tribulation_engine.simulate(tctx)
+            _validate_result(self.tribulation_engine.engine_id, tresult)
+            for change in tresult.proposed_changes:
+                if change.new_row is not None:
+                    staged.propose_insert(
+                        engine_id=self.tribulation_engine.engine_id,
+                        table=change.table, row=change.new_row)
+                    continue
+                staged.propose(engine_id=self.tribulation_engine.engine_id,
+                               table=change.table,
+                               entity_id=change.entity_id,
+                               field=change.field,
+                               new_value=change.new_value)
+            all_events.extend(tresult.domain_events)
+            step_metrics[self.tribulation_engine.engine_id] = dict(
+                tresult.metrics)
+            if tresult.tribulation_plan is not None:
+                plan = tresult.tribulation_plan
+                tribulation_plan_for_step = plan
+                for domain, adapter in sorted(self.tribulation_adapters.items()):
+                    if crash_after == f"adapter:{domain}":
+                        raise RuntimeError(f"crash: adapter:{domain}")
+                    res = adapter.apply(session, plan)
+                    adapter_results.append(res)
+                    all_events.extend(res.domain_events)
+                all_events.append(DomainEventDraft(
+                    engine_id=self.tribulation_engine.engine_id,
+                    event_type="TRIBULATION_IMPACT_APPLIED",
+                    cause={"episode_id": plan["episode_id"],
+                           "plan_id": plan["plan_id"]},
+                    effect={"domains": sorted(self.tribulation_adapters)}))
+        if crash_after == "after_tribulation":
+            raise RuntimeError("crash: after_tribulation")
+
         if crash_after == "after_engines":
             raise RuntimeError("crash: after_engines")
         if crash_after == "before_apply":
@@ -203,6 +284,49 @@ class SimulationCoordinator:
             })
             event_count += 1
 
+        # ---- M3a：adapter state changes + 最小因果链接（event_ref 回填）----
+        if adapter_results:
+            from ...database.base import utcnow as _utcnow
+            from ...database.models_core import WorldStateChange
+            from ...database.models_world import TribulationCausalLink
+            impact_uid = next((e["event_uid"] for e in emitted
+                               if e["event_type"]
+                               == "TRIBULATION_IMPACT_APPLIED"), None)
+            affected: dict = {}
+            sc_ids: dict = {}
+            for res in adapter_results:
+                for (etype, eid, field, old, new) in res.state_changes:
+                    sc = WorldStateChange(
+                        world_id=world_id, entity_type=etype,
+                        entity_id=str(eid), field=field,
+                        old_value={"v": old}, new_value={"v": new},
+                        event_ref=impact_uid, blessed_tick=blessed_end_tick,
+                        real_time=_utcnow())
+                    session.add(sc)
+                    session.flush()
+                    sc_ids[f"{etype}:{eid}:{field}"] = sc.id
+                affected[res.domain] = list(res.affected_entity_ids)
+            plan = tribulation_plan_for_step
+            if plan is not None:
+                session.add(TribulationCausalLink(
+                    world_id=world_id,
+                    episode_id=plan["episode_id"],
+                    correlation_id=plan["plan_id"],
+                    cause_event_ids={"scheduled": [
+                        e["event_uid"] for e in emitted
+                        if e["event_type"] == "TRIBULATION_SCHEDULED"]},
+                    trigger_event_id=impact_uid,
+                    decision_event_ids={"events": [
+                        e["event_uid"] for e in emitted
+                        if e["event_type"] in ("OWNER_DECISION_COMMITTED",
+                                               "AUTONOMOUS_RESPONSE_SELECTED")]},
+                    impact_plan_id=plan["plan_id"],
+                    result_event_ids={"events": [
+                        e["event_uid"] for e in emitted
+                        if e["event_type"].endswith("_IMPACT_APPLIED")]},
+                    affected_entity_ids=affected,
+                    state_change_ids=sc_ids))
+
         if crash_after == "before_checkpoint":
             raise RuntimeError("crash: before_checkpoint")
 
@@ -217,11 +341,18 @@ class SimulationCoordinator:
 
         final_snapshot = read_snapshot(session, world_id)
         # 哈希 schema 版本由管线状态域决定（不静默改语义）：
-        #   - 含 SOCIAL → v5（覆盖 social 状态域）
-        #   - 含 ECOLOGY → v4（M2c 冻结语义，基线逐字节复现）
+        #   - 注册 TRIBULATION → v6（覆盖灾劫状态域；仅 0.3.x）
+        #   - 含 SOCIAL → v5（M2d 冻结语义，基线逐字节复现）
+        #   - 含 ECOLOGY → v4（M2c 冻结语义）
         #   - 含 RESOURCE/ECONOMY → v3（M2b 冻结语义）
         #   - 仅 DEMOGRAPHY（M2a 回归）→ v2（M2a 冻结语义）
-        if "SOCIAL" in self.engine_versions:
+        if self.tribulation_engine is not None:
+            state_hash = world_state_hash_v6(
+                snapshot=final_snapshot,
+                simulation_version=self.simulation_version,
+                pipeline_version=self.pipeline_version,
+                engine_versions=self.engine_versions)
+        elif "SOCIAL" in self.engine_versions:
             state_hash = world_state_hash_v5(
                 snapshot=final_snapshot,
                 simulation_version=self.simulation_version,

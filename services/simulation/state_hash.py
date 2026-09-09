@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-"""world_state_hash（WORLD_STATE_HASH_SCHEMA_VERSION=2/3/4/5）。
+"""world_state_hash（WORLD_STATE_HASH_SCHEMA_VERSION=2/3/4/5/6）。
 
 - v2（M2a 冻结）：只覆盖 M2a 状态域（7 张表 + M2a 字段集）。
 - v3（M2b 冻结）：只覆盖 M2b 状态域（12 张表 + M2b 字段集，不含 M2c
   生态表/字段）—— M2b 120y 基线逐字节复现依赖此冻结。
 - v4（M2c 冻结）：只覆盖 M2c 状态域（15 张表 + M2c 字段集，不含 M2d
   社会表/字段）—— M2c 120y 基线逐字节复现依赖此冻结。
-- v5（M2d）：覆盖快照全状态域（Population + Resource/Economy +
-  Ecology + Social）。
+- v5（M2d 冻结）：只覆盖 M2d 状态域（18 张表 + M2d 字段集，不含 M3a
+  灾劫表/字段）—— M2d 120y 基线逐字节复现依赖此冻结。
+- v6（M3a）：覆盖快照全状态域（含 Tribulation 九表）。仅在注册
+  TRIBULATION 引擎的 simulation_version 下使用。
 - canonical serialization：UTF-8 JSON（sort_keys + 紧凑分隔符）+ 实体按语义
   键排序（snapshot._canonical）；禁止行物理顺序/autoincrement 顺序/now()
   时间戳/日志元数据/事件日志作为输入。
@@ -19,10 +21,11 @@ import json
 
 from .snapshot import WorldSnapshot
 
-WORLD_STATE_HASH_SCHEMA_VERSION = 5  # 当前（M2d）
+WORLD_STATE_HASH_SCHEMA_VERSION = 6  # 当前（M3a）
 WORLD_STATE_HASH_SCHEMA_VERSION_V2 = 2  # M2a 冻结（回归基线）
 WORLD_STATE_HASH_SCHEMA_VERSION_V3 = 3  # M2b 冻结（回归基线）
 WORLD_STATE_HASH_SCHEMA_VERSION_V4 = 4  # M2c 冻结（回归基线）
+WORLD_STATE_HASH_SCHEMA_VERSION_V5 = 5  # M2d 冻结（回归基线）
 
 # M2a 冻结表集（v2 只哈希这 7 张表，绝不因 snapshot 扩展而漂移）
 _V2_TABLES = frozenset({
@@ -142,6 +145,31 @@ _V4_FIELDS.update({
                                "updated_blessed_tick"),
 })
 
+# M2d 冻结表集/字段集（v5；不含 M3a 灾劫九表）
+_V5_TABLES = _V4_TABLES | frozenset({
+    "households", "settlement_social_state", "social_feedback_state"})
+_V5_FIELDS = dict(_V4_FIELDS)
+_V5_FIELDS.update({
+    "households": ("id", "world_id", "household_id", "settlement_ref",
+                   "species", "represented_population", "generation",
+                   "lineage_ref", "anchor_group_ref", "state",
+                   "formation_version", "updated_blessed_tick"),
+    "settlement_social_state": ("id", "world_id", "settlement_ref",
+                                "social_stress", "social_cohesion",
+                                "household_stability", "mobility_pressure",
+                                "unallocated_population",
+                                "stress_min_seen", "stress_max_seen",
+                                "engine_version", "updated_blessed_tick"),
+    "social_feedback_state": ("id", "world_id", "settlement_ref",
+                              "migration_modifier_num",
+                              "migration_modifier_den",
+                              "fertility_context_num",
+                              "fertility_context_den", "social_support_num",
+                              "social_support_den", "social_stress_num",
+                              "social_stress_den", "engine_version",
+                              "updated_blessed_tick"),
+})
+
 
 def _build_doc(*, snapshot: WorldSnapshot, simulation_version: str,
                pipeline_version: str, engine_versions: dict[str, str],
@@ -211,8 +239,22 @@ def world_state_hash_v4(*, snapshot: WorldSnapshot, simulation_version: str,
 def world_state_hash_v5(*, snapshot: WorldSnapshot, simulation_version: str,
                         pipeline_version: str,
                         engine_versions: dict[str, str]) -> str:
-    """M2d v5：覆盖快照全状态域（含 Social households/lineages/
-    institutions/settlement social state/social feedback）。"""
+    """M2d 冻结 v5（回归基线专用；覆盖 M2d 18 表状态域，语义永不变化）。"""
+    doc = _build_doc(
+        snapshot=snapshot, simulation_version=simulation_version,
+        pipeline_version=pipeline_version, engine_versions=engine_versions,
+        schema_version=WORLD_STATE_HASH_SCHEMA_VERSION_V5,
+        table_fields={t: _V5_FIELDS[t] for t in sorted(_V5_TABLES)})
+    return _digest(doc)
+
+
+def world_state_hash_v6(*, snapshot: WorldSnapshot, simulation_version: str,
+                        pipeline_version: str,
+                        engine_versions: dict[str, str]) -> str:
+    """M3a v6：覆盖快照全状态域（含 Tribulation 九表）。
+
+    仅在注册 TRIBULATION 引擎的 simulation_version 下由 coordinator 使用；
+    M2 路径绝不调用（M2 语义逐字节不变）。"""
     from .snapshot import _FIELDS  # 延迟导入避免循环
     doc = _build_doc(
         snapshot=snapshot, simulation_version=simulation_version,

@@ -27,7 +27,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-EXPECTED_SCHEMA_HEAD = "e8a1c5d7f2b4"
+EXPECTED_SCHEMA_HEAD = "f1b3c5d7e9a2"
 DB_FILENAME = "blessed_land.sqlite"
 MARKER = "authoritative_db.json"
 

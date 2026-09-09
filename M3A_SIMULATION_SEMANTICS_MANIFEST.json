@@ -1,0 +1,34 @@
+{
+  "manifest_version": "m3a-semantics-v1",
+  "frozen_at": "M3A_TRIBULATION_ENGINE",
+  "base": "M2_SIMULATION_SEMANTICS_MANIFEST.json (m2-semantics-v1, unchanged)",
+  "simulation_version": "0.3.0-m3a",
+  "tribulation_engine_version": "m3a-tribulation-1",
+  "tribulation_slot": "REGISTERED (after SOCIAL; M2 simulation_version keeps NOT_REGISTERED)",
+  "pipeline_order": ["DEMOGRAPHY", "RESOURCE", "ECONOMY", "ECOLOGY", "SOCIAL", "TRIBULATION"],
+  "tribulation_lifecycle": ["PRECURSOR", "PREPARATION", "IMPACT", "RESPONSE", "STABILIZATION", "RESIDUAL_CHANGE", "RECOVERY", "RESOURCE_SUCCESSION", "NEW_NORMAL"],
+  "tribulation_episode_id_schema_version": "tribulation-episode-id-v1",
+  "impact_plan_schema_version": "impact-plan-v2",
+  "owner_decision_schema_version": "owner-decision-v1",
+  "rng_substreams": ["TRIBULATION_SCHEDULE", "TRIBULATION_PROFILE", "TRIBULATION_TARGET", "TRIBULATION_IMPACT", "TRIBULATION_RECOVERY", "TRIBULATION_SUCCESSION"],
+  "event_uid_schema_version": 1,
+  "event_stream_hash_schema_version": 1,
+  "world_state_hash_schema_version": 6,
+  "world_state_hash_v5_frozen": true,
+  "adaptive_time_resolution": "schedule/stage boundaries split SimulationInterval at integer blessed ticks; no float years",
+  "cross_domain_ownership": "PLAN_B (coordinator applies Domain-owned Impact Adapters in one WorldMutationContext)",
+  "default_autonomous_response_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "tribulation_rank_inference": 0,
+  "test_only": {
+    "schedule": "TEST_TRIBULATION_SCHEDULE_001 (REGULAR 10y / MAJOR 50y / CENTENNIAL 100y, higher tier replaces lower)",
+    "profiles": ["TEST_TRIBULATION_PROFILE_001", "TEST_TRIBULATION_PROFILE_002", "TEST_TRIBULATION_PROFILE_003"]
+  },
+  "formal_world": {
+    "tribulation_profiles": 0,
+    "tribulation_schedules": 0,
+    "tribulation_episodes": 0,
+    "next_tribulation": "UNKNOWN"
+  },
+  "cross_version_policy": "algorithm changes altering world results require simulation_version bump; M2 (0.2.0-preflight) results remain byte-identical",
+  "postgresql_gates": ["PRE_ACTIVATION_PG_GATE = REQUIRED", "PRE_ACTIVATION_PG_COMMIT_AMBIGUITY_GATE = REQUIRED"]
+}

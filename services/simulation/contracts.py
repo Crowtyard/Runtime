@@ -33,6 +33,12 @@ ENGINE_OWNERSHIP: dict[str, frozenset[str]] = {
     # settlement_social_state / social_feedback_state 为 M2d 新增
     "SOCIAL": frozenset({"lineages", "institutions", "households",
                          "settlement_social_state", "social_feedback_state"}),
+    # M3a：tribulation-owned 状态（profiles/schedules 为只读配置）
+    "TRIBULATION": frozenset({
+        "tribulation_episodes", "tribulation_decisions",
+        "tribulation_impact_plans", "tribulation_recovery_states",
+        "tribulation_residual_changes", "resource_succession_candidates",
+        "tribulation_causal_links"}),
 }
 
 PREFLIGHT_SIMULATION_VERSION = "0.2.0-preflight"
@@ -77,6 +83,8 @@ class EngineResult:
     metrics: dict = field(default_factory=dict)
     warnings: list[str] = field(default_factory=list)
     draw_count: int = 0
+    tribulation_plan: dict | None = None  # M3a：IMPACT 步的跨域影响计划
+    # （coordinator 经 Domain-owned Impact Adapters 应用；非 TRIBULATION 引擎恒 None）
 
 
 @dataclass(frozen=True)

@@ -524,3 +524,265 @@ class CulturalElement(Base):
     element: Mapped[str] = mapped_column(String(128), nullable=False)
     phase: Mapped[str] = mapped_column(String(24), default="CONTACT")
     adoption_stats: Mapped[dict | None] = mapped_column(JSON)
+
+
+# ============================== M3a Tribulation ==============================
+class TribulationProfile(Base):
+    """灾劫 profile（M3a：TEST_FIXTURE_ONLY；正式 profile=0）。"""
+    __tablename__ = "tribulation_profiles"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    profile_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    tier: Mapped[str] = mapped_column(String(16), nullable=False)
+    theme: Mapped[str] = mapped_column(String(32), nullable=False)
+    intensity_min: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                               default=0, server_default="0")
+    intensity_max: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                               default=100, server_default="100")
+    precursor_steps: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                 default=1, server_default="1")
+    preparation_steps: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                   default=1, server_default="1")
+    impact_steps: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                              default=1, server_default="1")
+    population_risk_num: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                     default=0, server_default="0")
+    population_risk_den: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                     default=1, server_default="1")
+    resource_damage_num: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                     default=0, server_default="0")
+    resource_damage_den: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                     default=1, server_default="1")
+    inventory_damage_num: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                      default=0, server_default="0")
+    inventory_damage_den: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                      default=1, server_default="1")
+    production_disruption_num: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    production_disruption_den: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    social_displacement_num: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    social_displacement_den: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    institution_disruption_num: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    institution_disruption_den: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    ecology_pressure: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                  default=0, server_default="0")
+    recovery_steps: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                default=2, server_default="2")
+    targeting_rules: Mapped[dict | None] = mapped_column(JSON)
+    succession_rules: Mapped[dict | None] = mapped_column(JSON)
+    status: Mapped[str] = mapped_column(String(24), nullable=False,
+                                        default="TEST_FIXTURE_ONLY",
+                                        server_default="TEST_FIXTURE_ONLY")
+    source_refs: Mapped[dict | None] = mapped_column(JSON)
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+
+    __table_args__ = (UniqueConstraint("world_id", "profile_id",
+                                       name="uq_tribulation_profiles_world"),)
+
+
+class TribulationSchedule(Base):
+    """灾劫排期（M3a：测试 TEST_TRIBULATION_SCHEDULE_001；正式 0 行）。"""
+    __tablename__ = "tribulation_schedules"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    schedule_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    tier: Mapped[str] = mapped_column(String(16), nullable=False)
+    period_years: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+
+    __table_args__ = (UniqueConstraint("world_id", "schedule_id", "tier",
+                                       name="uq_tribulation_schedules_world"),)
+
+
+class TribulationEpisode(Base):
+    """TribulationEpisode（生命周期聚合索引；确定性 ≥128-bit identity）。"""
+    __tablename__ = "tribulation_episodes"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    episode_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    window_tier: Mapped[str] = mapped_column(String(16), nullable=False)
+    schedule_ref: Mapped[str | None] = mapped_column(String(64))
+    profile_ref: Mapped[str | None] = mapped_column(String(64))
+    current_stage: Mapped[str] = mapped_column(String(24), nullable=False)
+    entered_tick: Mapped[int | None] = mapped_column(BigInteger)
+    transition_tick: Mapped[int | None] = mapped_column(BigInteger)
+    target_regions: Mapped[dict | None] = mapped_column(JSON)
+    target_settlements: Mapped[dict | None] = mapped_column(JSON)
+    status: Mapped[str] = mapped_column(String(12), nullable=False,
+                                        default="ACTIVE", server_default="ACTIVE")
+    decision_policy: Mapped[str | None] = mapped_column(String(24))
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+    updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+
+    __table_args__ = (UniqueConstraint("world_id", "episode_id",
+                                       name="uq_tribulation_episodes_world"),)
+
+
+class TribulationDecision(Base):
+    """主人结构化决策（显式提交；immutable；supersede/correction）。"""
+    __tablename__ = "tribulation_decisions"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    decision_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    episode_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    action: Mapped[str] = mapped_column(String(16), nullable=False)
+    submitted_tick: Mapped[int | None] = mapped_column(BigInteger)
+    effective_before_tick: Mapped[int | None] = mapped_column(BigInteger)
+    target_priorities: Mapped[dict | None] = mapped_column(JSON)
+    resource_allocation: Mapped[dict | None] = mapped_column(JSON)
+    status: Mapped[str] = mapped_column(String(12), nullable=False,
+                                        default="ACTIVE", server_default="ACTIVE")
+    supersedes_decision_id: Mapped[str | None] = mapped_column(String(32))
+    source: Mapped[str | None] = mapped_column(String(32))
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+
+    __table_args__ = (UniqueConstraint("world_id", "decision_id",
+                                       name="uq_tribulation_decisions_world"),)
+
+
+class TribulationImpactPlan(Base):
+    """TribulationImpactPlan（结构化/有界/确定性/可验证；可 hash/replay）。"""
+    __tablename__ = "tribulation_impact_plans"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    plan_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    episode_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    profile_ref: Mapped[str | None] = mapped_column(String(64))
+    tier: Mapped[str] = mapped_column(String(16), nullable=False)
+    intensity: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    affected_regions: Mapped[dict | None] = mapped_column(JSON)
+    affected_settlements: Mapped[dict | None] = mapped_column(JSON)
+    population_risk_num: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                     default=0, server_default="0")
+    population_risk_den: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                     default=1, server_default="1")
+    resource_damage_num: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                     default=0, server_default="0")
+    resource_damage_den: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                     default=1, server_default="1")
+    inventory_damage_num: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                      default=0, server_default="0")
+    inventory_damage_den: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                      default=1, server_default="1")
+    production_disruption_num: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    production_disruption_den: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    social_displacement_num: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    social_displacement_den: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    institution_disruption_num: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    institution_disruption_den: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    ecology_pressure: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                  default=0, server_default="0")
+    mitigation_applied: Mapped[dict | None] = mapped_column(JSON)
+    residual_changes: Mapped[dict | None] = mapped_column(JSON)
+    recovery_requirements: Mapped[dict | None] = mapped_column(JSON)
+    succession_candidates: Mapped[dict | None] = mapped_column(JSON)
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+
+    __table_args__ = (UniqueConstraint("world_id", "plan_id",
+                                       name="uq_tribulation_impact_plans_world"),)
+
+
+class TribulationRecoveryState(Base):
+    """灾后恢复状态（跨 committed Step；下一个 tick 不清零）。"""
+    __tablename__ = "tribulation_recovery_states"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    episode_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    recovery_need_num: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                   default=100, server_default="100")
+    recovery_need_den: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                   default=100, server_default="100")
+    progress_num: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                              default=0, server_default="0")
+    progress_den: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                              default=100, server_default="100")
+    resource_requirement: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                      default=0, server_default="0")
+    population_requirement: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    ecology_requirement: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                     default=0, server_default="0")
+    social_requirement: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                    default=0, server_default="0")
+    status: Mapped[str] = mapped_column(String(16), nullable=False,
+                                        default="IN_PROGRESS",
+                                        server_default="IN_PROGRESS")
+    started_tick: Mapped[int | None] = mapped_column(BigInteger)
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+    updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+
+    __table_args__ = (UniqueConstraint(
+        "world_id", "episode_id",
+        name="uq_tribulation_recovery_states_world"),)
+
+
+class TribulationResidualChange(Base):
+    """灾劫残余变化（永久环境/资源/社会条件；不保证正收益）。"""
+    __tablename__ = "tribulation_residual_changes"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    episode_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    change_kind: Mapped[str] = mapped_column(String(32), nullable=False)
+    region_ref: Mapped[str | None] = mapped_column(String(64))
+    settlement_ref: Mapped[str | None] = mapped_column(String(64))
+    payload: Mapped[dict | None] = mapped_column(JSON)  # 结构化参数（非叙事）
+    persistent: Mapped[bool] = mapped_column(Boolean, nullable=False,
+                                             default=True)
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+
+
+class ResourceSuccessionCandidate(Base):
+    """资源演替候选（条件候选 ≠ ResourceNode / 库存 / 产量；非掉落）。"""
+    __tablename__ = "resource_succession_candidates"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    candidate_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    episode_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    region_ref: Mapped[str | None] = mapped_column(String(64))
+    resource_category: Mapped[str | None] = mapped_column(String(32))
+    environment_conditions: Mapped[dict | None] = mapped_column(JSON)
+    maturation_requirement: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    observation_progress: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    stability_progress: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    discovery_status: Mapped[str] = mapped_column(String(16), nullable=False,
+                                                  default="UNOBSERVED",
+                                                  server_default="UNOBSERVED")
+    development_status: Mapped[str] = mapped_column(String(16), nullable=False,
+                                                    default="NONE",
+                                                    server_default="NONE")
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+
+    __table_args__ = (UniqueConstraint(
+        "world_id", "candidate_id",
+        name="uq_resource_succession_candidates_world"),)
+
+
+class TribulationCausalLink(Base):
+    """M3a 最小因果关联字段（M3b 才实现查询服务）。"""
+    __tablename__ = "tribulation_causal_links"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    episode_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    correlation_id: Mapped[str | None] = mapped_column(String(32))
+    cause_event_ids: Mapped[dict | None] = mapped_column(JSON)
+    trigger_event_id: Mapped[str | None] = mapped_column(String(64))
+    decision_event_ids: Mapped[dict | None] = mapped_column(JSON)
+    impact_plan_id: Mapped[str | None] = mapped_column(String(32))
+    result_event_ids: Mapped[dict | None] = mapped_column(JSON)
+    affected_entity_ids: Mapped[dict | None] = mapped_column(JSON)
+    state_change_ids: Mapped[dict | None] = mapped_column(JSON)

@@ -1,0 +1,392 @@
+[
+ {
+  "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+  "tier": "REGULAR",
+  "entered_tick": 10000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-SATELLITE-B"
+   ]
+  }
+ },
+ {
+  "episode_id": "7f99e4f677f8ec866384b9456fb9547b",
+  "tier": "REGULAR",
+  "entered_tick": 20000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "546485544430ba0e246976b5feca1538",
+  "tier": "REGULAR",
+  "entered_tick": 30000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "f9fcec67952fd0fe85e20f2787efc170",
+  "tier": "REGULAR",
+  "entered_tick": 40000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-SATELLITE-B"
+   ]
+  }
+ },
+ {
+  "episode_id": "685734559d85c3d0125b61cc4c18db02",
+  "tier": "MAJOR",
+  "entered_tick": 50000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_002",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "30c00ab73e76a1d551eccbd033a19480",
+  "tier": "REGULAR",
+  "entered_tick": 60000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "e0efeb8690336a5d963113c16aad1b5a",
+  "tier": "REGULAR",
+  "entered_tick": 70000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-SATELLITE-B"
+   ]
+  }
+ },
+ {
+  "episode_id": "26cb62afb07e985f948210be79012851",
+  "tier": "REGULAR",
+  "entered_tick": 80000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "c64b7b057593e15f1a893724b5e65cfc",
+  "tier": "REGULAR",
+  "entered_tick": 90000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "2c3c9563084cb90ad3d7c74d9fba984c",
+  "tier": "CENTENNIAL",
+  "entered_tick": 100000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_003",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-SATELLITE-B"
+   ]
+  }
+ },
+ {
+  "episode_id": "860992e5fa53bcde5482ee0035b7e5ef",
+  "tier": "REGULAR",
+  "entered_tick": 110000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-SATELLITE-B"
+   ]
+  }
+ },
+ {
+  "episode_id": "5e0c9cfb2d7105dd2b7a48b00b9293b1",
+  "tier": "REGULAR",
+  "entered_tick": 120000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-SATELLITE-B"
+   ]
+  }
+ },
+ {
+  "episode_id": "cb1477d6facd8183dea5bd085f3d41b7",
+  "tier": "REGULAR",
+  "entered_tick": 130000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-SATELLITE-B"
+   ]
+  }
+ },
+ {
+  "episode_id": "d9148b554af3bcaef3190f77e2ab5354",
+  "tier": "REGULAR",
+  "entered_tick": 140000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "465b7300cb0449d013f443d16a816f03",
+  "tier": "MAJOR",
+  "entered_tick": 150000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_002",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "c93411242b8af0a78a048d466bad1d63",
+  "tier": "REGULAR",
+  "entered_tick": 160000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "618df8a0f7edb5492405233ca00eb7cc",
+  "tier": "REGULAR",
+  "entered_tick": 170000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "0c4d251d7cd85375514f9e560f6e4eb5",
+  "tier": "REGULAR",
+  "entered_tick": 180000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "c216af60f1cc96e56b64e43fe88498bc",
+  "tier": "REGULAR",
+  "entered_tick": 190000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "1e86a279fa9ae63ff4e93dd347e9c67a",
+  "tier": "CENTENNIAL",
+  "entered_tick": 200000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_003",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-SATELLITE-B"
+   ]
+  }
+ },
+ {
+  "episode_id": "c5890be408f80f22fb7cab9d668f701c",
+  "tier": "REGULAR",
+  "entered_tick": 210000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "c48fd43962f0a05422c8095f71693b70",
+  "tier": "REGULAR",
+  "entered_tick": 220000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-SATELLITE-B"
+   ]
+  }
+ },
+ {
+  "episode_id": "85a3864dde8e47f78f5914a0c08da12c",
+  "tier": "REGULAR",
+  "entered_tick": 230000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-SATELLITE-B"
+   ]
+  }
+ },
+ {
+  "episode_id": "7232fccb221754fc778fce2a81b7d2f2",
+  "tier": "REGULAR",
+  "entered_tick": 240000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "beed3f1e4bad14c1fa97bc472e76bfa6",
+  "tier": "MAJOR",
+  "entered_tick": 250000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_002",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "8062d997967a4eb6d9d15346b68a77c4",
+  "tier": "REGULAR",
+  "entered_tick": 260000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-SATELLITE-B"
+   ]
+  }
+ },
+ {
+  "episode_id": "7457207e406ff27e941aee8d64d9377e",
+  "tier": "REGULAR",
+  "entered_tick": 270000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-SATELLITE-B"
+   ]
+  }
+ },
+ {
+  "episode_id": "5ae734a6b52309b559724ba2315d6f90",
+  "tier": "REGULAR",
+  "entered_tick": 280000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-SATELLITE-B"
+   ]
+  }
+ },
+ {
+  "episode_id": "2c5eb32a4508fb6cdc453949a52f8113",
+  "tier": "REGULAR",
+  "entered_tick": 290000000,
+  "current_stage": "NEW_NORMAL",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_001",
+  "decision_policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY",
+  "targets": {
+   "selected": [
+    "TEST-MAIN-A"
+   ]
+  }
+ },
+ {
+  "episode_id": "dc35b55df55bc4c7d159bdc6aee72428",
+  "tier": "CENTENNIAL",
+  "entered_tick": 300000000,
+  "current_stage": "PRECURSOR",
+  "profile_ref": "TEST_TRIBULATION_PROFILE_003",
+  "decision_policy": null,
+  "targets": {
+   "selected": [
+    "TEST-SATELLITE-B"
+   ]
+  }
+ }
+]

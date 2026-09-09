@@ -30,7 +30,7 @@ from XiaoguangBlessedLandRuntime.services.simulation.event_stream import (
 from XiaoguangBlessedLandRuntime.services.simulation.social import (
     IDENTITY_SCHEMA_VERSION, social_identity)
 from XiaoguangBlessedLandRuntime.services.simulation.state_hash import (
-    WORLD_STATE_HASH_SCHEMA_VERSION)
+    WORLD_STATE_HASH_SCHEMA_VERSION_V5)
 
 REPO = PROJECT_ROOT
 MANIFEST_PATH = REPO / "M2_SIMULATION_SEMANTICS_MANIFEST.json"
@@ -108,7 +108,7 @@ def test_mr4_semantics_manifest_matches_live_constants():
     assert m["event_stream_hash_schema_version"] \
         == EVENT_STREAM_HASH_SCHEMA_VERSION
     assert m["world_state_hash_schema_version"] \
-        == WORLD_STATE_HASH_SCHEMA_VERSION
+        == WORLD_STATE_HASH_SCHEMA_VERSION_V5  # M2 冻结语义 v5（当前活值=M3a v6）
     assert m["feedback_latency"] == "NEXT_COMMITTED_STEP"
 
 

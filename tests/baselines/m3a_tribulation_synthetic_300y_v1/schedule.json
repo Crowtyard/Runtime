@@ -1,0 +1,14 @@
+[
+ {
+  "tier": "REGULAR",
+  "period_years": 10
+ },
+ {
+  "tier": "MAJOR",
+  "period_years": 50
+ },
+ {
+  "tier": "CENTENNIAL",
+  "period_years": 100
+ }
+]

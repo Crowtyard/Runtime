@@ -46,7 +46,7 @@ from XiaoguangBlessedLandRuntime.services.writer_lock import (  # noqa: E402
 
 PROJECT_ROOT = _PROJECT_ROOT
 BIBLE_DIR = PROJECT_ROOT.parent / "XIAOGUANG_CROW_KB" / "world_bible"
-HEAD_REVISION = "e8a1c5d7f2b4"  # m2d_social（当前 head）
+HEAD_REVISION = "f1b3c5d7e9a2"  # m3a_tribulation（当前 head）
 
 EPOCH0 = datetime(2026, 1, 1, tzinfo=timezone.utc)
 EPOCH0_US = datetime_to_epoch_us(EPOCH0)

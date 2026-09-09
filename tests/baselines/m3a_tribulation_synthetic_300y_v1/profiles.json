@@ -1,0 +1,29 @@
+{
+ "TEST_TRIBULATION_PROFILE_001": {
+  "tier": "REGULAR",
+  "theme": "ECOLOGICAL_STRESS",
+  "intensity": [
+   20,
+   40
+  ],
+  "recovery_steps": 2
+ },
+ "TEST_TRIBULATION_PROFILE_002": {
+  "tier": "MAJOR",
+  "theme": "EARTH_VEIN_DISTURBANCE",
+  "intensity": [
+   50,
+   70
+  ],
+  "recovery_steps": 3
+ },
+ "TEST_TRIBULATION_PROFILE_003": {
+  "tier": "CENTENNIAL",
+  "theme": "SPIRIT_TIDE",
+  "intensity": [
+   80,
+   100
+  ],
+  "recovery_steps": 4
+ }
+}
