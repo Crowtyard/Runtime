@@ -1,0 +1,186 @@
+{
+ "world_id": "LONGHORIZON-005",
+ "years": 1000,
+ "wall_seconds": 116.042,
+ "db_size_mb": 7.906,
+ "row_counts": {
+  "world_events": 13117,
+  "population_groups": 80,
+  "households": 202,
+  "lineages": 16,
+  "institutions": 2,
+  "resource_nodes": 2,
+  "resource_stocks": 6,
+  "ecology_state": 2,
+  "ecology_feedback_state": 2,
+  "settlement_social_state": 2,
+  "social_feedback_state": 2,
+  "simulation_checkpoints": 2000,
+  "simulation_run": 1000,
+  "world_id": "LONGHORIZON-005"
+ },
+ "final_metrics": {
+  "population_by_settlement": {
+   "TEST-MAIN-A": 255,
+   "TEST-SATELLITE-B": 123
+  },
+  "households_active": 159,
+  "households_total": 202,
+  "max_household_generation": 11,
+  "lineages_total": 16,
+  "lineages_active": 14,
+  "lineages_extinct": 2,
+  "max_lineage_generation": 11,
+  "institutions_total": 2,
+  "institutions_dissolved": 0,
+  "social_stress": {
+   "TEST-MAIN-A": 572251,
+   "TEST-SATELLITE-B": 649420
+  },
+  "stress_min_seen": {
+   "TEST-MAIN-A": 0,
+   "TEST-SATELLITE-B": 0
+  },
+  "stress_max_seen": {
+   "TEST-MAIN-A": 577604,
+   "TEST-SATELLITE-B": 653789
+  },
+  "quality_min_seen": {
+   "TEST-ZONE-A": 581319,
+   "TEST-ZONE-B": 791359
+  },
+  "quality_max_seen": {
+   "TEST-ZONE-A": 900000,
+   "TEST-ZONE-B": 900000
+  },
+  "event_count": 13117
+ },
+ "final_hashes": {
+  "world_state_hash": "aae6090b25f165e58dde41965f1a3926ce4c4e4a8e564a4415f0cc4c3e8c0b4d",
+  "event_stream_hash": "9f745425e13fa15bde66f5e3c726d782264494c11cacc9ff013626e2733a7a43"
+ },
+ "runs": 1000,
+ "steps": 1000,
+ "checkpoints": 2000,
+ "population": {
+  "start": 400,
+  "end": 378,
+  "births": 6980,
+  "deaths": 7002,
+  "migrations": 4961
+ },
+ "resource": {
+  "initial_reserve": 405000000000,
+  "final_reserve": 4981985176,
+  "total_extracted": 576876245080,
+  "depleted_nodes": 1,
+  "regeneration_applied": 176858230256
+ },
+ "economy": {
+  "initial_stock": {
+   "TEST-RESOURCE-001": 1000000000,
+   "TEST-RESOURCE-002": 100000000,
+   "TEST-RESOURCE-003": 100000000
+  },
+  "final_stock": {
+   "TEST-RESOURCE-001": 0,
+   "TEST-RESOURCE-002": 0,
+   "TEST-RESOURCE-003": 176976245080
+  },
+  "production_input": 401000000000,
+  "production_output": 198495000000,
+  "loss": 2005000000,
+  "demand": 474817000538,
+  "fulfilled": 198595000000,
+  "unmet": 276222000538,
+  "imports": 315033320,
+  "exports": 315033320,
+  "transfers": 315033320,
+  "shortage_steps": 1882
+ },
+ "ecology": {
+  "initial_quality": {
+   "TEST-ZONE-A": 900000,
+   "TEST-ZONE-B": 900000
+  },
+  "final_quality": {
+   "TEST-ZONE-A": 868813,
+   "TEST-ZONE-B": 814979
+  },
+  "degradation": 4897733,
+  "recovery": 4781525,
+  "threshold_crossings": 4,
+  "feedback_applications": 2000
+ },
+ "social": {
+  "initial_stress": {
+   "TEST-MAIN-A": 0,
+   "TEST-SATELLITE-B": 0
+  },
+  "final_stress": {
+   "TEST-MAIN-A": 572251,
+   "TEST-SATELLITE-B": 649420
+  },
+  "households_formed": 0,
+  "households_split": 122,
+  "households_dissolved": 43,
+  "lineages_founded": 15,
+  "lineages_extinct": 2,
+  "institutions_founded": 0,
+  "institutions_dissolved": 0,
+  "stress_threshold_crossings": 2,
+  "feedback_applications": 2000
+ },
+ "engine_metrics": {
+  "DEMOGRAPHY": {
+   "births": 6980,
+   "deaths": 7002,
+   "immigration": 4961,
+   "emigration": 4961,
+   "groups": 2000,
+   "max_pressure_level": 1994,
+   "pressured_settlements": 1880,
+   "max_ecology_stress_level": 543
+  },
+  "RESOURCE": {
+   "extracted_minor": 576876245080,
+   "depleted": 1,
+   "nodes": 2000,
+   "regeneration_applied_minor": 176858230256
+  },
+  "ECONOMY": {
+   "production_input_minor": 401000000000,
+   "production_output_minor": 198495000000,
+   "loss_minor": 2005000000,
+   "demand_minor": 474817000538,
+   "fulfilled_minor": 198595000000,
+   "unmet_minor": 276222000538,
+   "imported_minor": 315033320,
+   "exported_minor": 315033320,
+   "transfer_quantity_minor": 315033320,
+   "transfers": 118,
+   "production_batches": 200500,
+   "shortage_pairs": 1882
+  },
+  "ECOLOGY": {
+   "zones": 2000,
+   "degradation_minor": 4897733,
+   "recovery_minor": 4781525,
+   "threshold_crossings": 4,
+   "feedback_applications": 2000
+  },
+  "SOCIAL": {
+   "households_formed": 0,
+   "households_split": 122,
+   "households_dissolved": 43,
+   "lineages_founded": 15,
+   "lineages_extinct": 2,
+   "institutions_founded": 0,
+   "institutions_dissolved": 0,
+   "institution_state_transitions": 2,
+   "stress_threshold_crossings": 2,
+   "feedback_applications": 2000
+  }
+ },
+ "invariant_issues": []
+}

@@ -1,0 +1,36 @@
+{
+  "manifest_version": "m2-semantics-v1",
+  "frozen_at": "M2_INTEGRATED_COMPLETION_REVIEW",
+  "simulation_version": "0.2.0-preflight",
+  "pipeline_version": "m2-preflight-1",
+  "pipeline_order": ["DEMOGRAPHY", "RESOURCE", "ECONOMY", "ECOLOGY", "SOCIAL"],
+  "tribulation_slot": "NOT_REGISTERED",
+  "engine_versions": {
+    "DEMOGRAPHY": "m2a-1",
+    "RESOURCE": "m2b-resource-1",
+    "ECONOMY": "m2b-economy-1",
+    "ECOLOGY": "m2c-ecology-1",
+    "SOCIAL": "m2d-social-1"
+  },
+  "rng_schema_version": "m1-derive-seed-v1",
+  "event_uid_schema_version": 1,
+  "event_uid_bits": 128,
+  "domain_entity_id_schema_version": "domain-entity-id-v1",
+  "social_entity_id_schema_version": "social-v2",
+  "run_id_schema": "run-id-v1",
+  "event_stream_hash_schema_version": 1,
+  "world_state_hash_schema_version": 5,
+  "feedback_latency": "NEXT_COMMITTED_STEP",
+  "step_granularity": "default 1 blessed year = 1_000_000 canonical ticks; engines accept arbitrary SimulationInterval via integer carry",
+  "checkpoint_semantics": "TIME_COMMITTED + WORLD_COMMITTED committed atomically in one transaction; authoritative world recovery = latest complete WORLD_COMMITTED",
+  "cross_version_policy": "any algorithm change that alters population/resource/economy/ecology/social results requires a simulation_version bump; silently changing world rules under the same simulation_version is forbidden",
+  "identity_rules": "world semantic identity >= 128-bit deterministic hex; no UUID4 / wall clock / DB autoincrement / random entropy",
+  "operational_identity_exceptions": [
+    "writer lease token (fencing security credential; random by design, not world state)",
+    "backup_id (backup file label; not world state)"
+  ],
+  "postgresql_gates": [
+    "PRE_ACTIVATION_PG_GATE = REQUIRED",
+    "PRE_ACTIVATION_PG_COMMIT_AMBIGUITY_GATE = REQUIRED"
+  ]
+}

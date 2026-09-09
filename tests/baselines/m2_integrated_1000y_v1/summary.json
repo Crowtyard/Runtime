@@ -1,0 +1,396 @@
+{
+ "fixture_version": "mini_world_v1",
+ "simulation_version": "0.2.0-preflight",
+ "long_horizon": "LONG_HORIZON_SYNTHETIC_WORLD (TEST_FIXTURE_ONLY, not Canon)",
+ "engine_versions": {
+  "DEMOGRAPHY": "m2a-1",
+  "RESOURCE": "m2b-resource-1",
+  "ECONOMY": "m2b-economy-1",
+  "ECOLOGY": "m2c-ecology-1",
+  "SOCIAL": "m2d-social-1"
+ },
+ "world_state_hash_schema_version": 5,
+ "event_stream_hash_schema_version": 1,
+ "event_uid_schema_version": 1,
+ "social_entity_id_schema_version": "social-v2",
+ "seeds": {
+  "LONGHORIZON-001": {
+   "final_hashes": {
+    "world_state_hash": "1f339b530786ffb349ee65c4ae3dfc6f2d1941374f1d8cb5296c71debda9b93b",
+    "event_stream_hash": "2f7a1fa434ad719c9ee0e83819b5f6e3349d9d2e2c68e3121d61037e80ea47ff"
+   },
+   "wall_seconds": 127.712,
+   "db_size_mb": 7.977,
+   "final_metrics": {
+    "population_by_settlement": {
+     "TEST-MAIN-A": 241,
+     "TEST-SATELLITE-B": 123
+    },
+    "households_active": 148,
+    "households_total": 201,
+    "max_household_generation": 14,
+    "lineages_total": 16,
+    "lineages_active": 13,
+    "lineages_extinct": 3,
+    "max_lineage_generation": 14,
+    "institutions_total": 2,
+    "institutions_dissolved": 0,
+    "social_stress": {
+     "TEST-MAIN-A": 571024,
+     "TEST-SATELLITE-B": 643710
+    },
+    "stress_min_seen": {
+     "TEST-MAIN-A": 0,
+     "TEST-SATELLITE-B": 0
+    },
+    "stress_max_seen": {
+     "TEST-MAIN-A": 577604,
+     "TEST-SATELLITE-B": 651997
+    },
+    "quality_min_seen": {
+     "TEST-ZONE-A": 597042,
+     "TEST-ZONE-B": 802312
+    },
+    "quality_max_seen": {
+     "TEST-ZONE-A": 900000,
+     "TEST-ZONE-B": 900000
+    },
+    "event_count": 13125
+   },
+   "row_counts": {
+    "world_events": 13125,
+    "population_groups": 80,
+    "households": 201,
+    "lineages": 16,
+    "institutions": 2,
+    "resource_nodes": 2,
+    "resource_stocks": 6,
+    "ecology_state": 2,
+    "ecology_feedback_state": 2,
+    "settlement_social_state": 2,
+    "social_feedback_state": 2,
+    "simulation_checkpoints": 2000,
+    "simulation_run": 1000,
+    "world_id": "LONGHORIZON-001"
+   }
+  },
+  "LONGHORIZON-002": {
+   "final_hashes": {
+    "world_state_hash": "cbedbbcee8e64cbbfc8840b7f34924619bd34d9abf0e9087632427db879dd7bc",
+    "event_stream_hash": "9f15bd5b81a23dc1b74d5c8ee83affc669b23b2d530c525b7caa2af82c468b58"
+   },
+   "wall_seconds": 117.567,
+   "db_size_mb": 7.914,
+   "final_metrics": {
+    "population_by_settlement": {
+     "TEST-MAIN-A": 227,
+     "TEST-SATELLITE-B": 116
+    },
+    "households_active": 154,
+    "households_total": 203,
+    "max_household_generation": 9,
+    "lineages_total": 13,
+    "lineages_active": 12,
+    "lineages_extinct": 1,
+    "max_lineage_generation": 9,
+    "institutions_total": 2,
+    "institutions_dissolved": 0,
+    "social_stress": {
+     "TEST-MAIN-A": 568706,
+     "TEST-SATELLITE-B": 626423
+    },
+    "stress_min_seen": {
+     "TEST-MAIN-A": 0,
+     "TEST-SATELLITE-B": 0
+    },
+    "stress_max_seen": {
+     "TEST-MAIN-A": 577073,
+     "TEST-SATELLITE-B": 652396
+    },
+    "quality_min_seen": {
+     "TEST-ZONE-A": 585351,
+     "TEST-ZONE-B": 810637
+    },
+    "quality_max_seen": {
+     "TEST-ZONE-A": 900000,
+     "TEST-ZONE-B": 900000
+    },
+    "event_count": 13117
+   },
+   "row_counts": {
+    "world_events": 13117,
+    "population_groups": 80,
+    "households": 203,
+    "lineages": 13,
+    "institutions": 2,
+    "resource_nodes": 2,
+    "resource_stocks": 6,
+    "ecology_state": 2,
+    "ecology_feedback_state": 2,
+    "settlement_social_state": 2,
+    "social_feedback_state": 2,
+    "simulation_checkpoints": 2000,
+    "simulation_run": 1000,
+    "world_id": "LONGHORIZON-002"
+   }
+  },
+  "LONGHORIZON-003": {
+   "final_hashes": {
+    "world_state_hash": "cf1aaffb2971428bcd9e800f8f750d0597c7c95a63387a3787165c53d2cb1094",
+    "event_stream_hash": "841e3c354c17b222dd3cf6d6409b1445846b42776e9f040ba138a02245addbde"
+   },
+   "wall_seconds": 117.615,
+   "db_size_mb": 7.918,
+   "final_metrics": {
+    "population_by_settlement": {
+     "TEST-MAIN-A": 243,
+     "TEST-SATELLITE-B": 131
+    },
+    "households_active": 158,
+    "households_total": 202,
+    "max_household_generation": 9,
+    "lineages_total": 18,
+    "lineages_active": 14,
+    "lineages_extinct": 4,
+    "max_lineage_generation": 9,
+    "institutions_total": 2,
+    "institutions_dissolved": 0,
+    "social_stress": {
+     "TEST-MAIN-A": 571199,
+     "TEST-SATELLITE-B": 628761
+    },
+    "stress_min_seen": {
+     "TEST-MAIN-A": 0,
+     "TEST-SATELLITE-B": 0
+    },
+    "stress_max_seen": {
+     "TEST-MAIN-A": 577692,
+     "TEST-SATELLITE-B": 654722
+    },
+    "quality_min_seen": {
+     "TEST-ZONE-A": 584035,
+     "TEST-ZONE-B": 812900
+    },
+    "quality_max_seen": {
+     "TEST-ZONE-A": 900000,
+     "TEST-ZONE-B": 900000
+    },
+    "event_count": 13124
+   },
+   "row_counts": {
+    "world_events": 13124,
+    "population_groups": 80,
+    "households": 202,
+    "lineages": 18,
+    "institutions": 2,
+    "resource_nodes": 2,
+    "resource_stocks": 6,
+    "ecology_state": 2,
+    "ecology_feedback_state": 2,
+    "settlement_social_state": 2,
+    "social_feedback_state": 2,
+    "simulation_checkpoints": 2000,
+    "simulation_run": 1000,
+    "world_id": "LONGHORIZON-003"
+   }
+  },
+  "LONGHORIZON-004": {
+   "final_hashes": {
+    "world_state_hash": "642cfc5e7085cd9ec14a8fe0b2b5227a8620b9cbd3df6f732800d7e9fa1bd91f",
+    "event_stream_hash": "fc557a0373491f07b0149f59ebe22731a94d2285a75604f6b0c22f52b38d2cfe"
+   },
+   "wall_seconds": 113.496,
+   "db_size_mb": 7.973,
+   "final_metrics": {
+    "population_by_settlement": {
+     "TEST-MAIN-A": 230,
+     "TEST-SATELLITE-B": 125
+    },
+    "households_active": 141,
+    "households_total": 194,
+    "max_household_generation": 8,
+    "lineages_total": 18,
+    "lineages_active": 13,
+    "lineages_extinct": 5,
+    "max_lineage_generation": 8,
+    "institutions_total": 2,
+    "institutions_dissolved": 0,
+    "social_stress": {
+     "TEST-MAIN-A": 568437,
+     "TEST-SATELLITE-B": 648670
+    },
+    "stress_min_seen": {
+     "TEST-MAIN-A": 0,
+     "TEST-SATELLITE-B": 0
+    },
+    "stress_max_seen": {
+     "TEST-MAIN-A": 576736,
+     "TEST-SATELLITE-B": 651919
+    },
+    "quality_min_seen": {
+     "TEST-ZONE-A": 586619,
+     "TEST-ZONE-B": 801523
+    },
+    "quality_max_seen": {
+     "TEST-ZONE-A": 900000,
+     "TEST-ZONE-B": 900000
+    },
+    "event_count": 13128
+   },
+   "row_counts": {
+    "world_events": 13128,
+    "population_groups": 80,
+    "households": 194,
+    "lineages": 18,
+    "institutions": 2,
+    "resource_nodes": 2,
+    "resource_stocks": 6,
+    "ecology_state": 2,
+    "ecology_feedback_state": 2,
+    "settlement_social_state": 2,
+    "social_feedback_state": 2,
+    "simulation_checkpoints": 2000,
+    "simulation_run": 1000,
+    "world_id": "LONGHORIZON-004"
+   }
+  },
+  "LONGHORIZON-005": {
+   "final_hashes": {
+    "world_state_hash": "aae6090b25f165e58dde41965f1a3926ce4c4e4a8e564a4415f0cc4c3e8c0b4d",
+    "event_stream_hash": "9f745425e13fa15bde66f5e3c726d782264494c11cacc9ff013626e2733a7a43"
+   },
+   "wall_seconds": 116.042,
+   "db_size_mb": 7.906,
+   "final_metrics": {
+    "population_by_settlement": {
+     "TEST-MAIN-A": 255,
+     "TEST-SATELLITE-B": 123
+    },
+    "households_active": 159,
+    "households_total": 202,
+    "max_household_generation": 11,
+    "lineages_total": 16,
+    "lineages_active": 14,
+    "lineages_extinct": 2,
+    "max_lineage_generation": 11,
+    "institutions_total": 2,
+    "institutions_dissolved": 0,
+    "social_stress": {
+     "TEST-MAIN-A": 572251,
+     "TEST-SATELLITE-B": 649420
+    },
+    "stress_min_seen": {
+     "TEST-MAIN-A": 0,
+     "TEST-SATELLITE-B": 0
+    },
+    "stress_max_seen": {
+     "TEST-MAIN-A": 577604,
+     "TEST-SATELLITE-B": 653789
+    },
+    "quality_min_seen": {
+     "TEST-ZONE-A": 581319,
+     "TEST-ZONE-B": 791359
+    },
+    "quality_max_seen": {
+     "TEST-ZONE-A": 900000,
+     "TEST-ZONE-B": 900000
+    },
+    "event_count": 13117
+   },
+   "row_counts": {
+    "world_events": 13117,
+    "population_groups": 80,
+    "households": 202,
+    "lineages": 16,
+    "institutions": 2,
+    "resource_nodes": 2,
+    "resource_stocks": 6,
+    "ecology_state": 2,
+    "ecology_feedback_state": 2,
+    "settlement_social_state": 2,
+    "social_feedback_state": 2,
+    "simulation_checkpoints": 2000,
+    "simulation_run": 1000,
+    "world_id": "LONGHORIZON-005"
+   }
+  }
+ },
+ "db_growth": {
+  "unit": "MB per 100 blessed years",
+  "size_mb_1000y": {
+   "LONGHORIZON-001": 7.977,
+   "LONGHORIZON-002": 7.914,
+   "LONGHORIZON-003": 7.918,
+   "LONGHORIZON-004": 7.973,
+   "LONGHORIZON-005": 7.906
+  },
+  "per_100y": {
+   "LONGHORIZON-001": 0.7977,
+   "LONGHORIZON-002": 0.7914,
+   "LONGHORIZON-003": 0.7918,
+   "LONGHORIZON-004": 0.7973,
+   "LONGHORIZON-005": 0.7906
+  }
+ },
+ "endurance_5000y": {
+  "world_id": "LONGHORIZON-001",
+  "wall_seconds": 905.279,
+  "db_size_mb": 37.734,
+  "row_counts": {
+   "world_events": 61597,
+   "population_groups": 80,
+   "households": 513,
+   "lineages": 42,
+   "institutions": 2,
+   "resource_nodes": 2,
+   "resource_stocks": 6,
+   "ecology_state": 2,
+   "ecology_feedback_state": 2,
+   "settlement_social_state": 2,
+   "social_feedback_state": 2,
+   "simulation_checkpoints": 10000,
+   "simulation_run": 5000,
+   "world_id": "LONGHORIZON-001"
+  },
+  "final_metrics": {
+   "population_by_settlement": {
+    "TEST-MAIN-A": 245,
+    "TEST-SATELLITE-B": 127
+   },
+   "households_active": 219,
+   "households_total": 513,
+   "max_household_generation": 21,
+   "lineages_total": 42,
+   "lineages_active": 32,
+   "lineages_extinct": 10,
+   "max_lineage_generation": 21,
+   "institutions_total": 2,
+   "institutions_dissolved": 0,
+   "social_stress": {
+    "TEST-MAIN-A": 569843,
+    "TEST-SATELLITE-B": 629362
+   },
+   "stress_min_seen": {
+    "TEST-MAIN-A": 0,
+    "TEST-SATELLITE-B": 0
+   },
+   "stress_max_seen": {
+    "TEST-MAIN-A": 577604,
+    "TEST-SATELLITE-B": 653340
+   },
+   "quality_min_seen": {
+    "TEST-ZONE-A": 597042,
+    "TEST-ZONE-B": 802312
+   },
+   "quality_max_seen": {
+    "TEST-ZONE-A": 900000,
+    "TEST-ZONE-B": 900000
+   },
+   "event_count": 61597
+  },
+  "final_hashes": {
+   "world_state_hash": "02384d76a891d34bd6c20b7712d2a6adc6e05f9a54a8bae3e26763b5fc981d86",
+   "event_stream_hash": "05ec59b6cdc4c9a5172492507ae7068fe704dbc250567838a2f94731d116502a"
+  }
+ }
+}
