@@ -105,7 +105,8 @@ def run_m3a_world(
                                 "real_interval_start_us"],
                             real_interval_end_us=info[
                                 "real_interval_end_us"],
-                            step_index=_y + 1)
+                            step_index=_y + 1,
+                            simulation_run_id=info.get("simulation_run_id"))
 
                     res = catch_up(
                         session_factory, world_id=world_id,

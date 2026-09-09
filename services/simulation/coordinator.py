@@ -100,7 +100,8 @@ class SimulationCoordinator:
     def __init__(self, engines: list[Engine], *,
                  simulation_version: str = PREFLIGHT_SIMULATION_VERSION,
                  pipeline_version: str = PREFLIGHT_PIPELINE_VERSION,
-                 tribulation_engine=None, tribulation_adapters=None):
+                 tribulation_engine=None, tribulation_adapters=None,
+                 history_builder=None):
         self._by_id = {e.engine_id: e for e in engines}
         ordered = [self._by_id.get(eid) for eid in ENGINE_ORDER
                    if eid in self._by_id]
@@ -123,12 +124,15 @@ class SimulationCoordinator:
         if tribulation_engine is not None:
             self.engine_versions[tribulation_engine.engine_id] = \
                 tribulation_engine.engine_version
+        # M3b：可选历史索引（纯索引层；不传 → 行为与 M2/M3a 逐字节一致）
+        self.history_builder = history_builder
 
     def run_step(self, session: Session, *, world_id: str,
                  blessed_start_tick: int, blessed_end_tick: int,
                  real_interval_start_us: int, real_interval_end_us: int,
                  step_index: int = 0,
-                 crash_after: str | None = None) -> StepReport:
+                 crash_after: str | None = None,
+                 simulation_run_id: str | None = None) -> StepReport:
         """在一个 fenced session 内执行一步（不 commit）。
 
         crash_after：测试专用崩溃注入点
@@ -151,6 +155,9 @@ class SimulationCoordinator:
         all_events: list[DomainEventDraft] = []
         step_metrics: dict = {}
         warnings: list[str] = []
+        # M3b 历史索引：per-engine 事件/变更切片（确定性顺序继承）
+        engine_event_slices: list[tuple[str, int, int]] = []
+        engine_change_slices: list[tuple[str, int, int]] = []
 
         for engine in self.engines:
             if crash_after == f"engine:{engine.engine_id}":
@@ -171,6 +178,8 @@ class SimulationCoordinator:
                 modifiers={}, crash_after=crash_after)
             result: EngineResult = engine.simulate(ctx)
             _validate_result(engine.engine_id, result)
+            ev_start = len(all_events)
+            ch_start = len(staged.changes)
             for change in result.proposed_changes:
                 if change.new_row is not None:
                     # INSERT 语义（M2d 扩展；所有权在 propose_insert 内强制）
@@ -185,6 +194,10 @@ class SimulationCoordinator:
                                field=change.field,
                                new_value=change.new_value)
             all_events.extend(result.domain_events)
+            engine_event_slices.append(
+                (engine.engine_id, ev_start, len(all_events)))
+            engine_change_slices.append(
+                (engine.engine_id, ch_start, len(staged.changes)))
             step_metrics[engine.engine_id] = dict(result.metrics)
             warnings.extend(result.warnings)
 
@@ -210,6 +223,8 @@ class SimulationCoordinator:
                 modifiers={}, crash_after=crash_after)
             tresult: EngineResult = self.tribulation_engine.simulate(tctx)
             _validate_result(self.tribulation_engine.engine_id, tresult)
+            ev_start = len(all_events)
+            ch_start = len(staged.changes)
             for change in tresult.proposed_changes:
                 if change.new_row is not None:
                     staged.propose_insert(
@@ -222,6 +237,12 @@ class SimulationCoordinator:
                                field=change.field,
                                new_value=change.new_value)
             all_events.extend(tresult.domain_events)
+            engine_event_slices.append(
+                (self.tribulation_engine.engine_id, ev_start,
+                 len(all_events)))
+            engine_change_slices.append(
+                (self.tribulation_engine.engine_id, ch_start,
+                 len(staged.changes)))
             step_metrics[self.tribulation_engine.engine_id] = dict(
                 tresult.metrics)
             if tresult.tribulation_plan is not None:
@@ -239,6 +260,9 @@ class SimulationCoordinator:
                     cause={"episode_id": plan["episode_id"],
                            "plan_id": plan["plan_id"]},
                     effect={"domains": sorted(self.tribulation_adapters)}))
+                engine_event_slices[-1] = (
+                    self.tribulation_engine.engine_id, ev_start,
+                    len(all_events))
         if crash_after == "after_tribulation":
             raise RuntimeError("crash: after_tribulation")
 
@@ -285,6 +309,8 @@ class SimulationCoordinator:
             event_count += 1
 
         # ---- M3a：adapter state changes + 最小因果链接（event_ref 回填）----
+        impact_uid: str | None = None
+        sc_ids: dict = {}
         if adapter_results:
             from ...database.base import utcnow as _utcnow
             from ...database.models_core import WorldStateChange
@@ -293,7 +319,6 @@ class SimulationCoordinator:
                                if e["event_type"]
                                == "TRIBULATION_IMPACT_APPLIED"), None)
             affected: dict = {}
-            sc_ids: dict = {}
             for res in adapter_results:
                 for (etype, eid, field, old, new) in res.state_changes:
                     sc = WorldStateChange(
@@ -326,6 +351,23 @@ class SimulationCoordinator:
                         if e["event_type"].endswith("_IMPACT_APPLIED")]},
                     affected_entity_ids=affected,
                     state_change_ids=sc_ids))
+
+        # ---- M3b：历史索引（纯索引层；与事件/状态同一 fenced 事务）----
+        if self.history_builder is not None:
+            bundle = _history_bundle_kwargs(
+                session, world_id=world_id,
+                blessed_start_tick=blessed_start_tick,
+                blessed_end_tick=blessed_end_tick,
+                step_index=step_index,
+                simulation_run_id=simulation_run_id,
+                snapshot=snapshot, staged=staged,
+                all_events=all_events, emitted=emitted,
+                engine_event_slices=engine_event_slices,
+                engine_change_slices=engine_change_slices,
+                adapter_results=adapter_results,
+                impact_uid=impact_uid,
+                plan=tribulation_plan_for_step)
+            self.history_builder.build_step(session, bundle)
 
         if crash_after == "before_checkpoint":
             raise RuntimeError("crash: before_checkpoint")
@@ -416,6 +458,101 @@ def _validate_result(engine_id: str, result: EngineResult) -> None:
         raise IntegrityError("EngineResult.engine_id 与引擎不符",
                              detail={"expect": engine_id,
                                      "got": result.engine_id})
+
+
+# ---------------------------------------------------------------- M3b 历史
+def _history_bundle_kwargs(session, *, world_id, blessed_start_tick,
+                           blessed_end_tick, step_index, simulation_run_id,
+                           snapshot, staged, all_events, emitted,
+                           engine_event_slices, engine_change_slices,
+                           adapter_results, impact_uid, plan):
+    """由协调器内部组装 StepHistoryBundle（保持 imports 惰性）。"""
+    from ..history.builder import StepHistoryBundle
+    from ...database.models_world import (TribulationResidualChange,
+                                          ResourceSuccessionCandidate)
+    engine_events = []
+    for eid, s, e in engine_event_slices:
+        evs = tuple({
+            "event_uid": emitted[i]["event_uid"],
+            "event_type": emitted[i]["event_type"],
+            "cause": dict(emitted[i]["cause"]),
+            "effect": dict(emitted[i]["effect"]),
+        } for i in range(s, e))
+        engine_events.append((eid, evs))
+    engine_changes = tuple((eid, tuple(staged.changes[s:e]))
+                           for eid, s, e in engine_change_slices)
+    adapter_changes = []
+    for res in adapter_results:
+        for (etype, eid, field, old, new) in res.state_changes:
+            adapter_changes.append({
+                "domain": res.domain, "entity_type": etype,
+                "entity_id": str(eid), "field": field, "old": old,
+                "new": new})
+
+    eps_touched: set[str] = set()
+    plans_created: list[dict] = []
+    decisions_created: list[dict] = []
+    recovery_created: list[dict] = []
+    residual_refs: list[tuple[str, str]] = []  # (episode_id, change_kind)
+    succession_created: list[dict] = []
+    snap_eps = {r["id"]: r.get("episode_id") for r in snapshot.tables.get(
+        "tribulation_episodes", ())}
+    for eid, chs in engine_changes:
+        for ch in chs:
+            if ch.new_row is not None:
+                nr = dict(ch.new_row)
+                if ch.table == "tribulation_episodes":
+                    eps_touched.add(nr["episode_id"])
+                elif ch.table == "tribulation_impact_plans":
+                    plans_created.append(nr)
+                elif ch.table == "tribulation_decisions":
+                    decisions_created.append(nr)
+                elif ch.table == "tribulation_recovery_states":
+                    recovery_created.append({
+                        "episode_id": nr["episode_id"],
+                        "started_tick": nr.get("started_tick")})
+                elif ch.table == "tribulation_residual_changes":
+                    residual_refs.append((nr["episode_id"],
+                                          nr.get("change_kind")))
+                elif ch.table == "resource_succession_candidates":
+                    succession_created.append({
+                        "candidate_id": nr["candidate_id"],
+                        "episode_id": nr["episode_id"]})
+            elif ch.table == "tribulation_episodes" \
+                    and ch.entity_id in snap_eps:
+                eps_touched.add(snap_eps[ch.entity_id])
+    if plan is not None:
+        eps_touched.add(plan["episode_id"])
+    # 残留行 id：INSERT 后 flush 查询（id 仅此处需要）
+    residual_created: list[dict] = []
+    if residual_refs:
+        session.flush()
+        snap_residual_ids = {r["id"] for r in snapshot.tables.get(
+            "tribulation_residual_changes", ())}
+        from sqlalchemy import select as _select
+        rows = session.execute(_select(TribulationResidualChange).where(
+            TribulationResidualChange.world_id == world_id)).scalars().all()
+        for r in rows:
+            if r.id not in snap_residual_ids \
+                    and (r.episode_id, r.change_kind) in residual_refs:
+                residual_created.append({"id": r.id,
+                                         "episode_id": r.episode_id})
+    return StepHistoryBundle(
+        world_id=world_id, simulation_run_id=simulation_run_id,
+        blessed_start_tick=blessed_start_tick,
+        blessed_end_tick=blessed_end_tick, step_index=step_index,
+        snapshot=snapshot,
+        engine_events=tuple(engine_events),
+        engine_changes=engine_changes,
+        adapter_changes=tuple(adapter_changes),
+        impact_event_uid=impact_uid,
+        impact_plan=plan,
+        episodes_touched=tuple(sorted(eps_touched)),
+        plans_created=tuple(plans_created),
+        decisions_created=tuple(decisions_created),
+        recovery_created=tuple(recovery_created),
+        residual_created=tuple(residual_created),
+        succession_created=tuple(succession_created))
 
 
 def _apply_changes(session: Session, changes) -> None:

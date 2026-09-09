@@ -43,7 +43,7 @@ RUNTIME_VERSION = "0.1.1"
 PLUGIN_NAME = "astrbot_plugin_blessed_land_runtime"
 DB_FILENAME = "blessed_land.sqlite"
 AUTHORITATIVE_MARKER = "authoritative_db.json"
-EXPECTED_SCHEMA_HEAD = "f1b3c5d7e9a2"  # M3a head（tribulation schema）
+EXPECTED_SCHEMA_HEAD = "c5e7a9b1d3f5"  # M3b head（causal history schema）
 
 BUSINESS_TABLES = {
     "persons": "persons",

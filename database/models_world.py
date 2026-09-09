@@ -786,3 +786,128 @@ class TribulationCausalLink(Base):
     result_event_ids: Mapped[dict | None] = mapped_column(JSON)
     affected_entity_ids: Mapped[dict | None] = mapped_column(JSON)
     state_change_ids: Mapped[dict | None] = mapped_column(JSON)
+
+
+# ---------------------------------------------------------------- M3b History
+class CausalHistoryLink(Base):
+    """M3b 因果历史图边（History Graph ≠ Event Log）。
+
+    - link_id = deterministic 128-bit（causal-link-id-v1），非 UUID4；
+    - relation_type ∈ services.history.relations.RELATION_TYPES（冻结词表）；
+    - source/target = (kind, id)，kind ∈ NODE_KINDS（EVENT/STATE_CHANGE/
+      EPISODE/PLAN/DECISION/RECOVERY_STATE/RESIDUAL/SUCCESSION/ENTITY/
+      CHECKPOINT）；
+    - source_tick/target_tick：插入时解析快照（tick 校验/确定性排序用）；
+    - status：ACTIVE/SUPERSEDED（Correction 经 SUPERSEDES 置旧边，append-only）。
+    """
+    __tablename__ = "causal_history_links"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    link_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    relation_type: Mapped[str] = mapped_column(String(24), nullable=False)
+    source_kind: Mapped[str] = mapped_column(String(24), nullable=False)
+    source_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    target_kind: Mapped[str] = mapped_column(String(24), nullable=False)
+    target_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    source_tick: Mapped[int | None] = mapped_column(BigInteger)
+    target_tick: Mapped[int | None] = mapped_column(BigInteger)
+    episode_id: Mapped[str | None] = mapped_column(String(32))
+    entity_scope: Mapped[dict | None] = mapped_column(JSON)
+    owner_decision_id: Mapped[str | None] = mapped_column(String(32))
+    committed_tick: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    status: Mapped[str] = mapped_column(String(12), nullable=False,
+                                        default="ACTIVE",
+                                        server_default="ACTIVE")
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+
+    __table_args__ = (UniqueConstraint(
+        "world_id", "link_id", name="uq_causal_history_links_world"),)
+
+
+class EntityHistoryIndex(Base):
+    """M3b 实体历史索引：entity → 触及它的 link（索引，不复制 payload）。"""
+    __tablename__ = "entity_history_index"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    entity_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    entity_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    link_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    committed_tick: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+
+    __table_args__ = (UniqueConstraint(
+        "world_id", "entity_type", "entity_id", "link_id",
+        name="uq_entity_history_index_world"),)
+
+
+class HistoryStateChange(Base):
+    """M3b 历史状态变更账本（内联 provenance）。
+
+    - 仅 M3b 历史索引写入；绝不写 M0 world_state_changes（M3a 的
+      tribulation_causal_links.state_change_ids 等 id 引用逐字节不变）。
+    - 每个权威 state change 可追溯：simulation_run_id / engine_id /
+      event_ref（domain_event_id）/ trigger_event_id / episode_id /
+      owner_decision_id / committed_tick（=blessed_tick）。
+    - 旧数据（M0-M3a 未索引运行）不伪造：无对应行 = 未索引，audit 统计。
+    """
+    __tablename__ = "history_state_changes"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    entity_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    entity_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    field: Mapped[str] = mapped_column(String(64), nullable=False)
+    old_value: Mapped[dict | None] = mapped_column(JSON)
+    new_value: Mapped[dict | None] = mapped_column(JSON)
+    event_ref: Mapped[str | None] = mapped_column(String(64))
+    blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+    simulation_run_id: Mapped[str | None] = mapped_column(String(64))
+    engine_id: Mapped[str | None] = mapped_column(String(32))
+    trigger_event_id: Mapped[str | None] = mapped_column(String(64))
+    episode_id: Mapped[str | None] = mapped_column(String(32))
+    owner_decision_id: Mapped[str | None] = mapped_column(String(32))
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+
+
+class HistoryEpisodeIndex(Base):
+    """M3b 通用 WorldEpisode 索引（当前 kind=TRIBULATION；未来迁徙/资源
+    开发/机构兴衰周期复用）。状态：ACTIVE / COMPLETED；查询层派生
+    IN_RECOVERY / INCOMPLETE。"""
+    __tablename__ = "history_episode_index"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    episode_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    kind: Mapped[str] = mapped_column(String(16), nullable=False,
+                                      default="TRIBULATION",
+                                      server_default="TRIBULATION")
+    status: Mapped[str] = mapped_column(String(16), nullable=False,
+                                        default="ACTIVE",
+                                        server_default="ACTIVE")
+    stage: Mapped[str | None] = mapped_column(String(24))
+    entered_tick: Mapped[int | None] = mapped_column(BigInteger)
+    transition_tick: Mapped[int | None] = mapped_column(BigInteger)
+    completed_tick: Mapped[int | None] = mapped_column(BigInteger)
+    profile_ref: Mapped[str | None] = mapped_column(String(64))
+    tier: Mapped[str | None] = mapped_column(String(16))
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+
+    __table_args__ = (UniqueConstraint(
+        "world_id", "episode_id", name="uq_history_episode_index_world"),)
+
+
+class HistoryIndexState(Base):
+    """M3b 历史索引水印：indexed_through_tick + causal_history_hash。
+
+    与 Domain Events 同一 fenced 事务提交 → 不存在「事件已提交而索引缺失」
+    的静默间隙（gap 由 audit 显式报告）。"""
+    __tablename__ = "history_index_state"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    indexed_through_tick: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    links_total: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    causal_history_hash: Mapped[str | None] = mapped_column(String(64))
+    semantic_version: Mapped[str | None] = mapped_column(String(32))
+
+    __table_args__ = (UniqueConstraint(
+        "world_id", name="uq_history_index_state_world"),)

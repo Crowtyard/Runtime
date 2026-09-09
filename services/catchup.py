@@ -204,6 +204,7 @@ def _advance_and_commit(
             "new_blessed_tick": new_tick,
             "real_interval_start_us": cursor,
             "real_interval_end_us": now_real_us,
+            "simulation_run_id": run.run_id,  # M3b 历史溯源用（增量键）
         })
 
     SimulationRunRepository(session).commit_run(
