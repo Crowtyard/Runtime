@@ -12,15 +12,15 @@ RUN LIFECYCLE 不知道 NPC/灾劫：只管理 run 元数据与状态转移。
 """
 from __future__ import annotations
 
-import uuid
 from datetime import datetime
 
-from sqlalchemy import select, update
+from sqlalchemy import select, text, update
 from sqlalchemy.orm import Session
 
 from ..database.base import utcnow
 from ..database.models_core import SimulationRun
 from ..domain.constants import RunStatus, TickSources
+from .identity import deterministic_hex_id
 
 
 class SimulationRunRepository:
@@ -37,9 +37,28 @@ class SimulationRunRepository:
                    blessed_tick_before: int, writer_id: str, fencing_token: str,
                    run_kind: str = TickSources.CATCHUP,
                    status: str = RunStatus.RUNNING) -> SimulationRun:
-        """创建 run 行（默认 RUNNING；PENDING 为可选过渡态）。"""
+        """创建 run 行（默认 RUNNING；PENDING 为可选过渡态）。
+
+        run_id（M2 Review 硬化）：确定性 128-bit —— sha256(run-id-v1|
+        world|simver|interval_start|interval_end|attempt_seq)[:32]；
+        attempt_seq = 该区间已有 run 行数（含 FAILED）+ 1 —— 纯 DB 状态
+        派生（无 UUID4/wallclock/随机熵）；同区间 retry 不冲突，replay
+        （同 crash schedule）逐字节一致。operational identity，不进入任何
+        world/event 哈希。
+        """
+        attempt_seq = self.session.execute(
+            text(
+                "SELECT COUNT(*) FROM simulation_run WHERE world_id=:w "
+                "AND simulation_version=:v "
+                "AND real_interval_start_us=:s AND real_interval_end_us=:e"),
+            {"w": world_id, "v": simulation_version,
+             "s": real_interval_start_us, "e": real_interval_end_us},
+        ).scalar()
         run = SimulationRun(
-            run_id=str(uuid.uuid4()),
+            run_id=deterministic_hex_id(
+                [world_id, simulation_version, real_interval_start_us,
+                 real_interval_end_us, int(attempt_seq or 0) + 1],
+                bits=128, schema="run-id-v1"),
             world_id=world_id,
             simulation_version=simulation_version,
             status=status,

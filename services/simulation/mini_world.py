@@ -127,29 +127,32 @@ MINI_INSTITUTIONS = [
 
 
 def seed_mini_world(session: Session, *, with_ecology: bool = False,
-                    with_social: bool = False) -> None:
+                    with_social: bool = False,
+                    world_id: str = MINI_WORLD_ID) -> None:
     """向当前（测试）库播种 mini_world 实体（幂等）。
 
     with_ecology=False：M2a/M2b 精确夹具（不新增任何行 —— 基线复现依赖）。
     with_ecology=True：M2c integrated 夹具（追加生态区/生态状态/生态反馈 +
     可再生 TEST-TIMBER 节点与库存）。
     with_social=True：M2d integrated 夹具（追加聚合家庭/lineage/institution/
-    聚落社会状态/社会反馈；要求 with_ecology=True）。"""
+    聚落社会状态/社会反馈；要求 with_ecology=True）。
+    world_id：默认 MINI_WORLD_ID；long-horizon 压力测试用独立合成世界 ID。"""
     from sqlalchemy import select
 
+    wid = world_id
     existing = session.execute(
-        select(Settlement).where(Settlement.world_id == MINI_WORLD_ID)
+        select(Settlement).where(Settlement.world_id == wid)
     ).scalars().first()
     if existing is not None:
         return
 
     for s in MINI_SETTLEMENTS:
-        session.add(Settlement(world_id=MINI_WORLD_ID, **s))
+        session.add(Settlement(world_id=wid, **s))
     # cohort 行 = population_groups（06 号设计）；必须覆盖全部 bucket 0..N-1
     # （空 bucket 也占行 —— 出生落入 bucket 0，缺行会丢失人口，违反 P_INV_12）
     for b in range(TEST_COHORT_BUCKETS):
         session.add(PopulationGroup(
-            world_id=MINI_WORLD_ID, species=MINI_SPECIES,
+            world_id=wid, species=MINI_SPECIES,
             settlement_ref="TEST-MAIN-A", age_cohort=str(b),
             occupation_group="MIXED",
             count=TEST_INITIAL_COUNT_A_PER_BUCKET if b in TEST_INITIAL_BUCKETS
@@ -158,7 +161,7 @@ def seed_mini_world(session: Session, *, with_ecology: bool = False,
             species_profile_ref=DEMOGRAPHY_PROFILE_REF,
             demography_version=ENGINE_VERSION))
         session.add(PopulationGroup(
-            world_id=MINI_WORLD_ID, species=MINI_SPECIES,
+            world_id=wid, species=MINI_SPECIES,
             settlement_ref="TEST-SATELLITE-B", age_cohort=str(b),
             occupation_group="MIXED",
             count=TEST_INITIAL_COUNT_B_PER_BUCKET if b in TEST_INITIAL_BUCKETS
@@ -167,14 +170,14 @@ def seed_mini_world(session: Session, *, with_ecology: bool = False,
             species_profile_ref=DEMOGRAPHY_PROFILE_REF,
             demography_version=ENGINE_VERSION))
     session.add(ResourceNode(
-        world_id=MINI_WORLD_ID, **MINI_RESOURCE_NODE,
+        world_id=wid, **MINI_RESOURCE_NODE,
         resource_profile_ref="TEST-RESOURCE-001",
         settlement_relation="TEST-MAIN-A",
         remaining_reserve=MINI_ORE_RESERVE_UNITS * MINI_SCALE,
         extraction_capacity=MINI_ORE_CAPACITY_UNITS * MINI_SCALE,
         extraction_carry=0, last_extracted_minor=0,
         engine_version=RESOURCE_ENGINE_VERSION, state_version=0))
-    session.add(EcologicalRegion(world_id=MINI_WORLD_ID, **MINI_ECOLOGY))
+    session.add(EcologicalRegion(world_id=wid, **MINI_ECOLOGY))
 
     # M2b：resource profiles / stocks / recipe / production state / pressure
     # （with_ecology=False 时只注册 M2b 的两个资源 —— 保持 M2b 夹具逐字节）
@@ -183,7 +186,7 @@ def seed_mini_world(session: Session, *, with_ecology: bool = False,
     for rid in profile_refs:
         profile = RESOURCE_PROFILES[rid]
         session.add(ResourceProfile(
-            world_id=MINI_WORLD_ID, resource_id=profile.resource_id,
+            world_id=wid, resource_id=profile.resource_id,
             unit=profile.unit, quantity_scale=profile.quantity_scale,
             renewability=profile.renewability,
             extractability=profile.extractability,
@@ -192,18 +195,18 @@ def seed_mini_world(session: Session, *, with_ecology: bool = False,
             semantic_version=profile.semantic_version))
     for (sref, ref), units in sorted(MINI_STOCK_UNITS.items()):
         session.add(ResourceStock(
-            world_id=MINI_WORLD_ID, settlement_ref=sref,
+            world_id=wid, settlement_ref=sref,
             resource_profile_ref=ref, quantity=units * MINI_SCALE,
             consumption_carry=0, engine_version=ECONOMY_ENGINE_VERSION))
-    session.add(ProductionRecipe(world_id=MINI_WORLD_ID, **MINI_RECIPE))
+    session.add(ProductionRecipe(world_id=wid, **MINI_RECIPE))
     for sref in ("TEST-MAIN-A", "TEST-SATELLITE-B"):
         session.add(ProductionState(
-            world_id=MINI_WORLD_ID, settlement_ref=sref,
+            world_id=wid, settlement_ref=sref,
             recipe_ref=MINI_RECIPE["recipe_id"], production_carry=0,
             engine_version=ECONOMY_ENGINE_VERSION))
         for ref in profile_refs:
             session.add(EconomicPressureState(
-                world_id=MINI_WORLD_ID, settlement_ref=sref,
+                world_id=wid, settlement_ref=sref,
                 resource_profile_ref=ref, demand_minor=0, fulfilled_minor=0,
                 unmet_minor=0, shortage_ratio_num=0, shortage_ratio_den=1,
                 sustained_shortage_steps=0, stress_level="NONE",
@@ -213,13 +216,13 @@ def seed_mini_world(session: Session, *, with_ecology: bool = False,
     if with_ecology:
         for z in MINI_ECOLOGY_ZONES:
             session.add(EcologyZone(
-                world_id=MINI_WORLD_ID, zone_id=z["zone_id"],
+                world_id=wid, zone_id=z["zone_id"],
                 region_ref=z["region_ref"],
                 settlement_relation=z["settlement_relation"],
                 profile_ref=z["profile_ref"],
                 semantic_version=TEST_ECOLOGY_PROFILE.semantic_version))
             session.add(EcologyState(
-                world_id=MINI_WORLD_ID, zone_ref=z["zone_id"],
+                world_id=wid, zone_ref=z["zone_id"],
                 habitat_quality=MINI_ECOLOGY_INITIAL_QUALITY,
                 regeneration_capacity=MINI_ECOLOGY_INITIAL_QUALITY,
                 ecological_stress=0, population_pressure=0,
@@ -230,7 +233,7 @@ def seed_mini_world(session: Session, *, with_ecology: bool = False,
                 quality_max_seen=MINI_ECOLOGY_INITIAL_QUALITY,
                 engine_version=ECOLOGY_ENGINE_VERSION))
             session.add(EcologyFeedbackState(
-                world_id=MINI_WORLD_ID, zone_ref=z["zone_id"],
+                world_id=wid, zone_ref=z["zone_id"],
                 regeneration_capacity_minor_per_year=0,
                 yield_modifier_num=1, yield_modifier_den=1,
                 extraction_modifier_num=1, extraction_modifier_den=1,
@@ -238,10 +241,10 @@ def seed_mini_world(session: Session, *, with_ecology: bool = False,
                 environmental_stress_num=0, environmental_stress_den=1,
                 engine_version=ECOLOGY_ENGINE_VERSION))
         session.add(ResourceNode(
-            world_id=MINI_WORLD_ID, **MINI_TIMBER_NODE))
+            world_id=wid, **MINI_TIMBER_NODE))
         for (sref, ref), units in sorted(MINI_TIMBER_STOCK_UNITS.items()):
             session.add(ResourceStock(
-                world_id=MINI_WORLD_ID, settlement_ref=sref,
+                world_id=wid, settlement_ref=sref,
                 resource_profile_ref=ref, quantity=units * MINI_SCALE,
                 consumption_carry=0, engine_version=ECONOMY_ENGINE_VERSION))
 
@@ -256,7 +259,7 @@ def seed_mini_world(session: Session, *, with_ecology: bool = False,
                 if sref == "TEST-SATELLITE-B" and i < 3:
                     lineage_ref = MINI_LINEAGE_B
                 session.add(Household(
-                    world_id=MINI_WORLD_ID,
+                    world_id=wid,
                     household_id=f"TEST-HH-{sref[-1]}-{hh_seq[sref]:03d}",
                     settlement_ref=sref, species=MINI_SPECIES,
                     represented_population=MINI_HOUSEHOLD_SIZE,
@@ -265,7 +268,7 @@ def seed_mini_world(session: Session, *, with_ecology: bool = False,
                     formation_version=FORMATION_VERSION,
                     updated_blessed_tick=0))
         session.add(Lineage(
-            world_id=MINI_WORLD_ID, lineage_type="FAMILY",
+            world_id=wid, lineage_type="FAMILY",
             lineage_id=MINI_LINEAGE_B, origin_settlement="TEST-SATELLITE-B",
             represented_population=3 * MINI_HOUSEHOLD_SIZE,
             household_count=3, generation=1, status="ACTIVE",
@@ -273,7 +276,7 @@ def seed_mini_world(session: Session, *, with_ecology: bool = False,
             updated_blessed_tick=0))
         for spec in MINI_INSTITUTIONS:
             session.add(Institution(
-                world_id=MINI_WORLD_ID, kind=spec["kind"],
+                world_id=wid, kind=spec["kind"],
                 settlement_ref=spec["settlement_ref"],
                 state=spec["state"],
                 institution_id=spec["institution_id"], founded_tick=0,
@@ -281,14 +284,14 @@ def seed_mini_world(session: Session, *, with_ecology: bool = False,
                 updated_blessed_tick=0))
         for sref in ("TEST-MAIN-A", "TEST-SATELLITE-B"):
             session.add(SettlementSocialState(
-                world_id=MINI_WORLD_ID, settlement_ref=sref,
+                world_id=wid, settlement_ref=sref,
                 social_stress=0, social_cohesion=SOCIAL_STATE_SCALE,
                 household_stability=SOCIAL_STATE_SCALE,
                 mobility_pressure=0, unallocated_population=0,
                 stress_min_seen=0, stress_max_seen=0,
                 engine_version=SOCIAL_ENGINE_VERSION, updated_blessed_tick=0))
             session.add(SocialFeedbackState(
-                world_id=MINI_WORLD_ID, settlement_ref=sref,
+                world_id=wid, settlement_ref=sref,
                 migration_modifier_num=1, migration_modifier_den=1,
                 fertility_context_num=1, fertility_context_den=1,
                 social_support_num=1, social_support_den=1,

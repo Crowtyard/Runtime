@@ -36,13 +36,14 @@ from fractions import Fraction
 from ...domain.errors import IntegrityError, WorldRuntimeError
 from .contracts import (DomainEventDraft, EngineResult, SimulationContext,
                         StateChange)
+from ..identity import deterministic_hex_id
 
 ENGINE_ID = "SOCIAL"
 ENGINE_VERSION = "m2d-social-1"
 SOCIAL_STATE_SCALE_VERSION = "m2d-scale-1"
 SOCIAL_STATE_SCALE = 1_000_000
 FORMATION_VERSION = "m2d-formation-v1"
-IDENTITY_SCHEMA_VERSION = "social-v1"
+IDENTITY_SCHEMA_VERSION = "social-v2"  # M2 Review 硬化：64-bit → 128-bit
 
 EV_HH_FORMED = "HOUSEHOLD_FORMED"
 EV_HH_SPLIT = "HOUSEHOLD_SPLIT"
@@ -109,10 +110,11 @@ SOCIAL_PROFILES: dict[str, SocialProfile] = {
 
 def social_identity(*, world_id: str, kind: str, settlement: str,
                     species: str, tick: int, seq: int) -> str:
-    """确定性实体 ID（IDENTITY_SCHEMA_VERSION=social-v1；无 UUID4）。"""
-    payload = "|".join([IDENTITY_SCHEMA_VERSION, world_id, kind, settlement,
-                        species, str(tick), str(seq)])
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
+    """确定性实体 ID（SOCIAL_ENTITY_ID_SCHEMA_VERSION=social-v2；
+    ≥128-bit；无 UUID4）。"""
+    return deterministic_hex_id(
+        [world_id, kind, settlement, species, str(tick), str(seq)],
+        bits=128, schema=IDENTITY_SCHEMA_VERSION)
 
 
 def _clamp(value: int, lo: int, hi: int) -> int:

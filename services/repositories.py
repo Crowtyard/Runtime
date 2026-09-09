@@ -6,7 +6,6 @@ DB 触发器（migration b2d4e8f9a6c3）在数据库层阻止 UPDATE/DELETE；
 """
 from __future__ import annotations
 
-import uuid
 from datetime import datetime
 
 from sqlalchemy import select, text
@@ -130,8 +129,16 @@ class EventRepository:
         from ..database.base import utcnow as _utcnow
         if real_time is None:
             real_time = _utcnow()
+        if event_uid is None:
+            # M2 Review 硬化：确定性 128-bit fallback（无 UUID4/wallclock；
+            # M2 路径全部显式传确定性 uid，此 fallback 仅为遗留调用兜底）
+            from .identity import deterministic_hex_id
+            event_uid = deterministic_hex_id(
+                [world_id, event_type, str(blessed_tick), source,
+                 repr(cause or {}), repr(effect or {})],
+                bits=128, schema="event-uid-fallback-v1")
         event = WorldEvent(
-            event_uid=event_uid or str(uuid.uuid4())[:12],
+            event_uid=event_uid,
             world_id=world_id,
             event_type=event_type,
             source=source,

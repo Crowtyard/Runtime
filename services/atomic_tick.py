@@ -12,17 +12,17 @@
 """
 from __future__ import annotations
 
-import uuid
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from ..database.base import utcnow
 from ..database.models_core import SimulationRun
 from ..domain.constants import RunStatus, SimulationVersion, TickSources
+from .identity import deterministic_hex_id
 from ..domain.errors import FencingViolation
 from .fencing import WorldMutationContext
 from .guard import require_world_activated
@@ -78,8 +78,18 @@ def run_atomic_tick(
             return TickResult(skipped=True, run_id=latest.run_id,
                               committed_until_tick=latest.committed_until_tick)
 
+        # run_id：确定性 128-bit（M2 Review 硬化；attempt_seq 由 DB 状态派生）
+        attempt_seq = session.execute(
+            text("SELECT COUNT(*) FROM simulation_run WHERE world_id=:w "
+                 "AND simulation_version=:v AND committed_until_tick=:t"),
+            {"w": world_id, "v": SimulationVersion.CURRENT,
+             "t": target_blessed_tick},
+        ).scalar()
         run = SimulationRun(
-            run_id=str(uuid.uuid4()),
+            run_id=deterministic_hex_id(
+                [world_id, SimulationVersion.CURRENT, target_blessed_tick,
+                 int(attempt_seq or 0) + 1],
+                bits=128, schema="run-id-v1"),
             world_id=world_id,
             started_at=real_now or utcnow(),
             target_blessed_tick=target_blessed_tick,

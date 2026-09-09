@@ -61,8 +61,11 @@ from XiaoguangBlessedLandRuntime.services.simulation.state_hash import (
 from XiaoguangBlessedLandRuntime.services.writer_lock import WriterLease
 
 REPO = PROJECT_ROOT
+# M2 Review（ID 硬化 social-v1→social-v2）后：新基线 v2；
+# 旧 v1（64-bit ID）保留为 m2d_social_miniworld_120y_v1_pre_id_hardening.json
+# 冻结历史（不复现、不覆盖）。
 BASELINE_PATH = REPO / "tests" / "baselines" / \
-    "m2d_social_miniworld_120y_v1.json"
+    "m2d_social_miniworld_120y_v2.json"
 SIM_DIR = REPO / "services" / "simulation"
 SIM_VERSION = "0.2.0-preflight"
 
