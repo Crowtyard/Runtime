@@ -1,0 +1,132 @@
+{
+ "fixture_version": "mini_world_v1",
+ "simulation_version": "0.2.0-preflight",
+ "population_engine_version": "m2a-1",
+ "resource_engine_version": "m2b-resource-1",
+ "economy_engine_version": "m2b-economy-1",
+ "ecology_engine_version": "m2c-ecology-1",
+ "social_engine_version": "m2d-social-1",
+ "rng_schema_version": "m1-derive-seed-v1",
+ "event_uid_schema_version": 1,
+ "event_hash_schema_version": 1,
+ "world_state_hash_schema_version": 5,
+ "social_state_scale_version": "m2d-scale-1",
+ "initial_state": {
+  "population": 400,
+  "settlements": 2,
+  "households": 80,
+  "lineages": 1,
+  "institutions": 2,
+  "household_size": 5
+ },
+ "final_state": {
+  "population": 442,
+  "active_households": 108,
+  "households_total": 110,
+  "mean_household_size": 4.093,
+  "lineages_total": 4,
+  "lineages_active": 4,
+  "lineages_extinct": 0,
+  "max_lineage_generation": 6,
+  "multi_settlement_lineages": 0,
+  "institutions_total": 2,
+  "institution_states": {
+   "TEST-INST-A-001": "ACTIVE",
+   "TEST-INST-B-001": "DECLINING"
+  }
+ },
+ "population_metrics": {
+  "start": 400,
+  "end": 442,
+  "births": 868,
+  "deaths": 826,
+  "immigration": 602,
+  "emigration": 602
+ },
+ "resource_metrics": {
+  "initial_reserve": 405000000000,
+  "final_reserve": 278438738663,
+  "total_extracted": 147784723360,
+  "regeneration_applied": 21223462023
+ },
+ "economy_metrics": {
+  "initial_stock": {
+   "TEST-RESOURCE-001": 1000000000,
+   "TEST-RESOURCE-002": 100000000,
+   "TEST-RESOURCE-003": 100000000
+  },
+  "final_stock": {
+   "TEST-RESOURCE-001": 41160469915,
+   "TEST-RESOURCE-002": 0,
+   "TEST-RESOURCE-003": 21324253445
+  },
+  "production_input": 86400000000,
+  "production_output": 42768000000,
+  "demand": 60621166739,
+  "fulfilled": 42868000000,
+  "unmet": 17753166739,
+  "imports": 143900003,
+  "exports": 143900003,
+  "transfers": 143900003,
+  "shortage_steps": 214
+ },
+ "ecology_metrics": {
+  "initial_quality": {
+   "TEST-ZONE-A": 900000,
+   "TEST-ZONE-B": 900000
+  },
+  "final_quality": {
+   "TEST-ZONE-A": 657602,
+   "TEST-ZONE-B": 821273
+  },
+  "degradation": 749533,
+  "recovery": 428408,
+  "threshold_crossings": 1
+ },
+ "social_metrics": {
+  "initial_stress": {
+   "TEST-MAIN-A": 0,
+   "TEST-SATELLITE-B": 0
+  },
+  "final_stress": {
+   "TEST-MAIN-A": 245645,
+   "TEST-SATELLITE-B": 642943
+  },
+  "min_stress": {
+   "TEST-MAIN-A": 0,
+   "TEST-SATELLITE-B": 0
+  },
+  "max_stress": {
+   "TEST-MAIN-A": 280126,
+   "TEST-SATELLITE-B": 651584
+  },
+  "households_formed": 0,
+  "households_split": 30,
+  "households_dissolved": 2,
+  "lineages_founded": 3,
+  "lineages_extinct": 0,
+  "institutions_founded": 0,
+  "institutions_dissolved": 0,
+  "institution_state_transitions": 1,
+  "stress_threshold_crossings": 1,
+  "feedback_applications": 240
+ },
+ "final_world_state_hash": "16a6020ea9f16ff83698e1e08f52c4f82286c8841de25a18fa722e6ed8e4eac2",
+ "final_event_stream_hash": "bda4c7c7b3dd4a5564bb347a4ec227feb81002e4a421a396e21f4397e419f64c",
+ "runs": 120,
+ "steps": 120,
+ "checkpoints": 240,
+ "event_counts": {
+  "total": 1713,
+  "household_formed": 0,
+  "household_split": 30,
+  "household_dissolved": 2,
+  "lineage_founded": 3,
+  "lineage_extinct": 0,
+  "institution_state_changed": 1,
+  "stress_threshold_crossed": 1
+ },
+ "performance": {
+  "wall_seconds": 12.459
+ }
+}

@@ -100,3 +100,37 @@ def demography_ecology_stress_level(snapshot: WorldSnapshot, *,
         level = fb.get("habitat_stress_level") or "NONE"
         worst = max(worst, ECOLOGY_STRESS_LEVEL_ORDER.get(level, 0))
     return worst
+
+
+# M2d：社会反馈 → 人口学修正（TEST_FIXTURE_ONLY；无反馈行=中性 1/1）
+_SOCIAL_MODIFIER_CLAMP = (Fraction(1, 2), Fraction(2, 1))
+
+
+def _social_feedback_of(snapshot: WorldSnapshot,
+                        settlement_ref: str | None) -> dict:
+    for row in snapshot.rows("social_feedback_state"):
+        if row.get("settlement_ref") == settlement_ref:
+            return row
+    return {}
+
+
+def demography_social_migration_modifier(snapshot: WorldSnapshot, *,
+                                         settlement_ref: str | None) -> Fraction:
+    """社会迁移修正（migration_modifier，clamp [1/2, 2]）；无反馈行=1。"""
+    row = _social_feedback_of(snapshot, settlement_ref)
+    if not row:
+        return Fraction(1)
+    f = Fraction(int(row.get("migration_modifier_num") or 1),
+                 int(row.get("migration_modifier_den") or 1))
+    return max(_SOCIAL_MODIFIER_CLAMP[0], min(f, _SOCIAL_MODIFIER_CLAMP[1]))
+
+
+def demography_social_fertility_modifier(snapshot: WorldSnapshot, *,
+                                         settlement_ref: str | None) -> Fraction:
+    """社会生育情境修正（fertility_context，clamp [1/2, 2]）；无反馈行=1。"""
+    row = _social_feedback_of(snapshot, settlement_ref)
+    if not row:
+        return Fraction(1)
+    f = Fraction(int(row.get("fertility_context_num") or 1),
+                 int(row.get("fertility_context_den") or 1))
+    return max(_SOCIAL_MODIFIER_CLAMP[0], min(f, _SOCIAL_MODIFIER_CLAMP[1]))

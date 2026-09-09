@@ -21,11 +21,13 @@ from ..catchup import catch_up
 from ...database.models_core import SimulationCheckpoint, WorldEvent
 from ...database.models_world import (EcologicalRegion, EcologyFeedbackState,
                                      EcologyState, EcologyZone,
-                                     EconomicPressureState, Institution,
-                                     Lineage, PopulationGroup,
+                                     EconomicPressureState, Household,
+                                     Institution, Lineage, PopulationGroup,
                                      ProductionRecipe, ProductionState,
                                      ResourceNode, ResourceProfile,
-                                     ResourceStock, Settlement)
+                                     ResourceStock, Settlement,
+                                     SettlementSocialState,
+                                     SocialFeedbackState)
 from ...domain.blessed_time import datetime_to_epoch_us
 from ..writer_lock import WriterLease
 from .contracts import PREFLIGHT_SIMULATION_VERSION, Engine, NoOpEngine
@@ -54,6 +56,7 @@ class MiniWorldReport:
     resource: dict = field(default_factory=dict)
     economy: dict = field(default_factory=dict)
     ecology: dict = field(default_factory=dict)
+    social: dict = field(default_factory=dict)
     society: dict = field(default_factory=dict)
 
 
@@ -93,6 +96,7 @@ def run_mini_world_120y(
         reserve_start = _reserve_total(s0, world_id)
         stock_start = _stock_totals(s0, world_id)
         quality_start = _quality_totals(s0, world_id)
+        social_start = _social_totals(s0, world_id)
 
     total_events = 0
     engine_metrics: dict = {e.engine_id: {} for e in engines}
@@ -163,6 +167,11 @@ def run_mini_world_120y(
                 select(EcologyState)).scalars().all()),
             "ecology_feedback_state": len(s.execute(
                 select(EcologyFeedbackState)).scalars().all()),
+            "households": len(s.execute(select(Household)).scalars().all()),
+            "settlement_social_state": len(s.execute(
+                select(SettlementSocialState)).scalars().all()),
+            "social_feedback_state": len(s.execute(
+                select(SocialFeedbackState)).scalars().all()),
         }
         events_total = len(s.execute(select(WorldEvent)).scalars().all())
         ckpts = len(s.execute(select(SimulationCheckpoint)).scalars().all())
@@ -171,10 +180,12 @@ def run_mini_world_120y(
         reserve_end = _reserve_total(s, world_id)
         stock_end = _stock_totals(s, world_id)
         quality_end = _quality_totals(s, world_id)
+        social_end = _social_totals(s, world_id)
 
     eco = engine_metrics.get("ECONOMY", {})
     res = engine_metrics.get("RESOURCE", {})
     ecol = engine_metrics.get("ECOLOGY", {})
+    soc = engine_metrics.get("SOCIAL", {})
     return MiniWorldReport(
         world_id=world_id, years=years, steps=years, runs=runs,
         events=events_total, checkpoints=ckpts,
@@ -214,6 +225,20 @@ def run_mini_world_120y(
                  "threshold_crossings": int(ecol.get("threshold_crossings", 0)),
                  "feedback_applications": int(ecol.get(
                      "feedback_applications", 0))},
+        social={"initial_stress": social_start,
+                "final_stress": social_end,
+                "households_formed": int(soc.get("households_formed", 0)),
+                "households_split": int(soc.get("households_split", 0)),
+                "households_dissolved": int(soc.get("households_dissolved", 0)),
+                "lineages_founded": int(soc.get("lineages_founded", 0)),
+                "lineages_extinct": int(soc.get("lineages_extinct", 0)),
+                "institutions_founded": int(soc.get("institutions_founded", 0)),
+                "institutions_dissolved": int(soc.get(
+                    "institutions_dissolved", 0)),
+                "stress_threshold_crossings": int(soc.get(
+                    "stress_threshold_crossings", 0)),
+                "feedback_applications": int(soc.get(
+                    "feedback_applications", 0))},
         society={"households": None, "lineages": counts["lineages"],
                  "institution_events": None},
     )
@@ -231,6 +256,14 @@ def _quality_totals(session: Session, world_id: str) -> dict:
     for r in session.execute(select(EcologyState).where(
             EcologyState.world_id == world_id)).scalars():
         totals[r.zone_ref] = int(r.habitat_quality or 0)
+    return totals
+
+
+def _social_totals(session: Session, world_id: str) -> dict:
+    totals: dict[str, int] = {}
+    for r in session.execute(select(SettlementSocialState).where(
+            SettlementSocialState.world_id == world_id)).scalars():
+        totals[r.settlement_ref] = int(r.social_stress or 0)
     return totals
 
 

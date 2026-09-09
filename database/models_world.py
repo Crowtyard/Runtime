@@ -66,7 +66,12 @@ class Person(Base):
 
 
 class Lineage(Base):
-    """家庭/血缘/师徒等长期关系（PERSISTENT_LINEAGE）。"""
+    """家庭/血缘/师徒等长期关系（PERSISTENT_LINEAGE，07 号）。
+
+    M2d 扩展：聚合连续性字段（represented_population / household_count /
+    generation / status / founded_tick / parent_lineage_ref）；M0 锚点级
+    明细字段（head_person_ref/member_ids）留给未来 Persistent Person。
+    灭绝只改 status，绝不删除 identity。"""
     __tablename__ = "lineages"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
@@ -74,10 +79,27 @@ class Lineage(Base):
     head_person_ref: Mapped[str | None] = mapped_column(String(64))
     member_ids: Mapped[list | None] = mapped_column(JSON)
     history_ref: Mapped[str | None] = mapped_column(String(64))
+    # ---- M2d Social Foundation ----
+    lineage_id: Mapped[str | None] = mapped_column(String(32))  # 确定性 lineage id
+    origin_settlement: Mapped[str | None] = mapped_column(String(64))
+    represented_population: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    household_count: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    generation: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                            default=1, server_default="1")
+    status: Mapped[str | None] = mapped_column(String(12))  # ACTIVE/DORMANT/EXTINCT
+    founded_tick: Mapped[int | None] = mapped_column(BigInteger)
+    parent_lineage_ref: Mapped[str | None] = mapped_column(String(32))
+    semantic_version: Mapped[str | None] = mapped_column(String(16))
+    updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
 
 
 class Institution(Base):
-    """工坊/市场/药园/运输组织等长期机构（PERSISTENT_INSTITUTION）。"""
+    """工坊/市场/药园/运输组织等长期机构（PERSISTENT_INSTITUTION，07 号）。
+
+    M2d 扩展：确定性 institution_id / founded_tick / profile_ref；state
+    复用 M0 列承载 ACTIVE/DECLINING/DORMANT/DISSOLVED 生命周期。"""
     __tablename__ = "institutions"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
@@ -87,6 +109,11 @@ class Institution(Base):
     state: Mapped[str | None] = mapped_column(String(16))
     capacity: Mapped[int | None] = mapped_column(Integer)
     members: Mapped[list | None] = mapped_column(JSON)
+    # ---- M2d Social Foundation ----
+    institution_id: Mapped[str | None] = mapped_column(String(32))  # 确定性 institution id
+    founded_tick: Mapped[int | None] = mapped_column(BigInteger)
+    profile_ref: Mapped[str | None] = mapped_column(String(64))
+    updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
 
 
 class Industry(Base):
@@ -355,6 +382,97 @@ class EcologyFeedbackState(Base):
     __table_args__ = (UniqueConstraint(
         "world_id", "zone_ref",
         name="uq_ecology_feedback_state_world_zone"),)
+
+
+class Household(Base):
+    """聚合家庭（M2d Layer 2）：不是家庭成员个人模拟。
+
+    人口归属契约（m2d-coverage-v1：full）：每 (settlement, species) 的
+    ACTIVE household represented_population 之和 == 对应 population 总量。
+    """
+    __tablename__ = "households"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    household_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    settlement_ref: Mapped[str] = mapped_column(String(64), nullable=False)
+    species: Mapped[str] = mapped_column(String(32), nullable=False)
+    represented_population: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    generation: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                            default=1, server_default="1")
+    lineage_ref: Mapped[str | None] = mapped_column(String(32))  # 确定性 lineage id
+    anchor_group_ref: Mapped[str | None] = mapped_column(String(16))  # 形成期 cohort 锚点（行永存）
+    state: Mapped[str] = mapped_column(String(12), nullable=False,
+                                       default="ACTIVE", server_default="ACTIVE")
+    formation_version: Mapped[str | None] = mapped_column(String(16))
+    updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+
+    __table_args__ = (UniqueConstraint("world_id", "household_id",
+                                       name="uq_households_world_id"),)
+
+
+class SettlementSocialState(Base):
+    """聚落社会状态（M2d）：整数 fixed-point 0..SOCIAL_STATE_SCALE。"""
+    __tablename__ = "settlement_social_state"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    settlement_ref: Mapped[str] = mapped_column(String(64), nullable=False)
+    social_stress: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                               default=0, server_default="0")
+    social_cohesion: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                 default=1_000_000,
+                                                 server_default="1000000")
+    household_stability: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1_000_000,
+        server_default="1000000")
+    mobility_pressure: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                   default=0, server_default="0")
+    unallocated_population: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    stress_min_seen: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                 default=0, server_default="0")
+    stress_max_seen: Mapped[int] = mapped_column(BigInteger, nullable=False,
+                                                 default=0, server_default="0")
+    engine_version: Mapped[str | None] = mapped_column(String(32))
+    updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+
+    __table_args__ = (UniqueConstraint(
+        "world_id", "settlement_ref",
+        name="uq_settlement_social_state_world_settlement"),)
+
+
+class SocialFeedbackState(Base):
+    """社会反馈状态（M2d）：committed authoritative feedback。
+
+    DEMOGRAPHY 于下一 committed step 经 snapshot 读取
+    （SOCIAL_FEEDBACK_LATENCY = NEXT_COMMITTED_STEP）。
+    """
+    __tablename__ = "social_feedback_state"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    world_id: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    settlement_ref: Mapped[str] = mapped_column(String(64), nullable=False)
+    migration_modifier_num: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    migration_modifier_den: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    fertility_context_num: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    fertility_context_den: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    social_support_num: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    social_support_den: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    social_stress_num: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=0, server_default="0")
+    social_stress_den: Mapped[int] = mapped_column(
+        BigInteger, nullable=False, default=1, server_default="1")
+    engine_version: Mapped[str | None] = mapped_column(String(32))
+    updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
+
+    __table_args__ = (UniqueConstraint(
+        "world_id", "settlement_ref",
+        name="uq_social_feedback_state_world_settlement"),)
 
 
 class EcologicalRegion(Base):

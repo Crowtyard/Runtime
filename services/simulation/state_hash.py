@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-"""world_state_hash（WORLD_STATE_HASH_SCHEMA_VERSION=2/3/4）。
+"""world_state_hash（WORLD_STATE_HASH_SCHEMA_VERSION=2/3/4/5）。
 
 - v2（M2a 冻结）：只覆盖 M2a 状态域（7 张表 + M2a 字段集）。
 - v3（M2b 冻结）：只覆盖 M2b 状态域（12 张表 + M2b 字段集，不含 M2c
   生态表/字段）—— M2b 120y 基线逐字节复现依赖此冻结。
-- v4（M2c）：覆盖快照全状态域（Population + Resource/Economy +
-  Ecology zones/state/feedback）。
+- v4（M2c 冻结）：只覆盖 M2c 状态域（15 张表 + M2c 字段集，不含 M2d
+  社会表/字段）—— M2c 120y 基线逐字节复现依赖此冻结。
+- v5（M2d）：覆盖快照全状态域（Population + Resource/Economy +
+  Ecology + Social）。
 - canonical serialization：UTF-8 JSON（sort_keys + 紧凑分隔符）+ 实体按语义
   键排序（snapshot._canonical）；禁止行物理顺序/autoincrement 顺序/now()
   时间戳/日志元数据/事件日志作为输入。
@@ -17,9 +19,10 @@ import json
 
 from .snapshot import WorldSnapshot
 
-WORLD_STATE_HASH_SCHEMA_VERSION = 4  # 当前（M2c）
+WORLD_STATE_HASH_SCHEMA_VERSION = 5  # 当前（M2d）
 WORLD_STATE_HASH_SCHEMA_VERSION_V2 = 2  # M2a 冻结（回归基线）
 WORLD_STATE_HASH_SCHEMA_VERSION_V3 = 3  # M2b 冻结（回归基线）
+WORLD_STATE_HASH_SCHEMA_VERSION_V4 = 4  # M2c 冻结（回归基线）
 
 # M2a 冻结表集（v2 只哈希这 7 张表，绝不因 snapshot 扩展而漂移）
 _V2_TABLES = frozenset({
@@ -102,6 +105,44 @@ _V3_FIELDS = {
 }
 
 
+# M2c 冻结表集（v4；不含 M2d 社会表；lineages/institutions 用 M2c 字段集）
+_V4_TABLES = _V3_TABLES | frozenset({
+    "ecology_zones", "ecology_state", "ecology_feedback_state"})
+
+# M2c 冻结字段集（v4；社会表不在内；resource_nodes 含 M2c 两列；
+# lineages/institutions 保持 M0 字段）
+_V4_FIELDS = dict(_V3_FIELDS)
+_V4_FIELDS["resource_nodes"] = (
+    "id", "world_id", "kind", "region_ref", "state",
+    "resource_profile_ref", "settlement_relation",
+    "remaining_reserve", "extraction_capacity",
+    "extraction_carry", "last_extracted_minor",
+    "engine_version", "state_version", "updated_blessed_tick",
+    "reserve_ceiling_minor", "regeneration_carry")
+_V4_FIELDS.update({
+    "ecology_zones": ("id", "world_id", "zone_id", "region_ref",
+                      "settlement_relation", "profile_ref",
+                      "semantic_version"),
+    "ecology_state": ("id", "world_id", "zone_ref", "habitat_quality",
+                      "regeneration_capacity", "ecological_stress",
+                      "population_pressure", "extraction_pressure",
+                      "production_pressure", "depletion_pressure",
+                      "external_pressure", "degradation_carry",
+                      "recovery_carry", "quality_min_seen",
+                      "quality_max_seen", "engine_version",
+                      "updated_blessed_tick"),
+    "ecology_feedback_state": ("id", "world_id", "zone_ref",
+                               "regeneration_capacity_minor_per_year",
+                               "yield_modifier_num", "yield_modifier_den",
+                               "extraction_modifier_num",
+                               "extraction_modifier_den",
+                               "habitat_stress_level",
+                               "environmental_stress_num",
+                               "environmental_stress_den", "engine_version",
+                               "updated_blessed_tick"),
+})
+
+
 def _build_doc(*, snapshot: WorldSnapshot, simulation_version: str,
                pipeline_version: str, engine_versions: dict[str, str],
                schema_version: int, table_fields: dict[str, tuple[str, ...]]
@@ -158,7 +199,20 @@ def world_state_hash_v3(*, snapshot: WorldSnapshot, simulation_version: str,
 def world_state_hash_v4(*, snapshot: WorldSnapshot, simulation_version: str,
                         pipeline_version: str,
                         engine_versions: dict[str, str]) -> str:
-    """M2c v4：覆盖快照全状态域（含 Ecology zones/state/feedback）。"""
+    """M2c 冻结 v4（回归基线专用；覆盖 M2c 15 表状态域，语义永不变化）。"""
+    doc = _build_doc(
+        snapshot=snapshot, simulation_version=simulation_version,
+        pipeline_version=pipeline_version, engine_versions=engine_versions,
+        schema_version=WORLD_STATE_HASH_SCHEMA_VERSION_V4,
+        table_fields={t: _V4_FIELDS[t] for t in sorted(_V4_TABLES)})
+    return _digest(doc)
+
+
+def world_state_hash_v5(*, snapshot: WorldSnapshot, simulation_version: str,
+                        pipeline_version: str,
+                        engine_versions: dict[str, str]) -> str:
+    """M2d v5：覆盖快照全状态域（含 Social households/lineages/
+    institutions/settlement social state/social feedback）。"""
     from .snapshot import _FIELDS  # 延迟导入避免循环
     doc = _build_doc(
         snapshot=snapshot, simulation_version=simulation_version,

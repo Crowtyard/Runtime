@@ -19,10 +19,13 @@ from sqlalchemy.orm import Session
 
 from ...database.models_world import (EcologicalRegion, EcologyFeedbackState,
                                      EcologyState, EcologyZone,
-                                     EconomicPressureState, PopulationGroup,
+                                     EconomicPressureState, Household,
+                                     Institution, Lineage, PopulationGroup,
                                      ProductionRecipe, ProductionState,
                                      ResourceNode, ResourceProfile,
-                                     ResourceStock, Settlement)
+                                     ResourceStock, Settlement,
+                                     SettlementSocialState,
+                                     SocialFeedbackState)
 from .ecology import (ECOLOGY_STATE_SCALE, ENGINE_VERSION
                       as ECOLOGY_ENGINE_VERSION)
 from .ecology import TEST_ECOLOGY_PROFILE
@@ -33,6 +36,9 @@ from .population import (DEMOGRAPHY_PROFILE_REF, ENGINE_VERSION,
                          TEST_SPECIES_PROFILE)
 from .resource import ENGINE_VERSION as RESOURCE_ENGINE_VERSION
 from .resource import RESOURCE_PROFILES
+from .social import (ENGINE_VERSION as SOCIAL_ENGINE_VERSION)
+from .social import (FORMATION_VERSION, SOCIAL_STATE_SCALE,
+                     TEST_SOCIAL_PROFILE)
 
 MINI_WORLD_ID = "MINIWORLD-TEST-001"
 MINI_SPECIES = "TEST-SPECIES-001"
@@ -108,13 +114,27 @@ MINI_TIMBER_NODE = {
 MINI_TIMBER_STOCK_UNITS = {("TEST-MAIN-A", "TEST-RESOURCE-003"): 0,
                            ("TEST-SATELLITE-B", "TEST-RESOURCE-003"): 100}
 
+# ---- M2d integrated fixture（TEST_FIXTURE_ONLY；with_social=True 时追加）----
+# 初始聚合家庭：A 60 × 5 = 300；B 20 × 5 = 100（generation 1）
+MINI_HOUSEHOLD_SIZE = TEST_SOCIAL_PROFILE.formation_size
+MINI_LINEAGE_B = "TEST-LINEAGE-B-001"  # B 的 synthetic lineage（3 户，测灭绝）
+MINI_INSTITUTIONS = [
+    {"kind": "COMMUNITY_BODY", "settlement_ref": "TEST-MAIN-A",
+     "state": "ACTIVE", "institution_id": "TEST-INST-A-001"},
+    {"kind": "COMMUNITY_BODY", "settlement_ref": "TEST-SATELLITE-B",
+     "state": "ACTIVE", "institution_id": "TEST-INST-B-001"},
+]
 
-def seed_mini_world(session: Session, *, with_ecology: bool = False) -> None:
+
+def seed_mini_world(session: Session, *, with_ecology: bool = False,
+                    with_social: bool = False) -> None:
     """向当前（测试）库播种 mini_world 实体（幂等）。
 
     with_ecology=False：M2a/M2b 精确夹具（不新增任何行 —— 基线复现依赖）。
     with_ecology=True：M2c integrated 夹具（追加生态区/生态状态/生态反馈 +
-    可再生 TEST-TIMBER 节点与库存）。"""
+    可再生 TEST-TIMBER 节点与库存）。
+    with_social=True：M2d integrated 夹具（追加聚合家庭/lineage/institution/
+    聚落社会状态/社会反馈；要求 with_ecology=True）。"""
     from sqlalchemy import select
 
     existing = session.execute(
@@ -224,4 +244,54 @@ def seed_mini_world(session: Session, *, with_ecology: bool = False) -> None:
                 world_id=MINI_WORLD_ID, settlement_ref=sref,
                 resource_profile_ref=ref, quantity=units * MINI_SCALE,
                 consumption_carry=0, engine_version=ECONOMY_ENGINE_VERSION))
+
+    # M2d：聚合家庭 + synthetic lineage + institution + 社会状态/反馈
+    if with_social:
+        hh_seq = {"TEST-MAIN-A": 0, "TEST-SATELLITE-B": 0}
+        for sref, count in (("TEST-MAIN-A", 300), ("TEST-SATELLITE-B", 100)):
+            n = count // MINI_HOUSEHOLD_SIZE
+            for i in range(n):
+                hh_seq[sref] += 1
+                lineage_ref = None
+                if sref == "TEST-SATELLITE-B" and i < 3:
+                    lineage_ref = MINI_LINEAGE_B
+                session.add(Household(
+                    world_id=MINI_WORLD_ID,
+                    household_id=f"TEST-HH-{sref[-1]}-{hh_seq[sref]:03d}",
+                    settlement_ref=sref, species=MINI_SPECIES,
+                    represented_population=MINI_HOUSEHOLD_SIZE,
+                    generation=1, lineage_ref=lineage_ref,
+                    anchor_group_ref="20", state="ACTIVE",
+                    formation_version=FORMATION_VERSION,
+                    updated_blessed_tick=0))
+        session.add(Lineage(
+            world_id=MINI_WORLD_ID, lineage_type="FAMILY",
+            lineage_id=MINI_LINEAGE_B, origin_settlement="TEST-SATELLITE-B",
+            represented_population=3 * MINI_HOUSEHOLD_SIZE,
+            household_count=3, generation=1, status="ACTIVE",
+            founded_tick=0, semantic_version=TEST_SOCIAL_PROFILE.semantic_version,
+            updated_blessed_tick=0))
+        for spec in MINI_INSTITUTIONS:
+            session.add(Institution(
+                world_id=MINI_WORLD_ID, kind=spec["kind"],
+                settlement_ref=spec["settlement_ref"],
+                state=spec["state"],
+                institution_id=spec["institution_id"], founded_tick=0,
+                profile_ref=TEST_SOCIAL_PROFILE.profile_id,
+                updated_blessed_tick=0))
+        for sref in ("TEST-MAIN-A", "TEST-SATELLITE-B"):
+            session.add(SettlementSocialState(
+                world_id=MINI_WORLD_ID, settlement_ref=sref,
+                social_stress=0, social_cohesion=SOCIAL_STATE_SCALE,
+                household_stability=SOCIAL_STATE_SCALE,
+                mobility_pressure=0, unallocated_population=0,
+                stress_min_seen=0, stress_max_seen=0,
+                engine_version=SOCIAL_ENGINE_VERSION, updated_blessed_tick=0))
+            session.add(SocialFeedbackState(
+                world_id=MINI_WORLD_ID, settlement_ref=sref,
+                migration_modifier_num=1, migration_modifier_den=1,
+                fertility_context_num=1, fertility_context_den=1,
+                social_support_num=1, social_support_den=1,
+                social_stress_num=0, social_stress_den=1,
+                engine_version=SOCIAL_ENGINE_VERSION, updated_blessed_tick=0))
     session.flush()

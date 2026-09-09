@@ -31,6 +31,8 @@ from .contracts import (DomainEventDraft, EngineResult, SimulationContext,
 from .feedback import (demography_ecology_pressure_modifier,
                        demography_ecology_stress_level,
                        demography_mortality_pressure_modifier,
+                       demography_social_fertility_modifier,
+                       demography_social_migration_modifier,
                        settlement_pressure_stress)
 
 ENGINE_ID = "DEMOGRAPHY"
@@ -189,10 +191,16 @@ class PopulationGroupEngine:
         group_keys = sorted({(r["settlement_ref"], r["species"])
                              for r in rows},
                             key=lambda k: (_settlement_order(k[0]), k[1]))
+        # M2d 社会反馈（NEXT_COMMITTED_STEP；无反馈行 → 中性 1/1）
+        social_fert = {key[0]: demography_social_fertility_modifier(
+            ctx.snapshot, settlement_ref=key[0]) for key in group_keys}
+        social_mig = {key[0]: demography_social_migration_modifier(
+            ctx.snapshot, settlement_ref=key[0]) for key in group_keys}
         outcomes = [self._step_group(ctx, rows, key[0], key[1],
-                                     capacity.get(key[0]))
+                                     capacity.get(key[0]),
+                                     social_fert.get(key[0], Fraction(1)))
                     for key in group_keys]
-        outcomes = self._allocate_migration(ctx, rows, outcomes)
+        outcomes = self._allocate_migration(ctx, rows, outcomes, social_mig)
 
         proposed: list[StateChange] = []
         events: list[DomainEventDraft] = []
@@ -265,7 +273,8 @@ class PopulationGroupEngine:
 
     # ------------------------------------------------------------ 内部步骤
     def _step_group(self, ctx: SimulationContext, rows, settlement_ref,
-                    species, capacity: int | None) -> GroupStepOutcome:
+                    species, capacity: int | None,
+                    social_fert: Fraction = Fraction(1)) -> GroupStepOutcome:
         group_rows = [r for r in rows
                       if r["settlement_ref"] == settlement_ref
                       and r["species"] == species]
@@ -321,7 +330,8 @@ class PopulationGroupEngine:
                 total_after = sum(aged.values())
                 room = Fraction(max(capacity - total_after, 0), capacity)
                 factor = room
-            expected = Fraction(fertile) * profile.birth_rate * factor
+            expected = Fraction(fertile) * profile.birth_rate \
+                * social_fert * factor
             births = expected.numerator // expected.denominator
             frac = expected - births
             if frac > 0 and ctx.rng.chance(float(frac)):
@@ -337,15 +347,18 @@ class PopulationGroupEngine:
             new_carry_ticks=new_carry)
 
     def _allocate_migration(self, ctx: SimulationContext, rows,
-                            outcomes: list[GroupStepOutcome]
+                            outcomes: list[GroupStepOutcome],
+                            social_mig: dict | None = None
                             ) -> list[GroupStepOutcome]:
         profiles = {oc.species: self._profile_of(oc.species)
                     for oc in outcomes}
-        # 迁出（floor + Bernoulli；从最高 bucket 向下扣减）
+        # 迁出（floor + Bernoulli；从最高 bucket 向下扣减；
+        #   社会迁移修正 NEXT_COMMITTED_STEP，clamp [1/2, 2]）
         emigrated: list[int] = []
         for oc in outcomes:
             profile = profiles[oc.species]
-            expected = Fraction(oc.end) * profile.emigration_rate
+            mig_mod = (social_mig or {}).get(oc.settlement_ref, Fraction(1))
+            expected = Fraction(oc.end) * profile.emigration_rate * mig_mod
             e = expected.numerator // expected.denominator
             frac = expected - e
             if frac > 0 and ctx.rng.chance(float(frac)):

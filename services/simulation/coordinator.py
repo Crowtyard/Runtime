@@ -18,11 +18,13 @@ from sqlalchemy.orm import Session
 
 from ...database.models_world import (EcologicalRegion, EcologyFeedbackState,
                                      EcologyState, EcologyZone,
-                                     EconomicPressureState, Industry,
-                                     Institution, Lineage, PopulationGroup,
-                                     ProductionRecipe, ProductionState,
-                                     ResourceNode, ResourceProfile,
-                                     ResourceStock, Settlement)
+                                     EconomicPressureState, Household,
+                                     Industry, Institution, Lineage,
+                                     PopulationGroup, ProductionRecipe,
+                                     ProductionState, ResourceNode,
+                                     ResourceProfile, ResourceStock,
+                                     Settlement, SettlementSocialState,
+                                     SocialFeedbackState)
 from ...domain.errors import IntegrityError
 from ..repositories import CheckpointRepository, EventRepository
 from ..rng_service import RngService
@@ -36,7 +38,7 @@ from .recovery import (WORLD_COMMITTED_KIND,
                        latest_authoritative_world_checkpoint)
 from .snapshot import StagedWorld, read_snapshot
 from .state_hash import (world_state_hash_v2, world_state_hash_v3,
-                         world_state_hash_v4)
+                         world_state_hash_v4, world_state_hash_v5)
 
 _MODEL_BY_TABLE = {
     "settlements": Settlement,
@@ -54,6 +56,9 @@ _MODEL_BY_TABLE = {
     "ecology_zones": EcologyZone,
     "ecology_state": EcologyState,
     "ecology_feedback_state": EcologyFeedbackState,
+    "households": Household,
+    "settlement_social_state": SettlementSocialState,
+    "social_feedback_state": SocialFeedbackState,
 }
 
 
@@ -140,6 +145,12 @@ class SimulationCoordinator:
             result: EngineResult = engine.simulate(ctx)
             _validate_result(engine.engine_id, result)
             for change in result.proposed_changes:
+                if change.new_row is not None:
+                    # INSERT 语义（M2d 扩展；所有权在 propose_insert 内强制）
+                    staged.propose_insert(engine_id=engine.engine_id,
+                                          table=change.table,
+                                          row=change.new_row)
+                    continue
                 # 所有权在 StagedWorld.propose 内强制
                 staged.propose(engine_id=engine.engine_id,
                                table=change.table,
@@ -206,10 +217,17 @@ class SimulationCoordinator:
 
         final_snapshot = read_snapshot(session, world_id)
         # 哈希 schema 版本由管线状态域决定（不静默改语义）：
-        #   - 含 ECOLOGY → v4（覆盖 ecology 状态域）
-        #   - 含 RESOURCE/ECONOMY → v3（M2b 冻结语义，基线逐字节复现）
+        #   - 含 SOCIAL → v5（覆盖 social 状态域）
+        #   - 含 ECOLOGY → v4（M2c 冻结语义，基线逐字节复现）
+        #   - 含 RESOURCE/ECONOMY → v3（M2b 冻结语义）
         #   - 仅 DEMOGRAPHY（M2a 回归）→ v2（M2a 冻结语义）
-        if "ECOLOGY" in self.engine_versions:
+        if "SOCIAL" in self.engine_versions:
+            state_hash = world_state_hash_v5(
+                snapshot=final_snapshot,
+                simulation_version=self.simulation_version,
+                pipeline_version=self.pipeline_version,
+                engine_versions=self.engine_versions)
+        elif "ECOLOGY" in self.engine_versions:
             state_hash = world_state_hash_v4(
                 snapshot=final_snapshot,
                 simulation_version=self.simulation_version,
@@ -270,8 +288,16 @@ def _validate_result(engine_id: str, result: EngineResult) -> None:
 
 
 def _apply_changes(session: Session, changes) -> None:
-    """把 staged 变更写入当前 fenced 会话（ORM UPDATE；不 commit）。"""
+    """把 staged 变更写入当前 fenced 会话（ORM；不 commit）。
+
+    - UPDATE：entity_id 行 setattr。
+    - INSERT（M2d 扩展）：new_row 非 None → 创建行（确定性 id 由引擎派生）。
+    """
     for change in changes:
+        if change.new_row is not None:
+            model = _MODEL_BY_TABLE[change.table]
+            session.add(model(**change.new_row))
+            continue
         model = _MODEL_BY_TABLE[change.table]
         row = session.get(model, change.entity_id)
         if row is None:

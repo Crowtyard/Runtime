@@ -29,7 +29,10 @@ ENGINE_OWNERSHIP: dict[str, frozenset[str]] = {
     # M2c EcologyEngine 实际只写 ecology_state / ecology_feedback_state）
     "ECOLOGY": frozenset({"ecological_regions", "ecology_state",
                           "ecology_feedback_state"}),
-    "SOCIAL": frozenset({"lineages", "institutions"}),
+    # M2d：lineages/institutions 保留 Preflight 契约；households /
+    # settlement_social_state / social_feedback_state 为 M2d 新增
+    "SOCIAL": frozenset({"lineages", "institutions", "households",
+                         "settlement_social_state", "social_feedback_state"}),
 }
 
 PREFLIGHT_SIMULATION_VERSION = "0.2.0-preflight"
@@ -39,12 +42,19 @@ NOOP_ENGINE_VERSION = "noop-0"
 
 @dataclass(frozen=True)
 class StateChange:
-    """一条 proposed state mutation（staged；authoritative 写入由 coordinator 统一执行）。"""
+    """一条 proposed state mutation（staged；authoritative 写入由 coordinator
+    统一执行，引擎零 commit）。
+
+    - UPDATE 语义：entity_id + field + new_value（既有行字段更新）。
+    - INSERT 语义（M2d 扩展，NEW_PROPOSAL）：new_row 非 None —— coordinator
+      创建该行（确定性 id 由引擎派生，无 UUID4/autoincrement 依赖）。
+    """
     table: str
-    entity_id: int
-    field: str
+    entity_id: int | None
+    field: str | None
     old_value: object
     new_value: object
+    new_row: dict | None = None
 
 
 @dataclass(frozen=True)

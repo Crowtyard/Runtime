@@ -16,11 +16,13 @@ from sqlalchemy.orm import Session
 from ...database.models_core import WorldRuntime
 from ...database.models_world import (EcologicalRegion, EcologyFeedbackState,
                                       EcologyState, EcologyZone,
-                                      EconomicPressureState, Industry,
-                                      Institution, Lineage, PopulationGroup,
-                                      ProductionRecipe, ProductionState,
-                                      ResourceNode, ResourceProfile,
-                                      ResourceStock, Settlement)
+                                      EconomicPressureState, Household,
+                                      Industry, Institution, Lineage,
+                                      PopulationGroup, ProductionRecipe,
+                                      ProductionState, ResourceNode,
+                                      ResourceProfile, ResourceStock,
+                                      Settlement, SettlementSocialState,
+                                      SocialFeedbackState)
 from ...domain.errors import IntegrityError
 from .contracts import ENGINE_OWNERSHIP, StateChange
 
@@ -31,7 +33,9 @@ SNAPSHOT_TABLES = (
     "resource_profiles", "resource_stocks", "production_recipes",
     "production_state", "economic_pressure_state",
     # M2c Ecology：
-    "ecology_zones", "ecology_state", "ecology_feedback_state")
+    "ecology_zones", "ecology_state", "ecology_feedback_state",
+    # M2d Social：
+    "households", "settlement_social_state", "social_feedback_state")
 
 _MODEL_BY_TABLE = {
     "settlements": Settlement,
@@ -49,6 +53,9 @@ _MODEL_BY_TABLE = {
     "ecology_zones": EcologyZone,
     "ecology_state": EcologyState,
     "ecology_feedback_state": EcologyFeedbackState,
+    "households": Household,
+    "settlement_social_state": SettlementSocialState,
+    "social_feedback_state": SocialFeedbackState,
 }
 
 _FIELDS = {
@@ -70,9 +77,13 @@ _FIELDS = {
     "ecological_regions": ("id", "world_id", "terrain", "climate", "water",
                            "danger_level", "carrying_capacity", "state"),
     "lineages": ("id", "world_id", "lineage_type", "head_person_ref",
-                 "member_ids"),
+                 "member_ids", "lineage_id", "origin_settlement",
+                 "represented_population", "household_count", "generation",
+                 "status", "founded_tick", "parent_lineage_ref",
+                 "semantic_version", "updated_blessed_tick"),
     "institutions": ("id", "world_id", "kind", "settlement_ref",
-                     "owner_ref", "state", "capacity"),
+                     "owner_ref", "state", "capacity", "institution_id",
+                     "founded_tick", "profile_ref", "updated_blessed_tick"),
     "resource_profiles": ("id", "world_id", "resource_id", "unit",
                           "quantity_scale", "renewability", "extractability",
                           "consumption_category", "production_usability",
@@ -118,6 +129,24 @@ _FIELDS = {
                                "environmental_stress_num",
                                "environmental_stress_den", "engine_version",
                                "updated_blessed_tick"),
+    "households": ("id", "world_id", "household_id", "settlement_ref",
+                   "species", "represented_population", "generation",
+                   "lineage_ref", "anchor_group_ref", "state",
+                   "formation_version", "updated_blessed_tick"),
+    "settlement_social_state": ("id", "world_id", "settlement_ref",
+                                "social_stress", "social_cohesion",
+                                "household_stability", "mobility_pressure",
+                                "unallocated_population",
+                                "stress_min_seen", "stress_max_seen",
+                                "engine_version", "updated_blessed_tick"),
+    "social_feedback_state": ("id", "world_id", "settlement_ref",
+                              "migration_modifier_num",
+                              "migration_modifier_den",
+                              "fertility_context_num",
+                              "fertility_context_den", "social_support_num",
+                              "social_support_den", "social_stress_num",
+                              "social_stress_den", "engine_version",
+                              "updated_blessed_tick"),
 }
 
 
@@ -150,6 +179,9 @@ def _canonical(row: dict, table: str) -> Any:
         "ecology_zones": ("zone_id",),
         "ecology_state": ("zone_ref",),
         "ecology_feedback_state": ("zone_ref",),
+        "households": ("household_id",),
+        "settlement_social_state": ("settlement_ref",),
+        "social_feedback_state": ("settlement_ref",),
     }
     return tuple(_norm(row[k]) for k in key_specs[table])
 
@@ -229,3 +261,22 @@ class StagedWorld:
         self.changes.append(StateChange(table=table, entity_id=entity_id,
                                         field=field, old_value=old,
                                         new_value=new_value))
+
+    def propose_insert(self, *, engine_id: str, table: str,
+                       row: dict[str, Any]) -> None:
+        """INSERT 语义（M2d 扩展）：声明创建一行（coordinator 统一写入）。
+
+        - 所有权与快照契约同 propose；确定性 id 由引擎派生（无 UUID）。
+        - 新行进入 changes；本步后续引擎不读取暂存新行（单向 feed-forward
+          末尾引擎使用；SOCIAL 是最后一个引擎）。
+        """
+        if table not in SNAPSHOT_TABLES:
+            raise IntegrityError("propose_insert 目标表不在快照契约内",
+                                 detail=table)
+        if table not in ENGINE_OWNERSHIP.get(engine_id, frozenset()):
+            raise IntegrityError(
+                f"引擎 {engine_id} 无权写表 {table}（所有权契约）",
+                detail={"engine": engine_id, "table": table})
+        self.changes.append(StateChange(
+            table=table, entity_id=None, field=None, old_value=None,
+            new_value=dict(row), new_row=dict(row)))
