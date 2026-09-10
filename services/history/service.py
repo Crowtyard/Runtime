@@ -105,7 +105,8 @@ class HistoryService:
                     "simulation_run_id": c.simulation_run_id,
                     "episode_id": c.episode_id,
                     "owner_decision_id": c.owner_decision_id})
-            # 关联事件（entity_history_index → links → EVENT/EPISODE 节点）
+            # 关联事件（entity_history_index → links → EVENT 节点）；
+            # 批量分块 + 列裁剪（避免逐 link SELECT 与 JSON 水合开销）
             link_ids = [r.link_id for r in s.execute(select(
                 EntityHistoryIndex).where(
                     EntityHistoryIndex.world_id == world_id,
@@ -113,28 +114,35 @@ class HistoryService:
                     EntityHistoryIndex.entity_id == eid).order_by(
                         EntityHistoryIndex.committed_tick)).scalars()]
             event_uids: list[str] = []
-            for lid in link_ids:
-                link = s.execute(select(CausalHistoryLink).where(
-                    CausalHistoryLink.world_id == world_id,
-                    CausalHistoryLink.link_id == lid)).scalar_one_or_none()
-                if link is None:
-                    continue
-                if link.source_kind == "EVENT" \
-                        and link.source_id not in event_uids:
-                    event_uids.append(link.source_id)
-                if link.target_kind == "EVENT" \
-                        and link.target_id not in event_uids:
-                    event_uids.append(link.target_id)
+            for batch in self._chunks(link_ids):
+                for row in s.execute(select(
+                        CausalHistoryLink.source_kind,
+                        CausalHistoryLink.source_id,
+                        CausalHistoryLink.target_kind,
+                        CausalHistoryLink.target_id).where(
+                            CausalHistoryLink.world_id == world_id,
+                            CausalHistoryLink.link_id.in_(batch))).all():
+                    if row[0] == "EVENT" and row[1] not in event_uids:
+                        event_uids.append(row[1])
+                    if row[2] == "EVENT" and row[3] not in event_uids:
+                        event_uids.append(row[3])
+            ev_by_uid: dict[str, tuple] = {}
+            for batch in self._chunks(event_uids):
+                for row in s.execute(select(
+                        WorldEvent.event_uid, WorldEvent.event_type,
+                        WorldEvent.blessed_tick, WorldEvent.cause,
+                        WorldEvent.effect).where(
+                            WorldEvent.event_uid.in_(batch))).all():
+                    ev_by_uid[row[0]] = row
             events = []
             for uid in event_uids:
-                ev = s.execute(select(WorldEvent).where(
-                    WorldEvent.event_uid == uid)).scalar_one_or_none()
-                if ev is not None:
-                    events.append({"event_uid": ev.event_uid,
-                                   "event_type": ev.event_type,
-                                   "blessed_tick": ev.blessed_tick,
-                                   "cause": dict(ev.cause),
-                                   "effect": dict(ev.effect)})
+                row = ev_by_uid.get(uid)
+                if row is not None:
+                    events.append({"event_uid": row[0],
+                                   "event_type": row[1],
+                                   "blessed_tick": row[2],
+                                   "cause": dict(row[3] or {}),
+                                   "effect": dict(row[4] or {})})
             events.sort(key=lambda e: (e["blessed_tick"] or 0,
                                        e["event_uid"]))
             return {"entity_type": entity_type, "entity_id": eid,
@@ -831,16 +839,25 @@ class HistoryService:
         """
         with self._factory() as s:
             rows = s.execute(select(CausalHistoryLink).where(
-                CausalHistoryLink.world_id == world_id).order_by(
-                    CausalHistoryLink.link_id)).scalars().all()
-            parts = [CAUSAL_HISTORY_HASH_SCHEMA_VERSION, world_id,
-                     str(len(rows))]
-            for link in rows:
-                parts.append("|".join((
-                    link.relation_type, link.source_kind, link.source_id,
-                    link.target_kind, link.target_id,
-                    link.episode_id or "", link.status,
-                    str(link.committed_tick), link.semantic_version or "")))
-            digest = hashlib.sha256("\n".join(parts).encode("utf-8")).hexdigest()
+                CausalHistoryLink.world_id == world_id)).scalars().all()
+            digest = canonical_causal_history_hash(world_id, rows)
             return {"schema_version": CAUSAL_HISTORY_HASH_SCHEMA_VERSION,
                     "links": len(rows), "hash": digest}
+
+
+def canonical_causal_history_hash(world_id: str,
+                                  rows: list[CausalHistoryLink]) -> str:
+    """规范化哈希（行序无关：内部 ORDER BY link_id 再散列）。
+
+    world_id 参与（与 M3b 冻结基线 c1293e59… 算法逐字节一致）；
+    与 world_state_hash / event_stream_hash 语义分离。
+    """
+    ordered = sorted(rows, key=lambda l: l.link_id)
+    parts = [CAUSAL_HISTORY_HASH_SCHEMA_VERSION, world_id, str(len(ordered))]
+    for link in ordered:
+        parts.append("|".join((
+            link.relation_type, link.source_kind, link.source_id,
+            link.target_kind, link.target_id,
+            link.episode_id or "", link.status,
+            str(link.committed_tick), link.semantic_version or "")))
+    return hashlib.sha256("\n".join(parts).encode("utf-8")).hexdigest()

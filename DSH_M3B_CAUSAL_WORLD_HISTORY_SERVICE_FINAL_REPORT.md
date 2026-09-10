@@ -135,9 +135,12 @@ commit-time fencing（HB10：stale writer 零提交）。
 ## 21. 300y History Graph
 
 M3a 合成世界只读复跑 + history 索引（300 年）：
-causal_links = 65,742；entities_with_history = 64,858；
-episodes_indexed = 30；state_changes_indexed = 37,818；
-incomplete_episodes = 2（year-290 与 year-300 未完成）；orphan=0；
+causal_links = 65,742；entity_history_index_rows = 64,858（收口审计更名，
+OLD_METRIC_NAME=entities_with_history，REASON=实为索引行数而非实体数）；
+distinct_entities_with_history = 134；episodes_indexed = 30；
+state_changes_indexed = 37,818；
+incomplete_episodes = 2（NEW_NORMAL_PENDING@y290 + PRECURSOR@y300，
+status!=COMPLETED 口径；terminal COMPLETED=28）；orphan=0；
 cycle=0；superseded=0；average_chain_depth≈112.8；max_chain_depth=330。
 world_state_hash=0fc6ece0…（= M3a 基线）；event_stream_hash=8b117097…
 （= M3a 基线）；causal_history_hash=c1293e59…。
@@ -263,7 +266,8 @@ TOTAL_PASS = 560
 TOTAL_SKIP = 0
 
 causal_links = 65742
-entities_with_history = 64858
+entity_history_index_rows = 64858   # OLD_METRIC_NAME: entities_with_history
+distinct_entities_with_history = 134
 episodes_indexed = 30
 incomplete_episodes = 2
 orphan_links = 0

@@ -8,10 +8,17 @@
  "world_state_hash": "0fc6ece03ba12c1b919beceef0ad0a44bd978eba88f56cdf9c57e5338809e4da",
  "event_stream_hash": "8b117097d65863b74e6ef486a1959511674feceb838e09cdc837f04ab7bc868a",
  "causal_links": 65742,
- "entities_with_history": 64858,
+ "entity_history_index_rows": 64858,
+ "distinct_entities_with_history": 134,
+ "metric_rename": {
+  "OLD_METRIC_NAME": "entities_with_history",
+  "NEW_METRIC_NAME": "entity_history_index_rows",
+  "REASON": "raw index row count (entity,link) pairs, not distinct entities"
+ },
  "episodes_indexed": 30,
  "state_changes_indexed": 37818,
  "incomplete_episodes": 2,
+ "nonterminal_total": 2,
  "orphan_links": 0,
  "cycle_count": 0,
  "superseded_links": 0,
@@ -19,26 +26,26 @@
  "max_chain_depth": 330,
  "query_latency_ms": {
   "timeline": {
-   "single": 5.72
+   "single": 2.83
   },
   "entity_history": {
-   "single": 686.24
+   "single": 111.04
   },
   "episode_history": {
-   "single": 4.21
+   "single": 4.86
   },
   "why_query": {
-   "single": 13.82
+   "single": 13.69
   },
   "resource_why": {
-   "single": 3.31
+   "single": 3.96
   },
   "social_why": {
-   "single": 2.24
+   "single": 1.97
   },
   "succession_trace": {
-   "single": 2.93
+   "single": 3.72
   }
  },
- "wall_seconds_queries": 10.39
+ "wall_seconds_queries": 10.663
 }

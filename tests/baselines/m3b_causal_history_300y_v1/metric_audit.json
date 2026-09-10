@@ -1,0 +1,46 @@
+{
+ "episode_summary": {
+  "scheduled_episodes": 30,
+  "indexed_episodes": 30,
+  "completed_episodes": 28,
+  "active_episodes": 2,
+  "recovering_episodes": 0,
+  "incomplete_episodes": 2,
+  "nonterminal_total": 2,
+  "terminal_noncompleted_episodes": 1,
+  "missing_episodes": 0,
+  "completed_by_stage_new_normal": 29
+ },
+ "mutually_exclusive_states": {
+  "EPISODE_STATE_COMPLETED": 28,
+  "EPISODE_STATE_PRECURSOR": 1,
+  "EPISODE_STATE_PREPARATION": 0,
+  "EPISODE_STATE_IMPACT": 0,
+  "EPISODE_STATE_RESPONSE": 0,
+  "EPISODE_STATE_STABILIZATION": 0,
+  "EPISODE_STATE_RESIDUAL_CHANGE": 0,
+  "EPISODE_STATE_RECOVERY": 0,
+  "EPISODE_STATE_RESOURCE_SUCCESSION": 0,
+  "EPISODE_STATE_NEW_NORMAL_PENDING": 1
+ },
+ "incomplete_predicate": "episode.status != 'COMPLETED'",
+ "m3a_completed_predicate": "episode.current_stage == 'NEW_NORMAL' (includes NEW_NORMAL_PENDING)",
+ "metric_rename": {
+  "OLD_METRIC_NAME": "entities_with_history",
+  "NEW_METRIC_NAME": "entity_history_index_rows",
+  "NEW_DISTINCT_METRIC": "distinct_entities_with_history",
+  "REASON": "old value was raw entity_history_index row count (64,858 rows, one per (entity, link) pair), not distinct domain entities (134)"
+ },
+ "hash": {
+  "causal_history_hash": "c1293e59d96753e2b3488746f86f176bceb84d2ef6935c9760944c8727046a44",
+  "world_state_hash": "0fc6ece03ba12c1b919beceef0ad0a44bd978eba88f56cdf9c57e5338809e4da",
+  "event_stream_hash": "8b117097d65863b74e6ef486a1959511674feceb838e09cdc837f04ab7bc868a"
+ },
+ "conflict_resolution_30_29_2": {
+  "scheduled": 30,
+  "completed_by_stage_new_normal": 29,
+  "terminal_completed": 28,
+  "incomplete_status_not_completed": 2,
+  "explanation": "M3a counted current_stage==NEW_NORMAL (29 = 28 COMPLETED + 1 NEW_NORMAL_PENDING@y290); M3b counted status!=COMPLETED (2 = NEW_NORMAL_PENDING@y290 + PRECURSOR@y300). Both predicates valid; mutually exclusive split: 28+1+1=30."
+ }
+}

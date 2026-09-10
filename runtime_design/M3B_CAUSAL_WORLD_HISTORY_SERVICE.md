@@ -243,14 +243,28 @@ tests/baselines/m3b_causal_history_300y_v1/：summary.json /
 episode_history_samples.json / entity_history_samples.json /
 why_query_samples.json（A-F 六问）/ timeline_samples.json /
 causal_graph_digest.json + causal_history_hash。
+M3b 收口审计新增：metric_audit.json / episode_state_audit.json /
+entity_cardinality_audit.json / relation_density_audit.json /
+query_performance.json / growth_projection.json（不覆盖旧原始基线）。
+Metric 命名修正（收口审计）：OLD_METRIC_NAME=entities_with_history →
+NEW_METRIC_NAME=entity_history_index_rows（REASON：旧值 64,858 为
+entity_history_index 原始行数（每 (entity, link) 一行，含重复），
+非 distinct 实体数）；新增 distinct_entities_with_history=134
+（domain entity 口径）。Episode 口径修正：互斥状态分类
+（COMPLETED=28 + NEW_NORMAL_PENDING=1 + PRECURSOR=1 = 30 indexed；
+M3a 的 completed=29 为 stage==NEW_NORMAL 口径，M3b 的 incomplete=2
+为 status!=COMPLETED 口径，二者一致不冲突）。
 复用 M3A_TRIBULATION_SYNTHETIC_WORLD 只读夹具；world_state_hash /
-event_stream_hash 与 M3a 冻结基线逐字节一致（HB34）。
+event_stream_hash 与 M3a 冻结基线逐字节一致（HB34/MA22/MA23）。
 
 ## 35. Query Performance
 
 synthetic 300y：entity history / episode history / why query / timeline
-各测单次延迟（进 summary，不进 hash）。索引保证无秒级全表扫描
-（HB43 实测）。
+各测 p50/p95/max（warm-up 排除；进 query_performance.json，不进 hash）。
+收口审计修复：entity_history 逐 link SELECT → 批量分块 + 列裁剪加载
+（p50 778ms → 189.7ms，p95 219.7ms）。全表扫描审计：
+FULL_TABLE_SCAN_RISK=[]，新增 ix_world_events_tick（migration
+d7f9b1c3e5a7）。
 
 ## 36. M2/M3a 回归
 

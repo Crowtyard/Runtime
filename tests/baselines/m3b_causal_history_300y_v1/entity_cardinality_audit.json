@@ -1,0 +1,88 @@
+{
+ "world_id": "MINIWORLD-TEST-001",
+ "metric_source_query": "SELECT COUNT(*) FROM entity_history_index WHERE world_id = :w",
+ "metric_source_table": "entity_history_index",
+ "metric_semantics": "raw index row count; one row per (entity_type, entity_id, link_id); NOT distinct entities",
+ "entity_history_index_rows": 64858,
+ "distinct_entity_ids": 134,
+ "distinct_domain_entities": 134,
+ "distinct_entities_with_history": 134,
+ "index_reference_only_types": [],
+ "by_entity_type": [
+  {
+   "entity_type": "ecology_feedback_state",
+   "row_count": 3759,
+   "distinct_entity_count": 2,
+   "classification": "DOMAIN_ENTITY"
+  },
+  {
+   "entity_type": "ecology_state",
+   "row_count": 9810,
+   "distinct_entity_count": 2,
+   "classification": "DOMAIN_ENTITY"
+  },
+  {
+   "entity_type": "economic_pressure_state",
+   "row_count": 5116,
+   "distinct_entity_count": 2,
+   "classification": "DOMAIN_ENTITY"
+  },
+  {
+   "entity_type": "households",
+   "row_count": 663,
+   "distinct_entity_count": 30,
+   "classification": "DOMAIN_ENTITY"
+  },
+  {
+   "entity_type": "institutions",
+   "row_count": 1,
+   "distinct_entity_count": 1,
+   "classification": "DOMAIN_ENTITY"
+  },
+  {
+   "entity_type": "lineages",
+   "row_count": 537,
+   "distinct_entity_count": 7,
+   "classification": "DOMAIN_ENTITY"
+  },
+  {
+   "entity_type": "population_groups",
+   "row_count": 29322,
+   "distinct_entity_count": 80,
+   "classification": "DOMAIN_ENTITY"
+  },
+  {
+   "entity_type": "resource_nodes",
+   "row_count": 2458,
+   "distinct_entity_count": 2,
+   "classification": "DOMAIN_ENTITY"
+  },
+  {
+   "entity_type": "resource_stocks",
+   "row_count": 6372,
+   "distinct_entity_count": 4,
+   "classification": "DOMAIN_ENTITY"
+  },
+  {
+   "entity_type": "settlement_social_state",
+   "row_count": 2171,
+   "distinct_entity_count": 2,
+   "classification": "DOMAIN_ENTITY"
+  },
+  {
+   "entity_type": "social_feedback_state",
+   "row_count": 4649,
+   "distinct_entity_count": 2,
+   "classification": "DOMAIN_ENTITY"
+  }
+ ],
+ "graph_node_cardinality": {
+  "domain_events_total": 4779,
+  "state_changes_total": 37818,
+  "distinct_event_ids_indexed": 2184,
+  "distinct_state_change_ids_indexed": 37759,
+  "distinct_episode_ids_indexed": 30,
+  "distinct_relation_targets": 37992,
+  "distinct_relation_sources": 39768
+ }
+}

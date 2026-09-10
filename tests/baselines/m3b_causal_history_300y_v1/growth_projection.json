@@ -1,0 +1,85 @@
+{
+ "growth_projection": {
+  "world_id": "MINIWORLD-TEST-001",
+  "baseline_years": 300,
+  "causal_links_per_100y": 21914,
+  "history_index_rows_per_100y": 21619,
+  "state_provenance_rows_per_100y": 12606,
+  "episode_index_rows_per_100y": 10,
+  "estimated_1000y_causal_links": 219140,
+  "estimated_5000y_causal_links": 1095700,
+  "estimated_1000y_history_rows": 216193,
+  "estimated_5000y_history_rows": 1080967,
+  "projection_mode": "LINEAR_PROJECTION_ONLY"
+ },
+ "db_growth": {
+  "history_db_bytes_total": 67448832,
+  "schema_only_db_bytes": 536576,
+  "history_db_bytes_added_300y": 66912256,
+  "history_mb_per_100y": 21.2708,
+  "estimated_1000y_history_mb": 212.71,
+  "estimated_5000y_history_mb": 1063.54,
+  "projection_mode": "LINEAR_PROJECTION_ONLY",
+  "note": "no destructive compaction; report only"
+ },
+ "duplicate_semantic_links": {
+  "world_id": "MINIWORLD-TEST-001",
+  "duplicate_semantic_links": 0,
+  "duplicate_samples": []
+ },
+ "transitive_materialization": {
+  "world_id": "MINIWORLD-TEST-001",
+  "candidate_transitive_materializations": 0,
+  "semantically_justified": 0,
+  "purely_redundant_transitive_links": 0,
+  "by_relation": {
+   "AFFECTS": {
+    "candidate_transitive_materializations": 0,
+    "semantically_justified": 0,
+    "purely_redundant": 0
+   },
+   "CAUSES": {
+    "candidate_transitive_materializations": 0,
+    "semantically_justified": 0,
+    "purely_redundant": 0
+   },
+   "CONTINUES": {
+    "candidate_transitive_materializations": 0,
+    "semantically_justified": 0,
+    "purely_redundant": 0
+   },
+   "RESULTS_IN": {
+    "candidate_transitive_materializations": 0,
+    "semantically_justified": 0,
+    "purely_redundant": 0
+   },
+   "PART_OF_EPISODE": {
+    "candidate_transitive_materializations": 0,
+    "semantically_justified": 0,
+    "purely_redundant": 0
+   },
+   "DECIDED_BY": {
+    "candidate_transitive_materializations": 0,
+    "semantically_justified": 0,
+    "purely_redundant": 0
+   },
+   "DERIVED_FROM": {
+    "candidate_transitive_materializations": 0,
+    "semantically_justified": 0,
+    "purely_redundant": 0
+   }
+  }
+ },
+ "query_plan_audit": {
+  "world_id": "MINIWORLD-TEST-001",
+  "plans": {
+   "timeline": "SEARCH world_events USING COVERING INDEX ix_world_events_tick (world_id=? AND blessed_tick>? AND blessed_tick<?)",
+   "entity_history": "SEARCH history_state_changes USING COVERING INDEX ix_hist_sc_entity (world_id=? AND entity_type=? AND entity_id=? AND blessed_tick>?)",
+   "episode_history_links": "SEARCH causal_history_links USING COVERING INDEX ix_hist_links_target (world_id=? AND target_kind=? AND target_id=?)",
+   "why_walk": "SEARCH causal_history_links USING INDEX ix_hist_links_target (world_id=? AND target_kind=? AND target_id=?)",
+   "entity_index_scope": "SEARCH entity_history_index USING INDEX ix_entity_history_scope (world_id=? AND entity_type=? AND entity_id=?)"
+  },
+  "FULL_TABLE_SCAN_RISK": [],
+  "MISSING_INDEXES": []
+ }
+}

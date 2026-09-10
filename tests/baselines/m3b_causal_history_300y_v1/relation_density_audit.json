@@ -1,0 +1,75 @@
+{
+ "world_id": "MINIWORLD-TEST-001",
+ "domain_events": 4479,
+ "state_changes": 37818,
+ "causal_links": 65742,
+ "links_per_domain_event": 14.6778,
+ "links_per_state_change": 1.7384,
+ "relation_distribution": [
+  {
+   "relation_type": "CONTINUES",
+   "count": 37723,
+   "percentage": 57.3804
+  },
+  {
+   "relation_type": "AFFECTS",
+   "count": 22654,
+   "percentage": 34.4589
+  },
+  {
+   "relation_type": "CAUSES",
+   "count": 4682,
+   "percentage": 7.1218
+  },
+  {
+   "relation_type": "PART_OF_EPISODE",
+   "count": 508,
+   "percentage": 0.7727
+  },
+  {
+   "relation_type": "RESULTS_IN",
+   "count": 88,
+   "percentage": 0.1339
+  },
+  {
+   "relation_type": "DERIVED_FROM",
+   "count": 58,
+   "percentage": 0.0882
+  },
+  {
+   "relation_type": "DECIDED_BY",
+   "count": 29,
+   "percentage": 0.0441
+  },
+  {
+   "relation_type": "CORRECTS",
+   "count": 0,
+   "percentage": 0.0
+  },
+  {
+   "relation_type": "MATERIALIZES_IN",
+   "count": 0,
+   "percentage": 0.0
+  },
+  {
+   "relation_type": "RECOVERS_FROM",
+   "count": 0,
+   "percentage": 0.0
+  },
+  {
+   "relation_type": "REVERSES",
+   "count": 0,
+   "percentage": 0.0
+  },
+  {
+   "relation_type": "SUPERSEDES",
+   "count": 0,
+   "percentage": 0.0
+  },
+  {
+   "relation_type": "TRIGGERS",
+   "count": 0,
+   "percentage": 0.0
+  }
+ ]
+}

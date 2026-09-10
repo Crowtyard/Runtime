@@ -44,5 +44,22 @@
     "history_state_changes": 0,
     "history_episode_index": 0,
     "history_index_state": 0
+  },
+  "metrics_schema_v2": {
+    "OLD_METRIC_NAME": "entities_with_history",
+    "NEW_METRIC_NAME": "entity_history_index_rows",
+    "NEW_DISTINCT_METRIC": "distinct_entities_with_history",
+    "REASON": "old value was raw entity_history_index row count (one row per (entity, link) pair), not distinct domain entities",
+    "episode_mutually_exclusive_states": [
+      "EPISODE_STATE_COMPLETED", "EPISODE_STATE_PRECURSOR",
+      "EPISODE_STATE_PREPARATION", "EPISODE_STATE_IMPACT",
+      "EPISODE_STATE_RESPONSE", "EPISODE_STATE_STABILIZATION",
+      "EPISODE_STATE_RESIDUAL_CHANGE", "EPISODE_STATE_RECOVERY",
+      "EPISODE_STATE_RESOURCE_SUCCESSION",
+      "EPISODE_STATE_NEW_NORMAL_PENDING"
+    ],
+    "incomplete_predicate": "episode.status != 'COMPLETED'",
+    "m3a_completed_predicate": "episode.current_stage == 'NEW_NORMAL' (includes NEW_NORMAL_PENDING)",
+    "mutex_invariant": "sum(mutually exclusive states) == episodes_indexed"
   }
 }

@@ -1,0 +1,30 @@
+{
+ "entity_history": {
+  "p50_ms": 114.594,
+  "p95_ms": 594.064,
+  "max_ms": 650.01,
+  "warmup_excluded": true,
+  "iterations": 20
+ },
+ "episode_history": {
+  "p50_ms": 2.148,
+  "p95_ms": 2.561,
+  "max_ms": 2.631,
+  "warmup_excluded": true,
+  "iterations": 20
+ },
+ "explain_state": {
+  "p50_ms": 13.8,
+  "p95_ms": 16.809,
+  "max_ms": 17.166,
+  "warmup_excluded": true,
+  "iterations": 20
+ },
+ "timeline": {
+  "p50_ms": 0.849,
+  "p95_ms": 0.938,
+  "max_ms": 0.961,
+  "warmup_excluded": true,
+  "iterations": 20
+ }
+}

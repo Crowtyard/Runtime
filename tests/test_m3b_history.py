@@ -825,7 +825,10 @@ def test_hb43_300y_baseline_artifacts(hist300):
         hash_info = svc.causal_history_hash(world_id=MINI_WORLD_ID)
         n_links = len(s.execute(select(CausalHistoryLink)).scalars().all())
         n_sc = len(s.execute(select(HistoryStateChange)).scalars().all())
-        n_entities = len(s.execute(select(EntityHistoryIndex)).scalars().all())
+        index_rows = s.execute(select(EntityHistoryIndex)).scalars().all()
+        n_entities = len(index_rows)
+        n_distinct_entities = len(
+            {(r.entity_type, r.entity_id) for r in index_rows})
     lat: dict[str, list[float]] = {}
 
     def _timed(name, fn):
@@ -894,10 +897,19 @@ def test_hb43_300y_baseline_artifacts(hist300):
         "world_state_hash": rep.final_state_hash,
         "event_stream_hash": rep.final_event_stream_hash,
         "causal_links": n_links,
-        "entities_with_history": n_entities,
+        # M3b 收口审计：旧名 entities_with_history 实为索引行数（含重复）
+        # → 更名 entity_history_index_rows；另增 distinct 口径（见 metrics.py）
+        "entity_history_index_rows": n_entities,
+        "distinct_entities_with_history": n_distinct_entities,
+        "metric_rename": {"OLD_METRIC_NAME": "entities_with_history",
+                          "NEW_METRIC_NAME": "entity_history_index_rows",
+                          "REASON": "raw index row count (entity,link) pairs,"
+                                    " not distinct entities"},
         "episodes_indexed": len(eps),
         "state_changes_indexed": n_sc,
         "incomplete_episodes": sum(
+            1 for e in eps if e.status != "COMPLETED"),
+        "nonterminal_total": sum(
             1 for e in eps if e.status != "COMPLETED"),
         "orphan_links": audit_pre["orphan_links"],
         "cycle_count": audit_pre["cycle_count"],
