@@ -146,10 +146,26 @@ _V4_FIELDS.update({
 })
 
 # M2d 冻结表集/字段集（v5；不含 M3a 灾劫九表）
+# 注意（FROZEN_SEMANTICS_RESTORATION）：lineages/institutions 必须使用
+# M2d 时代全字段（含 lineage_id/origin_settlement/represented_population/
+# household_count/generation/status/founded_tick/parent_lineage_ref/
+# semantic_version/updated_blessed_tick 与 institution_id/founded_tick/
+# profile_ref/updated_blessed_tick）——M3a 冻结 v5 时误继承了 v4 的
+# M0 最小字段，导致 v5 无法逐字节复现权威 M2d 基线 final_world_state_hash
+# 7cd769e0…（当时活 v5 = dict(snapshot._FIELDS)，见 ac64d72）。本修复
+# 只恢复冻结语义，不改变任何 simulation algorithm / M3a / M3b 冻结值。
 _V5_TABLES = _V4_TABLES | frozenset({
     "households", "settlement_social_state", "social_feedback_state"})
 _V5_FIELDS = dict(_V4_FIELDS)
 _V5_FIELDS.update({
+    "lineages": ("id", "world_id", "lineage_type", "head_person_ref",
+                 "member_ids", "lineage_id", "origin_settlement",
+                 "represented_population", "household_count", "generation",
+                 "status", "founded_tick", "parent_lineage_ref",
+                 "semantic_version", "updated_blessed_tick"),
+    "institutions": ("id", "world_id", "kind", "settlement_ref",
+                     "owner_ref", "state", "capacity", "institution_id",
+                     "founded_tick", "profile_ref", "updated_blessed_tick"),
     "households": ("id", "world_id", "household_id", "settlement_ref",
                    "species", "represented_population", "generation",
                    "lineage_ref", "anchor_group_ref", "state",
