@@ -16,6 +16,9 @@ import pytest
 from sqlalchemy import select, text
 
 from tests.conftest import EPOCH0_US, PROJECT_ROOT
+from tests.golden_baseline import (assert_deterministic_equal, dump_artifact,
+                                   golden_bytes_guard, load_artifact,
+                                   update_mode_enabled)
 from tests.test_m3a_tribulation import (_catchup_year, _fresh_m3a,
                                         _warmup_years, MINI_WORLD_ID,
                                         YEAR_US, _coordinator, _run)
@@ -50,6 +53,13 @@ M3A_BASELINE_DIR = REPO / "tests" / "baselines" / "m3a_tribulation_synthetic_300
 M2_MANIFEST = REPO / "M2_SIMULATION_SEMANTICS_MANIFEST.json"
 M3A_MANIFEST = REPO / "M3A_SIMULATION_SEMANTICS_MANIFEST.json"
 SEED_DIR = REPO.parent / "XIAOGUANG_CROW_KB" / "world_seed"
+
+# GB2：本模块（hb43）拥有的 golden 文件，测试前后字节必须不变
+_golden_bytes_guard = golden_bytes_guard(*[
+    BASELINE_DIR / n for n in (
+        "summary.json", "episode_history_samples.json",
+        "entity_history_samples.json", "why_query_samples.json",
+        "timeline_samples.json", "causal_graph_digest.json")])
 
 
 def _hist_coordinator(**kw):
@@ -953,24 +963,25 @@ def test_hb43_300y_baseline_artifacts(hist300):
             graph_digest["node_kinds"].get(l.source_kind, 0) + 1
         graph_digest["node_kinds"][l.target_kind] = \
             graph_digest["node_kinds"].get(l.target_kind, 0) + 1
-    BASELINE_DIR.mkdir(parents=True, exist_ok=True)
-    (BASELINE_DIR / "summary.json").write_text(
-        json.dumps(summary, ensure_ascii=False, indent=1), encoding="utf-8")
-    (BASELINE_DIR / "episode_history_samples.json").write_text(
-        json.dumps(episode_samples, ensure_ascii=False, indent=1),
-        encoding="utf-8")
-    (BASELINE_DIR / "entity_history_samples.json").write_text(
-        json.dumps(entity_samples, ensure_ascii=False, indent=1),
-        encoding="utf-8")
-    (BASELINE_DIR / "why_query_samples.json").write_text(
-        json.dumps(why_samples, ensure_ascii=False, indent=1),
-        encoding="utf-8")
-    (BASELINE_DIR / "timeline_samples.json").write_text(
-        json.dumps(timeline_sample, ensure_ascii=False, indent=1),
-        encoding="utf-8")
-    (BASELINE_DIR / "causal_graph_digest.json").write_text(
-        json.dumps(graph_digest, ensure_ascii=False, indent=1),
-        encoding="utf-8")
+    artifacts = {
+        "summary.json": summary,
+        "episode_history_samples.json": episode_samples,
+        "entity_history_samples.json": entity_samples,
+        "why_query_samples.json": why_samples,
+        "timeline_samples.json": timeline_sample,
+        "causal_graph_digest.json": graph_digest,
+    }
+    # candidate 与 committed golden 逐文件比较（telemetry 剥离）；
+    # 普通 pytest 只读 golden。
+    for name, artifact in artifacts.items():
+        golden = load_artifact(BASELINE_DIR / name)
+        assert_deterministic_equal(
+            golden, artifact,
+            label=f"m3b_causal_history_300y_v1/{name}",
+            golden_path=BASELINE_DIR / name)
+    if update_mode_enabled():  # 显式更新：scripts/update_baselines.py
+        for name, artifact in artifacts.items():
+            dump_artifact(artifact, BASELINE_DIR / name)
     assert summary["orphan_links"] == 0 and summary["cycle_count"] == 0
     assert summary["causal_links"] > 0
     assert final_hist["completion"] == "INCOMPLETE"

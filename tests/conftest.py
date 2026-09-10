@@ -171,3 +171,45 @@ def formal_db_guard():
     else:
         before = None
     yield before
+
+
+# ---------------------------------------------------------------- GB1 会话守卫
+# 普通 pytest 全程不得修改 tests/baselines/ 下任何 golden baseline 字节。
+# sessionstart 记录全目录 sha256 快照，sessionfinish 比对；有差异则把
+# exitstatus 置 1。显式更新模式（BLR_UPDATE_GOLDEN_BASELINES=1，仅由
+# scripts/update_baselines.py 启用）豁免本守卫。
+
+def pytest_sessionstart(session):
+    from tests.golden_baseline import baseline_snapshot, update_mode_enabled
+    if update_mode_enabled():
+        session.config._blr_baseline_snapshot = None
+    else:
+        session.config._blr_baseline_snapshot = baseline_snapshot()
+
+
+def pytest_sessionfinish(session, exitstatus):
+    from tests.golden_baseline import baseline_snapshot, UPDATE_ENV
+    before = getattr(session.config, "_blr_baseline_snapshot", None)
+    if before is None:
+        return  # 显式更新模式：允许写 golden
+    after = baseline_snapshot()
+    added = sorted(set(after) - set(before))
+    removed = sorted(set(before) - set(after))
+    changed = sorted(k for k in set(before) & set(after)
+                     if before[k] != after[k])
+    if added or removed or changed:
+        tr = session.config.pluginmanager.get_plugin("terminalreporter")
+        if tr is not None:
+            tr.section("GB1 VIOLATION: tests/baselines/ modified during run",
+                       sep="!", red=True)
+            tr.line("Golden baselines must stay read-only during normal "
+                    "pytest runs.")
+            tr.line("Never auto-rewrite committed baselines. Explicit update: "
+                    f"{UPDATE_ENV}=1 via scripts/update_baselines.py")
+            for k in added:
+                tr.line(f"  ADDED   {k}")
+            for k in removed:
+                tr.line(f"  REMOVED {k}")
+            for k in changed:
+                tr.line(f"  CHANGED {k}")
+        session.exitstatus = 1

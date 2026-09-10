@@ -18,6 +18,9 @@ import pytest
 from sqlalchemy import select, text
 
 from tests.conftest import EPOCH0, EPOCH0_US, PROJECT_ROOT
+from tests.golden_baseline import (assert_deterministic_equal, dump_artifact,
+                                   golden_bytes_guard, load_artifact,
+                                   update_mode_enabled)
 
 from XiaoguangBlessedLandRuntime.database.models_core import (SimulationCheckpoint,
                                                               SimulationRun,
@@ -50,6 +53,11 @@ SIM_VERSION = "0.2.0-preflight"
 LONG_WORLD_IDS = [f"LONGHORIZON-{n:03d}" for n in range(1, 6)]
 BASELINE_DIR = REPO / "tests" / "baselines" / "m2_integrated_1000y_v1"
 SUMMARY_PATH = BASELINE_DIR / "summary.json"
+
+# GB2：本模块拥有的 golden 文件，测试前后字节必须不变
+_golden_bytes_guard = golden_bytes_guard(*[
+    BASELINE_DIR / f"seed_{n:03d}.json" for n in range(1, 6)] + [
+        SUMMARY_PATH])
 
 
 def _engines():
@@ -395,7 +403,16 @@ def test_lt1_1000y_five_seeds(tmp_path, world_id):
         "engine_metrics": rep.engine_metrics,
         "invariant_issues": audit["issues"],
     }
-    _write_seed_baseline(record)
+    # candidate 与 committed golden 比较（telemetry 剥离）；普通 pytest 只读
+    seed_no = world_id.split("-")[1]
+    golden_seed = BASELINE_DIR / f"seed_{seed_no}.json"
+    golden = load_artifact(golden_seed)
+    assert_deterministic_equal(
+        golden, record,
+        label=f"m2_integrated_1000y_v1/seed_{seed_no}",
+        golden_path=golden_seed)
+    if update_mode_enabled():  # 显式更新：scripts/update_baselines.py
+        _write_seed_baseline(record)
 
 
 def test_lt2_seed_001_determinism_double_run(tmp_path):
@@ -484,16 +501,24 @@ def test_lt7_5000y_endurance(tmp_path):
     assert rep.steps == 5000 and rep.final_blessed_tick == 5_000_000_000
     audit = _invariant_check(env)
     assert audit["clean"], audit["issues"]
-    summary = json.loads(SUMMARY_PATH.read_text(encoding="utf-8"))
-    summary["endurance_5000y"] = {
+    endurance = {
         "world_id": world_id, "wall_seconds": round(wall, 3),
         "db_size_mb": round(_db_size_mb(env), 3),
         "row_counts": _row_counts(env),
         "final_metrics": _final_metrics(env),
         "final_hashes": _final_hashes(env),
     }
-    SUMMARY_PATH.write_text(json.dumps(summary, ensure_ascii=False, indent=1),
-                            encoding="utf-8")
+    # candidate 与 committed golden 比较（telemetry 剥离）；普通 pytest 只读
+    summary = json.loads(SUMMARY_PATH.read_text(encoding="utf-8"))
+    golden_endurance = summary.get("endurance_5000y")
+    assert golden_endurance is not None, "committed summary 缺少 endurance_5000y"
+    assert_deterministic_equal(
+        golden_endurance, endurance,
+        label="m2_integrated_1000y_v1/summary.endurance_5000y",
+        golden_path=SUMMARY_PATH)
+    if update_mode_enabled():  # 显式更新：scripts/update_baselines.py
+        summary["endurance_5000y"] = endurance
+        dump_artifact(summary, SUMMARY_PATH)
 
 
 def test_lt8_baseline_artifacts_and_summary(tmp_path):
@@ -525,13 +550,12 @@ def test_lt9_db_growth_recorded(tmp_path):
         assert mb < 200, (seed, mb)
 
 
-# ============================ 产物写入 ============================
+# ============================ 产物写入（仅显式更新模式） ============================
 def _write_seed_baseline(record: dict) -> None:
-    BASELINE_DIR.mkdir(parents=True, exist_ok=True)
+    """仅 BLR_UPDATE_GOLDEN_BASELINES=1 时写 golden（dump_artifact 门控）。"""
     seed_no = record["world_id"].split("-")[1]
     path = BASELINE_DIR / f"seed_{seed_no}.json"
-    path.write_text(json.dumps(record, ensure_ascii=False, indent=1),
-                    encoding="utf-8")
+    dump_artifact(record, path)
     _refresh_summary()
 
 
@@ -569,5 +593,4 @@ def _refresh_summary() -> None:
         "seeds": seeds,
         "db_growth": growth,
     }
-    SUMMARY_PATH.write_text(json.dumps(summary, ensure_ascii=False, indent=1),
-                            encoding="utf-8")
+    dump_artifact(summary, SUMMARY_PATH)

@@ -19,6 +19,10 @@ import pytest
 from sqlalchemy import select, text
 
 from tests.conftest import EPOCH0, EPOCH0_US, PROJECT_ROOT
+from tests.golden_baseline import (M3A_EFFECTIVE_HASH_SCHEMA_VERSION,
+                                   assert_deterministic_equal, dump_artifact,
+                                   golden_bytes_guard, load_artifact,
+                                   update_mode_enabled)
 
 from XiaoguangBlessedLandRuntime.database.models_core import (SimulationCheckpoint,
                                                               WorldEvent,
@@ -67,6 +71,12 @@ BASELINE_DIR = REPO / "tests" / "baselines" / "m3a_tribulation_synthetic_300y_v1
 M2_MANIFEST = REPO / "M2_SIMULATION_SEMANTICS_MANIFEST.json"
 M3A_MANIFEST = REPO / "M3A_SIMULATION_SEMANTICS_MANIFEST.json"
 SEED_DIR = REPO.parent / "XIAOGUANG_CROW_KB" / "world_seed"
+
+# GB2：本模块每个测试前后 golden baseline 字节必须不变
+_golden_bytes_guard = golden_bytes_guard(*[
+    BASELINE_DIR / n for n in ("summary.json", "episode_index.json",
+                               "schedule.json", "profiles.json",
+                               "decisions.json", "final_state.json")])
 
 
 def _fresh_m3a(tmp_path, i: int):
@@ -933,18 +943,34 @@ def test_m3a_baseline_300y_artifact(tmp_path):
     env = _fresh_m3a(tmp_path, 51)
     rep = _run(env, years=300)
     wall = (datetime.now(timezone.utc) - start).total_seconds()
-    _write_baseline(env, rep, wall)
     assert BASELINE_DIR.exists()
-    summary = json.loads((BASELINE_DIR / "summary.json").read_text(
-        encoding="utf-8"))
+    # candidate 与 committed golden 逐文件比较（telemetry 剥离）；
+    # 普通 pytest 只读 golden。
+    artifacts = _build_baseline(env, rep, wall)
+    for name, artifact in artifacts.items():
+        golden = load_artifact(BASELINE_DIR / name)
+        assert_deterministic_equal(
+            golden, artifact,
+            label=f"m3a_tribulation_synthetic_300y_v1/{name}",
+            golden_path=BASELINE_DIR / name)
+    golden_summary = load_artifact(BASELINE_DIR / "summary.json")
     env2 = _fresh_m3a(tmp_path, 52)
     rep2 = _run(env2, years=300)
-    assert rep2.final_state_hash == summary["final_world_state_hash"]
-    assert rep2.final_event_stream_hash == summary["final_event_stream_hash"]
+    assert rep2.final_state_hash == golden_summary["final_world_state_hash"]
+    assert rep2.final_event_stream_hash \
+        == golden_summary["final_event_stream_hash"]
+    if update_mode_enabled():  # 显式更新：scripts/update_baselines.py
+        for name, artifact in artifacts.items():
+            dump_artifact(artifact, BASELINE_DIR / name)
 
 
 def _write_baseline(env, rep: M3aReport, wall: float) -> None:
-    BASELINE_DIR.mkdir(parents=True, exist_ok=True)
+    """显式更新入口：仅 BLR_UPDATE_GOLDEN_BASELINES=1 时写 golden。"""
+    for name, artifact in _build_baseline(env, rep, wall).items():
+        dump_artifact(artifact, BASELINE_DIR / name)
+
+
+def _build_baseline(env, rep: M3aReport, wall: float) -> dict:
     with env["factory"]() as s:
         eps = s.execute(select(TribulationEpisode).order_by(
             TribulationEpisode.entered_tick)).scalars().all()
@@ -971,7 +997,7 @@ def _write_baseline(env, rep: M3aReport, wall: float) -> None:
         "episode_id_schema": TRIBULATION_EPISODE_ID_SCHEMA_VERSION,
         "event_uid_schema_version": 1,
         "event_hash_schema_version": 1,
-        "world_state_hash_schema_version": WORLD_STATE_HASH_SCHEMA_VERSION,
+        "world_state_hash_schema_version": M3A_EFFECTIVE_HASH_SCHEMA_VERSION,
         "impact_plan_schema": IMPACT_PLAN_SCHEMA_VERSION,
         "scheduled_windows": len(eps),
         "regular_episodes": tiers.count("REGULAR"),
@@ -1006,28 +1032,24 @@ def _write_baseline(env, rep: M3aReport, wall: float) -> None:
         "final_event_stream_hash": event_hash,
         "wall_seconds": round(wall, 3),
     }
-    (BASELINE_DIR / "summary.json").write_text(
-        json.dumps(summary, ensure_ascii=False, indent=1), encoding="utf-8")
-    (BASELINE_DIR / "episode_index.json").write_text(json.dumps([
-        {"episode_id": e.episode_id, "tier": e.window_tier,
-         "entered_tick": e.entered_tick, "current_stage": e.current_stage,
-         "profile_ref": e.profile_ref, "decision_policy": e.decision_policy,
-         "targets": e.target_settlements} for e in eps],
-        ensure_ascii=False, indent=1), encoding="utf-8")
-    (BASELINE_DIR / "schedule.json").write_text(
-        json.dumps(schedules, ensure_ascii=False, indent=1), encoding="utf-8")
-    (BASELINE_DIR / "profiles.json").write_text(json.dumps(
-        {k: {"tier": v.tier, "theme": v.theme,
-             "intensity": [v.intensity_min, v.intensity_max],
-             "recovery_steps": v.recovery_steps} for k, v in
-         TEST_PROFILES.items()}, ensure_ascii=False, indent=1),
-        encoding="utf-8")
-    (BASELINE_DIR / "decisions.json").write_text(json.dumps([
-        {"decision_id": d.decision_id, "episode_id": d.episode_id,
-         "action": d.action, "status": d.status} for d in decisions],
-        ensure_ascii=False, indent=1), encoding="utf-8")
-    (BASELINE_DIR / "final_state.json").write_text(json.dumps({
-        "population": pop, "episodes": len(eps), "plans": len(plans),
-        "candidates": len(cands), "recovery_rows": len(recs),
-        "events": len(events)}, ensure_ascii=False, indent=1),
-        encoding="utf-8")
+    return {
+        "summary.json": summary,
+        "episode_index.json": [
+            {"episode_id": e.episode_id, "tier": e.window_tier,
+             "entered_tick": e.entered_tick, "current_stage": e.current_stage,
+             "profile_ref": e.profile_ref, "decision_policy": e.decision_policy,
+             "targets": e.target_settlements} for e in eps],
+        "schedule.json": schedules,
+        "profiles.json": {
+            k: {"tier": v.tier, "theme": v.theme,
+                "intensity": [v.intensity_min, v.intensity_max],
+                "recovery_steps": v.recovery_steps} for k, v in
+            TEST_PROFILES.items()},
+        "decisions.json": [
+            {"decision_id": d.decision_id, "episode_id": d.episode_id,
+             "action": d.action, "status": d.status} for d in decisions],
+        "final_state.json": {
+            "population": pop, "episodes": len(eps), "plans": len(plans),
+            "candidates": len(cands), "recovery_rows": len(recs),
+            "events": len(events)},
+    }

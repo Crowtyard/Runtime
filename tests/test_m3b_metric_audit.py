@@ -18,6 +18,9 @@ import pytest
 from sqlalchemy import select
 
 from tests.conftest import PROJECT_ROOT
+from tests.golden_baseline import (assert_deterministic_equal, dump_artifact,
+                                   golden_bytes_guard, load_artifact,
+                                   update_mode_enabled)
 from tests.test_m3a_tribulation import _fresh_m3a, _coordinator
 from tests.test_m3b_history import _hist_coordinator
 
@@ -46,6 +49,13 @@ M3A_BASELINE = REPO / "tests" / "baselines" / \
     "m3a_tribulation_synthetic_300y_v1"
 M2_MANIFEST = REPO / "M2_SIMULATION_SEMANTICS_MANIFEST.json"
 SEED_DIR = REPO.parent / "XIAOGUANG_CROW_KB" / "world_seed"
+
+# GB2：本模块（ma28）拥有的 golden 文件，测试前后字节必须不变
+_golden_bytes_guard = golden_bytes_guard(*[
+    BASELINE_DIR / n for n in (
+        "metric_audit.json", "episode_state_audit.json",
+        "entity_cardinality_audit.json", "relation_density_audit.json",
+        "query_performance.json", "growth_projection.json")])
 
 # 300y 审计基准（模块级构建一次）
 HIST300: dict = {}
@@ -483,25 +493,36 @@ def test_ma28_metric_audit_baseline_artifacts(hist300, perf300):
         "explain_state": perf300.get("explain_state"),
         "timeline": perf300.get("timeline"),
     }
-    BASELINE_DIR.mkdir(parents=True, exist_ok=True)
-    (BASELINE_DIR / "metric_audit.json").write_text(
-        json.dumps(metric_audit, ensure_ascii=False, indent=1),
-        encoding="utf-8")
-    (BASELINE_DIR / "episode_state_audit.json").write_text(
-        json.dumps(ep, ensure_ascii=False, indent=1), encoding="utf-8")
-    (BASELINE_DIR / "entity_cardinality_audit.json").write_text(
-        json.dumps(ec, ensure_ascii=False, indent=1), encoding="utf-8")
-    (BASELINE_DIR / "relation_density_audit.json").write_text(
-        json.dumps(rd, ensure_ascii=False, indent=1), encoding="utf-8")
-    (BASELINE_DIR / "query_performance.json").write_text(
-        json.dumps(query_performance, ensure_ascii=False, indent=1),
-        encoding="utf-8")
-    (BASELINE_DIR / "growth_projection.json").write_text(
-        json.dumps({"growth_projection": gp, "db_growth": dg,
-                    "duplicate_semantic_links": dup,
-                    "transitive_materialization": tr,
-                    "query_plan_audit": qp},
-                   ensure_ascii=False, indent=1), encoding="utf-8")
+    growth = {
+        "growth_projection": gp, "db_growth": dg,
+        "duplicate_semantic_links": dup,
+        "transitive_materialization": tr,
+        "query_plan_audit": qp,
+    }
+    artifacts = {
+        "metric_audit.json": metric_audit,
+        "episode_state_audit.json": ep,
+        "entity_cardinality_audit.json": ec,
+        "relation_density_audit.json": rd,
+        "growth_projection.json": growth,
+        "query_performance.json": query_performance,
+    }
+    # candidate 与 committed golden 逐文件比较（telemetry 剥离）；
+    # 普通 pytest 只读 golden。
+    for name in ("metric_audit.json", "episode_state_audit.json",
+                 "entity_cardinality_audit.json", "relation_density_audit.json",
+                 "growth_projection.json"):
+        golden = load_artifact(BASELINE_DIR / name)
+        assert_deterministic_equal(
+            golden, artifacts[name],
+            label=f"m3b_causal_history_300y_v1/{name}",
+            golden_path=BASELINE_DIR / name)
+    # query_performance.json 是纯机器计时 telemetry：只比较结构（键集合）
+    qp_golden = load_artifact(BASELINE_DIR / "query_performance.json")
+    assert set(query_performance) == set(qp_golden)
+    if update_mode_enabled():  # 显式更新：scripts/update_baselines.py
+        for name, artifact in artifacts.items():
+            dump_artifact(artifact, BASELINE_DIR / name)
     assert dup["duplicate_semantic_links"] == 0
     assert tr["candidate_transitive_materializations"] == 0
     assert qp["FULL_TABLE_SCAN_RISK"] == []

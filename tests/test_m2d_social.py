@@ -17,6 +17,9 @@ import pytest
 from sqlalchemy import select, text
 
 from tests.conftest import EPOCH0, EPOCH0_US, PROJECT_ROOT
+from tests.golden_baseline import (assert_deterministic_equal, dump_artifact,
+                                   golden_bytes_guard, load_artifact,
+                                   update_mode_enabled)
 
 from XiaoguangBlessedLandRuntime.database.models_core import (SimulationCheckpoint,
                                                               WorldEvent,
@@ -57,7 +60,7 @@ from XiaoguangBlessedLandRuntime.services.simulation.social import (
 from XiaoguangBlessedLandRuntime.services.simulation.social import (
     SOCIAL_PROFILES, SOCIAL_STATE_SCALE, SocialEngine, SocialProfileUnconfigured)
 from XiaoguangBlessedLandRuntime.services.simulation.state_hash import (
-    WORLD_STATE_HASH_SCHEMA_VERSION, world_state_hash_v5)
+    WORLD_STATE_HASH_SCHEMA_VERSION_V5, world_state_hash_v5)
 from XiaoguangBlessedLandRuntime.services.writer_lock import WriterLease
 
 REPO = PROJECT_ROOT
@@ -68,6 +71,9 @@ BASELINE_PATH = REPO / "tests" / "baselines" / \
     "m2d_social_miniworld_120y_v2.json"
 SIM_DIR = REPO / "services" / "simulation"
 SIM_VERSION = "0.2.0-preflight"
+
+# GB2：本模块每个测试前后 golden baseline 字节必须不变
+_golden_bytes_guard = golden_bytes_guard(BASELINE_PATH)
 
 
 def _fresh_social(tmp_path, i: int):
@@ -970,22 +976,28 @@ def test_m2d_baseline_120y_artifact(tmp_path):
     env = _fresh_social(tmp_path, 59)
     rep = _run(env, years=120)
     wall = (datetime.now(timezone.utc) - start).total_seconds()
-    _write_m2d_baseline(env, rep, wall)
     assert BASELINE_PATH.exists()
-    artifact = json.loads(BASELINE_PATH.read_text(encoding="utf-8"))
+    # candidate 与 committed golden 比较（telemetry 剥离）；普通 pytest 只读
+    artifact = _build_m2d_artifact(env, rep, wall)
+    golden = load_artifact(BASELINE_PATH)
+    assert_deterministic_equal(
+        golden, artifact, label="m2d_social_miniworld_120y_v2",
+        golden_path=BASELINE_PATH)
     env2 = _fresh_social(tmp_path, 60)
     rep2 = _run(env2, years=120)
-    assert rep2.final_state_hash == artifact["final_world_state_hash"]
+    assert rep2.final_state_hash == golden["final_world_state_hash"]
     with env2["factory"]() as s:
         h2 = latest_authoritative_world_checkpoint(
             s, MINI_WORLD_ID).meta["event_stream_hash"]
-    assert h2 == artifact["final_event_stream_hash"]
-    sm = artifact["social_metrics"]
+    assert h2 == golden["final_event_stream_hash"]
+    sm = golden["social_metrics"]
     assert rep2.social["final_stress"] == sm["final_stress"]
     for k in ("households_formed", "households_split", "households_dissolved",
               "lineages_founded", "lineages_extinct", "institutions_founded",
               "institutions_dissolved", "feedback_applications"):
         assert rep2.social[k] == sm[k], k
+    if update_mode_enabled():  # 显式更新：scripts/update_baselines.py
+        dump_artifact(artifact, BASELINE_PATH)
 
 
 def _hash_v5(env) -> str:
@@ -1002,7 +1014,11 @@ def _hash_v5(env) -> str:
 
 
 def _write_m2d_baseline(env, rep, wall_seconds: float) -> None:
-    BASELINE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    """显式更新入口：仅 BLR_UPDATE_GOLDEN_BASELINES=1 时写 golden。"""
+    dump_artifact(_build_m2d_artifact(env, rep, wall_seconds), BASELINE_PATH)
+
+
+def _build_m2d_artifact(env, rep, wall_seconds: float) -> dict:
     with env["factory"]() as s:
         latest = latest_authoritative_world_checkpoint(s, MINI_WORLD_ID)
         event_hash = latest.meta["event_stream_hash"]
@@ -1023,7 +1039,7 @@ def _write_m2d_baseline(env, rep, wall_seconds: float) -> None:
         "rng_schema_version": "m1-derive-seed-v1",
         "event_uid_schema_version": 1,
         "event_hash_schema_version": 1,
-        "world_state_hash_schema_version": WORLD_STATE_HASH_SCHEMA_VERSION,
+        "world_state_hash_schema_version": WORLD_STATE_HASH_SCHEMA_VERSION_V5,
         "social_state_scale_version": "m2d-scale-1",
         "initial_state": {
             "population": 400, "settlements": 2,
@@ -1121,8 +1137,7 @@ def _write_m2d_baseline(env, rep, wall_seconds: float) -> None:
         },
         "performance": {"wall_seconds": round(wall_seconds, 3)},
     }
-    BASELINE_PATH.write_text(
-        json.dumps(artifact, ensure_ascii=False, indent=1), encoding="utf-8")
+    return artifact
 
 
 def _count_events(env, event_type: str) -> int:

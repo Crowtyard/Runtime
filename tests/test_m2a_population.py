@@ -16,6 +16,9 @@ import pytest
 from sqlalchemy import select, text
 
 from tests.conftest import EPOCH0, EPOCH0_US, PROJECT_ROOT
+from tests.golden_baseline import (assert_deterministic_equal, dump_artifact,
+                                   golden_bytes_guard, load_artifact,
+                                   update_mode_enabled)
 
 from XiaoguangBlessedLandRuntime.database.models_core import (SimulationCheckpoint,
                                                               WorldEvent,
@@ -47,6 +50,9 @@ REPO = PROJECT_ROOT
 BASELINE_PATH = REPO / "tests" / "baselines" / \
     "m2a_population_miniworld_120y_v1.json"
 SIM_DIR = REPO / "services" / "simulation"
+
+# GB2：本模块每个测试前后 golden baseline 字节必须不变
+_golden_bytes_guard = golden_bytes_guard(BASELINE_PATH)
 
 
 def _fresh_env(tmp_path, i: int):
@@ -466,7 +472,14 @@ def test_pa27_120y_real_baseline(tmp_path):
     assert report.population["end"] > 0
     assert report.engine_metrics["DEMOGRAPHY"]["births"] > 0
     assert report.engine_metrics["DEMOGRAPHY"]["deaths"] > 0
-    _write_baseline(env, report, wall)
+    # candidate 与 committed golden 比较（telemetry 剥离）；普通 pytest 只读
+    artifact = _build_baseline(env, report, wall)
+    golden = load_artifact(BASELINE_PATH)
+    assert_deterministic_equal(
+        golden, artifact, label="m2a_population_miniworld_120y_v1",
+        golden_path=BASELINE_PATH)
+    if update_mode_enabled():  # 显式更新：scripts/update_baselines.py
+        dump_artifact(artifact, BASELINE_PATH)
     assert BASELINE_PATH.exists()
 
 
@@ -571,7 +584,11 @@ def _hash_of_latest(factory) -> str:
 
 
 def _write_baseline(env, report, wall_seconds: float) -> None:
-    BASELINE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    """显式更新入口：仅 BLR_UPDATE_GOLDEN_BASELINES=1 时写 golden。"""
+    dump_artifact(_build_baseline(env, report, wall_seconds), BASELINE_PATH)
+
+
+def _build_baseline(env, report, wall_seconds: float) -> dict:
     with env["factory"]() as s:
         latest = latest_authoritative_world_checkpoint(s, MINI_WORLD_ID)
         event_hash = latest.meta["event_stream_hash"]
@@ -608,8 +625,7 @@ def _write_baseline(env, report, wall_seconds: float) -> None:
         # 仅性能指标，不参与确定性哈希语义
         "performance": {"wall_seconds": round(wall_seconds, 3)},
     }
-    BASELINE_PATH.write_text(
-        json.dumps(artifact, ensure_ascii=False, indent=1), encoding="utf-8")
+    return artifact
 
 
 def test_baseline_artifact_reproducible(tmp_path):

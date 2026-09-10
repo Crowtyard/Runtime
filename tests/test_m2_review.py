@@ -222,14 +222,22 @@ def test_mr11_formal_db_untouched_identity_only(formal_db_guard):
 
 
 def test_mr12_m2d_baseline_v2_reproducible(tmp_path):
-    # 新 ID schema 下的 M2d 120y 基线必须可复现（生成 + 重跑一致）
+    # 新 ID schema 下的 M2d 120y 基线必须可复现：candidate 与 committed
+    # golden 确定性字段一致（telemetry 剥离）；普通 pytest 只读 golden。
     from tests.test_m2d_social import (_fresh_social, _run, BASELINE_PATH,
-                                       _write_m2d_baseline)
+                                       _build_m2d_artifact)
+    from tests.golden_baseline import (assert_deterministic_equal,
+                                       load_artifact)
     from datetime import datetime, timezone
+    start = datetime.now(timezone.utc)
     env = _fresh_social(tmp_path, 3)
     rep = _run(env, years=120)
-    _write_m2d_baseline(env, rep, 0.0)
-    artifact = json.loads(BASELINE_PATH.read_text(encoding="utf-8"))
+    wall = (datetime.now(timezone.utc) - start).total_seconds()
+    artifact = _build_m2d_artifact(env, rep, wall)
+    golden = load_artifact(BASELINE_PATH)
+    assert_deterministic_equal(
+        golden, artifact, label="m2d_social_miniworld_120y_v2 (mr12)",
+        golden_path=BASELINE_PATH)
     env2 = _fresh_social(tmp_path, 4)
     rep2 = _run(env2, years=120)
-    assert rep2.final_state_hash == artifact["final_world_state_hash"]
+    assert rep2.final_state_hash == golden["final_world_state_hash"]
