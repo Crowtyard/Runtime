@@ -7,11 +7,11 @@
 ## 验收结论
 
 ```
-Git HEAD                     = e2a8e89（M4.3-M4.7 checkpoint；最终 freeze commit 见 §Git）
+Git HEAD                     = fc9ecad（freeze commit 见 §Git）
 base HEAD                    = 292446f
 branch                       = m4-scheduler
 M4_STATUS                    = PASS
-M4_FROZEN                    = 见 §Freeze（所有 wave 完成后定）
+M4_FROZEN                    = TRUE（全部 wave 通过 + 最终检查全绿）
 
 SCHEDULER_LIFECYCLE          = PASS（幂等 start/stop、双启动零循环、FAILED fail-closed、
                                checkpoint 持久化 + 损坏容忍、durable truth 优先）
@@ -79,17 +79,21 @@ PRE_ACTIVATION_PG_COMMIT_AMBIGUITY_GATE = REQUIRED（同上；仍为 M6 ACTIVATI
 
 ## 分波次执行记录
 
-- Wave 1：full fast regression（含 M4 快测）exit 0；scheduler determinism-1000y
+- Wave 1：full fast regression（含 M4 快测）637 collected / 624 PASS / 13 SKIP
+  （全部 EXPECTED_FORMAL_DB_SKIP）/ 0 FAIL，exit 0；scheduler determinism-1000y
   exit 0（== M3c seed_001 golden）；budget 1000/500/250 exit 0。
 - Wave 2：budget 100/10/7/1 exit 0。
 - Wave 3：scheduler 5000y endurance exit 0（== M3c 5000y golden）。
-- Wave 4：M2 long 13/13 exit 0；M3c 快测 lt10-lt13 exit 0；M3c 完整长回归
-  （见 §M3c 长回归）。
+- Wave 4：M2 long 13/13 exit 0；M3c 快测 lt10-lt13 exit 0；
+  M3c 完整长回归 17/17 exit 0（5 seeds × 1000y、determinism、chunked、
+  restart、crash/ACK/fencing、5000y endurance、query/why、golden compare 全过，
+  GOLDEN_BASELINE_MUTATIONS=0 会话守卫零触发）。
 
 ## Git
 
-- 阶段提交：8f2b7f3（M4.0 审计）→ 003e76b（M4.1+M4.2 核心）→ e2a8e89（M4.3-M4.7）。
-- 最终 freeze commit + tag：见最终报告（m4-scheduler-frozen；不 force、不动旧 tag）。
+- 阶段提交：8f2b7f3（M4.0 审计）→ 003e76b（M4.1+M4.2 核心）→ e2a8e89
+  （M4.3-M4.7）→ fc9ecad（验收入口+报告）→ freeze commit（本报告定稿）。
+- tag：m4-scheduler-frozen（指向 freeze commit；不 force、不动旧 tag）。
 
 ## KNOWN_LIMITATIONS
 
@@ -108,4 +112,4 @@ PRE_ACTIVATION_PG_COMMIT_AMBIGUITY_GATE = REQUIRED（同上；仍为 M6 ACTIVATI
 
 ## NEXT_RECOMMENDED_STAGE
 
-（全部 wave 通过后）M5
+M5
