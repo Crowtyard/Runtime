@@ -25,8 +25,14 @@ NOT_STARTED 等）由 tests/test_query_astrbot_hook.py + tests/test_query_*.py
 from __future__ import annotations
 
 import importlib
+import os
 import sys
+import tempfile
 from pathlib import Path
+
+# 防止真实 astrbot import 在调用方 cwd 产生 data/ 等副作用文件：
+# 必须在任何 astrbot import 之前 chdir 到独立临时目录
+os.chdir(tempfile.mkdtemp(prefix="m5_smoke_cwd_"))
 
 REPO = Path(__file__).resolve().parent.parent
 LIVE_CORE = Path(
@@ -53,6 +59,7 @@ def check(name: str, ok: bool, detail: str = "") -> None:
 
 def main() -> int:
     print("astrbot from:", astrbot.__file__)
+    print("smoke cwd:", os.getcwd())
 
     # ---- 1) 注册 + reload 去重（真实注册器，独立 temp 模块模拟插件热重载）
     import tempfile
