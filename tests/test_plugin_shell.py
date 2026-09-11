@@ -354,12 +354,17 @@ def test_pl15_diagnostics_api_does_not_mutate_world(booted_plugin):
 
 # ------------------------------------------- PL16 / PL17（无危险端点）
 def test_pl16_no_world_seed_activation_endpoint(booted_plugin, plugin_env):
-    """PL16/PL17: 只注册 3 个只读 GET 端点；无 activate/advance/seed/create。"""
+    """PL16/PL17: 只注册只读 GET 端点（M1.1 3 个 + M5 查询 3 个）；
+    无 activate/advance/seed/create。"""
     routes = booted_plugin.context.routes
     expected = {
         f"/{PLUGIN_DATA_NAME}/status",
         f"/{PLUGIN_DATA_NAME}/diagnostics",
         f"/{PLUGIN_DATA_NAME}/runtime-info",
+        # M5 §32：只读世界查询 API（GET-only，无 mutation 语义）
+        f"/{PLUGIN_DATA_NAME}/runtime/query/status",
+        f"/{PLUGIN_DATA_NAME}/runtime/query/world",
+        f"/{PLUGIN_DATA_NAME}/runtime/query/history",
     }
     assert set(routes) == expected
     for route, (handler, methods, desc) in routes.items():
@@ -369,9 +374,14 @@ def test_pl16_no_world_seed_activation_endpoint(booted_plugin, plugin_env):
     # 只统计真实注册调用（docstring 中的禁词不算）
     import re
     registrations = re.findall(r'reg\(f?"(/[^"]+)"', main_src)
-    assert registrations == [f"/{{PLUGIN_NAME}}/status",
-                             f"/{{PLUGIN_NAME}}/diagnostics",
-                             f"/{{PLUGIN_NAME}}/runtime-info"]
+    # 顺序无关（源码函数定义顺序与注册顺序不同）
+    assert sorted(registrations) == sorted(
+        [f"/{{PLUGIN_NAME}}/status",
+         f"/{{PLUGIN_NAME}}/diagnostics",
+         f"/{{PLUGIN_NAME}}/runtime-info",
+         f"/{{PLUGIN_NAME}}/runtime/query/status",
+         f"/{{PLUGIN_NAME}}/runtime/query/world",
+         f"/{{PLUGIN_NAME}}/runtime/query/history"])
 
 
 def test_pl17_no_manual_tick_advancement_endpoint(booted_plugin):
