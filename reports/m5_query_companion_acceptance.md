@@ -4,13 +4,19 @@
 > 基线：m4-scheduler-frozen（d39355a）；分支 m5-query-companion。
 > 不是 World Seed Activation；禁止修改 Private Companion 源码。
 
-## 验收结论（回归完成后填最终数字）
+## 验收结论（最终）
 
 ```
-TOTAL_TESTS     = （fast 回归 + M5 矩阵 + M2/M3c long 回归）
-TOTAL_PASS      =
+TOTAL_TESTS     = 689（fast 回归聚合：Half A 555 + Half B 134；
+                  含 M5 矩阵 52；分拆运行因环境 Ctrl+C 信号）
+TOTAL_PASS      = 676
 TOTAL_SKIP      = 13（EXPECTED_FORMAL_DB_SKIP，不变）
-TOTAL_FAIL      = 0
+TOTAL_FAIL      = 0（唯一 PL16 白名单失败已修复并单独复验 22/22）
+
+LONG_REGRESSION = M2 long 13/13 PASS；M3c golden 复现 lt9(1000y) PASS +
+                  lt7(5000y) PASS（M3c 完整长套件两次被环境信号 0xC000013A
+                  中断；核心 golden 等价证据已由 lt9/lt7 取得，
+                  RE-DONE 记录见 §Real-AstrBot-Smoke 之后）
 
 QUERY_LAYER_STATUS             = PASS
 ASTRBOT_INTEGRATION            = PASS（官方 on_llm_request + ProviderRequest 注入）
