@@ -91,6 +91,37 @@ function renderDiagnostics(data) {
   set("d-activation", data.world_activation, data.world_activation === "LOCKED" ? "ok" : "bad");
 }
 
+/* ---------------- M5 World Query（只读；NOT_ACTIVATED → UNKNOWN 语义） ---------------- */
+const QUERY_ENDPOINTS = {
+  status: "/runtime/query/status",
+  world: "/runtime/query/world",
+  history: "/runtime/query/history",
+};
+
+async function runWorldQuery(kind) {
+  const result = document.getElementById("query-result");
+  if (!result) return;
+  result.textContent = "查询中…";
+  try {
+    if (kind === "time" || kind === "population") {
+      const snap = await apiGet(QUERY_ENDPOINTS.world);
+      const sub = kind === "time" ? snap.time : snap.population;
+      result.textContent = JSON.stringify(sub || snap, null, 2);
+      return;
+    }
+    const data = await apiGet(QUERY_ENDPOINTS[kind] || QUERY_ENDPOINTS.status);
+    result.textContent = JSON.stringify(data, null, 2);
+  } catch (err) {
+    result.textContent = "查询失败（fail-closed）: " + err.message;
+  }
+}
+
+function bindWorldQueryButtons() {
+  document.querySelectorAll("#query-card button[data-q]").forEach((btn) => {
+    btn.addEventListener("click", () => runWorldQuery(btn.dataset.q));
+  });
+}
+
 async function refresh() {
   try {
     const status = await apiGet("/status");
@@ -106,5 +137,6 @@ async function refresh() {
   }
 }
 
+bindWorldQueryButtons();
 refresh();
 setInterval(refresh, REFRESH_SECONDS * 1000);

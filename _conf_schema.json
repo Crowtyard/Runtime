@@ -49,5 +49,10 @@
     "description": "优雅停机宽限（整数毫秒）",
     "type": "int",
     "default": 5000
+  },
+  "query_integration_enabled": {
+    "description": "M5 世界查询集成：按需注入只读世界上下文（普通闲聊不注入）",
+    "type": "bool",
+    "default": true
   }
 }

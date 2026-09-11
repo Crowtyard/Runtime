@@ -134,13 +134,15 @@ def test_pl2_metadata_and_conf_schema_load(plugin_env):
     schema = json.loads(
         (plugin_env["repo_root"] / "_conf_schema.json").read_text(
             encoding="utf-8"))
-    # M4：scheduler_* 为 operational 配置（轮询/预算/租约），不触达世界语义
+    # M4：scheduler_* 为 operational 配置（轮询/预算/租约），不触达世界语义；
+    # M5：query_integration_enabled 为只读上下文注入开关
     assert set(schema) == {
         "runtime_enabled", "diagnostic_log_level", "backup_retention",
         "page_refresh_interval",
         "scheduler_enabled", "scheduler_poll_interval_ms",
         "scheduler_catch_up_max_ticks_per_cycle", "scheduler_lease_ttl_ms",
-        "scheduler_heartbeat_interval_ms", "scheduler_shutdown_grace_ms"}
+        "scheduler_heartbeat_interval_ms", "scheduler_shutdown_grace_ms",
+        "query_integration_enabled"}
     forbidden = ("activate", "advance", "seed", "create", "delete", "reset")
     for key in schema:
         assert not any(f in key for f in forbidden), key

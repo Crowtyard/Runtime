@@ -1,0 +1,117 @@
+{
+  "manifest_version": "m5-query-companion-v1",
+  "frozen_at": "M5_QUERY_COMPANION_INTEGRATION",
+  "base": [
+    "M3_SIMULATION_SEMANTICS_MANIFEST.json (m3-semantics-v1, unchanged)",
+    "m4-scheduler-frozen (d39355a)"
+  ],
+  "integration_version": "m5-query-companion-v1",
+  "query_schema_version": "world-query-v1",
+  "context_capsule_version": "world-context-capsule-v1",
+  "query_types": [
+    "NO_WORLD_CONTEXT", "WORLD_STATUS", "WORLD_TIME", "POPULATION",
+    "SETTLEMENT", "RESOURCE_ECONOMY", "ECOLOGY", "SOCIAL", "TRIBULATION",
+    "HISTORY", "CAUSAL_EXPLANATION", "CHANGES_SINCE", "DEEP_WORLD_QUERY"
+  ],
+  "intent_routing": {
+    "mechanism": "deterministic keyword/category mapping + explicit command markers ([world]/[runtime]/[福地]/[blessed])",
+    "llm_calls": 0,
+    "default": "NO_WORLD_CONTEXT (普通闲聊不注入)"
+  },
+  "authority_priority": [
+    "Runtime Authoritative Dynamic State",
+    "approved committed owner input",
+    "Local Canon / World Bible static rules",
+    "Source Lore general rules"
+  ],
+  "authority_levels": {
+    "AUTHORITATIVE": "数据库当前状态",
+    "DERIVED": "对 authoritative 数据的确定性计算",
+    "STATIC_RULE": "World Bible 静态规则（非动态事实）",
+    "FORBIDDEN": "LLM guessed 不得进入事实 Capsule"
+  },
+  "unknown_semantics": {
+    "NOT_ACTIVATED": "current_population=UNKNOWN; settlements=UNKNOWN; current_resources=UNKNOWN; recent_history=NONE_OFFICIAL; next_tribulation=UNKNOWN",
+    "null_tick": "current_blessed_tick=NULL 渲染为 NOT_STARTED，绝不 Year 0",
+    "empty_db": "绝不解释为『世界存在且为零』",
+    "missing_entity_or_record": "UNKNOWN（不自动补数字）"
+  },
+  "world_seed_policy": "M5 不读取 Seed 作为当前事实；byte-for-byte unchanged",
+  "static_vs_dynamic": {
+    "static_rule_example": "福地存在聚落体系（World Bible）",
+    "dynamic_fact_example": "当前有四个聚落（必须来自 Runtime 权威状态）",
+    "seed_fallback": "FORBIDDEN"
+  },
+  "context_capsule_schema": {
+    "fields": ["runtime_status", "query_type", "as_of_tick",
+               "as_of_world_date", "facts[]", "history[]", "causal_chains[]",
+               "unknowns[]", "provenance[]", "truncation",
+               "semantic_version", "source", "scheduler_state"],
+    "source": "TEST_FIXTURE_ONLY（synthetic）/ OFFICIAL（正式宿主）"
+  },
+  "fact_provenance_fields": ["fact_type", "entity_id", "source_table",
+                             "source_event_id", "as_of_tick", "authority"],
+  "token_budget": {
+    "method": "hard character cap（中文 1 char ≈ 1 token；ASCII 4 chars ≈ 1 token，保守等价）",
+    "NORMAL_WORLD_CONTEXT_chars": 400,
+    "WORLD_QUERY_chars": 1000,
+    "DEEP_HISTORY_QUERY_chars": 2000
+  },
+  "truncation_priority": [
+    "1 当前直接答案", "2 authoritative current facts",
+    "3 directly relevant causal links", "4 relevant recent history",
+    "5 supporting details"
+  ],
+  "truncation_method": "整条裁剪，绝不切碎句子中段；末尾固定 TRUNCATED 标记",
+  "ordering": "stable ordering（fact_type/entity_id/as_of_tick），禁 SQL 物理顺序/set 顺序",
+  "history": "直接复用 M3b HistoryService（explain_state/trace_causes/timeline），禁止第二套历史逻辑",
+  "read_only_guarantee": {
+    "before_after_invariant": ["world_state_hash", "event_stream_hash",
+                               "causal_history_hash", "current_tick",
+                               "checkpoint count", "event count"],
+    "enforcement": "ReadOnlyGuard 内建强制，违例即 IntegrityError"
+  },
+  "astrbot_integration": {
+    "hook": "astrbot.api.event.filter.on_llm_request（官方导出）",
+    "handler_signature": "async def handler(self, event: AstrMessageEvent, req: ProviderRequest) -> None",
+    "injection_point": "req.extra_user_content_parts.append(TextPart(text=...).mark_as_temp())",
+    "exactly_once": "每 ProviderRequest 至多一份 Capsule；reload 不重复",
+    "non_interference": "只 APPEND；绝不修改 system_prompt/prompt/contexts/conversation（不覆盖 Persona/Private Companion）",
+    "temp_mark": "mark_as_temp()：世界上下文不进 Companion 长期记忆"
+  },
+  "failure_behavior": {
+    "db_unavailable": "RUNTIME_UNAVAILABLE",
+    "schema_mismatch": "RUNTIME_UNAVAILABLE",
+    "scheduler_FAILED": "RUNTIME_UNAVAILABLE（fail-closed，不让模型自行猜测）",
+    "hook_exception": "不注入（fail-closed，绝不炸聊天链路）"
+  },
+  "scheduler_read_only": "可读 scheduler state；读取绝不 start/resume/acquire lease",
+  "owner_decision": "可查询 decision state；自然语言绝不自动提交 OwnerDecisionInput",
+  "prompt_injection_policy": "DB 自由文本一律 DATA 渲染（sanitize + 固定标签），不进入指令位；不注入居民名单/全部历史/内部路径/hash/token",
+  "llm_boundary": {
+    "RUNTIME_QUERY_LLM_CALLS": 0,
+    "RUNTIME_QUERY_LLM_TOKENS": 0,
+    "COMPANION_RESPONSE_LLM_CALLS": "属于正常聊天 Provider（与 Runtime 查询分离）"
+  },
+  "network": {
+    "RUNTIME_QUERY_NETWORK_CALLS": 0
+  },
+  "formal_world": {
+    "WORLD_RUNTIME_STATUS": "NOT_ACTIVATED",
+    "seed": null,
+    "current_blessed_tick": null,
+    "official_world_events": 0,
+    "world_mutations": 0
+  },
+  "postgresql_gates": {
+    "PRE_ACTIVATION_PG_GATE": "REQUIRED",
+    "PRE_ACTIVATION_PG_COMMIT_AMBIGUITY_GATE": "REQUIRED"
+  },
+  "postgresql_compatibility": "新增 SQL 全部 SQLAlchemy 表达式/text 参数化；PG 兼容审计保留",
+  "private_companion": {
+    "source_modified": false,
+    "integration_channel": "仅 AstrBot 官方 hook + Runtime 公开只读 Query Service",
+    "forbidden": ["monkey patch", "import private methods", "写入其数据库",
+                  "依赖 undocumented internal object", "覆盖 plugin files"]
+  }
+}
