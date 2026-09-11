@@ -48,6 +48,9 @@ ARTIFACT_TESTS = [
     "tests/test_m3b_metric_audit.py::test_ma28_metric_audit_baseline_artifacts",
     "tests/test_m2_review_long.py::test_lt1_1000y_five_seeds",
     "tests/test_m2_review_long.py::test_lt7_5000y_endurance",
+    "tests/test_m3_integrated_long.py::test_lt1_1000y_five_seeds",
+    "tests/test_m3_integrated_long.py::test_lt7_5000y_endurance",
+    "tests/test_m3_integrated_long.py::test_lt13_summary_artifact",
 ]
 
 

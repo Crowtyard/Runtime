@@ -1,0 +1,50 @@
+{
+ "world_id": "M3LONG-001",
+ "years": 1000,
+ "wall_seconds": 332.907,
+ "db_size_mb": 173.129,
+ "final_blessed_tick": 1000000000,
+ "counts": {
+  "world_events": 14857,
+  "population_groups": 80,
+  "households": 203,
+  "lineages": 14,
+  "institutions": 2,
+  "resource_nodes": 2,
+  "resource_stocks": 6,
+  "ecology_state": 2,
+  "settlement_social_state": 2,
+  "simulation_checkpoints": 2000,
+  "simulation_run": 1000,
+  "tribulation_episodes": 100,
+  "tribulation_recovery_states": 99,
+  "resource_succession_candidates": 99,
+  "causal_history_links": 201619,
+  "entity_history_index": 198601,
+  "history_state_changes": 118534,
+  "history_episode_index": 100,
+  "distinct_entities_with_history": 219,
+  "entity_history_index_rows": 198601
+ },
+ "tribulation": {
+  "scheduled_episodes": 100,
+  "terminal_completed": 98,
+  "active": 2,
+  "recovering": 0,
+  "new_normal_pending": 1,
+  "precursor": 1,
+  "mutex_sum": 100,
+  "active_recovery_count": 0,
+  "oldest_active_recovery_age_years": 0,
+  "recovery_rows_total": 99,
+  "recovery_rows_stale_status_semantics": "per-episode ledger rows; not updated after episode advances; linear growth (one row per episode)",
+  "mean_recovery_duration_years": 1.38,
+  "max_recovery_duration_years": 3
+ },
+ "hashes": {
+  "world_state_hash": "8aeff88587b8f2cf43b377efad8c957e06b9c1adf0fa4df8c5363c9638942b1f",
+  "event_stream_hash": "aeb983a9615cb369376b4b93eeb7dc10e91f8ae882484716eb0a997d67c896d8",
+  "causal_history_hash": "0fd9e788010e9d438dbe4816bd08da8dc390a7d2ed82a9e689edcb04ebd07382"
+ },
+ "invariant_issues": []
+}

@@ -30,12 +30,13 @@ UPDATE_ENV = "BLR_UPDATE_GOLDEN_BASELINES"
 
 # 非确定性 telemetry 键（深剥离；不进确定性相等比较）
 DEFAULT_TELEMETRY_KEYS = frozenset({
-    "performance",          # M2a/M2b/M2c/M2d 120y 基线 {wall_seconds}
-    "wall_seconds",         # M3a 300y summary / M2 long seed records
+    "performance",           # M2a/M2b/M2c/M2d 120y 基线 {wall_seconds}
+    "wall_seconds",          # M3a 300y summary / M2/M3 long seed records
     "wall_seconds_queries",  # M3b 300y summary
-    "query_latency_ms",     # M3b 300y summary
-    "db_size_mb",           # M2 long seed records / endurance
-    "db_growth",            # M3b growth_projection / M2 long summary
+    "query_latency_ms",      # M3b 300y summary
+    "query_performance_1000y",  # M3c summary（p50/p95/max 机器计时）
+    "db_size_mb",            # M2/M3 long seed records / endurance
+    "db_growth",             # M3b growth_projection / M2/M3 long summary
 })
 
 # M3a 冻结 effective hash schema version（test-side pin：与 M3a 冻结语义
@@ -186,9 +187,11 @@ def golden_bytes_guard(*paths: Path):
         if update_mode_enabled():
             yield
             return
-        before = {p: p.read_bytes() for p in paths}
+        # 尚未创建的 golden 不参与（文件新增由 GB1 会话快照捕获）
+        before = {p: p.read_bytes() for p in paths if p.exists()}
         yield
         for p, blob in before.items():
+            assert p.exists(), f"golden baseline deleted during test run: {p}"
             assert p.read_bytes() == blob, (
                 f"golden baseline bytes modified during test run: {p}")
     return _guard

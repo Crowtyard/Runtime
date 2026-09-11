@@ -1,0 +1,157 @@
+{
+  "manifest_version": "m3-semantics-v1",
+  "frozen_at": "M3_INTEGRATED_COMPLETION_REVIEW (M3c official)",
+  "base": [
+    "M2_SIMULATION_SEMANTICS_MANIFEST.json (m2-semantics-v1, unchanged)",
+    "M3A_SIMULATION_SEMANTICS_MANIFEST.json (m3a-semantics-v1, unchanged)",
+    "M3B_HISTORY_SEMANTICS_MANIFEST.json (m3b-history-semantics-v1)"
+  ],
+  "pre_m3c_baseline": {
+    "tag": "pre-m3c-frozen-baseline-hardened",
+    "head": "271b507",
+    "parent_frozen": "cbb19e9 (m3b-causal-world-history-frozen)",
+    "golden_hardening_commit": "271b507",
+    "m2d_v5_freeze_repair_commit": "314d373"
+  },
+  "simulation_version": "0.3.0-m3a",
+  "pipeline_order": ["TIME", "DEMOGRAPHY", "RESOURCE", "ECONOMY",
+                     "ECOLOGY", "SOCIAL", "TRIBULATION",
+                     "DOMAIN_IMPACT_ADAPTERS", "CAUSAL_HISTORY_INDEXING"],
+  "engine_versions": {
+    "DEMOGRAPHY": "m2a-1",
+    "RESOURCE": "m2b-resource-1",
+    "ECONOMY": "m2b-economy-1",
+    "ECOLOGY": "m2c-ecology-1",
+    "SOCIAL": "m2d-social-1",
+    "TRIBULATION": "m3a-tribulation-1"
+  },
+  "history_schema_version": "history-v1",
+  "history_link_id_schema_version": "causal-link-id-v1",
+  "causal_history_hash_schema_version": "causal-history-hash-v1",
+  "rng_schema_version": "m1-derive-seed-v1",
+  "rng_substreams": {
+    "engines": "per (subsystem, blessed_period_tick)",
+    "tribulation": ["TRIBULATION_SCHEDULE", "TRIBULATION_PROFILE",
+                    "TRIBULATION_TARGET", "TRIBULATION_IMPACT",
+                    "TRIBULATION_RECOVERY", "TRIBULATION_SUCCESSION"]
+  },
+  "identity_schemas": {
+    "event_uid": "deterministic 128-bit (deterministic_event_uid)",
+    "tribulation_episode_id": "tribulation-episode-id-v1",
+    "impact_plan_id": "impact-plan-v2",
+    "owner_decision_id": "owner-decision-v1",
+    "domain_entity_id": "domain-entity-id-v1",
+    "social_entity_id": "social-v2",
+    "succession_candidate_id": "succession-candidate-v1"
+  },
+  "hash_schemas": {
+    "world_state_hash": 6,
+    "world_state_hash_v2_v3_v4_v5": "frozen regression baselines",
+    "event_stream_hash_schema_version": 1,
+    "causal_history_hash": "causal-history-hash-v1"
+  },
+  "hash_responsibilities": {
+    "world_state_hash": "当前世界真值 (STATE)",
+    "event_stream_hash": "发生路径 (EVENT PATH)",
+    "causal_history_hash": "事实之间关系 (CAUSAL RELATION TRUTH)",
+    "note": "三者职责互不替代；History 为派生/索引层，不得反向修改 Domain Truth"
+  },
+  "adaptive_time_resolution": "schedule/stage boundaries split SimulationInterval at integer blessed ticks; no float years",
+  "cross_domain_atomicity": "PLAN_B: coordinator applies Domain-owned Impact Adapters in one WorldMutationContext",
+  "crash_checkpoint_semantics": {
+    "run_step": "no commit (fenced session owned by catch_up)",
+    "crash_points": ["before_snapshot", "after_snapshot", "engine:<ID>",
+                     "engine:TRIBULATION", "after_tribulation", "after_engines",
+                     "before_apply", "during_apply", "before_checkpoint",
+                     "after_checkpoint", "adapter:<DOMAIN>",
+                     "tribulation:precursor", "tribulation:preparation",
+                     "tribulation:impact_plan", "tribulation:recovery",
+                     "tribulation:succession", "tribulation:new_normal"],
+    "atomicity": "events + state changes + history links commit in ONE fenced transaction; crash rolls back all"
+  },
+  "fencing_semantics": {
+    "lease": "WriterLease per writer; expires_at monotonic",
+    "stale_writer": "FENCING_VIOLATION, zero authoritative mutation (State/Events/Episodes/History Links/Checkpoint)",
+    "takeover": "new writer re-acquires lease, same interval retry idempotent"
+  },
+  "ack_ambiguity_semantics": {
+    "post_durable_commit_ack_lost": "retry same interval -> ALREADY_COMMITTED",
+    "no_duplicate": "population/resource/inventory/ecology/social effect, Episode, History Link, Checkpoint, Blessed Time",
+    "gate": "PRE_ACTIVATION_PG_COMMIT_AMBIGUITY_GATE = REQUIRED"
+  },
+  "history_indexing_semantics": {
+    "read_only_queries": true,
+    "indexing_enabled_disabled": "affects only causal_history_hash + history index tables; world_state_hash / event_stream_hash unchanged",
+    "ledger": "history_state_changes (M3b-owned; never writes M0 world_state_changes)",
+    "relation_direction": "source = explanation, target = explained; trace follows incoming edges",
+    "tick_rules": {
+      "FORWARD": ["CAUSES", "TRIGGERS", "RESULTS_IN", "AFFECTS",
+                  "CONTINUES", "RECOVERS_FROM", "DERIVED_FROM",
+                  "MATERIALIZES_IN"],
+      "BACKWARD": ["PART_OF_EPISODE"],
+      "NONE": ["DECIDED_BY"],
+      "FREE": ["CORRECTS", "SUPERSEDES", "REVERSES"]
+    },
+    "supersede_policy": "each EVENT superseded at most once; append-only corrections"
+  },
+  "metric_schema": "v2",
+  "metrics": {
+    "entity": ["entity_history_index_rows", "distinct_entities_with_history"],
+    "deprecated": [{"OLD_METRIC_NAME": "entities_with_history",
+                    "REASON": "raw index rows, not distinct entities"}],
+    "episode_mutually_exclusive_states": [
+      "EPISODE_STATE_COMPLETED", "EPISODE_STATE_PRECURSOR",
+      "EPISODE_STATE_PREPARATION", "EPISODE_STATE_IMPACT",
+      "EPISODE_STATE_RESPONSE", "EPISODE_STATE_STABILIZATION",
+      "EPISODE_STATE_RESIDUAL_CHANGE", "EPISODE_STATE_RECOVERY",
+      "EPISODE_STATE_RESOURCE_SUCCESSION",
+      "EPISODE_STATE_NEW_NORMAL_PENDING"],
+    "incomplete_predicate": "episode.status != 'COMPLETED'",
+    "mutex_invariant": "sum(mutually exclusive states) == episodes_indexed"
+  },
+  "feedback_latency": "NEXT_COMMITTED_STEP",
+  "tribulation_rank_inference": 0,
+  "golden_baseline_policy": {
+    "immutability": "normal pytest never writes tests/baselines/** (GB1 session snapshot + GB2 per-module bytes guard)",
+    "compare": "candidate artifact built in memory -> deterministic deep compare vs committed golden (telemetry stripped); any deterministic diff FAILS (GB10)",
+    "telemetry_excluded": ["performance", "wall_seconds", "wall_seconds_queries",
+                           "query_latency_ms", "db_size_mb", "db_growth"],
+    "effective_hash_schema_versions": {"M2b": 3, "M2c": 4, "M2d": 5,
+                                       "M3a": 6},
+    "explicit_update": "BLR_UPDATE_GOLDEN_BASELINES=1 via scripts/update_baselines.py only; manual git diff review + independent commit",
+    "policy_doc": "tests/GOLDEN_BASELINES.md"
+  },
+  "formal_world": {
+    "WORLD_RUNTIME_STATUS": "NOT_ACTIVATED",
+    "seed": null,
+    "current_blessed_tick": null,
+    "tribulation_profiles": 0,
+    "tribulation_schedules": 0,
+    "causal_history_links": 0,
+    "official_world_events": 0
+  },
+  "postgresql_gates": {
+    "PRE_ACTIVATION_PG_GATE": "REQUIRED",
+    "PRE_ACTIVATION_PG_COMMIT_AMBIGUITY_GATE": "REQUIRED"
+  },
+  "llm_calls": 0,
+  "llm_tokens": 0,
+  "network_calls": 0,
+  "cross_version_policy": {
+    "population_results": "simulation_version bump",
+    "resource_results": "simulation_version bump",
+    "ecology_results": "simulation_version bump",
+    "social_results": "simulation_version bump",
+    "tribulation_results": "simulation_version bump",
+    "history_causal_results": "history_schema_version (or causal_history_hash schema) bump",
+    "ui_text_logs_only": "no world semantics version change",
+    "performance_only_index": "no world semantics version change",
+    "history_read_query_optimization": "no world semantics version change",
+    "test_harness_only": "no world semantics version change"
+  },
+  "long_horizon_fixture": {
+    "name": "M3_INTEGRATED_LONG_HORIZON",
+    "nature": "TEST_FIXTURE_ONLY, not Canon",
+    "seeds": "M3LONG-001..005 (world_id-derived deterministic RNG)"
+  }
+}
