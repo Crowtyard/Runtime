@@ -93,6 +93,9 @@ class RuntimeHost:
         self.engine: Engine | None = None
         self.session_factory: sessionmaker[Session] | None = None
         self._boot_errors: list[str] = []
+        # M4 scheduler（可选附加；astrbot-free，由插件生命周期驱动）
+        self._scheduler = None
+        self._scheduler_task = None
 
     # ------------------------------------------------------------- 生命周期
     def boot(self) -> None:
@@ -127,6 +130,58 @@ class RuntimeHost:
         self.session_factory = None
         log.info("runtime host shut down (no world advance, no history)")
 
+    # ------------------------------------------------------------- M4 scheduler
+    def attach_scheduler(self, scheduler) -> None:
+        """附加 RuntimeScheduler（M4）。重复 attach 幂等替换旧实例。"""
+        self._scheduler = scheduler
+        log.info("scheduler attached: %s", type(scheduler).__name__)
+
+    def detach_scheduler(self) -> None:
+        self._scheduler = None
+
+    async def start_scheduler_task(self) -> bool:
+        """AstrBot 生命周期：启动 scheduler 循环任务（幂等；不产生双循环）。
+
+        返回 False 表示已有任务在跑。
+        """
+        import asyncio
+        if self._scheduler is None:
+            log.warning("no scheduler attached; task not started")
+            return False
+        if self._scheduler_task is not None \
+                and not self._scheduler_task.done():
+            return False
+        if not self._scheduler.start():
+            return False
+        poll_ms = self._scheduler.config.poll_interval_ms
+
+        async def _loop():
+            while True:
+                try:
+                    self._scheduler.run_cycle()
+                except Exception as exc:  # noqa: BLE001
+                    log.error("scheduler cycle error: %s", exc)
+                await asyncio.sleep(poll_ms / 1000.0)
+
+        self._scheduler_task = asyncio.create_task(_loop())
+        log.info("scheduler task started poll_ms=%s", poll_ms)
+        return True
+
+    async def stop_scheduler_task(self) -> None:
+        """AstrBot 生命周期：取消循环任务（无孤儿 task）、释放写权限。"""
+        import asyncio
+        if self._scheduler is not None:
+            self._scheduler.stop()
+        if self._scheduler_task is not None:
+            task = self._scheduler_task
+            self._scheduler_task = None
+            task.cancel()
+            try:
+                await asyncio.gather(task, return_exceptions=True)
+            except Exception as exc:  # noqa: BLE001
+                log.warning("scheduler task cancel: %s", exc)
+        log.info("scheduler task stopped (no orphan loops)")
+
     def _ensure_dirs(self) -> None:
         for d in (self.data_dir, self.backups_dir, self.exports_dir,
                   self.runtime_state_dir, self.logs_dir):
@@ -148,6 +203,12 @@ class RuntimeHost:
             return f"error: {exc}"
 
     # ------------------------------------------------------------- 权威 DB 标记
+    def _scheduler_section(self) -> dict:
+        """M4 只读：scheduler 状态段（未附加 → DETACHED）。"""
+        if self._scheduler is None:
+            return {"scheduler_state": "DETACHED"}
+        return self._scheduler.get_scheduler_status()
+
     def _write_authoritative_marker(self) -> None:
         """单一权威：运行时只打开这一个正式世界 DB（AUTHORITATIVE_DB_PATH）。"""
         record = {
@@ -214,6 +275,7 @@ class RuntimeHost:
                 "world_row_present": False,
                 "seed_present": False,
                 "current_blessed_tick": None,
+                "scheduler": self._scheduler_section(),
                 "tick_unit": "1 tick = 1 µy (micro-blessed-year)",
                 "natural_rate": {
                     "numerator": NATURAL_TIME_RATE.blessed_ticks,
@@ -238,6 +300,7 @@ class RuntimeHost:
             "current_blessed_tick": row.current_blessed_tick,
             "last_committed_real_us": row.last_committed_real_us,
             "simulation_version": row.simulation_version,
+            "scheduler": self._scheduler_section(),
             "tick_unit": "1 tick = 1 µy (micro-blessed-year)",
             "natural_rate": {
                 "numerator": NATURAL_TIME_RATE.blessed_ticks,
@@ -260,6 +323,7 @@ class RuntimeHost:
             "world_status": RuntimeStatus.NOT_ACTIVATED,
             "seed_present": False,
             "current_blessed_tick": None,
+            "scheduler": self._scheduler_section(),
             "tick_unit": "1 tick = 1 µy (micro-blessed-year)",
             "natural_rate": {
                 "numerator": NATURAL_TIME_RATE.blessed_ticks,

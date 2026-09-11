@@ -41,6 +41,14 @@ log = get_logger("SCHEDULER")
 
 _CHECKPOINT_VERSION = 1
 
+
+class SchedulerCrash(RuntimeError):
+    """scheduler-specific 崩溃注入信号（只测试用；与 commit 歧义区分）。
+
+    崩溃 = 进程语义（调用方模拟死亡后恢复）；commit 歧义 = durable 状态
+    未知（scheduler 自身 RECOVERING）。两者绝不能混为一谈。
+    """
+
 # scheduler-specific crash 注入点（§15；engine 级注入点沿用 M3c 77 项）
 CRASH_POINTS = frozenset({
     "before_activation_check", "after_activation_check",
@@ -188,7 +196,8 @@ class RuntimeScheduler:
                 return self._snapshot(row)
             self._maybe_crash("after_writer_acquire")
             self._maybe_crash("before_heartbeat")
-            self._heartbeat()
+            if not self._heartbeat_guarded():
+                return self._snapshot(row)  # stale writer：RECOVERING 已置位
             self._maybe_crash("after_heartbeat")
 
             # ---- 3) Catch-up 规划（只读预演；权威转换在 catch_up）
@@ -208,7 +217,13 @@ class RuntimeScheduler:
             # ---- 4) 批次执行（冻结 pipeline；年粒度）
             self._state = SchedulerState.CATCHING_UP
             self._maybe_crash("before_batch_execution")
-            executed_ticks = self._execute_batch(plan)
+            try:
+                executed_ticks = self._execute_batch(plan)
+            except FencingViolation:
+                # stale writer：_execute_batch 已停止 mutation 并置 RECOVERING
+                return self._snapshot(row)
+            if self._state == SchedulerState.FAILED:
+                return self._snapshot(row)  # fail-closed：不再覆盖状态
             self._maybe_crash("before_authoritative_commit")
 
             # ---- 5) plan/execute 一致性（fail-closed）
@@ -249,6 +264,8 @@ class RuntimeScheduler:
                     year_index=year_index, coordinator=coordinator,
                     lease=self._lease, epoch0_us=self.epoch0_us,
                     simulation_version=self.simulation_version)
+            except SchedulerCrash:
+                raise  # 崩溃注入：模拟进程死亡，调用方恢复
             except FencingViolation as exc:
                 # 租约已被接管：立即停止 mutation，绝不“这批写完算了”
                 self._stale_writer_rejection_count += 1
@@ -265,13 +282,17 @@ class RuntimeScheduler:
                 self._state = SchedulerState.RECOVERING
                 recovered = self._recover_truth(year_index, exc)
                 if not recovered:
-                    raise
+                    # FAILED（fail-closed）：停止本批，返回已执行量
+                    return executed_ticks
                 # durable truth 表明该年已提交 → 已推进，继续
             executed_ticks += TICKS_PER_BLESSED_YEAR
             self._batches_total += 1
             self._last_batch_ticks = TICKS_PER_BLESSED_YEAR
             self._maybe_crash("before_lease_renewal")
-            self._heartbeat()
+            if not self._heartbeat_guarded():
+                raise FencingViolation(
+                    "批次中途租约被接管（立即停止 mutation）",
+                    detail={"world_id": self.world_id})
         return executed_ticks
 
     def _recover_truth(self, year_index: int, exc: Exception) -> bool:
@@ -316,6 +337,23 @@ class RuntimeScheduler:
     def _heartbeat(self) -> None:
         if self._lease is not None:
             self._lease.renew()
+
+    def _heartbeat_guarded(self) -> bool:
+        """心跳；租约被接管（token 失效）→ 记录 stale、释放本地引用、
+        RECOVERING，返回 False（停止 mutation）。"""
+        try:
+            self._heartbeat()
+            return True
+        except WriterLockConflict as exc:
+            self._stale_writer_rejection_count += 1
+            self._recovery_count += 1
+            self._release_lease()
+            self._state = SchedulerState.RECOVERING
+            self._last_error = f"heartbeat fencing loss: {exc}"
+            self._persist_checkpoint()
+            log.warning("stale writer detected world=%s: %s",
+                        self.world_id, exc)
+            return False
 
     def _release_lease(self) -> None:
         if self._lease is not None:
@@ -443,7 +481,7 @@ class RuntimeScheduler:
         tmp.write_text(json.dumps(payload, ensure_ascii=False, indent=1),
                        encoding="utf-8")
         if self._checkpoint_crash_after_write:
-            raise RuntimeError("scheduler crash: during_scheduler_checkpoint")
+            raise SchedulerCrash("scheduler crash: during_scheduler_checkpoint")
         tmp.replace(path)
 
     def _load_checkpoint(self) -> None:
@@ -476,9 +514,14 @@ class RuntimeScheduler:
     def set_crash_point(self, point: str | None) -> None:
         if point is not None and point not in CRASH_POINTS:
             raise ValueError(f"未知 scheduler crash 点: {point}")
+        if point == "during_scheduler_checkpoint":
+            # 该点由 checkpoint 原子写机制注入（tmp 写出后、replace 前）
+            self._checkpoint_crash_after_write = True
+            self._crash_point = None
+            return
         self._crash_point = point
 
     def _maybe_crash(self, point: str) -> None:
         if self._crash_point == point:
             self._crash_point = None  # 单次触发
-            raise RuntimeError(f"scheduler crash: {point}")
+            raise SchedulerCrash(f"scheduler crash: {point}")

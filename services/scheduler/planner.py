@@ -104,8 +104,9 @@ class CatchUpPlanner:
         due_ticks = max(0, target_tick - tick_before)
         batch_ticks = min(due_ticks, budget_ticks)
         batch_years = batch_ticks // TICKS_PER_BLESSED_YEAR
-        year_indices = tuple(range(year_start + 1,
-                                   year_start + 1 + batch_years))
+        # year_start = 已完成年数 = 下一个待执行年的 0-based 序号
+        # （与 m3a_runner 约定一致：year_index k 覆盖 [k*1e6, (k+1)*1e6]）
+        year_indices = tuple(range(year_start, year_start + batch_years))
         return CatchUpPlan(
             target_tick=target_tick, due_ticks=due_ticks,
             batch_years=batch_years, year_indices=year_indices,

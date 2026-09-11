@@ -19,5 +19,35 @@
     "description": "管理页面自动刷新间隔（秒）",
     "type": "int",
     "default": 30
+  },
+  "scheduler_enabled": {
+    "description": "启用 Runtime Scheduler（M4）。正式世界未激活时自动进入 DORMANT，绝不推进世界。",
+    "type": "bool",
+    "default": true
+  },
+  "scheduler_poll_interval_ms": {
+    "description": "Scheduler 轮询间隔（整数毫秒）",
+    "type": "int",
+    "default": 5000
+  },
+  "scheduler_catch_up_max_ticks_per_cycle": {
+    "description": "每周期最大追赶量（整数 blessed tick；冻结引擎原子粒度=1福地年=1000000 tick）",
+    "type": "int",
+    "default": 100000000
+  },
+  "scheduler_lease_ttl_ms": {
+    "description": "Writer 租约 TTL（整数毫秒）",
+    "type": "int",
+    "default": 120000
+  },
+  "scheduler_heartbeat_interval_ms": {
+    "description": "Writer 心跳间隔（整数毫秒；必须 < lease TTL）",
+    "type": "int",
+    "default": 30000
+  },
+  "scheduler_shutdown_grace_ms": {
+    "description": "优雅停机宽限（整数毫秒）",
+    "type": "int",
+    "default": 5000
   }
 }
