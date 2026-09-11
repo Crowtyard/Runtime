@@ -196,3 +196,55 @@ def test_checkpoint_durable_truth_wins(tmp_path):
     sched2.start()  # 不得抛异常；损坏 checkpoint 被忽略
     assert sched2.get_scheduler_status()["pause_state"] is False
     sched2.stop()
+
+
+def test_astrbot_host_lifecycle_no_orphan_loops(tmp_path):
+    """§5/§26：AstrBot 风格 start/stop；孤儿 task = 0；双循环 = 0；
+    stop 后零 mutation；stop while dormant 安全。"""
+    import asyncio
+
+    from XiaoguangBlessedLandRuntime.plugin_shell.runtime_host import \
+        RuntimeHost
+
+    env = fresh_scheduler_world(tmp_path, 7, activated=False)
+    host = RuntimeHost(Path(env["db_path"]).parent / "plugin_data")
+    host.boot()
+
+    def build_sched():
+        return RuntimeScheduler(
+            session_factory=env["factory"], world_id=env["world_id"],
+            config=SchedulerConfig(poll_interval_ms=10),
+            real_now_us_provider=lambda: EPOCH0_US,
+            epoch0_us=EPOCH0_US,
+            coordinator_provider=lambda: (_ for _ in ()).throw(
+                AssertionError("engine 不得被调用")),
+            state_dir=host.runtime_state_dir)
+
+    async def scenario():
+        host.attach_scheduler(build_sched())
+        assert await host.start_scheduler_task() is True
+        assert await host.start_scheduler_task() is False  # 幂等：无双循环
+        await asyncio.sleep(0.05)  # 数个 DORMANT cycle
+        await host.stop_scheduler_task()
+        assert host._scheduler_task is None
+        # 重复 stop 安全
+        await host.stop_scheduler_task()
+        # stop while dormant：直接 stop 宿主
+        host.attach_scheduler(build_sched())
+        await host.start_scheduler_task()
+        host.shutdown()  # 宿主先停机
+        await host.stop_scheduler_task()
+
+    asyncio.run(scenario())
+    _assert_dormant_zero(env)
+
+
+def _assert_dormant_zero(env):
+    from sqlalchemy import select, text
+    from XiaoguangBlessedLandRuntime.database.models_core import RuntimeLock
+    with env["factory"]() as s:
+        assert s.execute(text(
+            "SELECT current_blessed_tick FROM world_runtime")).scalar() is None
+        assert s.execute(text(
+            "SELECT COUNT(*) FROM world_events")).scalar() == 0
+        assert s.execute(select(RuntimeLock)).scalars().all() == []

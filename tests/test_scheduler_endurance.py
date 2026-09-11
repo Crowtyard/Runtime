@@ -43,7 +43,8 @@ def test_scheduler_5000y_endurance_reproduces_frozen(tmp_path):
         hi = HistoryService(env["factory"]).history_integrity_audit(
             world_id=WORLD)
     assert hi["orphan_links"] == 0 and hi["cycle_count"] == 0
-    assert hi["tick_paradox_links"] == 0 and hi["supersede_loops"] == 0
+    assert hi["tick_paradox_links"] == 0
+    assert hi["supersede_loops"] == []  # 列表：空 = 无 supersede 环
     # 增长形态（线性；参考 300y 基线）
     counts = _record_counts(env)
     links_per_100y = counts["causal_history_links"] / 50
