@@ -7,6 +7,7 @@ import sys
 LOG_CHANNELS = [
     "RUNTIME", "DATABASE", "MIGRATION", "BACKUP",
     "TIME", "SIMULATION", "LOCK", "INTEGRITY",
+    "SCHEDULER",
 ]
 
 
