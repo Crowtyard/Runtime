@@ -1,6 +1,30 @@
+# Python / 工具缓存
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# 本地正式世界数据（绝不入库）
 world.db*
 backups/*
 !backups/.gitkeep
+
+# 数据库 / SQLite 文件
+*.db
+*.sqlite
+*.sqlite3
+
+# 运行时插件数据与状态
+plugin_data/
+runtime_state/
+incident_quarantine/
+
+# 环境与本机凭据
+.env
+.env.*
+
+# 本机日志
+*.log
+
+# 虚拟环境
+venv/
+.venv/
