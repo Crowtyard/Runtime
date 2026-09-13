@@ -16,9 +16,15 @@ if str(PROJECT_ROOT) not in sys.path:
 from config.settings import Settings  # noqa: E402
 from database import models_core, models_world  # noqa: F401,E402
 from database.base import Base  # noqa: E402
+from database.migration_contract import is_logging_config_skipped  # noqa: E402
 
 config = context.config
-if config.config_file_name is not None:
+# M5.1 事故不变量：进程内（embedded）迁移绝不改动宿主 logging。
+# 是否 embedded 由显式 flag 声明（database/migration_contract.py），
+# 不依据调用栈/模块名猜测。CLI（`alembic upgrade head`）不带该标记，
+# 仍按 alembic.ini 自行配置 logging —— 那是 CLI 自身进程，与宿主无关。
+if config.config_file_name is not None \
+        and not is_logging_config_skipped(config.attributes):
     fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata

@@ -15,18 +15,36 @@ from sqlalchemy import Engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from ..database.base import utcnow
+from ..database.migration_contract import embedded_migration_attributes
 from ..domain.blessed_time import NATURAL_TIME_RATE
 from ..domain.constants import RateReasons, SimulationVersion, WorldBibleVersion
 from .repositories import RuntimeRepository, TimeRatioRepository
 
 
-def migrate_database(database_url: str, *, project_root: Path) -> None:
-    """alembic upgrade head。"""
+def build_embedded_migration_config(database_url: str, *,
+                                     project_root: Path) -> Config:
+    """构造**进程内嵌入式**迁移用的 alembic Config。
+
+    显式声明 ``skip_logging_config``：进程内迁移不得改动宿主 logging
+    （见 database/migration_contract.py 的不变量）。CLI 方式请直接使用
+    ``alembic`` 命令行，不要复用本函数。
+    """
     cfg = Config(str(project_root / "alembic.ini"))
     cfg.set_main_option("script_location",
                         str(project_root / "database" / "alembic"))
     cfg.set_main_option("sqlalchemy.url", database_url)
-    command.upgrade(cfg, "head")
+    cfg.attributes.update(embedded_migration_attributes())
+    return cfg
+
+
+def migrate_database(database_url: str, *, project_root: Path) -> None:
+    """alembic upgrade head（幂等；不 squash、不 reset 历史）。
+
+    嵌入式调用：绝不改动宿主 logging（M5.1 事故修复不变量）。
+    """
+    command.upgrade(
+        build_embedded_migration_config(database_url, project_root=project_root),
+        "head")
 
 
 def current_schema_version(session: Session) -> str:

@@ -69,17 +69,14 @@ class BlessedLandRuntimePlugin(Star):
             return
         from datetime import datetime, timezone
 
-        from XiaoguangBlessedLandRuntime.domain.blessed_time import \
-            datetime_to_epoch_us
-        from XiaoguangBlessedLandRuntime.services.scheduler import (
-            RuntimeScheduler, SchedulerConfig)
+        from .domain.blessed_time import datetime_to_epoch_us
+        from .services.scheduler import RuntimeScheduler, SchedulerConfig
 
         if self._host.session_factory is None:
             return  # host 未 boot（runtime_enabled=false）
         with self._host.session_factory() as s:
             from sqlalchemy import select
-            from XiaoguangBlessedLandRuntime.database.models_core import \
-                WorldRuntime
+            from .database.models_core import WorldRuntime
             row = s.execute(select(WorldRuntime).limit(1)) \
                 .scalar_one_or_none()
         world_id = row.world_id if row is not None else "FORMAL-UNSEEDED"
@@ -179,8 +176,8 @@ class BlessedLandRuntimePlugin(Star):
             return None
         from sqlalchemy import select
 
-        from XiaoguangBlessedLandRuntime.database.models_core import WorldRuntime
-        from XiaoguangBlessedLandRuntime.services.query import (
+        from .database.models_core import WorldRuntime
+        from .services.query import (
             ContextBuilder, WorldQueryIntentRouter, WorldQueryService)
 
         with self._host.session_factory() as s:
@@ -219,11 +216,11 @@ class BlessedLandRuntimePlugin(Star):
 
     def _m5_query_payload(self, kind: str) -> dict:
         """只读查询入口（NOT_ACTIVATED → UNKNOWN 语义由查询层保证）。"""
-        from XiaoguangBlessedLandRuntime.services.query import WorldQueryService
+        from .services.query import WorldQueryService
         if self._host is None or self._host.session_factory is None:
             return {"status": "RUNTIME_UNAVAILABLE", "reason": "HOST_NOT_BOOTED"}
         from sqlalchemy import select
-        from XiaoguangBlessedLandRuntime.database.models_core import WorldRuntime
+        from .database.models_core import WorldRuntime
         with self._host.session_factory() as s:
             row = s.execute(select(WorldRuntime).limit(1)) \
                 .scalar_one_or_none()

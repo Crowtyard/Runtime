@@ -12,6 +12,8 @@ from XiaoguangBlessedLandRuntime.database.models_world import Settlement
 from XiaoguangBlessedLandRuntime.domain.constants import SimulationVersion
 from XiaoguangBlessedLandRuntime.domain.errors import WriterLockConflict, WorldNotActivated
 from XiaoguangBlessedLandRuntime.services.atomic_tick import run_atomic_tick
+from XiaoguangBlessedLandRuntime.services.db_lifecycle import (
+    build_embedded_migration_config)
 from XiaoguangBlessedLandRuntime.services.repositories import EventRepository
 from XiaoguangBlessedLandRuntime.services.writer_lock import WriterLease, world_writer
 
@@ -35,9 +37,8 @@ def test_migration_at_head(migrated_db):
 
 def test_migration_downgrade_upgrade_cycle(migrated_db):
     """M1 迁移基本验证：downgrade base → upgrade head 全链路可逆。"""
-    cfg = Config(str(PROJECT_ROOT / "alembic.ini"))
-    cfg.set_main_option("script_location", str(PROJECT_ROOT / "database" / "alembic"))
-    cfg.set_main_option("sqlalchemy.url", migrated_db["url"])
+    cfg = build_embedded_migration_config(migrated_db["url"],
+                                          project_root=PROJECT_ROOT)
     command.downgrade(cfg, "base")
     command.upgrade(cfg, "head")
     with migrated_db["engine"].connect() as c:

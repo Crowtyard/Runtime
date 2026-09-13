@@ -26,7 +26,6 @@ from datetime import datetime, timezone  # noqa: E402
 
 import pytest  # noqa: E402
 from alembic import command  # noqa: E402
-from alembic.config import Config  # noqa: E402
 from sqlalchemy import select  # noqa: E402
 from sqlalchemy.orm import sessionmaker  # noqa: E402
 
@@ -54,10 +53,12 @@ W = "W"  # 测试世界 world_id
 
 
 def run_migrations(database_url: str) -> None:
-    cfg = Config(str(PROJECT_ROOT / "alembic.ini"))
-    cfg.set_main_option("script_location", str(PROJECT_ROOT / "database" / "alembic"))
-    cfg.set_main_option("sqlalchemy.url", database_url)
-    command.upgrade(cfg, "head")
+    """测试库迁移：走**嵌入式**构造器（不得改动宿主/pytest logging）。"""
+    from XiaoguangBlessedLandRuntime.services.db_lifecycle import (
+        build_embedded_migration_config)
+    command.upgrade(
+        build_embedded_migration_config(database_url, project_root=PROJECT_ROOT),
+        "head")
 
 
 @pytest.fixture()
