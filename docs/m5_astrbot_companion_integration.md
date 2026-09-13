@@ -51,6 +51,45 @@
 | “最近发生了什么？” | NONE_OFFICIAL（绝不引用 synthetic baseline） |
 | “下一次灾劫是什么时候？” | UNKNOWN |
 
+### 4.1 严格语义合同（M5.2 修复，由 Runtime 注入）
+
+M5.1 真人聊天验收暴露 DEFECT A：上下文虽给出 `UNKNOWN`，但模型仍把
+“UNKNOWN” 退化为“已有数据但尚未统计/未记录”，并据 persona 设定叙述出
+神社/灵田/居民等**当前正式事实**。根因为 A1 合同约束不足（主因）+ A2 注入
+位置在用户内容层、弱于 system 层 persona（加重项）+ A3 persona 世界设定在场
+（诱因）。修复只加强 Runtime 侧的合同文本，不改 Private Companion：
+
+```
+STATUS: NOT_ACTIVATED
+AUTHORITATIVE_RULE: 正式福地尚未激活；当前不存在任何可引用的正式世界事实。
+STRICT_NOT_ACTIVATED_CONSTRAINTS:
+· 人口/居民/聚落/建筑/灵田/资源/正式历史/灾劫/纪年/世界内活动 均无权威值，不得叙述为当前事实。
+· UNKNOWN=权威值尚不存在（≠未统计/未记录/档案缺失）。
+· NONE_OFFICIAL=不存在正式历史事件（≠发生了但没记）。
+· blessed tick=NULL=NOT_STARTED（≠第0年/元年/第一年）。
+· 不得用角色设定/想象/叙事润色/旧设定补全正式事实；回答世界问题须先说明“正式福地尚未激活”。
+```
+
+- 合同行优先级最高（裁剪按序整行丢弃），且未激活时使用预算下限
+  `NOT_ACTIVATED_MIN_BUDGET_CHARS = 700`，保证合同与字段行完整送达；
+  **ACTIVATED 预算（400 / 1000 / 2000）不变**。
+- Runtime 只规定“哪些事实可以说/不能说”，人格与语气仍由 Private Companion 决定；
+  不修改其源码、数据与配置。
+
+### 4.2 WORLD_TIME 表达形态（M5.2 修复）
+
+DEFECT B：字面「现在是哪一年？」不命中关键词「哪年」（“哪一年”不含子串
+“哪年”）→ 被误判为 `NO_WORLD_CONTEXT`。修复在确定性路由器中为 WORLD_TIME
+增加少量明确 pattern（零 LLM、本地、优先级不变）：
+
+```
+哪(一)?年 · 什么年份 · 什么纪年 · 纪年.{0,4}(是什么|是啥|是多少|多少|几年|是几) · 几几年
+```
+
+覆盖：`现在是哪一年？/ 现在是哪年？/ 现在是什么年份？/ 福地现在是什么纪年？/
+福地是什么年份？/ 现在的纪年是什么？/ 福地几几年了？` → 全部 `WORLD_TIME`；
+普通闲聊仍为 `NO_WORLD_CONTEXT`。
+
 ## 5. 隔离与安全
 
 - Private Companion：源码 checksum 基线（cf259085…，529 文件）已记录，

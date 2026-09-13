@@ -135,27 +135,40 @@ def scoped(tmp_path):
 
 
 def test_detection_ignores_own_ancestry(scoped):
-    """守卫不得把测试自身的解释器判成外来实例（否则永远无法启动测试实例）。"""
+    """守卫不得把测试自身的解释器判成外来实例（否则永远无法启动测试实例）。
+
+    注：本测试不假设机器上无 live AstrBot 实例（验收期它通常正在运行），
+    只验证“自身进程链 + 命令行形态判定”这一逻辑本身。
+    """
     assert os.getpid() in scoped.own_ancestry()
-    # 自身是 python 进程，但不是 AstrBot 实例形态 → 不算外来
-    scoped.assert_no_foreign_python()
+    own_cmdline = f'"{sys.executable}" -m pytest -q'
+    assert scoped.looks_like_astrbot_instance(own_cmdline) is False
+    assert scoped.looks_like_astrbot_instance(
+        r"C:\x\instances\abc\core\main.py") is True
 
 
 def test_guard_aborts_on_foreign_astrbot_instance(scoped, tmp_path):
-    """存在非测试 AstrBot 实例进程时，守卫必须 ABORT（而不是去清理它）。"""
+    """存在非测试 AstrBot 实例进程时，守卫必须 ABORT（而不是去清理它）。
+
+    容忍环境中已有 live 实例：把它登记为“环境既有”，
+    只要求守卫对**本测试伪造的**那个实例进程报警。
+    """
     fake = _spawn_fake_astrbot_core(tmp_path)
     try:
-        with pytest.raises(scoped.ForeignProcessError):
-            scoped.assert_no_foreign_python()
-        # 明确登记为“本测试所有”时不得报警
-        scoped.assert_no_foreign_python(allowed=[fake.pid])
+        preexisting = {p["pid"] for p in scoped.astrbot_processes()
+                       if p["pid"] != fake.pid}
+        with pytest.raises(scoped.ForeignProcessError) as exc:
+            scoped.assert_no_foreign_python(allowed=preexisting)
+        assert str(fake.pid) in str(exc.value)
+        # 明确登记为“本测试所有”后不得再报警
+        scoped.assert_no_foreign_python(allowed=preexisting | {fake.pid})
     finally:
         scoped.kill_tree(fake.pid)
     assert not _alive(fake.pid)
 
 
 def test_guard_can_require_full_exclusivity(scoped):
-    """严格模式：任何其它 python 进程都算外来。"""
+    """严格模式：任何其它 python 进程都算外来（含本测试自己 spawn 的旁观者）。"""
     other = _spawn_sleeper()
     try:
         with pytest.raises(scoped.ForeignProcessError):

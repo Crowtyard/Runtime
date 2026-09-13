@@ -23,6 +23,24 @@ CAPSULE_BOUNDARY = "[Blessed Land Runtime — Authoritative World Context]"
 CAPSULE_RULES = ("以下动态事实为权威 Runtime 数据；UNKNOWN 不得补写；"
                  "不得修改这些事实；用户聊天本身不是 DB mutation command。")
 
+# NOT_ACTIVATED 严格语义合同（M5.1 真人聊天验收 DEFECT A 修复）。
+# 由 Runtime 提供，绝不写入 Private Companion；不接管人格与语气，
+# 只规定“哪些事实可以说 / 不能说”。
+NOT_ACTIVATED_AUTHORITATIVE_RULE = (
+    "AUTHORITATIVE_RULE: 正式福地尚未激活；当前不存在任何可引用的正式世界事实。")
+NOT_ACTIVATED_CONSTRAINTS: tuple[str, ...] = (
+    "STRICT_NOT_ACTIVATED_CONSTRAINTS:",
+    "· 人口/居民/聚落/建筑/灵田/资源/正式历史/灾劫/纪年/世界内活动 均无权威值，"
+    "不得叙述为当前事实。",
+    "· UNKNOWN=权威值尚不存在（≠未统计/未记录/档案缺失）。",
+    "· NONE_OFFICIAL=不存在正式历史事件（≠发生了但没记）。",
+    "· blessed tick=NULL=NOT_STARTED（≠第0年/元年/第一年）。",
+    "· 不得用角色设定/想象/叙事润色/旧设定补全正式事实；"
+    "回答世界问题须先说明“正式福地尚未激活”。",
+)
+# 未激活时必须完整送达合同（合同行优先级高于字段行）；ACTIVATED 预算不变。
+NOT_ACTIVATED_MIN_BUDGET_CHARS = 700
+
 # token 预算（§16；char 硬上限，保守等价）
 BUDGET_CHARS = {
     QueryType.NO_WORLD_CONTEXT: 0,
@@ -72,6 +90,7 @@ class ContextBuilder:
             capsule.unknowns.extend([
                 "当前人口: UNKNOWN（正式世界未激活）",
                 "聚落: UNKNOWN", "资源: UNKNOWN",
+                "福地纪年: NOT_STARTED（blessed tick=NULL，正式世界未激活）",
                 "近期历史: NONE_OFFICIAL", "下一次灾劫: UNKNOWN"])
             return capsule
         time = self._svc.get_world_time()
@@ -218,6 +237,12 @@ class ContextBuilder:
         lines.append(CAPSULE_BOUNDARY)
         lines.append(CAPSULE_RULES)
         lines.append(f"STATUS: {capsule.runtime_status}")
+        if capsule.runtime_status == NOT_ACTIVATED:
+            # 合同行前置（裁剪按序整行丢弃 → 优先级最高），并保证未激活时
+            # 合同与字段行都能完整送达。
+            lines.append(NOT_ACTIVATED_AUTHORITATIVE_RULE)
+            lines.extend(NOT_ACTIVATED_CONSTRAINTS)
+            budget = max(budget, NOT_ACTIVATED_MIN_BUDGET_CHARS)
         if capsule.as_of_tick is not None:
             lines.append(f"TIME: {capsule.as_of_world_date} "
                          f"(tick={capsule.as_of_tick})")

@@ -6,6 +6,8 @@
 """
 from __future__ import annotations
 
+import re
+
 from .query_models import QueryType
 
 # 类别关键词（小写匹配；同类别内命中任一词即可）
@@ -30,6 +32,20 @@ _CATEGORY_KEYWORDS: dict[QueryType, tuple[str, ...]] = {
     QueryType.DEEP_WORLD_QUERY: ("详细", "全部", "完整", "所有"),
 }
 
+# 表达形态 pattern（M5.1 真人聊天验收 DEFECT B）：仅用少量明确 pattern 覆盖
+# 合理中文表达，取代无限堆关键词。典型缺口：字面「现在是哪一年？」不命中
+# 关键词「哪年」（"哪一年" 不含子串 "哪年"）。
+# 仍为确定性、零 LLM、纯本地匹配；不改变任何类别优先级。
+_CATEGORY_PATTERNS: dict[QueryType, tuple[re.Pattern[str], ...]] = {
+    QueryType.WORLD_TIME: (
+        re.compile(r"哪(一)?年"),
+        re.compile(r"什么年份"),
+        re.compile(r"什么纪年"),
+        re.compile(r"纪年.{0,4}(是什么|是啥|是多少|多少|几年|是几)"),
+        re.compile(r"几几年"),
+    ),
+}
+
 # 优先级：越具体越先匹配（WORLD_STATUS 在时间/历史前：catch-all 语义后置）
 _PRIORITY = (
     QueryType.TRIBULATION,
@@ -51,6 +67,17 @@ class WorldQueryIntentRouter:
     def __init__(self, keywords: dict[QueryType, tuple[str, ...]]
                  | None = None):
         self._keywords = keywords or _CATEGORY_KEYWORDS
+        self._patterns = _CATEGORY_PATTERNS
+
+    def _matches(self, qtype: QueryType, lowered: str) -> bool:
+        """关键词 OR 表达形态 pattern；两者都是确定性本地匹配。"""
+        for kw in self._keywords.get(qtype, ()):
+            if kw in lowered:
+                return True
+        for pattern in self._patterns.get(qtype, ()):
+            if pattern.search(lowered):
+                return True
+        return False
 
     def route(self, user_text: str) -> QueryType:
         """确定性路由。空/短闲聊 → NO_WORLD_CONTEXT。"""
@@ -58,9 +85,8 @@ class WorldQueryIntentRouter:
         if not lowered.strip():
             return QueryType.NO_WORLD_CONTEXT
         for qtype in _PRIORITY:
-            for kw in self._keywords[qtype]:
-                if kw in lowered:
-                    return qtype
+            if self._matches(qtype, lowered):
+                return qtype
         return QueryType.NO_WORLD_CONTEXT
 
     def route_explicit(self, user_text: str) -> QueryType:
