@@ -373,4 +373,26 @@ NEXT_REQUIRED_ACTION       = AWAIT_OWNER_AUTHORIZATION_FOR_PG_ENVIRONMENT_BRINGU
                              psycopg3 安装；在此之前 M6_ACTIVATION = PROHIBITED）
 ```
 
+## 13. Git 记录（本阶段）
+
+```
+PRE_FIX_HEAD（M5_FINAL_HEAD）  = ac8d422aab6c49f67852b90c3bcc60686058c4dc
+PORTABILITY_FIX_HEAD           = 6c3d24b（fix: harden postgres portability before activation）
+                                 13 files changed, +1009 / -31
+REPORTS_HEAD / 本报告 HEAD      = 14492f2229c5506e0efcdc2741e9b4a48c102637
+                                 （docs: record m5 closeout and pre-m6 pg gate audit）
+                                 3 files changed, +858
+本地分支                        = m5-query-companion
+HISTORY_REWRITTEN              = FALSE（未 amend、未 rebase、未 force push）
+TAGS_ADDED_OR_MOVED            = 0
+AMENDED_COMMITS                = 0
+工作区（提交后）                = CLEAN（git status --porcelain 为空）
+提交信息编码                    = 无 BOM（首字符码 100 = 'd'，已核验）
+被测试产物 == 被提交产物         = TRUE（提交前记录的 13 文件指纹在回归后无漂移，
+                                 且 git status 干净 → 提交 blob 即被测试内容）
+```
+
+**未提交内容**：无（本阶段全部产物已入库）。**未部署**：live 实例仍运行 M5.2 包，
+本次提交只存在于 dev 仓库，正式库未受影响。
+
 **STOP** — 未进入 M6；等待 owner 复核后再进入 Docker/PG 环境建设与驱动安装。
