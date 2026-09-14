@@ -19,7 +19,8 @@ from sqlalchemy import delete
 from sqlalchemy.dialects import postgresql, sqlite
 
 import XiaoguangBlessedLandRuntime.services.simulation.recovery as recovery_mod
-from XiaoguangBlessedLandRuntime.database.models_core import SimulationCheckpoint
+from XiaoguangBlessedLandRuntime.database.models_core import (
+    SimulationCheckpoint, WorldRuntime)
 from XiaoguangBlessedLandRuntime.services.simulation.recovery import (
     WORLD_COMMITTED_KIND, authoritative_checkpoint_statement,
     checkpoint_count_statement, count_checkpoints_by_kind,
@@ -135,6 +136,19 @@ def _pg_dsn_or_skip() -> str:
     return dsn
 
 
+def _purge_world(factory, world_id: str) -> None:
+    """删除合成 world 的全部痕迹（先 checkpoint，再 world_runtime 行）。
+
+    必须彻底且可重复：只删 checkpoint 会留下 world_runtime 行，
+    使下一次运行在 uq_world_runtime_world_id 上失败（即入口不可重跑）。
+    """
+    with factory() as s:
+        s.execute(delete(SimulationCheckpoint).where(
+            SimulationCheckpoint.world_id == world_id))
+        s.execute(delete(WorldRuntime).where(WorldRuntime.world_id == world_id))
+        s.commit()
+
+
 def test_pg_recovery_integration_entrypoint():
     """POSTGRES_RECOVERY_INTEGRATION：合成 world + 合成 checkpoint，用后清理。
 
@@ -156,6 +170,7 @@ def test_pg_recovery_integration_entrypoint():
     factory = make_session_factory(engine)
     world_id = "PG-TEST-RECOVERY-0001"
     try:
+        _purge_world(factory, world_id)     # 幂等：清理上次中断运行的残留
         with factory() as s:
             RuntimeRepository(s).create_not_activated(
                 world_id=world_id, world_bible_version="1.0",
@@ -176,10 +191,7 @@ def test_pg_recovery_integration_entrypoint():
         assert got is not None and got.checkpoint_blessed_tick == 90
         assert counts == {"time_committed": 1, "world_committed": 2}
     finally:
-        with factory() as s:
-            s.execute(delete(SimulationCheckpoint).where(
-                SimulationCheckpoint.world_id == world_id))
-            s.commit()
+        _purge_world(factory, world_id)
         engine.dispose()
 
 

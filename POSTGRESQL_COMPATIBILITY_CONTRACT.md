@@ -98,12 +98,52 @@
 | PG-002 | 静态兼容性审计只覆盖 3 个 simulation 文件（空过） | 新增 `tests/pg_portability_scan.py`：全生产路径扫描 + 方言分支规则 + 最小白名单；`test_ta59` 改为委托该扫描器 |
 | PG-006 | PG 事件不可变未覆盖 `TRUNCATE` | 新增 migration `f2a7c4e9b1d6`（语句级 BEFORE TRUNCATE）+ invariants 校验 |
 | PG-008 | 契约 §6.5 引用递归 CTE，实际为应用层 DFS | 契约勘误：`PG_RECURSIVE_CTE_REQUIREMENT = N/A`、`APPLICATION_DFS_CAUSAL_CYCLE_CHECK = IMPLEMENTED` |
+| PG-009 | §6.1 要求「migrations 在 PG 上从 0 upgrade head」，但 `5aef35f022b4`/`a1c9f3d77e21` 的 `batch_alter_table` 改列类型在 PG 上缺 `USING`（varchar→integer/bigint 无赋值转换）→ 实跑 upgrade head 直接失败 | 两处补 `postgresql_using`（PG 专属 kwarg，SQLite 路径完全不变）；转换取旧列文本，非数值历史数据**报错中止**而非静默错转 |
+| PG-010 | PG 集成入口不完整：PG-006 只有 stub、无真实 PG 路径；PG-001 入口清理不彻底（残留 `world_runtime` 行）→ 第二次运行必在唯一约束上失败（不可重跑） | `test_pg_truncate_protection_integration_entrypoint` 新增真实 PG 路径（INSERT 允许 / UPDATE / DELETE / TRUNCATE 全部被拒）；两个入口统一 `_purge_world` 前置+彻底清理 |
 
 配套 head 变更：`ALEMBIC_HEAD = f2a7c4e9b1d6`（原 `d7f9b1c3e5a7`），
 同步于 `tests/conftest.py`、`plugin_shell/runtime_host.py`、
 `scripts/migrate_db_to_plugin_data.py`，并由测试断言三者一致。
 
 存量未决项（**不在本轮范围**，仍为 M6 activation blocker）：
-PG 环境实跑（连接/迁移/单写者/fencing/等价性/历史完整性）、PG 专属
+PG 单写者 / fencing / 等价性 / 历史完整性实跑、PG 专属
 commit ambiguity harness、`services/backup_service.py` 的 PG 备份路径。
+（原「PG 环境实跑（连接/迁移）」已由 §10 完成。）
+
+## 10. PG 环境实跑记录（PRE-M6 PG DRIVER + BRING-UP · 2026-09-14）
+
+首次在真实 PostgreSQL 上完成驱动安装与迁移门禁（隔离容器 `blr-pre-m6-postgres`，
+PostgreSQL 16.15，`127.0.0.1:55432`，`TEST ONLY`；非正式世界、非 live 环境）。
+
+```
+PG_DRIVER              = psycopg 3.3.5（+ psycopg-binary 3.3.5，libpq 18.0.4 binary）
+PG_DRIVER_INSTALL_SCOPE = DEV_TEST_ONLY（%TEMP%\blr-pre-m6-pg-venv，全新独立 venv）
+安装方式                = 完全离线：--no-index --find-links <本地 wheelhouse>（SHA256 逐一比对）
+PSYCOPG_CONNECTIVITY   = PASS
+SQLALCHEMY_CONNECTIVITY = PASS（postgresql/psycopg 方言）
+POSTGRES_FRESH_DB_MIGRATION    = PASS（从 0 upgrade head = f2a7c4e9b1d6）
+POSTGRES_EXISTING_DB_MIGRATION = PASS（PREV→head，存量行保留、触发器补齐）
+POSTGRES_SECOND_UPGRADE_IDEMPOTENT = PASS
+PG_EVENT_INSERT            = ALLOWED
+PG_EVENT_UPDATE_PROTECTION = ENFORCED（P0001 "append-only: UPDATE forbidden"）
+PG_EVENT_DELETE_PROTECTION = ENFORCED（P0001 "append-only: DELETE forbidden"）
+PG_EVENT_TRUNCATE_PROTECTION = ENFORCED（P0001 "append-only: TRUNCATE forbidden"）
+PG_RECOVERY_QUERY_EXECUTES = PASS（权威 checkpoint 查询在 PG 上可执行且语义一致）
+PG_INTEGRATION_ENTRY       = PASS（两个 gated 入口均真实执行，非 skip；连续两轮 35 passed）
+```
+
+PG 上 `world_events` 现有两个触发器：`blr_world_events_no_modify`（行级
+UPDATE OR DELETE）与 `blr_world_events_no_truncate`（语句级 TRUNCATE）。
+
+PG 集成入口的运行方式（缺任一变量则按设计 skip；库名不含 `test` 则 fail-closed）：
+
+```
+BLR_TEST_PG_DSN=postgresql+psycopg://<user>:<pw>@127.0.0.1:55432/<db_with_test_in_name>
+BLR_TEST_PG_ALLOW=1
+<pg-venv>\Scripts\python.exe -m pytest tests/test_pg_event_truncate_protection.py \
+    tests/test_pg_recovery_checkpoint_portability.py tests/test_pg_portability_static_audit.py
+```
+
+**仍未覆盖**（属下一阶段）：单写者压力、fencing 接管、真实 commit ambiguity、
+worker/server kill、5000y PG endurance、M6 activation。
 

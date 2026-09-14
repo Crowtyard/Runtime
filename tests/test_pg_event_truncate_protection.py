@@ -25,6 +25,9 @@ from XiaoguangBlessedLandRuntime.domain.errors import IntegrityError
 from XiaoguangBlessedLandRuntime.services.repositories import EventRepository
 
 from tests.conftest import HEAD_REVISION, PROJECT_ROOT, W
+# 单一来源的 PG 集成守卫（库名必须含 "test" 且非 sqlite，否则 fail-closed）；
+# 其自身行为由本模块复用 + 该模块的 test_pg_dsn_guard_* 断言。
+from tests.test_pg_recovery_checkpoint_portability import _pg_dsn_or_skip
 
 NEW_HEAD = "f2a7c4e9b1d6"
 PREV_HEAD = "d7f9b1c3e5a7"
@@ -232,3 +235,101 @@ def test_sqlite_truncate_check_never_queries_db():
     engine = _StubEngine("sqlite", [])
     assert event_truncate_protection_present(engine) is True
     assert engine._values == []
+
+
+# ------------------------------------------- PG-006 真实 PostgreSQL 集成入口
+def _attack_blocked(engine, sql: str, *, op: str) -> None:
+    """单次攻击：必须使用独立连接。
+
+    PostgreSQL 中出错即中止当前事务（InFailedSqlTransaction），
+    同一连接上连续攻击无法区分「被触发器拒绝」与「事务已中止」。
+    """
+    with engine.connect() as c:
+        with pytest.raises(sa.exc.DatabaseError) as exc:
+            c.execute(text(sql))
+    msg = str(exc.value)
+    assert "append-only" in msg, msg
+    assert op in msg, msg
+
+
+def _purge_world(engine, world_id: str) -> None:
+    """测试数据清理：以受控 DDL 暂停行级不可变触发器后按 world 删除。
+
+    事件不可变的解除只能走 DDL + 受控运维流程（契约 §8）——测试清理即走该路径；
+    ALTER/DELETE 在同一事务内完成（ACCESS EXCLUSIVE 锁），其他会话始终看到完整保护，
+    提交前重新 ENABLE 触发器。
+    """
+    with engine.begin() as c:
+        c.execute(text("LOCK TABLE world_events IN ACCESS EXCLUSIVE MODE"))
+        c.execute(text("ALTER TABLE world_events DISABLE TRIGGER "
+                       "blr_world_events_no_modify"))
+        c.execute(text("DELETE FROM world_events WHERE world_id = :w"), {"w": world_id})
+        c.execute(text("ALTER TABLE world_events ENABLE TRIGGER "
+                       "blr_world_events_no_modify"))
+        c.execute(text("DELETE FROM world_runtime WHERE world_id = :w"), {"w": world_id})
+
+
+def test_pg_truncate_protection_integration_entrypoint():
+    """PG-006 真实 PG：INSERT 允许，UPDATE / DELETE / TRUNCATE 全部被 DB 层拒绝。
+
+    仅当 BLR_TEST_PG_DSN（库名必须含 "test"）+ BLR_TEST_PG_ALLOW=1 时执行；
+    合成 world + 合成事件，用后清理；不触碰任何正式世界 / 正式库 / live plugin_data。
+    """
+    dsn = _pg_dsn_or_skip()
+    from XiaoguangBlessedLandRuntime.database.db import (
+        create_db_engine, make_session_factory)
+    from XiaoguangBlessedLandRuntime.services.db_lifecycle import (
+        migrate_database)
+    from XiaoguangBlessedLandRuntime.services.repositories import (
+        RuntimeRepository)
+
+    migrate_database(dsn, project_root=PROJECT_ROOT)
+    engine = create_db_engine(dsn)
+    factory = make_session_factory(engine)
+    world_id = "PG-TEST-PG006-0001"
+    try:
+        # 触发器在位（DB 层自证，不是代码约定）
+        assert event_immutability_triggers_present(engine) is True
+        assert event_truncate_protection_present(engine) is True
+        verify_event_immutability(engine)
+
+        _purge_world(engine, world_id)      # 幂等：清理上次中断运行的残留
+
+        with factory() as s:
+            RuntimeRepository(s).create_not_activated(
+                world_id=world_id, world_bible_version="1.0",
+                simulation_version="0.1.0-dev",
+                world_bible_manifest_hash="pg006")
+            s.commit()
+
+        # append-only 语义：INSERT 允许
+        with factory() as s:
+            EventRepository(s).append(world_id=world_id, event_type="PG6",
+                                      source="SIM", blessed_tick=1)
+            EventRepository(s).append(world_id=world_id, event_type="PG6B",
+                                      source="SIM", blessed_tick=2)
+            s.commit()
+        with factory() as s:
+            inserted = s.execute(text(
+                "SELECT COUNT(*) FROM world_events WHERE world_id = :w"),
+                {"w": world_id}).scalar()
+        assert inserted == 2
+
+        # 攻击面：UPDATE / DELETE / TRUNCATE 必须全部被 DB 层拒绝
+        _attack_blocked(engine, "UPDATE world_events SET event_type = 'MUT'",
+                        op="UPDATE")
+        _attack_blocked(engine, "DELETE FROM world_events", op="DELETE")
+        _attack_blocked(engine, "TRUNCATE TABLE world_events", op="TRUNCATE")
+
+        # 攻击之后数据未被改动（TRUNCATE 未生效、历史未被清空）
+        with factory() as s:
+            survived = s.execute(text(
+                "SELECT COUNT(*) FROM world_events WHERE world_id = :w"),
+                {"w": world_id}).scalar()
+        assert survived == 2
+        verify_event_immutability(engine)
+    finally:
+        _purge_world(engine, world_id)
+        # 清理后保护必须仍在位（ENABLE 生效，未被测试清理静默削弱）
+        verify_event_immutability(engine)
+        engine.dispose()

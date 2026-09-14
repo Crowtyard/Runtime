@@ -5,7 +5,8 @@ CANONICAL_BLESSED_TICK（M0 DSH 独立 QA）：世界时间坐标从"整数福�
 （SQLite 64-bit INTEGER / PostgreSQL BIGINT），列名以 *_tick 结尾，语义自明。
 
 World Seed 尚未激活、无历史数据 → 直接 rename + 类型变更（SQLite batch；
-PostgreSQL 直改）。year/month/day 仅是 projection，历法 Canon 未定义不得发明。
+PostgreSQL 直改，varchar → bigint 必须带显式 USING）。year/month/day 仅是
+projection，历法 Canon 未定义不得发明。
 
 Revision ID: a1c9f3d77e21
 Revises: 5aef35f022b4
@@ -46,15 +47,32 @@ _WORLD = [
 ]
 
 
+def _pg_using(column: str, target: object) -> str | None:
+    """PostgreSQL 显式 USING 表达式（仅无赋值转换的类型变更需要）。
+
+    batch_alter_table 在 PG 上直通原生 ``ALTER TABLE``：varchar → bigint /
+    bigint → varchar 均无赋值转换，必须给出 USING；integer ↔ bigint 属赋值
+    转换，返回 None（不加 USING，保持最小改动）。SQLite 走 batch 重建，
+    方言专属参数不影响其行为。
+    """
+    if isinstance(target, sa.String):
+        return f"{column}::varchar({target.length})"
+    if isinstance(target, sa.BigInteger):
+        return f"{column}::bigint"
+    return None
+
+
 def _alter(cols: list[tuple[str, str, str, object]], to_tick: bool) -> None:
     for table, old, new, existing in cols:
         with op.batch_alter_table(table) as b:
             if to_tick:
                 b.alter_column(old, new_column_name=new, type_=sa.BigInteger(),
-                               existing_type=existing, existing_nullable=True)
+                               existing_type=existing, existing_nullable=True,
+                               postgresql_using=_pg_using(old, sa.BigInteger()))
             else:
                 b.alter_column(new, new_column_name=old, type_=existing,
-                               existing_type=sa.BigInteger(), existing_nullable=True)
+                               existing_type=sa.BigInteger(), existing_nullable=True,
+                               postgresql_using=_pg_using(new, existing))
 
 
 def upgrade() -> None:
