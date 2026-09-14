@@ -916,11 +916,21 @@ def test_ta58_m2_baselines_unchanged():
 
 
 def test_ta59_postgresql_contract_audit():
-    for name in ("tribulation.py", "tribulation_adapters.py", "m3a_runner.py"):
-        src = (REPO / "services/simulation" / name).read_text(encoding="utf-8")
-        assert "json_extract" not in src, name
-        assert "rowid" not in src, name
-        assert "INSERT OR REPLACE" not in src, name
+    """PG-002：审计面从 3 个文件扩展到全部授权生产路径。
+
+    原实现只扫描 services/simulation/{tribulation,tribulation_adapters,
+    m3a_runner}.py，因此漏掉了 services/simulation/recovery.py 中的
+    json_extract（PG-001）。现在统一走 tests/pg_portability_scan.py：
+    显式方言分支规则 + 最小白名单 + 非 docstring 字符串字面量扫描。
+    """
+    from tests.pg_portability_scan import scan_file, scan_repository
+
+    violations, scanned = scan_repository()
+    assert scanned >= 80, f"扫描面过小（{scanned}）"
+    assert violations == [], "\n".join(str(v) for v in violations)
+    for name in ("tribulation.py", "tribulation_adapters.py", "m3a_runner.py",
+                 "recovery.py"):
+        assert scan_file(REPO / "services/simulation" / name) == [], name
 
 
 def test_ta60_plugin_load_does_not_schedule_formal_disaster():

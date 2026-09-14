@@ -168,7 +168,9 @@ NEW_PROPOSAL 冻结（11 号 CAUSAL_HISTORY_CHAIN 的结构化落地）：
 cause_event_ids / trigger_event_id / result_event_ids /
 affected_entity_ids / state_change_ids / decision_event_ids /
 episode_id / supersedes / correction / correlation_id。链长度上限配置；
-SQL 递归 CTE（SQLite 支持）或应用层图遍历。禁止只存一段自然语言
+SQL 递归 CTE 或应用层图遍历（**实现选择：应用层迭代式 DFS，无递归 CTE**；
+PG 兼容性勘误见 POSTGRESQL_COMPATIBILITY_CONTRACT §6.5：PG_RECURSIVE_CTE_REQUIREMENT = N/A）。
+禁止只存一段自然语言
 summary 作为唯一历史依据。
 
 ## 22. Tribulation Episode

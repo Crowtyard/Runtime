@@ -8,8 +8,9 @@
   类型：Integer/String/Text/Boolean/DateTime(timezone)/JSON/BigInteger（canonical blessed tick）。
 - Alembic migrations（batch_alter 仅用于 SQLite 回迁路径；PG 上 batch 直通原生 ALTER）。
 - Repository 模式：业务只经 services/repositories.py 访问。
-- 通用 SQL：SELECT/INSERT/UPDATE/DELETE、WHERE、ORDER BY、LIMIT、JOIN、递归 CTE（M3 因果链）
+- 通用 SQL：SELECT/INSERT/UPDATE/DELETE、WHERE、ORDER BY、LIMIT、JOIN
   ——均为跨方言标准。
+  （递归 CTE：**允许但当前未使用**，见 §6.5 勘误；M3 因果链实际由应用层图遍历实现。）
 
 ## 2. 禁止进入 Domain Logic（SQLite 私有）
 - PRAGMA（journal_mode/foreign_keys/busy_timeout）→ 只允许出现在 database/db.py 的引擎工厂
@@ -43,6 +44,12 @@
 ## 5. JSON 列
 - ORM 统一用 sqlalchemy.JSON()；PG 落 jsonb 时可经类型注解切换，业务不感知。
 - 禁止在 SQL 内对 JSON 做方言专用查询（如 PG jsonb_path）；JSON 读取在应用层过滤。
+  - 允许（PRE-M6 PG-001 明确）：SQLAlchemy **可移植** JSON 索引比较
+    ``Model.meta["key"].as_string() == value`` —— 方言由 SQLAlchemy 适配
+    （SQLite→``JSON_EXTRACT``、PostgreSQL→``->>``），源码不出现方言函数名；
+    权威恢复路径（services/simulation/recovery.py）必须使用该形态。
+  - 仍禁止：手写 ``json_extract(...)`` / ``jsonb_path`` 等方言函数、
+    手写方言字符串 SQL、``complete = 1`` 之类隐式布尔比较（PG 布尔列拒绝整数）。
 
 ## 6. 未来 PG 实跑需验证清单
 1. migrations 在 PG 上从 0 upgrade head（同一 migration 文件集；0003 的 rename+BigInteger、
@@ -51,7 +58,12 @@
 3. 时间列语义（aware UTC / TIMESTAMPTZ）一致；backup_service 切换为 PG 备份实现并过
    integrity/restore 测试。
 4. SINGLE_WORLD_WRITER：PG 下租约表行级语义相同（PK 冲突 + 过期 CAS UPDATE 同语义）。
-5. 布尔/JSON 往返、递归 CTE 因果链查询结果一致。
+5. 布尔/JSON 往返一致；递归 CTE 因果链查询 —— **PG_RECURSIVE_CTE_REQUIREMENT = N/A**
+   （勘误，PG-008）：全仓无 `WITH RECURSIVE`，M3 因果链/环检测实际由**应用层迭代式
+   3-color DFS** 实现（`services/history/service.py::_find_cycles` /
+   `_supersede_loops`），与方言无关 →
+   `APPLICATION_DFS_CAUSAL_CYCLE_CHECK = IMPLEMENTED`。
+   不得为满足旧文字而新写递归 CTE；若未来引入 CTE，本项自动恢复为需验证。
 
 ## 7. 已落实的隔离点
 - database/db.py：URL 前缀（sqlite）驱动 PRAGMA；PG 分支仅调整 connect 参数。
@@ -71,3 +83,27 @@
    sqlite_where 与 postgresql_where（status='COMMITTED'）；NULL 区间行不受影响。
 3. PG 实跑清单 §6 全部通过（World Seed Activation 前）。
 4. 未来对 world_events 的任何 batch 结构变更后必须重新应用不可变触发器。
+5. **TRUNCATE 保护（PRE-M6 PG-006，migration f2a7c4e9b1d6）**：PG 的行级
+   BEFORE UPDATE OR DELETE 触发器**不拦 TRUNCATE**，故 world_events 另需
+   **语句级 BEFORE TRUNCATE** 触发器（`blr_world_events_no_truncate`）。
+   SQLite 无 TRUNCATE 语句 → 该 migration 在 SQLite 上为 no-op；
+   `database/invariants.py::verify_event_immutability` 在 PG 上一并校验该触发器。
+   不可变性**不得**依赖应用层「不调用 TRUNCATE」。
+
+## 9. 勘误与硬化记录（PRE-M6 POSTGRESQL GATE IMPLEMENTATION · 2026-09-14）
+
+| 编号 | 内容 | 处置 |
+| --- | --- | --- |
+| PG-001 | `services/simulation/recovery.py` 生产代码使用 SQLite 私有 `json_extract()`（权威恢复路径） | 改为 SQLAlchemy 可移植 JSON 比较（SQLite→`JSON_EXTRACT`、PG→`->>`）；SQLite 行为不变 |
+| PG-002 | 静态兼容性审计只覆盖 3 个 simulation 文件（空过） | 新增 `tests/pg_portability_scan.py`：全生产路径扫描 + 方言分支规则 + 最小白名单；`test_ta59` 改为委托该扫描器 |
+| PG-006 | PG 事件不可变未覆盖 `TRUNCATE` | 新增 migration `f2a7c4e9b1d6`（语句级 BEFORE TRUNCATE）+ invariants 校验 |
+| PG-008 | 契约 §6.5 引用递归 CTE，实际为应用层 DFS | 契约勘误：`PG_RECURSIVE_CTE_REQUIREMENT = N/A`、`APPLICATION_DFS_CAUSAL_CYCLE_CHECK = IMPLEMENTED` |
+
+配套 head 变更：`ALEMBIC_HEAD = f2a7c4e9b1d6`（原 `d7f9b1c3e5a7`），
+同步于 `tests/conftest.py`、`plugin_shell/runtime_host.py`、
+`scripts/migrate_db_to_plugin_data.py`，并由测试断言三者一致。
+
+存量未决项（**不在本轮范围**，仍为 M6 activation blocker）：
+PG 环境实跑（连接/迁移/单写者/fencing/等价性/历史完整性）、PG 专属
+commit ambiguity harness、`services/backup_service.py` 的 PG 备份路径。
+

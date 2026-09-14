@@ -1,0 +1,234 @@
+# -*- coding: utf-8 -*-
+"""PRE-M6 PG-006：world_events 在 PostgreSQL 上的 TRUNCATE 不可变保护。
+
+- SQLite 无 TRUNCATE 语句 → 新 migration（f2a7c4e9b1d6）必须为 **no-op**，
+  既有 UPDATE/DELETE 触发器与行为完全不变；
+- PostgreSQL 必须存在**语句级 BEFORE TRUNCATE** 触发器（行级触发器不拦 TRUNCATE）；
+- alembic 单头链与三处 head 常量必须一致（防止 head 漂移）。
+"""
+from __future__ import annotations
+
+import ast
+import re
+
+import pytest
+import sqlalchemy as sa
+from alembic.config import Config
+from alembic.script import ScriptDirectory
+from sqlalchemy import text
+
+from XiaoguangBlessedLandRuntime.database.invariants import (
+    MODIFY_TRIGGER_NAME, TRUNCATE_TRIGGER_NAME,
+    event_immutability_triggers_present, event_truncate_protection_present,
+    verify_event_immutability)
+from XiaoguangBlessedLandRuntime.domain.errors import IntegrityError
+from XiaoguangBlessedLandRuntime.services.repositories import EventRepository
+
+from tests.conftest import HEAD_REVISION, PROJECT_ROOT, W
+
+NEW_HEAD = "f2a7c4e9b1d6"
+PREV_HEAD = "d7f9b1c3e5a7"
+MIGRATION = (PROJECT_ROOT / "database" / "alembic" / "versions"
+             / "f2a7c4e9b1d6_p1_pg_event_truncate_immutability.py")
+
+
+def _script_directory() -> ScriptDirectory:
+    cfg = Config(str(PROJECT_ROOT / "alembic.ini"))
+    cfg.set_main_option("script_location",
+                        str(PROJECT_ROOT / "database" / "alembic"))
+    return ScriptDirectory.from_config(cfg)
+
+
+# --------------------------------------------------------------- alembic 链
+def test_alembic_chain_has_single_head_at_new_revision():
+    sd = _script_directory()
+    assert sd.get_heads() == [NEW_HEAD]
+    assert NEW_HEAD in sd.get_revision(PREV_HEAD).nextrev
+
+
+def test_head_constants_consistent_across_runtime_and_scripts():
+    assert HEAD_REVISION == NEW_HEAD  # tests/conftest.py
+    for rel in ("plugin_shell/runtime_host.py",
+                "scripts/migrate_db_to_plugin_data.py"):
+        src = (PROJECT_ROOT / rel).read_text(encoding="utf-8")
+        m = re.search(r'EXPECTED_SCHEMA_HEAD\s*=\s*"([0-9a-f]+)"', src)
+        assert m is not None, f"{rel} 缺少 EXPECTED_SCHEMA_HEAD"
+        assert m.group(1) == NEW_HEAD, f"{rel} head 漂移: {m.group(1)}"
+
+
+# --------------------------------------------------------- migration 静态面
+def test_migration_declares_expected_chain():
+    src = MIGRATION.read_text(encoding="utf-8")
+    assert re.search(r"revision:\s*str\s*=\s*'f2a7c4e9b1d6'", src)
+    assert re.search(r"down_revision[^=]*=\s*'d7f9b1c3e5a7'", src)
+
+
+def test_migration_pg_branch_is_statement_level_truncate_trigger():
+    src = MIGRATION.read_text(encoding="utf-8")
+    assert "BEFORE TRUNCATE" in src
+    assert "FOR EACH STATEMENT" in src          # 行级触发器不拦 TRUNCATE
+    assert "CREATE TRIGGER {TRUNCATE_TRIGGER}" in src   # f-string DDL 模板
+    assert "LANGUAGE plpgsql" in src
+    assert "RAISE EXCEPTION" in src
+    # 迁移内触发器常量与 invariants 校验名必须一致（防名称漂移使校验失效）
+    m = re.search(r'TRUNCATE_TRIGGER\s*=\s*"([^"]+)"', src)
+    assert m is not None and m.group(1) == TRUNCATE_TRIGGER_NAME
+
+
+def test_migration_sqlite_branch_is_noop():
+    """SQLite 分支必须只有 return（不得建表/改表/建触发器）。"""
+    tree = ast.parse(MIGRATION.read_text(encoding="utf-8"))
+    upgrade = next(n for n in tree.body
+                   if isinstance(n, ast.FunctionDef) and n.name == "upgrade")
+    sqllite_branches = [
+        n for n in ast.walk(upgrade)
+        if isinstance(n, ast.If)
+        and "sqlite" in ast.dump(n.test).lower()]
+    assert sqllite_branches, "migration 缺少显式 sqlite 分支"
+    for branch in sqllite_branches:
+        assert len(branch.body) == 1 and isinstance(branch.body[0], ast.Return), \
+            "SQLite 分支必须是 no-op"
+
+
+def test_invariants_truncate_check_is_pg_gated_and_targets_trigger():
+    src = (PROJECT_ROOT / "database" / "invariants.py").read_text(encoding="utf-8")
+    assert TRUNCATE_TRIGGER_NAME in src
+    assert "pg_trigger" in src
+    assert MODIFY_TRIGGER_NAME != TRUNCATE_TRIGGER_NAME
+    tree = ast.parse(src)
+    fn = next(n for n in tree.body if isinstance(n, ast.FunctionDef)
+              and n.name == "event_truncate_protection_present")
+    sqlite_branch = [n for n in ast.walk(fn) if isinstance(n, ast.If)
+                     and "sqlite" in ast.dump(n.test).lower()]
+    assert sqlite_branch, "SQLite 分支缺失（SQLite 无 TRUNCATE，应恒为在位）"
+
+
+# ------------------------------------------------------------- SQLite 行为
+def test_sqlite_head_advanced_and_triggers_unchanged(migrated_db):
+    with migrated_db["engine"].connect() as c:
+        assert c.execute(text("SELECT version_num FROM alembic_version")).scalar() \
+            == NEW_HEAD
+        triggers = {r[0] for r in c.execute(text(
+            "SELECT name FROM sqlite_master WHERE type='trigger' "
+            "AND tbl_name='world_events'"))}
+    assert triggers == {"blr_world_events_no_update", "blr_world_events_no_delete"}
+
+
+def test_sqlite_update_delete_rejected_and_insert_allowed(seeded_session_factory):
+    with seeded_session_factory() as s:
+        EventRepository(s).append(world_id=W, event_type="PG6", source="SIM",
+                                  blessed_tick=1)
+        s.commit()
+        engine = s.get_bind()
+    with engine.connect() as c:
+        with pytest.raises(sa.exc.IntegrityError):
+            c.execute(text("UPDATE world_events SET event_type='MUT'"))
+        with pytest.raises(sa.exc.IntegrityError):
+            c.execute(text("DELETE FROM world_events"))
+    with seeded_session_factory() as s:
+        EventRepository(s).append(world_id=W, event_type="PG6B", source="SIM",
+                                  blessed_tick=2)
+        s.commit()
+
+
+def test_sqlite_has_no_truncate_statement(migrated_db):
+    """SQLite 无 TRUNCATE 语句 → 该攻击面在 SQLite 上不存在（migration no-op 的依据）。"""
+    with migrated_db["engine"].connect() as c:
+        with pytest.raises(sa.exc.OperationalError):
+            c.execute(text("TRUNCATE TABLE world_events"))
+
+
+def test_truncate_protection_present_and_verify_passes_on_sqlite(migrated_db):
+    engine = migrated_db["engine"]
+    assert event_immutability_triggers_present(engine) is True
+    assert event_truncate_protection_present(engine) is True
+    verify_event_immutability(engine)  # 不抛异常（SQLite 行为与扩展前一致）
+
+
+def test_new_migration_downgrade_upgrade_cycle(migrated_db):
+    """新 migration 自身的 downgrade/upgrade 往返（SQLite 两侧均为 no-op）。"""
+    from alembic import command
+
+    from XiaoguangBlessedLandRuntime.services.db_lifecycle import (
+        build_embedded_migration_config)
+
+    cfg = build_embedded_migration_config(migrated_db["url"],
+                                          project_root=PROJECT_ROOT)
+    command.downgrade(cfg, PREV_HEAD)
+    with migrated_db["engine"].connect() as c:
+        assert c.execute(text("SELECT version_num FROM alembic_version")).scalar() \
+            == PREV_HEAD
+        triggers = {r[0] for r in c.execute(text(
+            "SELECT name FROM sqlite_master WHERE type='trigger' "
+            "AND tbl_name='world_events'"))}
+        assert triggers == {"blr_world_events_no_update", "blr_world_events_no_delete"}
+    command.upgrade(cfg, "head")
+    with migrated_db["engine"].connect() as c:
+        assert c.execute(text("SELECT version_num FROM alembic_version")).scalar() \
+            == NEW_HEAD
+    verify_event_immutability(migrated_db["engine"])
+
+
+# ------------------------------------------- PG 分支逻辑（stub engine，无需 PG）
+class _StubResult:
+    def __init__(self, value):
+        self._value = value
+
+    def scalar(self):
+        return self._value
+
+    def fetchall(self):
+        return [("t1",), ("t2",)] if self._value else []
+
+
+class _StubConn:
+    def __init__(self, value):
+        self._value = value
+
+    def execute(self, *_a, **_k):
+        return _StubResult(self._value)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_exc):
+        return False
+
+
+class _StubEngine:
+    """最小 engine 替身：dialect.name + 按次消费的查询返回值。"""
+
+    def __init__(self, dialect_name: str, values: list | None = None):
+        self.dialect = type("D", (), {"name": dialect_name})()
+        self._values = list(values or [])
+
+    def connect(self):
+        value = self._values.pop(0) if self._values else 0
+        return _StubConn(value)
+
+
+def test_pg_branch_requires_truncate_trigger(monkeypatch):
+    """PG：pg_trigger 计数为 0 → 保护缺失；为 1 → 在位。"""
+    assert event_truncate_protection_present(_StubEngine("postgresql", [0])) is False
+    assert event_truncate_protection_present(_StubEngine("postgresql", [1])) is True
+
+
+def test_pg_verify_fails_closed_without_truncate_trigger():
+    """PG：UPDATE/DELETE 触发器在位但 TRUNCATE 触发器缺失 → 必须 fail-closed。"""
+    with pytest.raises(IntegrityError) as exc:
+        verify_event_immutability(_StubEngine("postgresql", [1, 0]))
+    assert "TRUNCATE" in str(exc.value)
+    # 两者都在位 → 通过（不抛）
+    verify_event_immutability(_StubEngine("postgresql", [1, 1]))
+
+
+def test_unknown_dialect_fails_closed():
+    assert event_immutability_triggers_present(_StubEngine("mysql")) is False
+    assert event_truncate_protection_present(_StubEngine("mysql")) is False
+
+
+def test_sqlite_truncate_check_never_queries_db():
+    """SQLite：无 TRUNCATE 语句 → 恒为 True，且不发起查询（行为与扩展前一致）。"""
+    engine = _StubEngine("sqlite", [])
+    assert event_truncate_protection_present(engine) is True
+    assert engine._values == []
