@@ -95,6 +95,23 @@ Controller（pytest 进程）
 ```
 run #1（无 -s）: 9 collected / 9 passed / 0 failed / 0 errors / 0 skipped；585.4s；exit 0
 run #2（-s）  : 9 collected / 9 passed / 0 failed / 0 errors / 0 skipped；612.5s；exit 0
+run #3（最终提交 cbcfbcc 上的确认运行，-s）:
+               9 collected / 9 passed / 0 failed / 0 errors / 0 skipped；596.3s；exit 0
+               → 「被测试产物 == 被提交产物」（run #3 的受测文件指纹：
+                 services/scheduler/core.py 986C34B6…、tests/test_pg_commit_ambiguity_gate.py
+                 DD8BDCF5…、tests/pg_ambiguity_support.py 3380C35D…、
+                 tests/pg_ambiguity_worker.py 035B3BA1…）
+```
+
+run #3 自证输出（节选）：
+
+```
+CA01_DURABLE_OUTCOME=NOT_COMMITTED lease_expiry_wait=119.5s
+CA03_ITERATIONS=20 AMBIGUOUS_COMMITTED=0 AMBIGUOUS_NOT_COMMITTED=10
+                 CLIENT_ERROR=10 CLIENT_OK=10 KILL_MISSED_OR_POST_ACK=10
+CA05_TAKEOVER epoch_new!=epoch_old=True BLIND_RETRY_PROBES=1 BLIND_RETRY_COUNT=0
+CA07_ACK_LOST_EQUIVALENT_CASES=5
+CA08_ERROR_TYPE=None STATE_AFTER=FAILED recovery_count=1 commit_ambiguity_count=1
 ```
 
 ### CA-03 分支观测（如实报告，未强行制造）
