@@ -101,6 +101,7 @@
 | PG-009 | §6.1 要求「migrations 在 PG 上从 0 upgrade head」，但 `5aef35f022b4`/`a1c9f3d77e21` 的 `batch_alter_table` 改列类型在 PG 上缺 `USING`（varchar→integer/bigint 无赋值转换）→ 实跑 upgrade head 直接失败 | 两处补 `postgresql_using`（PG 专属 kwarg，SQLite 路径完全不变）；转换取旧列文本，非数值历史数据**报错中止**而非静默错转 |
 | PG-010 | PG 集成入口不完整：PG-006 只有 stub、无真实 PG 路径；PG-001 入口清理不彻底（残留 `world_runtime` 行）→ 第二次运行必在唯一约束上失败（不可重跑） | `test_pg_truncate_protection_integration_entrypoint` 新增真实 PG 路径（INSERT 允许 / UPDATE / DELETE / TRUNCATE 全部被拒）；两个入口统一 `_purge_world` 前置+彻底清理 |
 | PG-011 | **SQLite 不强制 `VARCHAR(N)` 长度，PostgreSQL 强制** → `tribulation_episodes.decision_policy`（`VARCHAR(24)`）装不下冻结常量 `DEFAULT_AUTONOMOUS_RESPONSE_POLICY`（33 字符）；PG 真实仿真在 IMPACT 阶段写该列时 `DataError: value too long for type character varying(24)` 直接中止（SQLite 侧长期不可见） | 新增 migration `a9d4f2b7c1e8` 加宽为 `VARCHAR(64)`（模型同步 `String(64)`）；SQLite 数据与语义不变（本就不强制长度），head 更新为 `a9d4f2b7c1e8`。**新增契约条款（§11）**：声明列宽必须覆盖全部冻结常量/enum 取值 |
+| PG-012 | **真实数据库连接故障未被 commit 歧义恢复覆盖**：`RuntimeScheduler._execute_batch` 的歧义分支只 `except RuntimeError`，而连接在 COMMIT 期间断开/服务器重启产生的是 `sqlalchemy.exc.OperationalError`（MRO 不含 `RuntimeError`）→ 异常逃出 `run_cycle`，调度器停在 `CATCHING_UP` 且仍持租约，**既无 durable-truth 核对也无 fail-closed**（CA-08 实证） | 最小修复：`_execute_batch` 增加 `except sa_exc.DBAPIError` 分支，走**同一** durable-truth 核对路径（`_recover_truth`）；`_recover_truth` 改为经 `_read_durable_tick_resilient()`（连接失效重试一次）读取，读取失败即 `FAILED` fail-closed。正常路径语义不变（CA-08 复验：异常不再逃出、状态 FAILED、recovery/ambiguity 计数各 +1） |
 
 配套 head 变更：`ALEMBIC_HEAD = f2a7c4e9b1d6`（原 `d7f9b1c3e5a7`），
 同步于 `tests/conftest.py`、`plugin_shell/runtime_host.py`、
@@ -193,6 +194,44 @@ BLR_TEST_PG_ALLOW=1
 ```
 
 规模可由 `BLR_PG_GATE_SEEDS / _YEARS / _CHUNK_YEARS / _CHUNK_BUDGETS /
-_RESTART_YEARS / _RESTART_EVERY / _PROC_SPLIT` 调整。**本阶段未做** commit ambiguity
-（属下一独立阶段：`PRE-M6 POSTGRESQL COMMIT AMBIGUITY GATE`）。
+_RESTART_YEARS / _RESTART_EVERY / _PROC_SPLIT` 调整。
+（commit ambiguity 已由 §13 独立阶段完成。）
+
+## 13. PG COMMIT AMBIGUITY GATE 实跑记录（PRE-M6 · 2026-09-14）
+
+真实 PostgreSQL 16.15 + **真实 OS 进程** + **真实连接/服务器故障**（`pg_terminate_backend`、
+进程终止、`docker restart` 仅限测试容器）；不使用 monkeypatch/异常注入作为最终证据。
+审计见 `docs/pre_m6_pg_commit_ambiguity_audit.md`；harness 见
+`tests/test_pg_commit_ambiguity_gate.py` + `tests/pg_ambiguity_support.py` +
+`tests/pg_ambiguity_worker.py`。
+
+```
+COMMIT_BOUNDARY_AUDIT        = COMPLETE（唯一权威提交点 = catch_up 阶段 2 / run_atomic_tick）
+DURABLE_OPERATION_IDENTITY   = simulation_run.run_id（run-id-v1 确定性）
+RECOVERY_LOOKUP_KEY          = committed_for_interval / committed_until_tick>=target /
+                               world_runtime.current_blessed_tick / WORLD_COMMITTED checkpoint
+CA01_DEFINITE_ROLLBACK       = PASS（事务中被真实 kill → PG 回滚 → NOT_COMMITTED → 重做）
+CA02_COMMITTED_WORKER_DIES   = PASS（durable COMMITTED + 应用确认前进程死亡 → ALREADY_COMMITTED，不重试）
+CA03_CONNECTION_LOST         = PASS（20 轮 pg_terminate_backend 扫掠，逐轮 reconcile，world 只推进一次）
+CA04_SERVER_RESTART          = PASS（commit 窗口内真实重启测试容器 → 恢复 reconcile，PG healthy）
+CA05_TAKEOVER_AFTER_AMBIGUITY = PASS（过期租约后生产 CAS 接管，epoch N+1，先 reconcile 再继续）
+CA06_STALE_RETRY             = PASS（旧 token 重提未提交年份 → FencingViolation，零写入）
+CA07_ACK_LOST_EQUIVALENT     = PASS（≥5 次 durable commit + 应用确认未保留 → 全部 ALREADY_COMMITTED）
+CA08_SCHEDULER_CONNECTION_LOSS = PASS（PG-012 修复后：异常不再逃出，FAILED fail-closed，计数 +1）
+BLIND_RETRY_COUNT            = 0（恢复路径一律先查 durable truth 再决定提交）
+DUPLICATE_TICKS / DUPLICATE_HISTORY_EVENTS / LOST_TICKS / FORKED_HISTORY = 0
+STALE_WRITER_MUTATIONS       = 0
+HISTORY_ORPHAN_LINKS / CAUSAL_CYCLES / INVALID_REFS = 0
+FINAL_HASH_EQUIVALENCE       = PASS（每个用例与无故障 direct 参照三哈希一致）
+```
+
+复现方式（缺任一变量则整体按设计 skip；库名不含 `test` 则 fail-closed）：
+
+```
+BLR_TEST_PG_DSN=postgresql+psycopg://<user>:<pw>@127.0.0.1:55432/<db_with_test_in_name>
+BLR_TEST_PG_ALLOW=1
+<pg-venv>\Scripts\python.exe -m pytest tests/test_pg_commit_ambiguity_gate.py -q
+```
+
+**仍未覆盖**（属最终 Pre-M6 Review）：PG 5000y endurance、全量 fast regression 在当前 HEAD 上的重跑。
 
