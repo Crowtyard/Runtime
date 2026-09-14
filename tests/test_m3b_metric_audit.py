@@ -7,6 +7,8 @@ performance / freeze gates）。
 """
 from __future__ import annotations
 
+from tests.formal_db import readonly_connect as formal_readonly_connect  # noqa: E402
+
 import hashlib
 import json
 import random
@@ -420,11 +422,12 @@ def test_ma26_formal_db_remains_empty(formal_db_guard):
         pytest.skip("BLR_FORMAL_DB_PATH 未设置")
     after = hashlib.sha256(Path(path).read_bytes()).hexdigest()
     assert after == formal_db_guard
-    conn = sqlite3.connect(path)
+    conn = formal_readonly_connect(path)
     try:
         assert conn.execute(
-            "SELECT runtime_status FROM world_runtime").fetchone()[0] \
-            == "NOT_ACTIVATED"
+            "SELECT COUNT(*) FROM world_runtime").fetchone()[0] == 0, \
+            "canonical NOT_ACTIVATED = world_runtime 0 行"
+        
         for t in ("causal_history_links", "entity_history_index",
                   "history_state_changes", "history_episode_index",
                   "history_index_state", "tribulation_episodes",

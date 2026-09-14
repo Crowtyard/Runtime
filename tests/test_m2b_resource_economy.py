@@ -5,6 +5,8 @@
 """
 from __future__ import annotations
 
+from tests.formal_db import readonly_connect as formal_readonly_connect  # noqa: E402
+
 import json
 import os
 import re
@@ -908,11 +910,12 @@ def test_rb52_formal_db_content_remains_empty(formal_db_guard):
     import hashlib
     after = hashlib.sha256(Path(path).read_bytes()).hexdigest()
     assert after == formal_db_guard
-    conn = sqlite3.connect(path)
+    conn = formal_readonly_connect(path)
     try:
         assert conn.execute(
-            "SELECT runtime_status FROM world_runtime").fetchone()[0] \
-            == "NOT_ACTIVATED"
+            "SELECT COUNT(*) FROM world_runtime").fetchone()[0] == 0, \
+            "canonical NOT_ACTIVATED = world_runtime 0 行"
+        
         assert conn.execute(
             "SELECT COUNT(*) FROM population_groups").fetchone()[0] == 0
         assert conn.execute(
@@ -932,7 +935,7 @@ def test_rb53_formal_db_integrity_ok(formal_db_guard):
     path = os.environ.get("BLR_FORMAL_DB_PATH", "")
     if not path or formal_db_guard is None:
         pytest.skip("BLR_FORMAL_DB_PATH 未设置")
-    conn = sqlite3.connect(path)
+    conn = formal_readonly_connect(path)
     try:
         assert conn.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
     finally:

@@ -5,6 +5,8 @@
 """
 from __future__ import annotations
 
+from tests.formal_db import readonly_connect as formal_readonly_connect  # noqa: E402
+
 import json
 import re
 import socket
@@ -555,13 +557,14 @@ def test_pa34_pa35_formal_db_protected(formal_db_guard):
     after = hashlib.sha256(Path(path).read_bytes()).hexdigest()
     assert after == formal_db_guard
     import sqlite3
-    conn = sqlite3.connect(path)
+    conn = formal_readonly_connect(path)
     try:
         assert conn.execute(
             "SELECT COUNT(*) FROM population_groups").fetchone()[0] == 0
         assert conn.execute(
-            "SELECT runtime_status FROM world_runtime").fetchone()[0] \
-            == "NOT_ACTIVATED"
+            "SELECT COUNT(*) FROM world_runtime").fetchone()[0] == 0, \
+            "canonical NOT_ACTIVATED = world_runtime 0 行"
+        
     finally:
         conn.close()
 

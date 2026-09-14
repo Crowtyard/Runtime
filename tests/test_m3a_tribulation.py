@@ -6,6 +6,8 @@
 """
 from __future__ import annotations
 
+from tests.formal_db import readonly_connect as formal_readonly_connect  # noqa: E402
+
 import hashlib
 import json
 import os
@@ -874,7 +876,7 @@ def test_ta56_formal_db_empty(formal_db_guard):
         pytest.skip("BLR_FORMAL_DB_PATH 未设置")
     after = hashlib.sha256(Path(path).read_bytes()).hexdigest()
     assert after == formal_db_guard
-    conn = sqlite3.connect(path)
+    conn = formal_readonly_connect(path)
     try:
         existing = {r[0] for r in conn.execute(
             "SELECT name FROM sqlite_master WHERE type='table'")}
