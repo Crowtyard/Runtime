@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Callable
 
 from sqlalchemy import select
+from sqlalchemy import exc as sa_exc
 from sqlalchemy.orm import Session, sessionmaker
 
 from ...database.models_core import WorldRuntime
@@ -285,6 +286,21 @@ class RuntimeScheduler:
                     # FAILED（fail-closed）：停止本批，返回已执行量
                     return executed_ticks
                 # durable truth 表明该年已提交 → 已推进，继续
+            except sa_exc.DBAPIError as exc:
+                # PG-012：真实数据库连接故障（OperationalError / InterfaceError /
+                # AdminShutdown 等）**不是** RuntimeError，但同样意味着
+                # "COMMIT 结果未知" → 必须走同一 durable-truth 核对路径，
+                # 绝不盲重试；无法判定即 fail-closed。（连接在 COMMIT 期间断开、
+                # 服务器重启等真实故障由此覆盖。）
+                self._commit_ambiguity_count += 1
+                self._recovery_count += 1
+                self._state = SchedulerState.RECOVERING
+                log.warning("db connection failure during batch (ambiguity) "
+                            "world=%s year=%s err=%s", self.world_id,
+                            year_index, type(exc).__name__)
+                recovered = self._recover_truth(year_index, exc)
+                if not recovered:
+                    return executed_ticks
             executed_ticks += TICKS_PER_BLESSED_YEAR
             self._batches_total += 1
             self._last_batch_ticks = TICKS_PER_BLESSED_YEAR
@@ -295,12 +311,31 @@ class RuntimeScheduler:
                     detail={"world_id": self.world_id})
         return executed_ticks
 
+    def _read_durable_tick_resilient(self) -> int | None:
+        """读取 durable tick；连接故障时重试一次（失效连接会被连接池回收）。
+
+        仍失败则抛出 —— 调用方必须 fail-closed（durable truth 不可判定时
+        绝不允许继续推进）。
+        """
+        last_exc: Exception | None = None
+        for _ in range(2):
+            try:
+                with self.session_factory() as s:
+                    row = self._read_runtime_row(s)
+                    return row.current_blessed_tick if row is not None else None
+            except sa_exc.DBAPIError as exc:  # noqa: PERF203
+                last_exc = exc
+        raise last_exc if last_exc is not None else RuntimeError("durable tick 读取失败")
+
     def _recover_truth(self, year_index: int, exc: Exception) -> bool:
         """commit 歧义恢复：durable truth 优先；失败即 fail-closed。"""
-        with self.session_factory() as s:
-            row = self._read_runtime_row(s)
-            tick = row.current_blessed_tick if row is not None else None
         year_end_tick = (year_index + 1) * TICKS_PER_BLESSED_YEAR
+        try:
+            tick = self._read_durable_tick_resilient()
+        except Exception as read_exc:  # noqa: BLE001
+            # durable truth 不可判定 → 绝不猜测、绝不盲重试
+            self._fail(f"commit 状态未知且 durable truth 不可读取: {read_exc}")
+            return False
         if tick is not None and tick >= year_end_tick:
             # durable 已提交（ACK 丢失前 commit 成功）→ 不重试、继续
             self._last_error = (
