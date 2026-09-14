@@ -396,9 +396,11 @@ def test_ca05_takeover_after_ambiguity_and_ca06_stale_retry(tmp_path):
     assert probe["client_outcome"] == "SUCCESS", probe
     assert driver.blind_retry_probes == 1
 
+    driver.classify(1)          # 推进新年份前同样先核对 durable truth（非盲推进）
     submit1 = driver.submit_year(1, owner=lease_b.owner, token=lease_b.token,
                                  coordinator=_hist_coordinator())
     assert submit1["client_outcome"] == "SUCCESS", submit1
+    assert driver.blind_retry_count == 0
     lease_b.release()
     lease_session.close()
 
