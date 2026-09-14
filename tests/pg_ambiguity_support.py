@@ -444,17 +444,13 @@ def wait_result(path: Path, *, timeout: float = 600.0) -> dict:
 def kill_worker(proc, *, pid: int | None = None, timeout: float = 60.0) -> None:
     """按**显式 PID** 终止 worker（Windows venv 启动器下 Popen.pid 只是 stub）。
 
-    只终止明确 PID（SIGTERM → taskkill /F /PID），绝不按进程名批量 kill（owner §10）。
+    只使用显式 PID 的强制终止形式（``taskkill /F /PID``）——满足仓库
+    PROCESS_KILL_SCOPE 契约（tests/test_process_kill_scope.py），
+    绝不按进程名批量 kill（owner §10）。
     """
-    import os
-    import signal
     import subprocess
 
     for p in [x for x in (pid, proc.pid) if x]:
-        try:
-            os.kill(p, signal.SIGTERM)
-        except OSError:
-            pass
         subprocess.run(["taskkill", "/F", "/PID", str(p)],
                        capture_output=True)
     try:
