@@ -43,7 +43,7 @@ RUNTIME_VERSION = "0.1.1"
 PLUGIN_NAME = "astrbot_plugin_blessed_land_runtime"
 DB_FILENAME = "blessed_land.sqlite"
 AUTHORITATIVE_MARKER = "authoritative_db.json"
-EXPECTED_SCHEMA_HEAD = "f2a7c4e9b1d6"  # PRE-M6 PG head（+TRUNCATE 不可变保护）
+EXPECTED_SCHEMA_HEAD = "a9d4f2b7c1e8"  # PRE-M6 PG head（+decision_policy 加宽）
 
 BUSINESS_TABLES = {
     "persons": "persons",

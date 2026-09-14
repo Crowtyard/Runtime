@@ -100,6 +100,7 @@
 | PG-008 | 契约 §6.5 引用递归 CTE，实际为应用层 DFS | 契约勘误：`PG_RECURSIVE_CTE_REQUIREMENT = N/A`、`APPLICATION_DFS_CAUSAL_CYCLE_CHECK = IMPLEMENTED` |
 | PG-009 | §6.1 要求「migrations 在 PG 上从 0 upgrade head」，但 `5aef35f022b4`/`a1c9f3d77e21` 的 `batch_alter_table` 改列类型在 PG 上缺 `USING`（varchar→integer/bigint 无赋值转换）→ 实跑 upgrade head 直接失败 | 两处补 `postgresql_using`（PG 专属 kwarg，SQLite 路径完全不变）；转换取旧列文本，非数值历史数据**报错中止**而非静默错转 |
 | PG-010 | PG 集成入口不完整：PG-006 只有 stub、无真实 PG 路径；PG-001 入口清理不彻底（残留 `world_runtime` 行）→ 第二次运行必在唯一约束上失败（不可重跑） | `test_pg_truncate_protection_integration_entrypoint` 新增真实 PG 路径（INSERT 允许 / UPDATE / DELETE / TRUNCATE 全部被拒）；两个入口统一 `_purge_world` 前置+彻底清理 |
+| PG-011 | **SQLite 不强制 `VARCHAR(N)` 长度，PostgreSQL 强制** → `tribulation_episodes.decision_policy`（`VARCHAR(24)`）装不下冻结常量 `DEFAULT_AUTONOMOUS_RESPONSE_POLICY`（33 字符）；PG 真实仿真在 IMPACT 阶段写该列时 `DataError: value too long for type character varying(24)` 直接中止（SQLite 侧长期不可见） | 新增 migration `a9d4f2b7c1e8` 加宽为 `VARCHAR(64)`（模型同步 `String(64)`）；SQLite 数据与语义不变（本就不强制长度），head 更新为 `a9d4f2b7c1e8`。**新增契约条款（§11）**：声明列宽必须覆盖全部冻结常量/enum 取值 |
 
 配套 head 变更：`ALEMBIC_HEAD = f2a7c4e9b1d6`（原 `d7f9b1c3e5a7`），
 同步于 `tests/conftest.py`、`plugin_shell/runtime_host.py`、
@@ -144,6 +145,54 @@ BLR_TEST_PG_ALLOW=1
     tests/test_pg_recovery_checkpoint_portability.py tests/test_pg_portability_static_audit.py
 ```
 
-**仍未覆盖**（属下一阶段）：单写者压力、fencing 接管、真实 commit ambiguity、
-worker/server kill、5000y PG endurance、M6 activation。
+**仍未覆盖**（属下一阶段）：真实 commit ambiguity（COMMIT 期连接中断 / ACK lost /
+unknown outcome / blind-retry）、worker/server kill、5000y PG endurance、M6 activation。
+
+## 11. 列宽契约（PRE-M6 PG-011 新增）
+
+- **声明列宽必须覆盖该列的全部冻结取值**（常量 / enum / 确定性 id 格式）。
+  SQLite 不强制 `VARCHAR(N)`（亲和类型只有 TEXT），PostgreSQL **严格强制** →
+  列宽不足属**只在 PG 上暴露**的缺陷类，静态扫描（§2/§9）无法发现，必须由实跑暴露。
+- 确定性 id（如 `causal-link-id-v1` 的 32 hex）必须**精确**等于列宽，不得更窄。
+- 审计手段：`tests/test_pg_functional_gate.py` 在真实合成世界跑完后，用
+  `information_schema.columns` 逐列比对 `max(length(col))` 与声明宽度；
+  ≥70% 视为 near-limit 并登记观察。
+- 已修：**PG-011** — `tribulation_episodes.decision_policy` 24 → 64（migration `a9d4f2b7c1e8`）。
+- 实测 near-limit（仍在界内，登记观察项）：`tribulation_profiles.status` 17/24、
+  `lineages.semantic_version` 13/16、`households.state` 9/12、
+  `tribulation_episodes.status` 9/12。
+
+## 12. PG FUNCTIONAL GATE 实跑记录（PRE-M6 · 2026-09-14）
+
+真实 PostgreSQL 16.15（隔离容器，TEST ONLY）上的功能性门禁：18/18 PASS，
+0 failed / 0 errors / 0 skipped，5504.9s。含 **两个真实 OS 进程**的竞态与接力。
+
+```
+POSTGRES_SINGLE_WRITER          = PASS（A 获取 / B 拒绝 / A 续约 / B 仍拒绝；活租约唯一）
+MAX_AUTHORITATIVE_WRITERS       = 1
+POSTGRES_FENCING                = PASS（旧 token 的 world / history / checkpoint 三类写入全部被拒）
+POSTGRES_LEASE_TAKEOVER         = PASS（走 production CAS 接管，未手工改 DB）
+FENCING_TAKEOVERS               = 2（同进程过期接管 + 真实进程死亡后接管）
+STALE_WRITER_MUTATIONS          = 0
+PROCESS_LEVEL_WRITER_TEST       = PASS（两个真实 OS 进程同窗竞态 → 恰好一个胜出，PID 互异）
+POSTGRES_DETERMINISM            = PASS（5 seeds × 100y，各跑两次一致；3 seeds 与 SQLite 参照一致）
+POSTGRES_CHUNK_EQUIVALENCE      = PASS（direct 250y == budget 250 / 100 / 10 三哈希一致）
+POSTGRES_RESTART_EQUIVALENCE    = PASS（restart_every_years=25 == direct；真实进程接力 60+60 == direct 120）
+HISTORY_ORPHAN_LINKS            = 0
+HISTORY_CAUSAL_CYCLES           = 0
+HISTORY_INVALID_REFS            = 0
+PG_EVENT_IMMUTABILITY           = PASS（仿真后 UPDATE / DELETE / TRUNCATE 全被拒，计数不变）
+```
+
+复现方式（缺任一变量则整体按设计 skip；库名不含 `test` 则 fail-closed）：
+
+```
+BLR_TEST_PG_DSN=postgresql+psycopg://<user>:<pw>@127.0.0.1:55432/<db_with_test_in_name>
+BLR_TEST_PG_ALLOW=1
+<pg-venv>\Scripts\python.exe -m pytest tests/test_pg_functional_gate.py -q
+```
+
+规模可由 `BLR_PG_GATE_SEEDS / _YEARS / _CHUNK_YEARS / _CHUNK_BUDGETS /
+_RESTART_YEARS / _RESTART_EVERY / _PROC_SPLIT` 调整。**本阶段未做** commit ambiguity
+（属下一独立阶段：`PRE-M6 POSTGRESQL COMMIT AMBIGUITY GATE`）。
 

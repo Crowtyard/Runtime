@@ -29,8 +29,8 @@ from tests.conftest import HEAD_REVISION, PROJECT_ROOT, W
 # 其自身行为由本模块复用 + 该模块的 test_pg_dsn_guard_* 断言。
 from tests.test_pg_recovery_checkpoint_portability import _pg_dsn_or_skip
 
-NEW_HEAD = "f2a7c4e9b1d6"
-PREV_HEAD = "d7f9b1c3e5a7"
+NEW_HEAD = "a9d4f2b7c1e8"      # pg_widen_tribulation_decision_policy
+PREV_HEAD = "f2a7c4e9b1d6"     # pg truncate immutability（NEW_HEAD 的前一修订）
 MIGRATION = (PROJECT_ROOT / "database" / "alembic" / "versions"
              / "f2a7c4e9b1d6_p1_pg_event_truncate_immutability.py")
 

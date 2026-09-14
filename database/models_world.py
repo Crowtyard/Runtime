@@ -616,7 +616,7 @@ class TribulationEpisode(Base):
     target_settlements: Mapped[dict | None] = mapped_column(JSON)
     status: Mapped[str] = mapped_column(String(12), nullable=False,
                                         default="ACTIVE", server_default="ACTIVE")
-    decision_policy: Mapped[str | None] = mapped_column(String(24))
+    decision_policy: Mapped[str | None] = mapped_column(String(64))
     semantic_version: Mapped[str | None] = mapped_column(String(32))
     updated_blessed_tick: Mapped[int | None] = mapped_column(BigInteger)
 
