@@ -139,6 +139,18 @@ def lease_helper(active_clock_factory):
 
 
 @pytest.fixture()
+def m6_world(session_factory):
+    """M6A 合成正式世界（NOT_ACTIVATED metadata + 自然态速率，速率起点 = 合成世界原点）。
+
+    用于 M6 activation 契约测试；只使用临时库，绝不触碰正式库或正式 World Seed。
+    世界原点/年锚是**显式测试输入**（tests.m6_activation_support.M6_EPOCH0_US），
+    不是 canon 取值。
+    """
+    from tests.m6_activation_support import seed_m6_world
+    return seed_m6_world(session_factory)
+
+
+@pytest.fixture()
 def real_bible_dir() -> Path:
     return BIBLE_DIR
 
