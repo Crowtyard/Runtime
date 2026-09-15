@@ -163,7 +163,16 @@ def test_guard_aborts_on_foreign_astrbot_instance(scoped, tmp_path):
         # 明确登记为“本测试所有”后不得再报警
         scoped.assert_no_foreign_python(allowed=preexisting | {fake.pid})
     finally:
-        scoped.kill_tree(fake.pid)
+        # 清理必须容忍目标**已自行退出**：PowerShell 的
+        # `Stop-Process -Id <已消失 PID> -Force -ErrorAction SilentlyContinue`
+        # 仍以退出码 1 结束（已实测），而 scripts/process_scope.py 的查询封装
+        # 对此抛出 RuntimeError。本环境会周期性终止进程，故该竞态会表现为
+        # cleanup 失败（断言本身已通过）。安全性不受影响：紧随其后的
+        # `assert not _alive(fake.pid)` 仍强制要求进程确实消失。
+        try:
+            scoped.kill_tree(fake.pid)
+        except RuntimeError:
+            pass
     assert not _alive(fake.pid)
 
 
