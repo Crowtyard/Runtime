@@ -17,8 +17,9 @@ from ..database.models_core import (
     WorldEvent,
     WorldRuntime,
 )
-from ..domain.blessed_time import datetime_to_epoch_us
-from ..domain.errors import IntegrityError
+from ..domain.blessed_time import MAX_TICK, MIN_TICK, datetime_to_epoch_us
+from ..domain.constants import RuntimeStatus
+from ..domain.errors import ActivationRefused, IntegrityError
 
 
 def _current_schema_version(session: Session) -> str:
@@ -63,6 +64,88 @@ class RuntimeRepository:
         if row.schema_version != current:
             row.schema_version = current
 
+    # ------------------------------------------------------------- M6A 激活原语
+    def assert_activatable(self, *, world_id: str) -> WorldRuntime:
+        """激活前置条件（fail-closed）：不满足即 ``ActivationRefused``，零写入。
+
+        条件（全部为 durable 行状态，不看进程内状态）：
+        - runtime 行存在且 ``world_id`` 与请求一致（世界身份不得漂移）；
+        - ``runtime_status == NOT_ACTIVATED``（已 ACTIVE ＝ 已激活 → 拒绝，幂等语义
+          由 service 层给出，本原语绝不覆盖既有已激活世界）；
+        - ``world_seed_version is None``（seed 未生效）；
+        - 时钟三件套仍为未初始化（``current_blessed_tick`` / ``last_committed_real_us``
+          为 NULL）—— 激活只能从干净未激活态出发，绝不覆盖半初始化时钟。
+        """
+        row = self.get()
+        if row is None:
+            raise ActivationRefused(
+                "world_runtime 行缺失（未播种 metadata）",
+                detail={"world_id": world_id})
+        if row.world_id != world_id:
+            raise ActivationRefused(
+                "请求 world_id 与 DB 中的正式世界不一致（禁止激活第二个世界）",
+                detail={"requested": world_id, "db": row.world_id})
+        if row.runtime_status != RuntimeStatus.NOT_ACTIVATED:
+            raise ActivationRefused(
+                "世界已激活或处于非 NOT_ACTIVATED 状态；禁止二次激活",
+                detail={"world_id": row.world_id,
+                        "runtime_status": row.runtime_status})
+        if row.world_seed_version is not None:
+            raise ActivationRefused(
+                "world_seed_version 已生效；禁止二次消费 Seed",
+                detail={"world_id": row.world_id,
+                        "world_seed_version": row.world_seed_version})
+        if row.current_blessed_tick is not None or \
+                row.last_committed_real_us is not None:
+            raise ActivationRefused(
+                "世界时钟已初始化（tick/real cursor 非 NULL）；"
+                "激活不得覆盖既有时间锚",
+                detail={"current_blessed_tick": row.current_blessed_tick,
+                        "last_committed_real_us": row.last_committed_real_us})
+        return row
+
+    def activate(self, *, world_id: str, world_seed_version: str,
+                 initial_blessed_tick: int, activation_real_us: int,
+                 current_time_ratio_id: int | None) -> WorldRuntime:
+        """把 NOT_ACTIVATED 运行时行转为 ACTIVE（**唯一**受保护的激活原语）。
+
+        本方法**绝不 commit**：commit 由调用方的 ``WorldMutationContext`` 负责，
+        因而激活的全部写入（本行 + genesis 事件 + 速率行绑定）落在同一个
+        durable 事务里（A4/A5：一次性原子创建，失败整体 rollback，无部分状态）。
+
+        PG-011 教训（POSTGRESQL_COMPATIBILITY_CONTRACT §11）：SQLite 不强制
+        ``VARCHAR(N)`` 而 PostgreSQL 强制 —— 入库前显式校验列宽，避免 PG 侧
+        ``DataError`` 在提交时炸掉激活事务。
+        """
+        row = self.assert_activatable(world_id=world_id)
+        if not isinstance(world_seed_version, str) or not world_seed_version:
+            raise ActivationRefused("world_seed_version 必须为非空字符串")
+        if len(world_seed_version) > 32:  # world_runtime.world_seed_version VARCHAR(32)
+            raise ActivationRefused(
+                "world_seed_version 超出列宽（VARCHAR(32)）；PG 会拒绝该值",
+                detail={"length": len(world_seed_version)})
+        if isinstance(initial_blessed_tick, bool) or \
+                not isinstance(initial_blessed_tick, int):
+            raise ActivationRefused("initial_blessed_tick 必须为整数（canonical tick）")
+        if not (MIN_TICK <= initial_blessed_tick <= MAX_TICK):
+            raise ActivationRefused(
+                "initial_blessed_tick 超出 64-bit canonical tick 范围",
+                detail={"initial_blessed_tick": initial_blessed_tick})
+        if isinstance(activation_real_us, bool) or \
+                not isinstance(activation_real_us, int) or activation_real_us <= 0:
+            raise ActivationRefused(
+                "activation_real_us 必须为正整数（现实 epoch µs）")
+
+        row.runtime_status = RuntimeStatus.ACTIVE
+        row.world_seed_version = world_seed_version
+        row.current_blessed_tick = initial_blessed_tick
+        row.last_committed_real_us = activation_real_us
+        row.current_time_ratio_id = current_time_ratio_id
+        # 激活即世界时间原点：余数进位从 0 起（不得继承未激活期的任何进位）
+        row.time_rate_remainder = 0
+        self.session.flush()
+        return row
+
 
 class TimeRatioRepository:
     """TIME_RATIO_HISTORY（9 节）：effective-dated 有理速率，禁止只存当前值。
@@ -106,6 +189,31 @@ class TimeRatioRepository:
                    TimeRatioHistory.real_effective_from_us <= real_end_us)
             .order_by(TimeRatioHistory.real_effective_from_us)
         ).scalars())
+
+    def bind_blessed_start(self, *, ratio_id: int,
+                           blessed_effective_from_tick: int) -> TimeRatioHistory:
+        """记录"该速率从某 canonical tick 起对福地时间生效"（M6A 激活时调用）。
+
+        ``blessed_effective_from_tick = NULL`` 的语义是"尚未开始计（世界未激活）"
+        （见 database/models_core.TimeRatioHistory）；激活即世界时间原点，
+        因此该列由 NULL 变为 initial blessed tick。**绝不 commit**（由调用方的
+        激活事务统一提交）；已绑定到不同的 tick → 拒绝（禁止二次改写时间原点）。
+        """
+        row = self.session.execute(
+            select(TimeRatioHistory).where(TimeRatioHistory.ratio_id == ratio_id)
+        ).scalar_one_or_none()
+        if row is None:
+            raise ActivationRefused("速率行不存在",
+                                    detail={"ratio_id": ratio_id})
+        if row.blessed_effective_from_tick is not None and \
+                row.blessed_effective_from_tick != blessed_effective_from_tick:
+            raise ActivationRefused(
+                "速率行已绑定福地起始 tick；禁止改写既有时间原点",
+                detail={"ratio_id": ratio_id,
+                        "existing": row.blessed_effective_from_tick})
+        row.blessed_effective_from_tick = blessed_effective_from_tick
+        self.session.flush()
+        return row
 
 
 class EventRepository:

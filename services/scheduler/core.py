@@ -28,6 +28,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from ...database.models_core import WorldRuntime
 from ...domain.constants import RuntimeStatus
 from ...domain.errors import FencingViolation, WriterLockConflict
+from ..durable_truth import read_durable_tick_resilient
 from ..logging_setup import get_logger
 from ..simulation.harness import MINI_WORLD_EPOCH0_US
 from ..simulation.tribulation import (M3A_SIMULATION_VERSION,
@@ -316,16 +317,13 @@ class RuntimeScheduler:
 
         仍失败则抛出 —— 调用方必须 fail-closed（durable truth 不可判定时
         绝不允许继续推进）。
+
+        M6A：实现委托给 ``services.durable_truth``（正式世界激活服务共用**同一份**
+        commit-ambiguity 核对实现）—— 禁止第二套 commit 协议（§16 / PG-012）。
+        语义与迁移前逐字一致（fresh session / 仅 DBAPIError 重试 / 耗尽后抛出）。
         """
-        last_exc: Exception | None = None
-        for _ in range(2):
-            try:
-                with self.session_factory() as s:
-                    row = self._read_runtime_row(s)
-                    return row.current_blessed_tick if row is not None else None
-            except sa_exc.DBAPIError as exc:  # noqa: PERF203
-                last_exc = exc
-        raise last_exc if last_exc is not None else RuntimeError("durable tick 读取失败")
+        return read_durable_tick_resilient(self.session_factory,
+                                           world_id=self.world_id)
 
     def _recover_truth(self, year_index: int, exc: Exception) -> bool:
         """commit 歧义恢复：durable truth 优先；失败即 fail-closed。"""

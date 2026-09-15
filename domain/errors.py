@@ -55,3 +55,29 @@ class FencingViolation(WorldRuntimeError):
 
 class IntegrityError(WorldRuntimeError):
     code = "INTEGRITY_ERROR"
+
+
+class WorldSeedIntegrityError(WorldRuntimeError):
+    """World Seed 包完整性/身份校验失败（A8：MANIFEST checksum 必须通过）。
+
+    绝不携带 seed 原值：detail 只允许指纹/版本/文件名层面的信息。
+    """
+    code = "WORLD_SEED_INTEGRITY_ERROR"
+
+
+class ActivationRefused(WorldRuntimeError):
+    """正式世界激活被拒绝（fail-closed）：前置条件不满足或缺少显式策略输入。
+
+    - 世界已激活 / 已存在正式 world：拒绝且不做任何写入（幂等返回语义见 service）。
+    - 缺少 canon 未定义的显式输入（如 initial tick）：拒绝，绝不使用默认值。
+    """
+    code = "ACTIVATION_REFUSED"
+
+
+class ActivationOutcomeUnknown(WorldRuntimeError):
+    """激活事务提交结果未知且无法从 durable truth 判定（fail-closed）。
+
+    永不盲重试：调用方必须先 reconcile durable truth，再决定 COMMITTED /
+    NOT_COMMITTED。本错误表示连 durable truth 都读不到。
+    """
+    code = "ACTIVATION_OUTCOME_UNKNOWN"
