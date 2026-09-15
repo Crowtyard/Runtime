@@ -28,7 +28,8 @@ from sqlalchemy.orm import Session, sessionmaker
 from ...database.models_core import WorldRuntime
 from ...domain.constants import RuntimeStatus
 from ...domain.errors import FencingViolation, WriterLockConflict
-from ..durable_truth import read_durable_tick_resilient
+from ..durable_truth import (
+    read_durable_tick_resilient, read_world_epoch_anchor)
 from ..logging_setup import get_logger
 from ..simulation.harness import MINI_WORLD_EPOCH0_US
 from ..simulation.tribulation import (M3A_SIMULATION_VERSION,
@@ -38,6 +39,10 @@ from .adapter import run_blessed_year
 from .config import SchedulerConfig
 from .planner import CatchUpPlan, CatchUpPlanner
 from .state import SchedulerState, SchedulerStatusSnapshot
+
+#: 未激活世界的 operational 默认年锚。**不是**世界真值：世界一旦激活，
+#: 年锚一律来自 durable activation anchor（M6B §1 OPTION A）。
+DEFAULT_OPERATIONAL_EPOCH0_US = MINI_WORLD_EPOCH0_US
 
 log = get_logger("SCHEDULER")
 
@@ -72,14 +77,19 @@ class RuntimeScheduler:
                  world_id: str,
                  config: SchedulerConfig | None = None,
                  real_now_us_provider: Callable[[], int] | None = None,
-                 epoch0_us: int = MINI_WORLD_EPOCH0_US,
+                 epoch0_us: int | None = None,
                  coordinator_provider: Callable | None = None,
                  simulation_version: str = M3A_SIMULATION_VERSION,
                  state_dir: Path | None = None):
         self.session_factory = session_factory
         self.world_id = world_id
         self.config = config or SchedulerConfig()
-        self.epoch0_us = epoch0_us
+        # M6B / OPTION A：epoch0_us=None → **每 cycle 从 durable truth 解析年锚**
+        # （已激活世界用 durable activation anchor；未激活世界用既有 operational
+        # 默认）。显式传入（既有 M4 测试路径）→ 行为与 M6 之前逐字一致。
+        self._explicit_epoch0_us = epoch0_us
+        self.epoch0_us = (epoch0_us if epoch0_us is not None
+                          else DEFAULT_OPERATIONAL_EPOCH0_US)
         self.simulation_version = simulation_version
         self._real_now_provider = real_now_us_provider
         self._coordinator_provider = coordinator_provider
@@ -106,8 +116,33 @@ class RuntimeScheduler:
         self._crash_point: str | None = None
         self._checkpoint_crash_after_write = False
 
-        self._planner = CatchUpPlanner(world_id=world_id,
-                                       epoch0_us=epoch0_us)
+        # planner 按“生效年锚”缓存（动态模式下每 cycle 依据 durable anchor 重建）
+        self._planner = (CatchUpPlanner(world_id=world_id, epoch0_us=epoch0_us)
+                         if epoch0_us is not None else None)
+
+    # ------------------------------------------------------------- Epoch Anchoring
+    def _effective_epoch0_us(self, row: WorldRuntime | None) -> int | None:
+        """本 cycle 生效的世界年锚（M6B §1/§2/§3：Scheduler Alignment Contract）。
+
+        - 显式注入（既有 M4 测试路径）→ 原样使用（语义不变）；
+        - 世界**已激活** → 必须读 durable activation anchor：绝不按当前系统时间
+          重新生成，也绝不在 restart / 进程替换 / crash recovery 后改变；
+          读不到 → 返回 ``None``（调用方 fail-closed，**绝不偷偷 repair**）；
+        - 世界**未激活** → 既有 operational 默认（DORMANT 路径，不触达世界真值）。
+        """
+        if self._explicit_epoch0_us is not None:
+            return self._explicit_epoch0_us
+        if row is not None and self._activated(row):
+            return read_world_epoch_anchor(self.session_factory,
+                                           world_id=self.world_id)
+        return DEFAULT_OPERATIONAL_EPOCH0_US
+
+    def _planner_for(self, epoch0_us: int) -> CatchUpPlanner:
+        """按生效年锚取 planner（缓存按 anchor 值；anchor 本身每 cycle 从 durable truth 读）。"""
+        if self._planner is None or self._planner.epoch0_us != epoch0_us:
+            self._planner = CatchUpPlanner(world_id=self.world_id,
+                                           epoch0_us=epoch0_us)
+        return self._planner
 
     # ------------------------------------------------------------- 生命周期
     def start(self) -> bool:
@@ -183,6 +218,13 @@ class RuntimeScheduler:
                 self._state = SchedulerState.DORMANT
                 self._persist_checkpoint()
                 return self._snapshot(row)
+            # ---- 1b) Epoch Anchor（M6B OPTION A）：已激活世界必须用 durable anchor
+            epoch0_us = self._effective_epoch0_us(row)
+            if epoch0_us is None:
+                self._fail(
+                    "已激活世界缺少 durable activation anchor"
+                    "（fail-closed：拒绝按当前时间重建年锚，也绝不偷偷 repair）")
+                return self._snapshot(row)
             if self._paused:
                 self._release_lease()
                 self._state = SchedulerState.PAUSED
@@ -205,10 +247,16 @@ class RuntimeScheduler:
             # ---- 3) Catch-up 规划（只读预演；权威转换在 catch_up）
             self._maybe_crash("before_catchup_planning")
             now_real_us = self._real_now()
-            with self.session_factory() as s:
-                plan = self._planner.plan(
-                    s, now_real_us=now_real_us,
-                    budget_ticks=self.config.catch_up_max_ticks_per_cycle)
+            try:
+                with self.session_factory() as s:
+                    plan = self._planner_for(epoch0_us).plan(
+                        s, now_real_us=now_real_us,
+                        budget_ticks=self.config.catch_up_max_ticks_per_cycle)
+            except RuntimeError as exc:
+                # 规划阶段 fail-closed（M6B §4）：durable 时钟与年锚不自洽/未初始化
+                # → FAILED，零写入；**绝不**猜测、**绝不**偷偷 repair。
+                self._fail(f"catch-up 规划失败（fail-closed）: {exc}")
+                return self._snapshot(row)
             self._maybe_crash("after_catchup_planning")
             self._cycle += 1
             if plan.due_ticks <= 0 or plan.batch_years == 0:
@@ -220,7 +268,7 @@ class RuntimeScheduler:
             self._state = SchedulerState.CATCHING_UP
             self._maybe_crash("before_batch_execution")
             try:
-                executed_ticks = self._execute_batch(plan)
+                executed_ticks = self._execute_batch(plan, epoch0_us)
             except FencingViolation:
                 # stale writer：_execute_batch 已停止 mutation 并置 RECOVERING
                 return self._snapshot(row)
@@ -249,7 +297,7 @@ class RuntimeScheduler:
             return self._snapshot(row2)
 
     # ------------------------------------------------------------- 批次执行
-    def _execute_batch(self, plan: CatchUpPlan) -> int:
+    def _execute_batch(self, plan: CatchUpPlan, epoch0_us: int) -> int:
         executed_ticks = 0
         coordinator = None
         for year_index in plan.year_indices:
@@ -264,7 +312,7 @@ class RuntimeScheduler:
                 run_blessed_year(
                     self.session_factory, world_id=self.world_id,
                     year_index=year_index, coordinator=coordinator,
-                    lease=self._lease, epoch0_us=self.epoch0_us,
+                    lease=self._lease, epoch0_us=epoch0_us,
                     simulation_version=self.simulation_version)
             except SchedulerCrash:
                 raise  # 崩溃注入：模拟进程死亡，调用方恢复
@@ -435,12 +483,20 @@ class RuntimeScheduler:
         target = None
         pending = 0
         if activated and row is not None and row.current_blessed_tick is not None:
+            # 只读路径：年锚解析失败**不**改变 scheduler 状态（真正的 fail-closed
+            # 发生在 run_cycle 的规划阶段）
+            epoch0_us = None
             try:
-                with self.session_factory() as s:
-                    target = self._planner.compute_target_tick(
-                        s, self._real_now())
+                epoch0_us = self._effective_epoch0_us(row)
             except Exception:  # noqa: BLE001
-                target = None
+                epoch0_us = None
+            if epoch0_us is not None:
+                try:
+                    with self.session_factory() as s:
+                        target = self._planner_for(epoch0_us).compute_target_tick(
+                            s, self._real_now())
+                except Exception:  # noqa: BLE001
+                    target = None
             if target is not None:
                 pending = max(0, target - row.current_blessed_tick)
         return SchedulerStatusSnapshot(

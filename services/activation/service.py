@@ -35,18 +35,19 @@ commit 结果未知 → 绝不盲重试 → 读 durable truth（services/durable
 durable truth 读不到 → ActivationOutcomeUnknown（fail-closed）
 ```
 
-## 本协议**不**发明的东西（canon 未定义 → 显式输入 + fail-closed）
+## 本协议**不**发明的东西
 
-- **initial blessed tick 数值**：canon 只说"由 Activation Transaction 创建"，
-  未给数值 → 由调用方显式给出（无默认值），并强制满足冻结 planner 的整年对齐
-  不变量（``tick % TICKS_PER_BLESSED_YEAR == 0``）；见 ``M6_DESIGN_GAP_INITIAL_TICK``。
-- **年锚 epoch0**：同上 → 显式输入（``epoch0_us``），且强制
-  ``activation_real_us == epoch0_us + year_index * YEAR_US``（冻结 planner 不变量）；
-  并且必须与 Runtime 实际使用的年锚一致（``runtime_epoch0_us``）—— 否则激活出的世界
-  永远无法推进（见 ``M6_DESIGN_GAP_RUNTIME_EPOCH_ANCHOR_WIRING``）。
-- **初始世界内容**：无任何生产原语可物化 Seed baseline，且 canon（A9 + 00 号 §3）
-  明令不得把 PROVISIONAL/UNKNOWN 数值写成世界事实 → 激活不创建任何实例；
-  见 ``M6_DESIGN_GAP_INITIAL_WORLD_STATE``。
+M6B：两个策略输入已由主人 canon 裁决（`domain.constants.WorldActivationPolicy`）——
+
+- **initial blessed tick = 0**（OWNER_CANON_DECISION_1）：Runtime 内部正式时间原点；
+  NULL ≠ 0（未激活时仍为 NULL）。非 0 取值一律拒绝。
+- **activation anchor = 显式正式激活操作的 canonical UTC instant**
+  （OWNER_CANON_DECISION_2）：durable authoritative fact，与 activation operation
+  一起持久化；RuntimeScheduler 经 ``durable_truth.read_world_epoch_anchor()``
+  读取它（OPTION A 接线），不按当前时间重算、不在 restart 后改变。
+- **初始世界内容**：仍为 OPEN（``M6_DESIGN_GAP_INITIAL_WORLD_STATE``）。
+  无任何生产原语可物化 Seed baseline，且 canon（A9 + 00 号 §3）明令不得把
+  PROVISIONAL/UNKNOWN 数值写成世界事实 → 激活不创建任何实例。
 """
 from __future__ import annotations
 
@@ -59,14 +60,15 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from ...database.models_core import WorldEvent
 from ...domain.blessed_time import (
-    TICKS_PER_BLESSED_YEAR, epoch_us_to_datetime, TimeRate)
+    MAX_TICK, TICKS_PER_BLESSED_YEAR, TimeRate, epoch_us_to_datetime)
 from ...domain.constants import (
-    EventSources, Scopes, SimulationVersion, WorldSeedVersion)
+    EventSources, Scopes, SimulationVersion, WorldActivationPolicy,
+    WorldSeedVersion)
 from ...domain.errors import (
     ActivationOutcomeUnknown, ActivationRefused, WriterLockConflict)
 from ..durable_truth import (
     GENESIS_EVENT_TYPE, count_events, count_genesis_events,
-    read_activation_truth)
+    read_activation_truth, read_world_epoch_anchor)
 from ..fencing import WorldMutationContext
 from ..guard import create_simulation_event
 from ..identity import deterministic_hex_id
@@ -88,19 +90,22 @@ OUTCOME_ALREADY_COMMITTED = "ALREADY_COMMITTED"
 
 @dataclass(frozen=True)
 class ActivationRequest:
-    """一次性激活请求（owner-only 控制面构造；所有策略输入显式，无隐藏默认）。
+    """一次性激活请求（owner-only 控制面构造）。
 
-    ``epoch0_us``（世界年锚）与 ``runtime_epoch0_us``（**当前 Runtime 实际使用的**
-    年锚）必须一致：二者不一致时，激活出来的世界满足不了冻结 planner 的年锚不变量
-    （``cursor == epoch0 + year_start*YEAR_US``，``planner.py:97-102``），
-    结果是一个永远无法推进的世界 —— 因此直接 fail-closed 拒绝，而不是留下陷阱。
+    M6B：两个策略输入已由主人 canon 裁决（`domain.constants.WorldActivationPolicy`）：
+
+    - ``initial_blessed_tick`` = **0**（内部正式时间原点；NULL ≠ 0）。
+      非 0 值一律拒绝 —— 不再需要"无默认值"的占位策略。
+    - ``activation_anchor_us`` = **显式**正式激活操作的 canonical UTC instant
+      （OWNER_CANON_DECISION_2）。它与 activation operation 一起 durable 持久化，
+      并且是 RuntimeScheduler 读取的**唯一**年锚来源（OPTION A 接线）：
+      既不按当前时间重算，也不在 restart 后改变。
     """
 
     world_id: str
     seed_dir: Path
-    epoch0_us: int                      # 世界年锚（现实 epoch µs）—— M6_DESIGN_GAP
-    initial_blessed_tick: int           # 必须是整年 —— M6_DESIGN_GAP_INITIAL_TICK
-    runtime_epoch0_us: int              # Runtime 侧年锚（生产 = scheduler 的 epoch0）
+    activation_anchor_us: int           # OWNER_CANON_DECISION_2（现实 epoch µs）
+    initial_blessed_tick: int = WorldActivationPolicy.INITIAL_BLESSED_TICK
     expected_seed_version: str = WorldSeedVersion.CURRENT
     simulation_version: str = SimulationVersion.CURRENT
     lease_seconds: int | None = None
@@ -112,8 +117,13 @@ class ActivationRequest:
 
     @property
     def activation_real_us(self) -> int:
-        """激活 canonical instant：由年锚推导（保证 A3：backlog ≡ 0）。"""
-        return self.epoch0_us + self.year_index * YEAR_US
+        """激活 canonical instant（= 现实游标起点；保证 A3：backlog ≡ 0）。"""
+        return self.activation_anchor_us + self.year_index * YEAR_US
+
+    @property
+    def epoch0_us(self) -> int:
+        """世界年锚（tick=0 时恒等于 activation anchor）。"""
+        return self.activation_real_us
 
 
 @dataclass(frozen=True)
@@ -152,7 +162,7 @@ class ActivationOutcome:
 
 # ------------------------------------------------------------------ validation
 def _validate_request(request: ActivationRequest) -> None:
-    """请求级校验（fail-closed；任何 canon 未定义的缺失输入一律拒绝）。"""
+    """请求级校验（fail-closed；owner canon 之外的一切取值一律拒绝）。"""
     if not isinstance(request.world_id, str) or not request.world_id:
         raise ActivationRefused("world_id 必须为非空字符串")
     if len(request.world_id) > 64:      # world_runtime.world_id / runtime_lock VARCHAR(64)
@@ -161,44 +171,35 @@ def _validate_request(request: ActivationRequest) -> None:
             detail={"length": len(request.world_id)})
     if isinstance(request.initial_blessed_tick, bool) or \
             not isinstance(request.initial_blessed_tick, int):
+        raise ActivationRefused("initial_blessed_tick 必须为整数")
+    # OWNER_CANON_DECISION_1：初始 blessed tick 恒为 0（不是可调参数）
+    if request.initial_blessed_tick != WorldActivationPolicy.INITIAL_BLESSED_TICK:
         raise ActivationRefused(
-            "initial_blessed_tick 必须显式提供整数（canon 未定义默认值；"
-            "禁止 0/1/1000 之类的直觉取值）")
-    if isinstance(request.epoch0_us, bool) or not isinstance(request.epoch0_us, int) \
-            or request.epoch0_us <= 0:
-        raise ActivationRefused(
-            "epoch0_us 必须显式提供正整数（canon 未定义默认年锚）")
-    if isinstance(request.runtime_epoch0_us, bool) or \
-            not isinstance(request.runtime_epoch0_us, int) or \
-            request.runtime_epoch0_us <= 0:
-        raise ActivationRefused(
-            "runtime_epoch0_us 必须显式提供正整数（Runtime 侧年锚）")
-    if request.initial_blessed_tick < 0:
-        raise ActivationRefused(
-            "initial_blessed_tick 不得为负（世界时间原点不得早于年锚）",
+            "initial_blessed_tick 必须等于 owner canon 值 "
+            f"{WorldActivationPolicy.INITIAL_BLESSED_TICK}"
+            "（OWNER_CANON_DECISION_1：tick=0 是 Runtime 内部正式时间原点）",
             detail={"initial_blessed_tick": request.initial_blessed_tick})
-    # 冻结 planner 不变量（services/scheduler/planner.py:94-102）：batch 只落在年边界
+    if isinstance(request.activation_anchor_us, bool) or \
+            not isinstance(request.activation_anchor_us, int) or \
+            request.activation_anchor_us <= 0:
+        raise ActivationRefused(
+            "activation_anchor_us 必须显式提供正整数（OWNER_CANON_DECISION_2："
+            "激活 anchor = 显式正式激活操作的 canonical UTC instant）")
+    if request.activation_anchor_us > MAX_TICK:
+        raise ActivationRefused(
+            "activation_anchor_us 超出 64-bit 现实游标范围",
+            detail={"activation_anchor_us": request.activation_anchor_us})
+    # 冻结 planner 不变量（planner.py:94-102）：batch 只落在年边界
     if request.initial_blessed_tick % TICKS_PER_BLESSED_YEAR != 0:
         raise ActivationRefused(
-            "initial_blessed_tick 必须整年对齐（tick % 1_000_000 == 0）；"
-            "否则冻结 CatchUpPlanner 会在首个 cycle fail-closed",
+            "initial_blessed_tick 必须整年对齐（tick % 1_000_000 == 0）",
             detail={"initial_blessed_tick": request.initial_blessed_tick})
-    expected = request.epoch0_us + request.year_index * YEAR_US
+    expected = request.activation_anchor_us + request.year_index * YEAR_US
     if request.activation_real_us != expected:
         raise ActivationRefused(
-            "激活时刻与年锚不一致（冻结 planner 年锚不变量）",
+            "激活时刻与 anchor 不一致（冻结 planner 年锚不变量）",
             detail={"activation_real_us": request.activation_real_us,
                     "expected": expected})
-    # 年锚一致性：本请求的年锚必须与 Runtime 实际使用的年锚相同，否则激活出的世界
-    # 永远无法推进（planner 会在首个 cycle 抛 "durable real cursor 与年锚不一致"）。
-    if request.epoch0_us != request.runtime_epoch0_us:
-        raise ActivationRefused(
-            "请求的世界年锚与当前 Runtime 的年锚不一致：激活后将无法推进世界"
-            "（冻结 planner 年锚不变量）。请让二者一致后重试 —— "
-            "要么把 Runtime 年锚接到激活年锚（需要接线），"
-            "要么在一个年锚整点上激活。",
-            detail={"requested_epoch0_us": request.epoch0_us,
-                    "runtime_epoch0_us": request.runtime_epoch0_us})
     if not request.expected_seed_version:
         raise ActivationRefused("expected_seed_version 必须显式提供")
     if not isinstance(request.simulation_version, str) or \
@@ -386,7 +387,11 @@ def activate_formal_world(session_factory: sessionmaker[Session], *,
                             "initial_blessed_tick":
                                 request.initial_blessed_tick,
                             "activation_real_us": request.activation_real_us,
+                            # OWNER_CANON_DECISION_2：激活 anchor 是 durable 事实，
+                            # 也是 RuntimeScheduler 读取年锚的**唯一**来源。
+                            "activation_anchor_us": request.activation_anchor_us,
                             "epoch0_us": request.epoch0_us,
+                            "anchor_policy": WorldActivationPolicy.ANCHOR_POLICY,
                             "seed_consumption_index": 1,
                             "pre_activation_backlog_ticks": 0,
                         },
@@ -558,7 +563,12 @@ def _already_committed_outcome(session_factory: sessionmaker[Session],
                                request: ActivationRequest, seed: SeedPackage,
                                committed_seed_version: str | None,
                                *, ambiguous: bool = False) -> ActivationOutcome:
-    """已激活 → 幂等返回。**绝不复用旧 seed 的指纹伪装成本次 seed**。"""
+    """已激活 → 幂等返回。**绝不复用旧 seed 的指纹伪装成本次 seed**。
+
+    M6B §13/§15：durable activation anchor 是**只读**事实 ——
+    幂等重试必须复用同一个 anchor，**绝不**用当前时间或本次请求的 anchor 覆盖它。
+    请求 anchor 与 durable anchor 不一致 → 拒绝（loser 不得改写 anchor）。
+    """
     recorded = None
     with session_factory() as s:
         ev = s.execute(
@@ -583,6 +593,16 @@ def _already_committed_outcome(session_factory: sessionmaker[Session],
             detail={"world_id": request.world_id,
                     "committed_seed_version": committed_seed_version,
                     "requested_seed_fingerprint": seed.fingerprint})
+    durable_anchor = read_world_epoch_anchor(session_factory,
+                                             world_id=request.world_id)
+    if durable_anchor is not None and \
+            durable_anchor != request.activation_anchor_us:
+        raise ActivationRefused(
+            "世界已激活：本次请求的 activation anchor 与 durable anchor 不一致"
+            "（禁止改写/覆盖既有 anchor —— 重试必须复用同一个 anchor）",
+            detail={"world_id": request.world_id,
+                    "durable_anchor_us": durable_anchor,
+                    "requested_anchor_us": request.activation_anchor_us})
     row = None
     with session_factory() as s:
         row = RuntimeRepository(s).get()

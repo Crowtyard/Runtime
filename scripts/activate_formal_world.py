@@ -47,14 +47,13 @@ _lifecycle = importlib.import_module(f"{_PKG}.services.db_lifecycle")
 _truth = importlib.import_module(f"{_PKG}.services.durable_truth")
 _activation = importlib.import_module(f"{_PKG}.services.activation")
 _errors = importlib.import_module(f"{_PKG}.domain.errors")
-_harness = importlib.import_module(f"{_PKG}.services.simulation.harness")
+_constants = importlib.import_module(f"{_PKG}.domain.constants")
+_blessed = importlib.import_module(f"{_PKG}.domain.blessed_time")
 
 CONFIRM_FLAG = "--confirm-formal-world-activation"
 
-#: Runtime 侧年锚：生产 scheduler 的默认 epoch0（main.py 目前不传 epoch0，
-#: 因此 RuntimeScheduler 用的是同一个常量 —— 见 services/scheduler/core.py:75）。
-#: 激活请求的年锚必须与它一致，否则激活出的世界永远无法推进（planner 年锚不变量）。
-PRODUCTION_RUNTIME_EPOCH0_US = _harness.MINI_WORLD_EPOCH0_US
+#: OWNER_CANON_DECISION_1：初始 blessed tick 恒为 0（Runtime 内部时间原点）。
+INITIAL_BLESSED_TICK = _constants.WorldActivationPolicy.INITIAL_BLESSED_TICK
 
 
 def _resolve_url(db: str | None) -> str:
@@ -77,19 +76,40 @@ def _parser() -> argparse.ArgumentParser:
     p.add_argument("--expected-seed-version", default=None,
                    help="期望的 Seed 版本（省略时按 canonical "
                         "WorldSeedVersion.CURRENT = \"1.0\" 校验）")
-    p.add_argument("--initial-blessed-tick", type=int, default=None,
-                   help="初始 canonical blessed tick（必须整年；无默认值）")
-    p.add_argument("--epoch0-us", type=int, default=None,
-                   help="世界年锚（现实 epoch µs；无默认值；必须与 Runtime 年锚一致）")
-    p.add_argument("--runtime-epoch0-us", type=int, default=None,
-                   help=f"Runtime 实际使用的年锚（默认 = 生产 scheduler 年锚 "
-                        f"{PRODUCTION_RUNTIME_EPOCH0_US}）")
+    p.add_argument("--activation-anchor-utc", default=None,
+                   help="OWNER_CANON_DECISION_2：正式激活操作的 canonical UTC "
+                        "instant（ISO-8601，如 2026-12-01T00:00:00Z）。"
+                        "**必须显式给出**：一次 activation operation 只确定一次 "
+                        "anchor；ACK lost / crash 后重试必须复用同一个值")
+    p.add_argument("--activation-anchor-us", type=int, default=None,
+                   help="同上，但直接给现实 epoch µs（与 --activation-anchor-utc 互斥）")
+    p.add_argument("--initial-blessed-tick", type=int, default=INITIAL_BLESSED_TICK,
+                   help=f"初始 canonical blessed tick（canon 恒为 "
+                        f"{INITIAL_BLESSED_TICK}；非该值一律拒绝）")
     p.add_argument("--operator", default=None, help="操作者标识（审计用）")
     p.add_argument("--prepare-metadata", action="store_true",
                    help="允许先用既有 seed 路径创建 NOT_ACTIVATED metadata"
                         "（非权威；缺失时否则直接拒绝）")
     p.add_argument("--bible-dir", default=None, help="World Bible 目录（metadata 用）")
     return p
+
+
+def _parse_anchor_us(args) -> int | None:
+    """把 --activation-anchor-utc / --activation-anchor-us 解析为 epoch µs。"""
+    if args.activation_anchor_utc and args.activation_anchor_us is not None:
+        raise ValueError("--activation-anchor-utc 与 --activation-anchor-us 不能同时使用")
+    if args.activation_anchor_us is not None:
+        return int(args.activation_anchor_us)
+    if not args.activation_anchor_utc:
+        return None
+    from datetime import datetime, timezone
+    raw = str(args.activation_anchor_utc).strip()
+    if raw.endswith("Z"):
+        raw = raw[:-1] + "+00:00"
+    dt = datetime.fromisoformat(raw)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return _blessed.datetime_to_epoch_us(dt.astimezone(timezone.utc))
 
 
 def _print_truth(url: str) -> dict:
@@ -105,7 +125,8 @@ def _print_truth(url: str) -> dict:
     print(f"  current_blessed_tick    = {t.current_blessed_tick}")
     print(f"  last_committed_real_us  = {t.last_committed_real_us}")
     print(f"  world_epoch0_us         = {anchor}")
-    print(f"  runtime_epoch0_us       = {PRODUCTION_RUNTIME_EPOCH0_US}")
+    print(f"  anchor_policy           = "
+          f"{_constants.WorldActivationPolicy.ANCHOR_POLICY}")
     print(f"  genesis_events          = {t.genesis_events}")
     print(f"  seed_consumption_count  = {t.seed_consumption_count}")
     engine.dispose()
@@ -137,10 +158,16 @@ def main() -> int:
             return 2
         return 0
 
-    # ---- 策略输入必须显式（canon 未定义 → 绝不使用默认值） --------------------
-    if args.initial_blessed_tick is None or args.epoch0_us is None:
-        print("REFUSED: --initial-blessed-tick 与 --epoch0-us 均为必填"
-              "（canon 未定义数值，禁止猜测）")
+    # ---- OWNER_CANON_DECISION_2：anchor 必须显式给出（一次 operation 只定一次） --
+    try:
+        anchor_us = _parse_anchor_us(args)
+    except ValueError as exc:
+        print(f"REFUSED: {exc}")
+        return 2
+    if anchor_us is None:
+        print("REFUSED: 必须显式给出 --activation-anchor-utc（或 "
+              "--activation-anchor-us）—— 激活 anchor 是一次 activation operation "
+              "的 durable 事实，禁止用 now() 隐式生成/重算")
         return 2
 
     settings = _settings.Settings()
@@ -176,16 +203,12 @@ def main() -> int:
             return 2
 
     # ---- 一次性激活（唯一正式入口） ------------------------------------------
-    runtime_epoch0 = (int(args.runtime_epoch0_us)
-                      if args.runtime_epoch0_us is not None
-                      else PRODUCTION_RUNTIME_EPOCH0_US)
     try:
         request = _activation.ActivationRequest(
             world_id=args.world_id,
             seed_dir=seed_dir,
-            epoch0_us=int(args.epoch0_us),
+            activation_anchor_us=int(anchor_us),
             initial_blessed_tick=int(args.initial_blessed_tick),
-            runtime_epoch0_us=runtime_epoch0,
             **({"expected_seed_version": args.expected_seed_version}
                if args.expected_seed_version else {}),
             operator=args.operator or "OWNER_CONTROL_PLANE",
@@ -193,9 +216,9 @@ def main() -> int:
         print("[preflight] planned activation:")
         print(f"  world_id              = {request.world_id}")
         print(f"  initial_blessed_tick  = {request.initial_blessed_tick}")
-        print(f"  epoch0_us             = {request.epoch0_us}")
-        print(f"  runtime_epoch0_us     = {request.runtime_epoch0_us}")
+        print(f"  activation_anchor_us  = {request.activation_anchor_us}")
         print(f"  activation_real_us    = {request.activation_real_us}")
+        print(f"  word_epoch0_us        = {request.epoch0_us}")
         print(f"  seed_dir              = {seed_dir}")
         seed = _activation.load_seed_package(
             seed_dir,
