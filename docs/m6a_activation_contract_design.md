@@ -1,5 +1,11 @@
 # M6A — 正式世界激活契约设计（ACTIVATION CONTRACT DESIGN）
 
+> **M6B 后续（2026-09-16）**：本文件 §2 登记的两个策略缺口已由主人 canon 裁决
+> （`INITIAL_BLESSED_TICK = 0`；activation anchor = 显式 durable UTC instant），
+> `M6_DESIGN_GAP_RUNTIME_EPOCH_ANCHOR_WIRING` 已经 OPTION A 接线解决，
+> `M6_DESIGN_GAP_INITIAL_WORLD_STATE` 经经验审计判为 **BLOCKING**。
+> 见 `docs/m6b_bootstrap_and_epoch_audit.md`。以下内容保留为 M6A 阶段的历史记录。
+
 - 阶段：`M6A — ACTIVATION CONTRACT IMPLEMENTATION`（**不是**正式世界激活）
 - 结论：`ACTIVATION_ENTRYPOINT_IMPLEMENTED = TRUE`；
   `SEED_CONSUMPTION_ATOMICITY = SINGLE_DB_TRANSACTION_ATOMICITY_PASS`；

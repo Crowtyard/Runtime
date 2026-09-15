@@ -1,5 +1,11 @@
 # M6A — 正式世界激活契约实现报告（M6_ACTIVATION_IMPLEMENTATION_REPORT）
 
+> **M6B 后续（2026-09-16）**：主人已裁决 `M6A_ACTIVATION_CONTRACT_IMPLEMENTATION = ACCEPTED`；
+> live staging **未**授权。本报告 §3 的两个策略缺口已由 owner canon 关闭
+> （`INITIAL_BLESSED_TICK = 0`；anchor = 显式 durable UTC instant），Runtime 年锚已按
+> OPTION A 接线，`M6_DESIGN_GAP_INITIAL_WORLD_STATE` 经经验审计判为 **BLOCKING**。
+> 见 `docs/m6b_bootstrap_and_epoch_audit.md`。
+
 - 阶段：`M6A — ACTIVATION CONTRACT IMPLEMENTATION`（owner `OWNER_DECISION = OPTION_1`）
 - 起始状态：`M6_ACTIVATION = BLOCKED_PREFLIGHT`、`M6_WORLD_LIVE = FALSE`
 - 结束状态：`M6_ACTIVATION_IMPLEMENTATION_READY = TRUE`；**正式世界仍未激活**
