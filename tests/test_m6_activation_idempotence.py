@@ -62,7 +62,7 @@ def test_m6ai02_second_activation_does_not_reset_advanced_clock(
         tmp_path, m6_world):
     """世界已推进后再 activate：绝不回拨 tick / 现实锚。"""
     seed_dir = build_synthetic_seed(tmp_path)
-    _activate(seed_dir, m6_world, initial_blessed_tick=year_tick(2))
+    _activate(seed_dir, m6_world)                 # canon：tick = 0
     advanced_tick = year_tick(9)
     advanced_cursor = M6_EPOCH0_US + 9 * 86_400_000_000
     with m6_world() as s:
@@ -71,7 +71,7 @@ def test_m6ai02_second_activation_does_not_reset_advanced_clock(
         row.last_committed_real_us = advanced_cursor
         s.commit()
 
-    out = _activate(seed_dir, m6_world, initial_blessed_tick=year_tick(2))
+    out = _activate(seed_dir, m6_world)
     assert out.outcome == OUTCOME_ALREADY_COMMITTED
     with m6_world() as s:
         row = s.execute(select(WorldRuntime)).scalar_one()

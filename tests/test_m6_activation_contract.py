@@ -38,10 +38,11 @@ from XiaoguangBlessedLandRuntime.services.scheduler.planner import CatchUpPlanne
 from XiaoguangBlessedLandRuntime.services.simulation.harness import YEAR_US
 
 
-def _activate(seed_dir, factory, *, tick: int = 0, epoch0: int = M6_EPOCH0_US,
+def _activate(seed_dir, factory, *, tick: int = 0, epoch0: int | None = None,
               **kw):
-    req = synthetic_request(seed_dir, initial_blessed_tick=tick,
-                            epoch0_us=epoch0, **kw)
+    """激活辅助：anchor 默认取合成世界原点；显式 ``epoch0`` 为等价别名。"""
+    extra = {"epoch0_us": epoch0} if epoch0 is not None else {}
+    req = synthetic_request(seed_dir, initial_blessed_tick=tick, **extra, **kw)
     return activate_formal_world(factory, request=req)
 
 
@@ -129,23 +130,22 @@ def test_m6ac03_activation_creates_no_world_instances(tmp_path,
 
 # ------------------------------------------------------------------ AC-04
 def test_m6ac04_no_pre_activation_backlog(tmp_path, m6_world):
-    """A3：世界在 NOT_ACTIVATED 期间不累积 offline catch-up debt。
+    """A3 + OWNER_CANON_DECISION_2：世界在 NOT_ACTIVATED 期间不累积 catch-up debt。
 
-    激活的现实锚必须等于 activation canonical instant（年锚对齐），而不是
-    "metadata 播种时刻"或任何更早的时刻。
+    激活的现实锚必须等于 activation canonical instant（anchor），而不是
+    "metadata 播种时刻"或任何更早的时刻；tick 从 canon 原点 0 起。
     """
     seed_dir = build_synthetic_seed(tmp_path)
-    epoch0 = M6_EPOCH0_US
-    tick = year_tick(3)
-    req = synthetic_request(seed_dir, initial_blessed_tick=tick, epoch0_us=epoch0)
+    anchor = M6_EPOCH0_US + 30 * YEAR_US      # 晚于速率行起点
+    req = synthetic_request(seed_dir, activation_anchor_us=anchor)
     outcome = activate_formal_world(m6_world, request=req)
     assert outcome.pre_activation_backlog_ticks == 0
-    assert outcome.activation_real_us == epoch0 + 3 * YEAR_US
+    assert outcome.activation_real_us == anchor
     with m6_world() as s:
         row = s.execute(select(WorldRuntime)).scalar_one()
-        assert row.last_committed_real_us == epoch0 + 3 * YEAR_US
-        # 年锚不变量：cursor == epoch0 + (tick // 1e6) * YEAR_US
-        assert row.current_blessed_tick == tick
+        assert row.last_committed_real_us == anchor
+        assert row.current_blessed_tick == 0
+        assert row.current_blessed_tick == row.current_blessed_tick  # NULL ≠ 0 语义
     # 激活不产生任何 simulation run / checkpoint（没有 retroactive catch-up）
     counts = world_counts(m6_world)
     assert counts["simulation_runs"] == 0
@@ -156,8 +156,8 @@ def test_m6ac04_no_pre_activation_backlog(tmp_path, m6_world):
 def test_m6ac05_genesis_event_is_canonical_first_event(tmp_path,
                                                        m6_world):
     seed_dir = build_synthetic_seed(tmp_path)
-    tick = year_tick(1)
-    _activate(seed_dir, m6_world, tick=tick, epoch0=M6_EPOCH0_US)
+    tick = 0
+    _activate(seed_dir, m6_world, tick=tick)
     ev = genesis_event(m6_world)
     assert ev is not None
     assert ev.event_type == "WORLD_SEED_ACTIVATED"
@@ -174,16 +174,14 @@ def test_m6ac05_genesis_event_is_canonical_first_event(tmp_path,
 
 
 # ------------------------------------------------------------------ AC-06
-@pytest.mark.parametrize("tick", [-1, 1, 999_999, 1_500_000, True])
-def test_m6ac06_requires_explicit_year_aligned_tick(tmp_path,
-                                                    m6_world,
-                                                    tick):
-    """canon 未定义初始 tick 数值 → 必须显式且整年；否则拒绝且零写入。"""
+@pytest.mark.parametrize("tick", [-1, 1, 999_999, 1_500_000, True, 1_000_000])
+def test_m6ac06_non_canon_initial_tick_is_refused(tmp_path, m6_world, tick):
+    """OWNER_CANON_DECISION_1：初始 blessed tick 恒为 0 → 任何非 0 取值一律拒绝。"""
     from XiaoguangBlessedLandRuntime.services.activation import ActivationRequest
 
     seed_dir = build_synthetic_seed(tmp_path)
-    req = ActivationRequest(world_id=W, seed_dir=seed_dir, epoch0_us=M6_EPOCH0_US,
-                            runtime_epoch0_us=M6_EPOCH0_US,
+    req = ActivationRequest(world_id=W, seed_dir=seed_dir,
+                            activation_anchor_us=M6_EPOCH0_US,
                             initial_blessed_tick=tick)
     with pytest.raises(ActivationRefused):
         activate_formal_world(m6_world, request=req)
@@ -191,47 +189,53 @@ def test_m6ac06_requires_explicit_year_aligned_tick(tmp_path,
     assert world_counts(m6_world)["active_worlds"] == 0
 
 
-def test_m6ac06a_tick_has_no_default(tmp_path):
-    """初始 tick 是必填字段：构造请求时就无法省略（不存在隐藏默认值）。"""
+def test_m6ac06a_tick_defaults_to_owner_canon(tmp_path):
+    """canon 已裁决：省略 tick 即取 0（Runtime 内部正式时间原点）。"""
+    from XiaoguangBlessedLandRuntime.domain.constants import (
+        WorldActivationPolicy)
+    from XiaoguangBlessedLandRuntime.services.activation import ActivationRequest
+
+    seed_dir = build_synthetic_seed(tmp_path)
+    req = ActivationRequest(world_id=W, seed_dir=seed_dir,
+                            activation_anchor_us=M6_EPOCH0_US)
+    assert req.initial_blessed_tick == WorldActivationPolicy.INITIAL_BLESSED_TICK
+    assert req.initial_blessed_tick == 0
+
+
+def test_m6ac06b_anchor_is_required(tmp_path, m6_world):
+    """OWNER_CANON_DECISION_2：activation anchor 是必填输入（无默认值）。"""
     from XiaoguangBlessedLandRuntime.services.activation import ActivationRequest
 
     seed_dir = build_synthetic_seed(tmp_path)
     with pytest.raises(TypeError):
-        ActivationRequest(world_id=W, seed_dir=seed_dir, epoch0_us=M6_EPOCH0_US)
-
-
-def test_m6ac06b_requires_explicit_anchor(tmp_path, m6_world):
-    from XiaoguangBlessedLandRuntime.services.activation import ActivationRequest
-
-    seed_dir = build_synthetic_seed(tmp_path)
-    with pytest.raises(TypeError):
-        ActivationRequest(world_id=W, seed_dir=seed_dir,
-                          initial_blessed_tick=0)   # 缺 epoch0_us → 无默认值
+        ActivationRequest(world_id=W, seed_dir=seed_dir)   # 缺 anchor
     assert world_counts(m6_world)["world_events"] == 0
 
 
 # ------------------------------------------------------------------ AC-07
-@pytest.mark.parametrize("years", [0, 1, 3, 7])
+@pytest.mark.parametrize("elapsed_years", [0, 2, 5])
 def test_m6ac07_activated_world_satisfies_frozen_planner_anchor(
-        tmp_path, m6_world, years):
+        tmp_path, m6_world, elapsed_years):
     """激活产生的 (tick, cursor) 必须让冻结 CatchUpPlanner 永远不 fail-closed。
 
     planner.plan 要求 ``tick % 1e6 == 0`` 且 ``cursor == epoch0 + k*YEAR_US``
     （services/scheduler/planner.py:94-102）。激活若不满足，世界一被 scheduler
-    接管就会 FAILED。
+    接管就会 FAILED。canon：tick 从 0 起，anchor = activation instant。
     """
     seed_dir = build_synthetic_seed(tmp_path)
-    epoch0 = M6_EPOCH0_US
-    tick = year_tick(years)
-    _activate(seed_dir, m6_world, tick=tick, epoch0=epoch0)
+    anchor = M6_EPOCH0_US + 12_345                # 任意 UTC anchor（非年整点）
+    _activate(seed_dir, m6_world, tick=0, epoch0=anchor)
 
-    planner = CatchUpPlanner(world_id=W, epoch0_us=epoch0)
+    planner = CatchUpPlanner(world_id=W, epoch0_us=anchor)
     with m6_world() as s:
-        now = epoch0 + (years + 2) * YEAR_US
+        now = anchor + elapsed_years * YEAR_US
         plan = planner.plan(s, now_real_us=now, budget_ticks=10 * 1_000_000)
-    assert plan.durable_tick == tick
-    assert plan.year_indices[0] == years          # 年序号从激活年继续
-    assert plan.due_ticks == 2 * 1_000_000        # 自然态：2 现实日 ≈ 2 福地年
+    assert plan.durable_tick == 0
+    assert plan.due_ticks == elapsed_years * 1_000_000
+    if elapsed_years == 0:
+        assert plan.year_indices == ()            # 无需推进
+    else:
+        assert plan.year_indices[0] == 0          # 年序号从激活年（0）起
 
 
 # ------------------------------------------------------------------ AC-08
@@ -349,8 +353,7 @@ def test_m6ac13_same_seed_yields_same_initial_world_hash(tmp_path):
         env = new_synthetic_world(tmp_path / tag)
         seed_dir = build_synthetic_seed(tmp_path / tag)   # 同内容 → 同指纹
         out = activate_formal_world(env["factory"], request=synthetic_request(
-            seed_dir, initial_blessed_tick=year_tick(2),
-            epoch0_us=M6_EPOCH0_US))
+            seed_dir))
         with env["factory"]() as s:
             digest = world_state_hash_v6(
                 snapshot=read_snapshot(s, W),
@@ -379,7 +382,7 @@ def test_m6ac14_duplicate_genesis_uid_is_refused_with_zero_partial_state(
         _genesis_uid)
     from XiaoguangBlessedLandRuntime.services.repositories import EventRepository
 
-    tick = year_tick(1)
+    tick = 0
     req = synthetic_request(build_synthetic_seed(tmp_path),
                             initial_blessed_tick=tick)
     with m6_world() as s:
@@ -404,19 +407,25 @@ def test_m6ac14_duplicate_genesis_uid_is_refused_with_zero_partial_state(
 
 
 # ------------------------------------------------------------------ AC-15..19
-def test_m6ac15_anchor_mismatch_with_runtime_is_refused(tmp_path, m6_world):
-    """F2：请求年锚必须与 Runtime 实际年锚一致，否则拒绝（禁止造出无法推进的世界）。"""
-    from XiaoguangBlessedLandRuntime.services.activation import ActivationRequest
+def test_m6ac15_activation_anchor_is_durable_and_readable(tmp_path, m6_world):
+    """OWNER_CANON_DECISION_2：anchor 必须与 activation operation 一起 durable 持久化。
 
+    （M6B 的 OPTION A 接线据此让 RuntimeScheduler 读取同一个 anchor。）
+    """
+    from XiaoguangBlessedLandRuntime.services.durable_truth import (
+        read_world_epoch_anchor)
+
+    assert read_world_epoch_anchor(m6_world, world_id=W) is None  # 未激活
     seed_dir = build_synthetic_seed(tmp_path)
-    req = ActivationRequest(world_id=W, seed_dir=seed_dir,
-                            epoch0_us=M6_EPOCH0_US,
-                            runtime_epoch0_us=M6_EPOCH0_US + YEAR_US,
-                            initial_blessed_tick=0)
-    with pytest.raises(ActivationRefused) as ei:
-        activate_formal_world(m6_world, request=req)
-    assert "年锚不一致" in ei.value.message
-    assert world_counts(m6_world)["active_worlds"] == 0
+    anchor = M6_EPOCH0_US + 12_345_678
+    out = _activate(seed_dir, m6_world, activation_anchor_us=anchor)
+    assert out.outcome == OUTCOME_COMMITTED
+    assert out.activation_real_us == anchor          # tick=0 → cursor = anchor
+    assert read_world_epoch_anchor(m6_world, world_id=W) == anchor
+    with m6_world() as s:
+        row = s.execute(select(WorldRuntime)).scalar_one()
+        assert row.current_blessed_tick == 0
+        assert row.last_committed_real_us == anchor
 
 
 def test_m6ac16_world_id_mismatch_refused(tmp_path, m6_world):
@@ -447,7 +456,7 @@ def test_m6ac18_prior_genesis_with_different_uid_is_refused(tmp_path, m6_world):
         EventSources, Scopes)
     from XiaoguangBlessedLandRuntime.services.repositories import EventRepository
 
-    tick = year_tick(1)
+    tick = 0
     seed_dir = build_synthetic_seed(tmp_path)
     with m6_world() as s:
         EventRepository(s).append(

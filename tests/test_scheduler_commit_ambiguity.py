@@ -109,8 +109,8 @@ def test_commit_ambiguity_counters_and_no_duplicate_history(tmp_path,
     sched = _make(env, state_dir)
     sched.__class__ = type(
         "AmbSched", (sched.__class__,), {
-            "_execute_batch": lambda self, plan: _execute_armed(
-                self, plan, ack_state, counter)})
+            "_execute_batch": lambda self, plan, epoch0_us: _execute_armed(
+                self, plan, epoch0_us, ack_state, counter)})
     sched.start()
     snap = sched.run_cycle().as_dict()
     assert snap["durable_current_tick"] == 12_000_000
@@ -129,7 +129,7 @@ def test_commit_ambiguity_counters_and_no_duplicate_history(tmp_path,
         assert a == b, table
 
 
-def _execute_armed(sched, plan, ack_state, counter):
+def _execute_armed(sched, plan, epoch0_us, ack_state, counter):
     from XiaoguangBlessedLandRuntime.services.scheduler.adapter import \
         run_blessed_year
     executed = 0
@@ -146,7 +146,7 @@ def _execute_armed(sched, plan, ack_state, counter):
             run_blessed_year(
                 sched.session_factory, world_id=sched.world_id,
                 year_index=year_index, coordinator=coordinator,
-                lease=sched._lease, epoch0_us=sched.epoch0_us,
+                lease=sched._lease, epoch0_us=epoch0_us,
                 simulation_version=sched.simulation_version)
         except RuntimeError as exc:
             if not sched._recover_truth(year_index, exc):

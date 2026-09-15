@@ -131,19 +131,21 @@ def build_synthetic_seed(tmp_path: Path, *, version: str = "1.0",
 
 def synthetic_request(seed_dir: Path, *, world_id: str = W,
                       initial_blessed_tick: int = 0,
-                      epoch0_us: int = M6_EPOCH0_US,
-                      runtime_epoch0_us: int | None = None,
+                      activation_anchor_us: int = M6_EPOCH0_US,
+                      epoch0_us: int | None = None,
                       **kwargs) -> ActivationRequest:
-    """构造激活请求（tick / 年锚均为显式测试输入，不是 canon 取值）。
+    """构造激活请求（anchor 为显式测试输入，不是 canon 取值）。
 
-    ``runtime_epoch0_us`` 默认与 ``epoch0_us`` 相同（即 Runtime 与激活年锚一致 ——
-    这是唯一能产出"可推进世界"的组合）。
+    M6B：``initial_blessed_tick`` 默认 = owner canon 值 0；
+    ``epoch0_us`` 仅作为 ``activation_anchor_us`` 的**等价别名**保留
+    （tick=0 时世界年锚恒等于 activation anchor）。
     """
+    if epoch0_us is not None:
+        activation_anchor_us = epoch0_us
     return ActivationRequest(
-        world_id=world_id, seed_dir=Path(seed_dir), epoch0_us=epoch0_us,
+        world_id=world_id, seed_dir=Path(seed_dir),
+        activation_anchor_us=activation_anchor_us,
         initial_blessed_tick=initial_blessed_tick,
-        runtime_epoch0_us=(epoch0_us if runtime_epoch0_us is None
-                           else runtime_epoch0_us),
         operator="M6_TEST", **kwargs)
 
 

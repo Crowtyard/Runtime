@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """M6A-GUARD —— ACTIVATION_BOUNDARY_GUARD（owner §17 / §18 / §19 / §20）。
 
 把原 M4 ``test_scheduler_world_seed_safety.py``（"Scheduler 层零消费 Seed"）
@@ -274,7 +274,7 @@ def test_m6g05_control_plane_refuses_without_explicit_confirmation(tmp_path):
     code, out = _run_cli(tmp_path, [
         "--db", str(db_path),
         "--initial-blessed-tick", "0",
-        "--epoch0-us", str(M6_EPOCH0_US)])
+        "--activation-anchor-us", str(M6_EPOCH0_US)])
     assert code == 2, out
     assert "REFUSED" in out
     assert "需要显式确认标志" in out
@@ -296,7 +296,7 @@ def test_m6g05b_cli_status_and_confirm_are_mutually_exclusive(tmp_path):
     code, out = _run_cli(tmp_path, [
         "--status", "--confirm-formal-world-activation",
         "--db", str(tmp_path / "nonexistent.db"),
-        "--initial-blessed-tick", "0", "--epoch0-us", "1"])
+        "--initial-blessed-tick", "0", "--activation-anchor-us", "1"])
     assert code == 2, out
     assert "不能同时使用" in out
 
@@ -314,7 +314,7 @@ def test_m6g05c_cli_maps_seed_integrity_error_to_refusal(tmp_path):
     code, out = _run_cli(tmp_path, [
         "--confirm-formal-world-activation",
         "--db", str(db_path), "--seed-dir", str(bad_seed),
-        "--initial-blessed-tick", "0", "--epoch0-us", str(M6_EPOCH0_US)])
+        "--initial-blessed-tick", "0", "--activation-anchor-us", str(M6_EPOCH0_US)])
     assert code == 2, out
     assert "REFUSED" in out
     assert "Traceback" not in out

@@ -56,7 +56,7 @@ def test_ack_lost_world_commit_5_times(tmp_path, monkeypatch):
     ack_counter = {"next_arm": 5, "count": 0}
 
     class ArmedScheduler(RuntimeScheduler):
-        def _execute_batch(self, plan):
+        def _execute_batch(self, plan, epoch0_us):
             executed = 0
             coordinator = None
             for year_index in plan.year_indices:
@@ -73,7 +73,7 @@ def test_ack_lost_world_commit_5_times(tmp_path, monkeypatch):
                     run_blessed_year(
                         self.session_factory, world_id=self.world_id,
                         year_index=year_index, coordinator=coordinator,
-                        lease=self._lease, epoch0_us=self.epoch0_us,
+                        lease=self._lease, epoch0_us=epoch0_us,
                         simulation_version=self.simulation_version)
                 except RuntimeError as exc:
                     if not self._recover_truth(year_index, exc):

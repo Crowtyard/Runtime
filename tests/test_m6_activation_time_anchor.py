@@ -37,17 +37,17 @@ def _activate(seed_dir, factory, *, world_id: str = W, **kw):
 
 # ------------------------------------------------------------------ TA-01
 def test_m6ta01_anchor_is_the_activation_canonical_instant(tmp_path, m6_world):
+    """OWNER_CANON_DECISION_2：cursor = 本次操作的 canonical UTC instant；tick = 0。"""
     seed_dir = build_synthetic_seed(tmp_path)
-    tick = year_tick(4)
-    out = _activate(seed_dir, m6_world, initial_blessed_tick=tick,
-                    epoch0_us=M6_EPOCH0_US)
-    expected_anchor = M6_EPOCH0_US + 4 * YEAR_US
-    assert out.activation_real_us == expected_anchor
+    anchor = M6_EPOCH0_US + 4 * YEAR_US + 777     # 任意 UTC anchor
+    out = _activate(seed_dir, m6_world, activation_anchor_us=anchor)
+    assert out.activation_real_us == anchor
+    assert out.initial_blessed_tick == 0
     assert out.pre_activation_backlog_ticks == 0
     with m6_world() as s:
         row = s.execute(select(WorldRuntime)).scalar_one()
-        assert row.last_committed_real_us == expected_anchor
-        assert row.current_blessed_tick == tick
+        assert row.last_committed_real_us == anchor
+        assert row.current_blessed_tick == 0
     # 激活本身不推进世界（无 run / 无 checkpoint / 零 backlog）
     counts = world_counts(m6_world)
     assert counts["simulation_runs"] == 0
@@ -105,14 +105,13 @@ def test_m6ta04_rate_row_blessed_start_bound_at_activation(tmp_path, m6_world):
     assert before == [None]                     # 未激活 = 尚未开始计
 
     seed_dir = build_synthetic_seed(tmp_path)
-    tick = year_tick(2)
-    _activate(seed_dir, m6_world, initial_blessed_tick=tick)
+    _activate(seed_dir, m6_world)          # canon：initial tick = 0
     with m6_world() as s:
         starts = s.execute(text(
             "SELECT blessed_effective_from_tick FROM time_ratio_history"
         )).scalars().all()
         row = s.execute(select(WorldRuntime)).scalar_one()
-    assert starts == [tick]
+    assert starts == [0]
     assert row.current_time_ratio_id is not None
 
 
@@ -216,11 +215,11 @@ def test_m6ta08_world_epoch_anchor_is_durable_and_readable(tmp_path, m6_world):
 
     assert read_world_epoch_anchor(m6_world, world_id=W) is None
     seed_dir = build_synthetic_seed(tmp_path)
-    tick = year_tick(3)
-    _activate(seed_dir, m6_world, initial_blessed_tick=tick,
-              epoch0_us=M6_EPOCH0_US)
-    assert read_world_epoch_anchor(m6_world, world_id=W) == M6_EPOCH0_US
-    # 年锚 + tick 必须自洽：cursor == epoch0 + year_index*YEAR_US
+    anchor = M6_EPOCH0_US + 999_999
+    _activate(seed_dir, m6_world, activation_anchor_us=anchor)
+    assert read_world_epoch_anchor(m6_world, world_id=W) == anchor
+    # 年锚 + tick 必须自洽：cursor == epoch0 + year_index*YEAR_US（tick=0 → = anchor）
     with m6_world() as s:
         row = s.execute(select(WorldRuntime)).scalar_one()
-    assert row.last_committed_real_us == M6_EPOCH0_US + 3 * YEAR_US
+    assert row.current_blessed_tick == 0
+    assert row.last_committed_real_us == anchor
