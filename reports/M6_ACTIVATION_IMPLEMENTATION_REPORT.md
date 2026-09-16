@@ -466,3 +466,62 @@ aebc9dc  fix (含 test): canonical zero-row activation entry —— 见 §24 的
 aeef082  test: prove zero-row activation claim-before-fence (M6A.1F)
 （本轮）test/fix: zero-row crash matrix + fault-path session cleanup
 ```
+
+## 12. FAST REGRESSION CLOSEOUT（M6A.1F 收口，append-only）
+
+命令（后台 job `pwsh-20`，post-fix HEAD）：
+
+```
+pytest tests -q -p no:randomly --ignore=tests/test_m3_integrated_long.py
+log: %TEMP%\m6a1f_fast_regression_postfix.txt
+```
+
+```
+EXIT_CODE              = 0
+FAST_COLLECTED         = 1024
+FAST_PASSED            = 983
+FAST_EXPECTED_SKIPS    = 41（按设计：12 × BLR_FORMAL_DB_PATH 正式库守护 + 29 × BLR_TEST_PG_DSN
+                          PG gated 套件；与既有 canonical 基线口径一致）
+FAST_FAILED            = 0
+FAST_ERRORS            = 0
+FAST_UNEXPECTED_SKIPS  = 0
+进步曲线               = 7% → … → 91% → 98% → 100%（进度标记逐字节统计，无 F/E/x 标记）
+重型用例（本轮实测耗时，供后续排程参考）：
+  test_scheduler_budget_equivalence 1000y 系列（_0…_6，各约 10–15 分钟）
+  test_scheduler_5000y_endurance（约 50 分钟以上）
+  m3b_audit3000
+```
+
+collected 由历史 906 增至 **1024**（+118）：M6A.1 zero-row 4 + M6A.1F claim/fencing 22 +
+M6A.1b concurrency 2 + M6A.1c crash matrix 10 + M6A.1PG zero-row concurrency 1 +
+既有调整后的总数变化。**未更新任何 Golden Baseline**
+（`git diff --numstat HEAD -- tests/baselines` = 0 行）。
+
+### 最终 formal DB 复核（收口时实测）
+
+```
+FORMAL_DB_AUTHORITY_FINAL  = PASS
+FORMAL_DB_SHA256_FINAL     = 7754b1d4658ea94ce509ae7fb7c06c33c44f98782021b3708e6f29ce69102837
+FORMAL_WORLD_RUNTIME_ROWS  = 0
+CURRENT_BLESSED_TICK       = NULL
+FORMAL_WORLD_STATUS        = NOT_ACTIVATED
+FORMAL_WORLD_SEED_CONSUMED = FALSE
+GOLDEN_BASELINE_MUTATIONS  = 0
+FORMAL_WORLD_UNTOUCHED     = TRUE
+```
+
+### 判定
+
+```
+M6A_ZERO_ROW_ENTRY_REPAIRED = TRUE
+  （ZERO_ROW_ACTIVATION / ROLLBACK / ACTIVATION_CLAIM_PROTOCOL / FENCING_CORRECTNESS /
+    CLAIM_ROLLBACK_TAKEOVER / CRASH_MATRIX_ZERO_ROW / SESSION_CLEANUP_ON_ALL_FAULT_PATHS /
+    ACK_LOST_RECONCILIATION / BLIND_RETRY=0 / RATE_BINDING_ATOMIC + RESTART_EQUIVALENCE /
+    SECOND_ACTIVATION_IDEMPOTENT / SCHEDULER_REGRESSION / PG_SHARED_WRITER_LOCK_GATES /
+    PG_AMBIGUITY_REGRESSION(PG012_PRESENT) / PG_ZERO_ROW_CONCURRENCY / FAST_REGRESSION /
+    GOLDEN_BASELINE_MUTATIONS=0 / FORMAL_WORLD_UNTOUCHED —— 全部 PASS）
+PG_LOSER_ERROR_NORMALIZATION = DEFERRED_NON_SAFETY_TECH_DEBT（Owner 裁决；不阻塞本 Gate）
+```
+
+NEXT_ACTION = RESUME_M6C1D_RESOURCE_ECOLOGY_VERIFICATION
+（FORMAL_ACTIVATION_ALLOWED = FALSE；MATERIALIZER_ALLOWED = FALSE）
