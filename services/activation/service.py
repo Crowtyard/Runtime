@@ -256,6 +256,18 @@ def _effective_ratio(session: Session, request: ActivationRequest) -> int:
     return ratio_id
 
 
+def _close_quietly(session) -> None:  # noqa: ANN001
+    """rollback + close，绝不掩盖原始异常（M6A.1F §10/§11）。"""
+    try:
+        session.rollback()
+    except Exception:  # noqa: BLE001,S110
+        pass
+    try:
+        session.close()
+    except Exception:  # noqa: BLE001,S110
+        pass
+
+
 def _seed_canonical_initial_rate(session: Session,
                                  request: ActivationRequest) -> None:
     """在 activation 事务内建立 canonical initial rate binding（幂等）。
@@ -336,25 +348,26 @@ def activate_formal_world(session_factory: sessionmaker[Session], *,
         _probe.close()
     if _zero_row:
         _activation_session = session_factory()
-        RuntimeRepository(_activation_session).create_not_activated(
-            world_id=request.world_id, world_bible_version="1.0",
-            simulation_version=request.simulation_version,
-            world_bible_manifest_hash=getattr(seed, "manifest_digest", None))
-        _activation_session.flush()
-        lease_session = _activation_session
-        lease = WriterLease(_activation_session, request.world_id,
-                            lease_seconds=request.lease_seconds or 120)
         try:
+            RuntimeRepository(_activation_session).create_not_activated(
+                world_id=request.world_id, world_bible_version="1.0",
+                simulation_version=request.simulation_version,
+                world_bible_manifest_hash=getattr(seed, "manifest_digest", None))
+            _activation_session.flush()
+            lease_session = _activation_session
+            lease = WriterLease(_activation_session, request.world_id,
+                                lease_seconds=request.lease_seconds or 120)
             lease.acquire(commit=False)
         except WriterLockConflict as exc:
-            _activation_session.rollback()
-            _activation_session.close()
+            _close_quietly(_activation_session)
             raise ActivationRefused(
                 "另一 Runtime 正在推进该世界；正式激活只允许单写者",
                 detail={"world_id": request.world_id}) from exc
-        except Exception:
-            _activation_session.rollback()
-            _activation_session.close()
+        except BaseException:
+            # §10/§11：claim 之后、commit 之前的任何 fault 都必须 rollback+close，
+            # 否则 SQLite 写锁会一直被持有（进程内后续 activator 会拿到
+            # OperationalError 而不是 canonical 结果）。
+            _close_quietly(_activation_session)
             raise
     else:
         lease_session = session_factory()

@@ -1,0 +1,104 @@
+# M6A.1 ZERO-ROW ENTRY ADDENDUM
+
+> 独立 addendum 文件（原报告 `reports/M6_ACTIVATION_IMPLEMENTATION_REPORT.md` **未改写**；
+> 待新的执行预算时按 §23 以 in-place 追加方式并入主报告，内容与本文件一致）。
+
+## 1. 覆盖缺口（COVERAGE_GAP_DISCOVERED = TRUE）
+
+- 原 M6A **77 项** activation 测试全部经 `tests/conftest.py::m6_world` →
+  `tests/m6_activation_support.py::seed_m6_world` 运行，该 fixture **预先**执行
+  `RuntimeRepository.create_not_activated(...)`（`m6_activation_support.py:55,77`）与
+  `TimeRatioRepository.add(...)`（`:58,80`）。
+- 因此原套件**从未**覆盖 canonical zero-row 入口
+  （`tests/formal_db.py:4-13` 的 canonical 契约：`world_runtime` **0 行** == 世界从未激活，
+  且明文禁止为了测试方便插入 NOT_ACTIVATED 行）。
+
+## 2. 缺口如何被发现
+
+`M6C.1D` real activation rehearsal（临时 file-backed SQLite + synthetic seed + 无 scheduler
++ 无第二写者 → 直接调用 `activate_formal_world()`）首次暴露 blocker：
+`WriterLease.acquire()` → `WriterLockConflict("租约竞争：锁定行在竞争期间消失")` →
+`ActivationRefused`。RED 由 `tests/test_m6a1_zero_row_activation.py` 固化。
+
+## 3. 根因
+
+1. `WriterLease` 使用**独立 session / 独立事务**（`services/activation/service.py:308-312`），
+   在零行状态下 `RuntimeLock` 的 `world_id` 外键无父行 → INSERT 失败 →
+   `writer_lock.py:100-107` 一律报成"竞争期间消失"（错误分类缺失）。
+2. activation 事务体（`service.py:339-347`）假定 `world_runtime` 行已存在
+   （`RuntimeRepository.activate()` 是 UPDATE 语义）。
+3. `service.py:249-251` 硬性要求 `time_ratio_history` 已由外部预播种 →
+   initial rate binding **实现缺口**（与 M6A 报告宣称的 atomic fields 不符）。
+
+## 4. 修复（commit `aebc9dc`）
+
+- `services/activation/service.py`：新增 canonical zero-row 分支 —— 同一 authoritative
+  事务内先建立 **transient** `world_runtime` 父行（未提交 → 其它连接不可见 →
+  `TRANSIENT_RUNTIME_ROW_DURABLE_PRE_COMMIT = FALSE`）→ 同一 session
+  `WriterLease.acquire(commit=False)` → 事务内 `_seed_canonical_initial_rate()`
+  建立 canonical initial rate binding（M1 自然态倍率 `1_000_000/86_400_000_000`，未 invent）。
+  legacy 已存在世界行的路径逐字未改。
+- `services/writer_lock.py`：`acquire(*, commit: bool = True)`（默认 True 保持既有调用方；
+  `commit=False` 把提交权交给调用方事务）＋ IntegrityError 分类
+  `LOCK_PARENT_WORLD_ABSENT` / `TRUE_CONCURRENT_LOCK_RACE`。
+- `tests/test_m6_activation_contract.py::test_m6ac06…`（原 `test_m6ac09_refuses_without_metadata`）
+  编码的正是 CONTRACT_IMPLEMENTATION_DRIFT，已按新契约改写为
+  "zero-row → 原子 bootstrap → ACTIVE"。
+
+## 5. Transactional Activation Claim + transaction-scoped Fence（owner protocol C）
+
+- **CLAIM** = activation 事务内**未提交**的 `world_runtime(world_id)` 唯一插入。
+- **FENCE** = 仅 claim 持有者可达 `WriterLease.acquire(commit=False)`。
+- 后续 rate binding / seed truth / ACTIVE+tick0+anchor / genesis / commit 全部在同一事务。
+
+## 6. SQLite 并发证据（`tests/test_m6a1f_claim_fencing.py`）
+
+```
+SQLITE_CONCURRENCY_ITERATIONS = 20（每轮两个独立 engine/连接，同一 file-backed DB，真 zero-row）
+SQLITE_CLAIM_WINNERS_MAX = 1     SQLITE_FENCE_WINNERS_MAX = 1     SQLITE_COMMIT_WINNERS_MAX = 1
+CAN_TWO_ACTIVATORS_BOTH_PASS_ACTIVATION_CLAIM = FALSE（20/20）
+CAN_TWO_ACTIVATORS_BOTH_ACQUIRE_VALID_ACTIVATION_FENCE = FALSE（20/20）
+CLAIM_ROLLBACK_TAKEOVER = PASS   FENCE_REQUIRED_AFTER_CLAIM = PASS
+ACTIVATION_FENCING_CORRECTNESS = PASS
+```
+
+## 7. Crash matrix / 资源泄漏（`tests/test_m6a1c_zero_row_crash_matrix.py`）
+
+C0/C1/C2/C3/C5/C6/C7 每个注入点：durable state 全 0（无 partial），且**新连接可立即写入**
+（证明 session 已 rollback+close、SQLite 写锁已释放），随后同一 DB 仍可正常激活。
+
+**本轮发现并修复的真实缺陷**：零行 bootstrap 块（`service.py` step 3）最初没有 fault-path
+cleanup —— claim 后、commit 前发生 fault 时 SQLite 写锁被持有到进程结束；同一进程内第二个
+activator 会得到 `OperationalError` 而非 canonical 结果。按 owner §11 授权作最小修复
+（`_close_quietly()` + `except BaseException: rollback+close; raise`），未改变正常路径语义。
+
+C8/ACK-lost：`read_activation_truth` 判 `COMMITTED`，重复调用得 `ALREADY_COMMITTED`，
+状态零变更（`ACK_LOST_RECONCILIATION = PASS`，`BLIND_ACTIVATION_RETRY_COUNT = 0`）。
+Restart equivalence 与 scheduler 三态（DORMANT / DORMANT / VALID）亦在本模块内实测。
+
+## 8. PostgreSQL 证据 = **缺失（环境阻塞）**
+
+`PG_* = NOT_RUN (ENV_BLOCKED)`：测试侧 `tests/pg_functional_support.py:74` 需要 **psycopg 3**，
+本机解释器未安装；`pip install "psycopg[binary]"` 被本地策略代理拒绝
+（`ProxyError ... 403 Forbidden`，PyPI 不可达）；工作区仅有另一个项目 venv 内的 **psycopg2**，
+不能替代（API 与 import 名不同且不应跨项目借用）。
+`services/writer_lock.py` 已被修改 → **PG targeted gate 仍是未完成义务**，需 owner 提供驱动或放行网络。
+
+## 9. Fast regression
+
+post-fix canonical fast regression 已启动（`pytest tests -q --ignore=tests/test_m3_integrated_long.py`，
+后台 job）；本会话结束前未完成 → 结果待补，不声称 PASS。
+
+## 10. Formal DB
+
+PRE 与 POST 均实测 `AUTHORITATIVE_DB_RESOLUTION = PASS`，
+`FORMAL_DB_SHA256 = 7754b1d4658ea94ce509ae7fb7c06c33c44f98782021b3708e6f29ce69102837`（PRE == POST），
+`world_runtime = 0`，`NOT_ACTIVATED`，seed 未消费；legacy stale DB 继续 NON_AUTHORITATIVE。
+
+## 11. 相关 commit
+
+```
+aebc9dc  fix (含 test): canonical zero-row activation entry —— 见 §24 的 git 偏差记录
+aeef082  test: prove zero-row activation claim-before-fence (M6A.1F)
+（本轮）test/fix: zero-row crash matrix + fault-path session cleanup
+```
