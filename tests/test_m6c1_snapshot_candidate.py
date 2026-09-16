@@ -82,6 +82,28 @@ def test_m6c103b_red_lines_carry_a_readonly_measurement(candidate):
     assert "world_runtime = 1" in measurement["decoy_warning"]
 
 
+def test_m6c103c_per_domain_answers_cover_every_owner_question(candidate):
+    """owner 逐域提问（年龄/职业/户/资源/经济/生态/社会/灾劫/首个前兆）逐域有答案。"""
+    validator.check_per_domain_answers(candidate)
+    answers = {a["domain"]: a for a in candidate["per_domain_answers"]}
+    assert set(answers) == set(validator.REQUIRED_DOMAINS)
+    assert answers["OCCUPATION"]["answer_state"].startswith("NOT_REQUIRED")
+    assert answers["HOUSEHOLD"]["answer_state"].startswith("DERIVED_BY_ENGINE")
+    assert answers["FIRST_OMEN_TIME"]["first_omen_tick"]["value"] == 10_000_000
+    assert answers["FIRST_OMEN_TIME"]["first_omen_tick"]["source_class"] == \
+        "DETERMINISTIC_DERIVATION"
+    blocked = [d for d, a in answers.items() if a["answer_state"].startswith("BLOCKED")]
+    assert set(blocked) == {"RESOURCE", "ECONOMY", "SOCIAL"}
+
+
+def test_m6c103d_world_seed_is_verified_unconsumed(candidate):
+    measurement = candidate["header"]["world_seed_redline_measurement"]
+    assert measurement["consumed"] is False
+    assert measurement["declared_status"] == "PREPARED_NOT_ACTIVATED"
+    assert measurement["fingerprint_matches_m6_baseline"] is True
+    assert measurement["manifest_entries"]["value"] == 20
+
+
 def test_m6c104_no_approved_snapshot_artifact_exists():
     assert not (ROOT / "docs/world_creation/SNAPSHOT_V1.md").exists()
     assert not (ROOT / "docs/world_creation/SNAPSHOT_V1.json").exists()

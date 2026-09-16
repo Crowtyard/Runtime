@@ -183,6 +183,21 @@ def build() -> dict:
                 "PRODUCTION_TEST_PROFILE_FALLBACK = FORBIDDEN（owner 本轮）",
                 "不得修改冻结引擎语义（M2/M3）",
             ],
+            "world_seed_redline_measurement": {
+                "measured_utc": "2026-09-15（M6C.1 结束前，只读装载校验）",
+                "tool": "services.activation.seed_package.load_seed_package"
+                        "（只读；不消费、不改写、不激活）",
+                "seed_dir": "<KB>\\world_seed（default_seed_dir）",
+                "seed_id": "XIAOGUANG_BLESSED_LAND_WORLD_SEED_v1.0",
+                "seed_version": "1.0",
+                "declared_status": "PREPARED_NOT_ACTIVATED",
+                "consumed": False,
+                "fingerprint_matches_m6_baseline": True,
+                "manifest_entries":
+                    {"value": 20, "source_class": "LOCAL_CANON",
+                     "state": "MEASURED_READ_ONLY",
+                     "source_ref": "只读装载实测（MANIFEST 20 条目）"},
+            },
         },
         "source_class_enum": ["OWNER_APPROVED", "LOCAL_CANON",
                               "APPROVED_LOCAL_DESIGN", "DETERMINISTIC_DERIVATION",
@@ -363,6 +378,119 @@ def build() -> dict:
                       "profiles or TEST_PROFILES 静默回落（owner §18）"]),
              },
              "status": "BLOCKED"},
+        ],
+        "per_domain_answers": [
+            {"domain": "AGE_COHORT_STRUCTURE",
+             "question": "初始年龄结构（cohort 划分与占比）如何确定？",
+             "answer_state": "STRUCTURE_DERIVED_FROM_ENGINE / VALUES_BLOCKED",
+             "engine_structure":
+                 "cohort == 一行 population_groups（species × settlement_ref × "
+                 "age_cohort）；age_cohort = bucket 序号字符串；bucket 宽固定 1 福地年；"
+                 "bucket i = [i, i+1)；末位 bucket 开区间聚合所有更高年龄；出生入 bucket 0",
+             "bootstrap_obligation":
+                 "每 (species, settlement_ref) 必须**恰好**覆盖 0..N-1 各一行；缺行静默丢人口"
+                 "（违 P_INV_12）；同 bucket 两行会重复计数",
+             "rule": BC.RULE_COHORT_ID,
+             "rounding_policy": "FLOOR_THEN_LARGEST_REMAINDER",
+             "tie_break_policy": "REMAINDER_DESC_THEN_BUCKET_INDEX_ASC",
+             "engine_evidence": "population.py:9,63-97,140-146,181-185,289-292,339,344-346; "
+                                "snapshot.py:257-264; mini_world.py:154-155",
+             "blocked_inputs": ["cohort_buckets（= 寿命上限 + 1）", "mortality_by_bucket"],
+             "owner_decision_id": "OD-3",
+             "owner_burden_reduction":
+                 "主人不必逐 bucket 给 40 个死亡概率：可给「年龄带边界 + 每带年死亡概率」，"
+                 "由 RA-MORTALITY-001 展开"},
+            {"domain": "OCCUPATION",
+             "question": "职业组划分与 household_stats 口径？",
+             "answer_state": "NOT_REQUIRED（无 owner 决策）",
+             "answer":
+                 "occupation_group 在全仓**无任何引擎读取**（WRITE_ONLY：只影响 snapshot 行序"
+                 "与世界状态哈希）；household_stats **零读零写**且不在 snapshot 投影内。"
+                 "经济引擎的劳动力 = 聚落总人口 // labor_per_batch，与职业无关",
+             "engine_evidence": "snapshot.py:88-91,263-264; state_hash.py:40,66; "
+                                "economy.py:133-136,188-211"},
+            {"domain": "HOUSEHOLD",
+             "question": "初始户结构是否需要预置？",
+             "answer_state": "DERIVED_BY_ENGINE（tick=0 不预置）",
+             "answer":
+                 "SOCIAL 是唯一会自建根行的引擎：首步按 formation_size 形成 household，"
+                 "确定性 id，自愈；其 fail-closed 只针对 settlement_social_state 与 "
+                 "social_feedback_state。"
+                 "（知情项：无预置 → household 形成于首个 committed step 的 end tick，"
+                 "改变后续 world_state_hash，属确定性后果而非错误）",
+             "engine_evidence": "social.py:267-299,568-575"},
+            {"domain": "RESOURCE",
+             "question": "资源集合、节点与正式 resource profile？",
+             "answer_state": "BLOCKED",
+             "engine_requirement":
+                 "resource_stocks 必须是完整矩阵（每个 working_name 聚落 × 任一 stock 行出现的"
+                 "每个 resource_profile_ref），否则经济相位 C 中途 KeyError；"
+                 "零节点 = 无开采（RESOURCE 合法空转）",
+             "engine_evidence": "economy.py:297-305; resource.py:138-142",
+             "owner_decision_id": "OD-6"},
+            {"domain": "ECONOMY",
+             "question": "初始库存、配方/产能与 pressure 行？",
+             "answer_state": "BLOCKED（结构已派生）",
+             "engine_requirement":
+                 "economic_pressure_state 每个 (聚落 × 消费类资源) 一行，缺行 fail-closed；"
+                 "无 production_state 行 = 该聚落×配方不生产（不报错）；"
+                 "引擎已定义中性初始行（全 0 + shortage_ratio 0/1 + stress_level=NONE）",
+             "engine_evidence": "economy.py:164-170,359-362; models_world.py:262-287",
+             "owner_decision_id": "OD-7"},
+            {"domain": "ECOLOGY",
+             "question": "初始生态区与正式生态 profile？",
+             "answer_state": "CARDINALITY_DERIVED / VALUES_BLOCKED",
+             "engine_requirement":
+                 "每区必须有 ecology_zones + ecology_state + ecology_feedback_state 三行"
+                 "（否则 EcologyZoneMissing）；settlement_relation = 聚落 working_name",
+             "derived_cardinality":
+                 derived(12, "RA-STRUCT-001", "1.0",
+                         ["12 个已批准聚落槽位"], "每聚落 1 区 = 12 区",
+                         "EXACT_CARDINALITY", "NOT_APPLICABLE"),
+             "engine_evidence": "ecology.py:156-169,189-199; models_world.py:296-384",
+             "owner_decision_id": "OD-8"},
+            {"domain": "SOCIAL",
+             "question": "社会组织形态与正式阈值来源？",
+             "answer_state": "BLOCKED",
+             "engine_requirement":
+                 "每聚落必须有 settlement_social_state + social_feedback_state（否则 "
+                 "IntegrityError，与人口是否为 0 无关）；组织形态只能由正式 SocialProfile "
+                 "阈值表达，而阈值当前只存在于测试档且构造回落是静默的",
+             "engine_evidence": "social.py:70-107,142,568-575",
+             "owner_decision_id": "OD-9"},
+            {"domain": "TRIBULATION_PROFILE",
+             "question": "正式灾劫 profile 的字段与来源？",
+             "answer_state": "FIELDS_CLASSIFIED / VALUES_BLOCKED",
+             "engine_required_fields": ["profile_id", "tier", "theme"],
+             "world_law_fields":
+                 ["intensity_min/max", "precursor_steps（>=1）", "preparation_steps",
+                  "impact_steps", "recovery_steps", "population_risk", "resource_damage",
+                  "inventory_damage", "social_displacement", "ecology_pressure",
+                  "succession_rules"],
+             "plan_only_no_adapter": ["production_disruption", "institution_disruption"],
+             "cosmetic_unread": ["targeting_rules", "source_refs"],
+             "engine_evidence": "tribulation.py:87-107,308,338-339,450,462-463,736-744; "
+                                "tribulation_adapters.py:53,87,120,157,189",
+             "owner_decision_id": "OD-10"},
+            {"domain": "FIRST_OMEN_TIME",
+             "question": "首个前兆时间 = ？",
+             "answer_state": "DERIVED（不再是 owner 选择题）",
+             "answer":
+                 "前兆（PRECURSOR）阶段**始于**窗口 tick T，引擎无 pre-T 前导期；"
+                 "首个 omen 事件 = tick 10_000_000（10 福地年，REGULAR 首个窗口）",
+             "first_omen_tick": derived(
+                 first_omen_tick, "RA-TRIB-001", "1.0",
+                 ["已批准周期 {REGULAR:10, MAJOR:50, CENTENNIAL:100}",
+                  "窗口谓词 tick % (period_years*1e6) == 0",
+                  "max-tier tie-break"],
+                 "首个 TRIBULATION_PRECURSOR_STARTED 的 blessed tick",
+                 "EXACT_INTEGER_MULTIPLE", "MAX_TIER"),
+             "absent_quantity":
+                 "窗口前的静默前导期 / 预警提前量：冻结引擎 NOT_FOUND（无列、无负偏移）；"
+                 "若主人要求 ≠10 福地年的首个前兆，那是**新引擎能力**，不是数值裁决",
+             "engine_evidence": "tribulation.py:170-177,356,385-388,420-425; "
+                                "tests/baselines/m3b_causal_history_300y_v1/"
+                                "episode_history_samples.json:8-10"},
         ],
         "engine_required_structured_params": [
             {"id": "D-B1", "title": "人口年龄结构（cohort 划分与占比）",

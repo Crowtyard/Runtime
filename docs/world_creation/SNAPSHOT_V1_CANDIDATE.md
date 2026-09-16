@@ -61,6 +61,18 @@ world_runtime   = 0 行（canonical：0 行 == 世界未激活，`tests/formal_d
 > live 实例库在 **launcher instance 路径**下。任何红线检查都必须指向 launcher 路径，
 > 否则会读到过期副本并**误判**（该副本的 1 行 `world_runtime` 会让"未激活"断言看起来失败）。
 
+**World Seed 只读实测（同一轮）**：
+
+```
+seed_dir        = <KB>\world_seed（default_seed_dir）
+seed_id/version = XIAOGUANG_BLESSED_LAND_WORLD_SEED_v1.0 / 1.0
+declared_status = PREPARED_NOT_ACTIVATED      consumed = FALSE
+fingerprint     = cc0e4c0e16c7e2ec8cecb4ba871afc3af1a402e94732e645fceb4b1aca73771d
+                  → 与 M6 基线一致；MANIFEST 20 条目
+```
+
+工具：`services.activation.seed_package.load_seed_package`（只读装载校验；**未消费、未改写、未激活**）。
+
 ---
 
 ## 2. S-1..S-10 逐项状态（canon 真实结构：`design/phase1_8/11`）
@@ -102,6 +114,24 @@ D-F   首个前兆时间：**由冻结引擎派生**（不再是 owner 选择题
 
 `WORKING_NAME_ONLY`：`MAIN-01..04` / `SAT-01..08` 是槽位标签，**不是**世界内最终名称；
 未来改名**不得**重建聚落 identity。
+
+---
+
+## 3b. 逐域问答（owner 逐域提问的逐项回答）
+
+| 域 | 问题 | 候选回答 | 状态 | 依据 / 决策 |
+| --- | --- | --- | --- | --- |
+| **年龄结构** | cohort 划分与占比？ | 结构由引擎定义（bucket 宽固定 1 福地年、`[i, i+1)`、末位开区间、出生入 bucket 0、cohort == 一行 `population_groups`）；占比由 `RA-COHORT-001` 从**存活曲线**确定性派生 | **结构 = DERIVED / 数值 = BLOCKED** | `population.py:9,63-97,140-146,289-292,339,344-346`；OD-3 |
+| **职业** | 职业组划分与户统计口径？ | **无需决策**：`occupation_group` 无任何引擎读取（WRITE_ONLY，仅影响 snapshot 行序 + 世界状态哈希）；`household_stats` 零读零写且不在投影内；经济劳动力 = 聚落总人口 // `labor_per_batch` | **NOT_REQUIRED** | `snapshot.py:88-91,263-264`；`economy.py:133-136,188-211` |
+| **户** | 初始户结构是否预置？ | **不预置**：SOCIAL 首步自建（`formation_size` 确定性 id，自愈）；fail-closed 只针对 `settlement_social_state` / `social_feedback_state` | **DERIVED_BY_ENGINE** | `social.py:267-299,568-575` |
+| **资源** | 资源集合 / 节点 / 正式 profile？ | 结构已派生（`resource_stocks` = 12 × R 完整矩阵）；R、节点集合与 profile 数值无来源 | **BLOCKED** | `economy.py:297-305`；OD-6 |
+| **经济** | 初始库存 / 配方 / pressure 行？ | 结构已派生（`economic_pressure_state` = 12 × C；无 `production_state` 行 = 不生产，不报错）；数值无来源。引擎**已定义**中性初始行（全 0 + `shortage_ratio 0/1` + `stress_level=NONE`） | **BLOCKED** | `economy.py:164-170,359-362`；`models_world.py:262-287`；OD-7 |
+| **生态** | 初始生态区与正式 profile？ | 区数**已派生 = 12**（每聚落 1 区，`settlement_relation = working_name`；每区 3 行）；`EcologyProfile` 数值无来源 | **基数 DERIVED / 数值 BLOCKED** | `ecology.py:156-169,189-199`；OD-8 |
+| **社会** | 组织形态与正式阈值？ | 形态只能由正式 `SocialProfile` 阈值表达；阈值仅在测试档且构造回落是静默的 | **BLOCKED** | `social.py:70-107,142,568-575`；OD-9 |
+| **灾劫 profile** | 正式 profile 字段与来源？ | 字段已分类：引擎必需 3（`profile_id/tier/theme`）、世界法则 11、仅进 plan 无 adapter 消费 2（`production_disruption`/`institution_disruption`）、引擎不读 2（`targeting_rules`/`source_refs`）；数值无来源 | **字段已分类 / 数值 BLOCKED** | `tribulation.py:87-107,308,736-744`；OD-10 |
+| **首个前兆时间** | = ？ | **tick 10_000_000（10 福地年，REGULAR 首个窗口）**，由引擎窗口语义派生；引擎**不存在**"窗口前导期"概念 | **DERIVED** | `tribulation.py:170-177,356,385-388,420-425` |
+
+机读版：候选 JSON `per_domain_answers`（逐域 `answer_state` / `engine_evidence` / 规则或 OD）。
 
 ---
 
@@ -310,11 +340,11 @@ python scripts\validate_snapshot_candidate.py         # 独立校验（schema/�
 禁 materializer / 禁止生产变更能力 / 正式世界红线。
 
 ```
-attributed_nodes        = 106
+attributed_nodes        = 109
 owner_approved_nodes    =  19
-derived_nodes           =  18
+derived_nodes           =  20
 neutral_nodes           =  31
 blocked_nodes           =  19
-candidate_sha256        = d73cd502ec38744eb25d5d8178b39636e3a7574830ab82788af884b47865f147
+candidate_sha256        = 0a7466c7054c9d51f6a069f94c325e87c20ad0f1f341b806014961c461d62f03
 matrix_sha256           = 8dfe3471c1ff9d9c93646df18e4f55335cb93ca634c4afc96a17c86b5b28c457
 ```

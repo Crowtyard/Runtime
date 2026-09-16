@@ -37,10 +37,16 @@ DERIVATION_KEYS = ("rule_id", "rule_version", "inputs", "output",
                    "rounding_policy", "tie_break_policy")
 REQUIRED_TOP_LEVEL = ("header", "source_class_enum", "derivation_rules",
                       "owner_decisions", "world_layer_S1_S10",
+                      "per_domain_answers",
                       "engine_required_structured_params",
                       "bootstrap_entity_plan", "engine_forced_constraints",
                       "profile_registries", "minimal_owner_decisions",
                       "unresolved_items", "audit_corrections")
+
+#: owner 逐域提问必须全部有答案（owner §18/§19）
+REQUIRED_DOMAINS = ("AGE_COHORT_STRUCTURE", "OCCUPATION", "HOUSEHOLD", "RESOURCE",
+                    "ECONOMY", "ECOLOGY", "SOCIAL", "TRIBULATION_PROFILE",
+                    "FIRST_OMEN_TIME")
 
 FORBIDDEN_TEST_TOKENS = ("TEST-SPECIES", "TEST-RESOURCE", "TEST-ECOLOGY",
                          "TEST-SOCIAL", "TEST_FIXTURE", "TEST_PROFILE",
@@ -50,6 +56,7 @@ CITATION_KEYS = frozenset({
     "evidence", "source_ref", "replaces", "engine_contract", "fallback_policy",
     "constraint", "blocking_reason", "reason", "note", "why", "engine_requirement",
     "engine_forced", "original_claim", "correction", "neutrality_basis",
+    "engine_evidence", "engine_requirement",
     "canon_suggestion", "declared_rule", "inputs", "output", "owner_options",
     "options", "not_in_minimum_set", "status", "note_zh", "rationale",
     # 政策声明类文本（例如 PRODUCTION_TEST_PROFILE_FALLBACK = FORBIDDEN）
@@ -298,10 +305,43 @@ def check_no_production_mutation(doc: dict) -> None:
                 _fail(f"{path.name}: production-mutation capability ({token})")
 
 
+def check_per_domain_answers(doc: dict) -> None:
+    """owner 逐域提问必须逐域有答案，且答案必须指明状态与依据。"""
+    answers = {a["domain"]: a for a in doc["per_domain_answers"]}
+    missing = [d for d in REQUIRED_DOMAINS if d not in answers]
+    if missing:
+        _fail(f"per-domain answers missing: {missing}")
+    for domain, answer in answers.items():
+        for key in ("answer_state", "question", "engine_evidence"):
+            if not answer.get(key):
+                _fail(f"{domain}: answer lacks {key}")
+        if not (answer.get("owner_decision_id") or answer.get("rule")
+                or answer.get("answer")):
+            _fail(f"{domain}: answer must cite an OD, a rule, or a direct answer")
+    omen = answers["FIRST_OMEN_TIME"]
+    if omen["first_omen_tick"]["value"] != 10_000_000:
+        _fail("FIRST_OMEN_TIME must stay the derived 10 blessed years")
+
+
+def check_seed_measurement(doc: dict) -> None:
+    measurement = doc["header"].get("world_seed_redline_measurement")
+    if not measurement:
+        _fail("missing world_seed_redline_measurement (seed must be verified "
+              "unconsumed, not assumed)")
+    if measurement["consumed"] is not False:
+        _fail("world seed must remain unconsumed")
+    if measurement["declared_status"] != "PREPARED_NOT_ACTIVATED":
+        _fail("world seed declared status drifted")
+    if not measurement.get("fingerprint_matches_m6_baseline"):
+        _fail("world seed fingerprint drifted from the M6 baseline")
+
+
 def validate(path: pathlib.Path = CANDIDATE_PATH) -> dict:
     doc = load_candidate(path)
     check_header(doc)
     check_red_lines(doc)
+    check_seed_measurement(doc)
+    check_per_domain_answers(doc)
     nodes = check_provenance(doc)
     check_blocking_disclosure(doc)
     check_allocation(doc)
