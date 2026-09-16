@@ -1,0 +1,1903 @@
+{
+  "audit_corrections": [
+    {
+      "correction": "occupation_group 无任何引擎读取（WRITE_ONLY：仅影响 snapshot 行序与 world_state_hash）；household_stats 零读零写且不在 snapshot 投影内 → **不构成阻塞项**",
+      "evidence": "snapshot.py:88-91,263-264; state_hash.py:40,66; economy.py:133-136,188-211; social.py:157-200",
+      "original_claim": "occupation_group / household_stats “参与社会派生”",
+      "target": "docs/m6c_minimal_bootstrap_canon_audit.md:338（D-B3 行）"
+    }
+  ],
+  "bootstrap_entity_plan": {
+    "allocation": {
+      "attribution_scope": "SECTION",
+      "canonical_text": "group,MAIN-01,MAIN-02,MAIN-03,MAIN-04,SAT-01,SAT-02,SAT-03,SAT-04,SAT-05,SAT-06,SAT-07,SAT-08\nGROUP_1,666,666,666,666,167,167,167,167,167,167,167,167\nGROUP_2,500,500,500,500,125,125,125,125,125,125,125,125\nGROUP_3,417,417,417,417,104,104,104,104,104,104,104,104\nGROUP_4,417,417,417,417,104,104,104,104,104,104,104,104\n",
+      "column_totals": [
+        2000,
+        2000,
+        2000,
+        2000,
+        500,
+        500,
+        500,
+        500,
+        500,
+        500,
+        500,
+        500
+      ],
+      "derivation": {
+        "inputs": [
+          "GROUP_POPULATIONS（owner 已批准群体人数）",
+          "SETTLEMENT_SLOTS（owner 已批准聚落目标人口）"
+        ],
+        "output": "(group × settlement) 整数名额矩阵",
+        "rounding_policy": "FLOOR_THEN_LARGEST_REMAINDER_STAGE_A_MIN_DISTORTION_REPAIR_STAGE_B",
+        "rule_id": "RA-ALLOC-001",
+        "rule_version": "1.0",
+        "tie_break_policy": "REMAINDER_DESC_THEN_ROW_INDEX_ASC_THEN_MIN_COST_THEN_COLUMN_INDEX_ASC"
+      },
+      "group_order": [
+        "GROUP_1",
+        "GROUP_2",
+        "GROUP_3",
+        "GROUP_4"
+      ],
+      "matrix": [
+        [
+          666,
+          666,
+          666,
+          666,
+          167,
+          167,
+          167,
+          167,
+          167,
+          167,
+          167,
+          167
+        ],
+        [
+          500,
+          500,
+          500,
+          500,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125
+        ],
+        [
+          417,
+          417,
+          417,
+          417,
+          104,
+          104,
+          104,
+          104,
+          104,
+          104,
+          104,
+          104
+        ],
+        [
+          417,
+          417,
+          417,
+          417,
+          104,
+          104,
+          104,
+          104,
+          104,
+          104,
+          104,
+          104
+        ]
+      ],
+      "matrix_sha256": "8dfe3471c1ff9d9c93646df18e4f55335cb93ca634c4afc96a17c86b5b28c457",
+      "row_totals": [
+        4000,
+        3000,
+        2500,
+        2500
+      ],
+      "rule": {
+        "inputs": [
+          "GROUP_POPULATIONS（有序群体人数）",
+          "SETTLEMENT_SLOTS（有序聚落容量）"
+        ],
+        "marginals": "BOTH_ROWS_AND_COLUMNS_EXACT",
+        "output": "(group × settlement) 整数名额矩阵 + 行/列合计",
+        "rounding_policy": "FLOOR_THEN_LARGEST_REMAINDER_STAGE_A_MIN_DISTORTION_REPAIR_STAGE_B",
+        "rule_id": "RA-ALLOC-001",
+        "rule_version": "1.0",
+        "tie_break_policy": "REMAINDER_DESC_THEN_ROW_INDEX_ASC_THEN_MIN_COST_THEN_COLUMN_INDEX_ASC",
+        "uses_float": false,
+        "uses_hash_of_seed": false,
+        "uses_rng": false
+      },
+      "settlement_order": [
+        "MAIN-01",
+        "MAIN-02",
+        "MAIN-03",
+        "MAIN-04",
+        "SAT-01",
+        "SAT-02",
+        "SAT-03",
+        "SAT-04",
+        "SAT-05",
+        "SAT-06",
+        "SAT-07",
+        "SAT-08"
+      ],
+      "source_class": "DETERMINISTIC_DERIVATION",
+      "state": "DERIVED"
+    },
+    "not_in_minimum_set": [
+      "ecological_regions",
+      "industries",
+      "persons",
+      "tribulations",
+      "timeline_entries",
+      "cultural_elements",
+      "tribulation_profiles（DB 行 = 死读，非引擎必需；仅为 hash/展示）",
+      "tribulation_episodes/decisions/impact_plans/recovery_states/residual_changes/resource_succession_candidates",
+      "production_state（无行 = 该聚落×配方不生产，不报错）"
+    ],
+    "row_cardinality": {
+      "ecology_feedback_state": {
+        "derivation": {
+          "inputs": [
+            "12 生态区"
+          ],
+          "output": "每区 1 行",
+          "rounding_policy": "EXACT_CARDINALITY",
+          "rule_id": "RA-STRUCT-001",
+          "rule_version": "1.0",
+          "tie_break_policy": "NOT_APPLICABLE"
+        },
+        "source_class": "DETERMINISTIC_DERIVATION",
+        "state": "DERIVED",
+        "value": 12
+      },
+      "ecology_state": {
+        "derivation": {
+          "inputs": [
+            "12 生态区"
+          ],
+          "output": "每区 1 行",
+          "rounding_policy": "EXACT_CARDINALITY",
+          "rule_id": "RA-STRUCT-001",
+          "rule_version": "1.0",
+          "tie_break_policy": "NOT_APPLICABLE"
+        },
+        "source_class": "DETERMINISTIC_DERIVATION",
+        "state": "DERIVED",
+        "value": 12
+      },
+      "ecology_zones": {
+        "derivation": {
+          "inputs": [
+            "12 聚落"
+          ],
+          "output": "每聚落 1 区",
+          "rounding_policy": "EXACT_CARDINALITY",
+          "rule_id": "RA-STRUCT-001",
+          "rule_version": "1.0",
+          "tie_break_policy": "NOT_APPLICABLE"
+        },
+        "source_class": "DETERMINISTIC_DERIVATION",
+        "state": "DERIVED",
+        "value": 12
+      },
+      "economic_pressure_state": {
+        "blocking_input": "C（OD-6/OD-7）",
+        "derivation": {
+          "inputs": [
+            "12 聚落 × 消费类资源集合 C ⊆ R"
+          ],
+          "output": "economic_pressure_state 行数 = 12 × C",
+          "rounding_policy": "EXACT_CARDINALITY",
+          "rule_id": "RA-STRUCT-001",
+          "rule_version": "1.0",
+          "tie_break_policy": "NOT_APPLICABLE"
+        },
+        "source_class": "DETERMINISTIC_DERIVATION",
+        "state": "DERIVED_SHAPE_BLOCKED_CARDINALITY",
+        "value": null
+      },
+      "households": {
+        "derivation": {
+          "inputs": [
+            "SOCIAL 自建 household（social.py:267-299）"
+          ],
+          "output": "tick=0 不预置任何 household",
+          "rounding_policy": "EXACT_CARDINALITY",
+          "rule_id": "RA-STRUCT-001",
+          "rule_version": "1.0",
+          "tie_break_policy": "NOT_APPLICABLE"
+        },
+        "source_class": "DETERMINISTIC_DERIVATION",
+        "state": "DERIVED",
+        "value": 0
+      },
+      "institutions": {
+        "derivation": {
+          "inputs": [
+            "SOCIAL 自建"
+          ],
+          "output": "tick=0 不预置",
+          "rounding_policy": "EXACT_CARDINALITY",
+          "rule_id": "RA-STRUCT-001",
+          "rule_version": "1.0",
+          "tie_break_policy": "NOT_APPLICABLE"
+        },
+        "source_class": "DETERMINISTIC_DERIVATION",
+        "state": "DERIVED",
+        "value": 0
+      },
+      "lineages": {
+        "derivation": {
+          "inputs": [
+            "SOCIAL 自建"
+          ],
+          "output": "tick=0 不预置",
+          "rounding_policy": "EXACT_CARDINALITY",
+          "rule_id": "RA-STRUCT-001",
+          "rule_version": "1.0",
+          "tie_break_policy": "NOT_APPLICABLE"
+        },
+        "source_class": "DETERMINISTIC_DERIVATION",
+        "state": "DERIVED",
+        "value": 0
+      },
+      "population_groups": {
+        "blocking_input": "cohort_buckets（OD-3）",
+        "derivation": {
+          "inputs": [
+            "12 聚落 × 4 群体（species）× cohort_buckets"
+          ],
+          "output": "population_groups 行数 = 48 × cohort_buckets",
+          "rounding_policy": "EXACT_CARDINALITY",
+          "rule_id": "RA-STRUCT-001",
+          "rule_version": "1.0",
+          "tie_break_policy": "NOT_APPLICABLE"
+        },
+        "source_class": "DETERMINISTIC_DERIVATION",
+        "state": "DERIVED_SHAPE_BLOCKED_CARDINALITY",
+        "value": null
+      },
+      "production_recipes": {
+        "blocking_reason": "配方集合未批准（可为空 = 合法空转）",
+        "evidence": "economy.py:188-191",
+        "owner_decision_id": "OD-7",
+        "source_class": null,
+        "state": "BLOCKED",
+        "value": null
+      },
+      "resource_nodes": {
+        "blocking_reason": "节点集合未批准（可为空 = 合法空转）",
+        "evidence": "resource.py:138-142",
+        "owner_decision_id": "OD-6",
+        "source_class": null,
+        "state": "BLOCKED",
+        "value": null
+      },
+      "resource_stocks": {
+        "blocking_input": "R（OD-6）",
+        "derivation": {
+          "inputs": [
+            "12 聚落 × 正式资源 profile 集合 R"
+          ],
+          "output": "resource_stocks 行数 = 12 × R（完整矩阵）",
+          "rounding_policy": "EXACT_CARDINALITY",
+          "rule_id": "RA-STRUCT-001",
+          "rule_version": "1.0",
+          "tie_break_policy": "NOT_APPLICABLE"
+        },
+        "source_class": "DETERMINISTIC_DERIVATION",
+        "state": "DERIVED_SHAPE_BLOCKED_CARDINALITY",
+        "value": null
+      },
+      "settlement_social_state": {
+        "derivation": {
+          "inputs": [
+            "12 聚落"
+          ],
+          "output": "每聚落 1 行",
+          "rounding_policy": "EXACT_CARDINALITY",
+          "rule_id": "RA-STRUCT-001",
+          "rule_version": "1.0",
+          "tie_break_policy": "NOT_APPLICABLE"
+        },
+        "source_class": "DETERMINISTIC_DERIVATION",
+        "state": "DERIVED",
+        "value": 12
+      },
+      "settlements": {
+        "source_class": "OWNER_APPROVED",
+        "source_ref": "M6C.1 owner D-B2",
+        "state": "APPROVED_BY_OWNER",
+        "value": 12
+      },
+      "social_feedback_state": {
+        "derivation": {
+          "inputs": [
+            "12 聚落"
+          ],
+          "output": "每聚落 1 行",
+          "rounding_policy": "EXACT_CARDINALITY",
+          "rule_id": "RA-STRUCT-001",
+          "rule_version": "1.0",
+          "tie_break_policy": "NOT_APPLICABLE"
+        },
+        "source_class": "DETERMINISTIC_DERIVATION",
+        "state": "DERIVED",
+        "value": 12
+      },
+      "tribulation_profiles": {
+        "derivation": {
+          "inputs": [
+            "已批准三个 tier"
+          ],
+          "output": "每 tier 一个**正式 profile 定义**（内存 registry 为引擎实际通道；DB 行为死读，仅供 hash/展示）",
+          "rounding_policy": "EXACT_CARDINALITY",
+          "rule_id": "RA-STRUCT-001",
+          "rule_version": "1.0",
+          "tie_break_policy": "NOT_APPLICABLE"
+        },
+        "source_class": "DETERMINISTIC_DERIVATION",
+        "state": "DERIVED",
+        "value": 3
+      },
+      "tribulation_schedules": {
+        "derivation": {
+          "inputs": [
+            "已批准三个 tier"
+          ],
+          "output": "每 tier 一行 enabled 排期",
+          "rounding_policy": "EXACT_CARDINALITY",
+          "rule_id": "RA-STRUCT-001",
+          "rule_version": "1.0",
+          "tie_break_policy": "NOT_APPLICABLE"
+        },
+        "source_class": "DETERMINISTIC_DERIVATION",
+        "state": "DERIVED",
+        "value": 3
+      }
+    },
+    "settlements": [
+      {
+        "population_capacity": {
+          "blocking_reason": "population_capacity 是世界法则（出生 logistics 收缩）；若设为 == 初始人口 → room=0 → 出生恒为 0（人口冻结陷阱）；NULL = 引擎中性（无容量约束，factor=1）。",
+          "evidence": "population.py:187-189,329-332",
+          "owner_decision_id": "OD-4",
+          "owner_options": [
+            "(a) NULL = 无容量法则（引擎中性）",
+            "(b) 按聚落类型的容量数值（须 > 初始人口，否则人口永久冻结）"
+          ],
+          "source_class": null,
+          "state": "BLOCKED",
+          "value": null
+        },
+        "region_ref": {
+          "neutrality_basis": "REGION_REF_NULL_EVERYWHERE：生态区/聚落/资源节点 region_ref 全为 NULL，不创建 ecological_regions 行（该表无业务键，见 UNRESOLVED U-3）",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "ecology.py:210; models_world.py:478-490",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": null
+        },
+        "settlement_slot": "MAIN-01",
+        "settlement_type": "MAIN",
+        "state": {
+          "neutrality_basis": "无引擎读取 settlements.state；ACTIVE 为中性初始态",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "models_world.py:26",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": "ACTIVE"
+        },
+        "target_population": {
+          "source_class": "OWNER_APPROVED",
+          "source_ref": "M6C.1 owner：每聚落人口",
+          "state": "APPROVED_BY_OWNER",
+          "value": 2000
+        },
+        "working_name": {
+          "source_class": "LOCAL_CANON",
+          "source_ref": "owner §12 WORKING_NAME_ONLY（非最终世界内名称；改名不得重建聚落 identity）",
+          "state": "WORKING_NAME_ONLY",
+          "value": "MAIN-01-WORKING"
+        }
+      },
+      {
+        "population_capacity": {
+          "blocking_reason": "population_capacity 是世界法则（出生 logistics 收缩）；若设为 == 初始人口 → room=0 → 出生恒为 0（人口冻结陷阱）；NULL = 引擎中性（无容量约束，factor=1）。",
+          "evidence": "population.py:187-189,329-332",
+          "owner_decision_id": "OD-4",
+          "owner_options": [
+            "(a) NULL = 无容量法则（引擎中性）",
+            "(b) 按聚落类型的容量数值（须 > 初始人口，否则人口永久冻结）"
+          ],
+          "source_class": null,
+          "state": "BLOCKED",
+          "value": null
+        },
+        "region_ref": {
+          "neutrality_basis": "REGION_REF_NULL_EVERYWHERE：生态区/聚落/资源节点 region_ref 全为 NULL，不创建 ecological_regions 行（该表无业务键，见 UNRESOLVED U-3）",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "ecology.py:210; models_world.py:478-490",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": null
+        },
+        "settlement_slot": "MAIN-02",
+        "settlement_type": "MAIN",
+        "state": {
+          "neutrality_basis": "无引擎读取 settlements.state；ACTIVE 为中性初始态",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "models_world.py:26",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": "ACTIVE"
+        },
+        "target_population": {
+          "source_class": "OWNER_APPROVED",
+          "source_ref": "M6C.1 owner：每聚落人口",
+          "state": "APPROVED_BY_OWNER",
+          "value": 2000
+        },
+        "working_name": {
+          "source_class": "LOCAL_CANON",
+          "source_ref": "owner §12 WORKING_NAME_ONLY（非最终世界内名称；改名不得重建聚落 identity）",
+          "state": "WORKING_NAME_ONLY",
+          "value": "MAIN-02-WORKING"
+        }
+      },
+      {
+        "population_capacity": {
+          "blocking_reason": "population_capacity 是世界法则（出生 logistics 收缩）；若设为 == 初始人口 → room=0 → 出生恒为 0（人口冻结陷阱）；NULL = 引擎中性（无容量约束，factor=1）。",
+          "evidence": "population.py:187-189,329-332",
+          "owner_decision_id": "OD-4",
+          "owner_options": [
+            "(a) NULL = 无容量法则（引擎中性）",
+            "(b) 按聚落类型的容量数值（须 > 初始人口，否则人口永久冻结）"
+          ],
+          "source_class": null,
+          "state": "BLOCKED",
+          "value": null
+        },
+        "region_ref": {
+          "neutrality_basis": "REGION_REF_NULL_EVERYWHERE：生态区/聚落/资源节点 region_ref 全为 NULL，不创建 ecological_regions 行（该表无业务键，见 UNRESOLVED U-3）",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "ecology.py:210; models_world.py:478-490",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": null
+        },
+        "settlement_slot": "MAIN-03",
+        "settlement_type": "MAIN",
+        "state": {
+          "neutrality_basis": "无引擎读取 settlements.state；ACTIVE 为中性初始态",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "models_world.py:26",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": "ACTIVE"
+        },
+        "target_population": {
+          "source_class": "OWNER_APPROVED",
+          "source_ref": "M6C.1 owner：每聚落人口",
+          "state": "APPROVED_BY_OWNER",
+          "value": 2000
+        },
+        "working_name": {
+          "source_class": "LOCAL_CANON",
+          "source_ref": "owner §12 WORKING_NAME_ONLY（非最终世界内名称；改名不得重建聚落 identity）",
+          "state": "WORKING_NAME_ONLY",
+          "value": "MAIN-03-WORKING"
+        }
+      },
+      {
+        "population_capacity": {
+          "blocking_reason": "population_capacity 是世界法则（出生 logistics 收缩）；若设为 == 初始人口 → room=0 → 出生恒为 0（人口冻结陷阱）；NULL = 引擎中性（无容量约束，factor=1）。",
+          "evidence": "population.py:187-189,329-332",
+          "owner_decision_id": "OD-4",
+          "owner_options": [
+            "(a) NULL = 无容量法则（引擎中性）",
+            "(b) 按聚落类型的容量数值（须 > 初始人口，否则人口永久冻结）"
+          ],
+          "source_class": null,
+          "state": "BLOCKED",
+          "value": null
+        },
+        "region_ref": {
+          "neutrality_basis": "REGION_REF_NULL_EVERYWHERE：生态区/聚落/资源节点 region_ref 全为 NULL，不创建 ecological_regions 行（该表无业务键，见 UNRESOLVED U-3）",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "ecology.py:210; models_world.py:478-490",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": null
+        },
+        "settlement_slot": "MAIN-04",
+        "settlement_type": "MAIN",
+        "state": {
+          "neutrality_basis": "无引擎读取 settlements.state；ACTIVE 为中性初始态",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "models_world.py:26",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": "ACTIVE"
+        },
+        "target_population": {
+          "source_class": "OWNER_APPROVED",
+          "source_ref": "M6C.1 owner：每聚落人口",
+          "state": "APPROVED_BY_OWNER",
+          "value": 2000
+        },
+        "working_name": {
+          "source_class": "LOCAL_CANON",
+          "source_ref": "owner §12 WORKING_NAME_ONLY（非最终世界内名称；改名不得重建聚落 identity）",
+          "state": "WORKING_NAME_ONLY",
+          "value": "MAIN-04-WORKING"
+        }
+      },
+      {
+        "population_capacity": {
+          "blocking_reason": "population_capacity 是世界法则（出生 logistics 收缩）；若设为 == 初始人口 → room=0 → 出生恒为 0（人口冻结陷阱）；NULL = 引擎中性（无容量约束，factor=1）。",
+          "evidence": "population.py:187-189,329-332",
+          "owner_decision_id": "OD-4",
+          "owner_options": [
+            "(a) NULL = 无容量法则（引擎中性）",
+            "(b) 按聚落类型的容量数值（须 > 初始人口，否则人口永久冻结）"
+          ],
+          "source_class": null,
+          "state": "BLOCKED",
+          "value": null
+        },
+        "region_ref": {
+          "neutrality_basis": "REGION_REF_NULL_EVERYWHERE：生态区/聚落/资源节点 region_ref 全为 NULL，不创建 ecological_regions 行（该表无业务键，见 UNRESOLVED U-3）",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "ecology.py:210; models_world.py:478-490",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": null
+        },
+        "settlement_slot": "SAT-01",
+        "settlement_type": "SATELLITE",
+        "state": {
+          "neutrality_basis": "无引擎读取 settlements.state；ACTIVE 为中性初始态",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "models_world.py:26",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": "ACTIVE"
+        },
+        "target_population": {
+          "source_class": "OWNER_APPROVED",
+          "source_ref": "M6C.1 owner：每聚落人口",
+          "state": "APPROVED_BY_OWNER",
+          "value": 500
+        },
+        "working_name": {
+          "source_class": "LOCAL_CANON",
+          "source_ref": "owner §12 WORKING_NAME_ONLY（非最终世界内名称；改名不得重建聚落 identity）",
+          "state": "WORKING_NAME_ONLY",
+          "value": "SAT-01-WORKING"
+        }
+      },
+      {
+        "population_capacity": {
+          "blocking_reason": "population_capacity 是世界法则（出生 logistics 收缩）；若设为 == 初始人口 → room=0 → 出生恒为 0（人口冻结陷阱）；NULL = 引擎中性（无容量约束，factor=1）。",
+          "evidence": "population.py:187-189,329-332",
+          "owner_decision_id": "OD-4",
+          "owner_options": [
+            "(a) NULL = 无容量法则（引擎中性）",
+            "(b) 按聚落类型的容量数值（须 > 初始人口，否则人口永久冻结）"
+          ],
+          "source_class": null,
+          "state": "BLOCKED",
+          "value": null
+        },
+        "region_ref": {
+          "neutrality_basis": "REGION_REF_NULL_EVERYWHERE：生态区/聚落/资源节点 region_ref 全为 NULL，不创建 ecological_regions 行（该表无业务键，见 UNRESOLVED U-3）",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "ecology.py:210; models_world.py:478-490",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": null
+        },
+        "settlement_slot": "SAT-02",
+        "settlement_type": "SATELLITE",
+        "state": {
+          "neutrality_basis": "无引擎读取 settlements.state；ACTIVE 为中性初始态",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "models_world.py:26",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": "ACTIVE"
+        },
+        "target_population": {
+          "source_class": "OWNER_APPROVED",
+          "source_ref": "M6C.1 owner：每聚落人口",
+          "state": "APPROVED_BY_OWNER",
+          "value": 500
+        },
+        "working_name": {
+          "source_class": "LOCAL_CANON",
+          "source_ref": "owner §12 WORKING_NAME_ONLY（非最终世界内名称；改名不得重建聚落 identity）",
+          "state": "WORKING_NAME_ONLY",
+          "value": "SAT-02-WORKING"
+        }
+      },
+      {
+        "population_capacity": {
+          "blocking_reason": "population_capacity 是世界法则（出生 logistics 收缩）；若设为 == 初始人口 → room=0 → 出生恒为 0（人口冻结陷阱）；NULL = 引擎中性（无容量约束，factor=1）。",
+          "evidence": "population.py:187-189,329-332",
+          "owner_decision_id": "OD-4",
+          "owner_options": [
+            "(a) NULL = 无容量法则（引擎中性）",
+            "(b) 按聚落类型的容量数值（须 > 初始人口，否则人口永久冻结）"
+          ],
+          "source_class": null,
+          "state": "BLOCKED",
+          "value": null
+        },
+        "region_ref": {
+          "neutrality_basis": "REGION_REF_NULL_EVERYWHERE：生态区/聚落/资源节点 region_ref 全为 NULL，不创建 ecological_regions 行（该表无业务键，见 UNRESOLVED U-3）",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "ecology.py:210; models_world.py:478-490",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": null
+        },
+        "settlement_slot": "SAT-03",
+        "settlement_type": "SATELLITE",
+        "state": {
+          "neutrality_basis": "无引擎读取 settlements.state；ACTIVE 为中性初始态",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "models_world.py:26",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": "ACTIVE"
+        },
+        "target_population": {
+          "source_class": "OWNER_APPROVED",
+          "source_ref": "M6C.1 owner：每聚落人口",
+          "state": "APPROVED_BY_OWNER",
+          "value": 500
+        },
+        "working_name": {
+          "source_class": "LOCAL_CANON",
+          "source_ref": "owner §12 WORKING_NAME_ONLY（非最终世界内名称；改名不得重建聚落 identity）",
+          "state": "WORKING_NAME_ONLY",
+          "value": "SAT-03-WORKING"
+        }
+      },
+      {
+        "population_capacity": {
+          "blocking_reason": "population_capacity 是世界法则（出生 logistics 收缩）；若设为 == 初始人口 → room=0 → 出生恒为 0（人口冻结陷阱）；NULL = 引擎中性（无容量约束，factor=1）。",
+          "evidence": "population.py:187-189,329-332",
+          "owner_decision_id": "OD-4",
+          "owner_options": [
+            "(a) NULL = 无容量法则（引擎中性）",
+            "(b) 按聚落类型的容量数值（须 > 初始人口，否则人口永久冻结）"
+          ],
+          "source_class": null,
+          "state": "BLOCKED",
+          "value": null
+        },
+        "region_ref": {
+          "neutrality_basis": "REGION_REF_NULL_EVERYWHERE：生态区/聚落/资源节点 region_ref 全为 NULL，不创建 ecological_regions 行（该表无业务键，见 UNRESOLVED U-3）",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "ecology.py:210; models_world.py:478-490",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": null
+        },
+        "settlement_slot": "SAT-04",
+        "settlement_type": "SATELLITE",
+        "state": {
+          "neutrality_basis": "无引擎读取 settlements.state；ACTIVE 为中性初始态",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "models_world.py:26",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": "ACTIVE"
+        },
+        "target_population": {
+          "source_class": "OWNER_APPROVED",
+          "source_ref": "M6C.1 owner：每聚落人口",
+          "state": "APPROVED_BY_OWNER",
+          "value": 500
+        },
+        "working_name": {
+          "source_class": "LOCAL_CANON",
+          "source_ref": "owner §12 WORKING_NAME_ONLY（非最终世界内名称；改名不得重建聚落 identity）",
+          "state": "WORKING_NAME_ONLY",
+          "value": "SAT-04-WORKING"
+        }
+      },
+      {
+        "population_capacity": {
+          "blocking_reason": "population_capacity 是世界法则（出生 logistics 收缩）；若设为 == 初始人口 → room=0 → 出生恒为 0（人口冻结陷阱）；NULL = 引擎中性（无容量约束，factor=1）。",
+          "evidence": "population.py:187-189,329-332",
+          "owner_decision_id": "OD-4",
+          "owner_options": [
+            "(a) NULL = 无容量法则（引擎中性）",
+            "(b) 按聚落类型的容量数值（须 > 初始人口，否则人口永久冻结）"
+          ],
+          "source_class": null,
+          "state": "BLOCKED",
+          "value": null
+        },
+        "region_ref": {
+          "neutrality_basis": "REGION_REF_NULL_EVERYWHERE：生态区/聚落/资源节点 region_ref 全为 NULL，不创建 ecological_regions 行（该表无业务键，见 UNRESOLVED U-3）",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "ecology.py:210; models_world.py:478-490",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": null
+        },
+        "settlement_slot": "SAT-05",
+        "settlement_type": "SATELLITE",
+        "state": {
+          "neutrality_basis": "无引擎读取 settlements.state；ACTIVE 为中性初始态",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "models_world.py:26",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": "ACTIVE"
+        },
+        "target_population": {
+          "source_class": "OWNER_APPROVED",
+          "source_ref": "M6C.1 owner：每聚落人口",
+          "state": "APPROVED_BY_OWNER",
+          "value": 500
+        },
+        "working_name": {
+          "source_class": "LOCAL_CANON",
+          "source_ref": "owner §12 WORKING_NAME_ONLY（非最终世界内名称；改名不得重建聚落 identity）",
+          "state": "WORKING_NAME_ONLY",
+          "value": "SAT-05-WORKING"
+        }
+      },
+      {
+        "population_capacity": {
+          "blocking_reason": "population_capacity 是世界法则（出生 logistics 收缩）；若设为 == 初始人口 → room=0 → 出生恒为 0（人口冻结陷阱）；NULL = 引擎中性（无容量约束，factor=1）。",
+          "evidence": "population.py:187-189,329-332",
+          "owner_decision_id": "OD-4",
+          "owner_options": [
+            "(a) NULL = 无容量法则（引擎中性）",
+            "(b) 按聚落类型的容量数值（须 > 初始人口，否则人口永久冻结）"
+          ],
+          "source_class": null,
+          "state": "BLOCKED",
+          "value": null
+        },
+        "region_ref": {
+          "neutrality_basis": "REGION_REF_NULL_EVERYWHERE：生态区/聚落/资源节点 region_ref 全为 NULL，不创建 ecological_regions 行（该表无业务键，见 UNRESOLVED U-3）",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "ecology.py:210; models_world.py:478-490",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": null
+        },
+        "settlement_slot": "SAT-06",
+        "settlement_type": "SATELLITE",
+        "state": {
+          "neutrality_basis": "无引擎读取 settlements.state；ACTIVE 为中性初始态",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "models_world.py:26",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": "ACTIVE"
+        },
+        "target_population": {
+          "source_class": "OWNER_APPROVED",
+          "source_ref": "M6C.1 owner：每聚落人口",
+          "state": "APPROVED_BY_OWNER",
+          "value": 500
+        },
+        "working_name": {
+          "source_class": "LOCAL_CANON",
+          "source_ref": "owner §12 WORKING_NAME_ONLY（非最终世界内名称；改名不得重建聚落 identity）",
+          "state": "WORKING_NAME_ONLY",
+          "value": "SAT-06-WORKING"
+        }
+      },
+      {
+        "population_capacity": {
+          "blocking_reason": "population_capacity 是世界法则（出生 logistics 收缩）；若设为 == 初始人口 → room=0 → 出生恒为 0（人口冻结陷阱）；NULL = 引擎中性（无容量约束，factor=1）。",
+          "evidence": "population.py:187-189,329-332",
+          "owner_decision_id": "OD-4",
+          "owner_options": [
+            "(a) NULL = 无容量法则（引擎中性）",
+            "(b) 按聚落类型的容量数值（须 > 初始人口，否则人口永久冻结）"
+          ],
+          "source_class": null,
+          "state": "BLOCKED",
+          "value": null
+        },
+        "region_ref": {
+          "neutrality_basis": "REGION_REF_NULL_EVERYWHERE：生态区/聚落/资源节点 region_ref 全为 NULL，不创建 ecological_regions 行（该表无业务键，见 UNRESOLVED U-3）",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "ecology.py:210; models_world.py:478-490",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": null
+        },
+        "settlement_slot": "SAT-07",
+        "settlement_type": "SATELLITE",
+        "state": {
+          "neutrality_basis": "无引擎读取 settlements.state；ACTIVE 为中性初始态",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "models_world.py:26",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": "ACTIVE"
+        },
+        "target_population": {
+          "source_class": "OWNER_APPROVED",
+          "source_ref": "M6C.1 owner：每聚落人口",
+          "state": "APPROVED_BY_OWNER",
+          "value": 500
+        },
+        "working_name": {
+          "source_class": "LOCAL_CANON",
+          "source_ref": "owner §12 WORKING_NAME_ONLY（非最终世界内名称；改名不得重建聚落 identity）",
+          "state": "WORKING_NAME_ONLY",
+          "value": "SAT-07-WORKING"
+        }
+      },
+      {
+        "population_capacity": {
+          "blocking_reason": "population_capacity 是世界法则（出生 logistics 收缩）；若设为 == 初始人口 → room=0 → 出生恒为 0（人口冻结陷阱）；NULL = 引擎中性（无容量约束，factor=1）。",
+          "evidence": "population.py:187-189,329-332",
+          "owner_decision_id": "OD-4",
+          "owner_options": [
+            "(a) NULL = 无容量法则（引擎中性）",
+            "(b) 按聚落类型的容量数值（须 > 初始人口，否则人口永久冻结）"
+          ],
+          "source_class": null,
+          "state": "BLOCKED",
+          "value": null
+        },
+        "region_ref": {
+          "neutrality_basis": "REGION_REF_NULL_EVERYWHERE：生态区/聚落/资源节点 region_ref 全为 NULL，不创建 ecological_regions 行（该表无业务键，见 UNRESOLVED U-3）",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "ecology.py:210; models_world.py:478-490",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": null
+        },
+        "settlement_slot": "SAT-08",
+        "settlement_type": "SATELLITE",
+        "state": {
+          "neutrality_basis": "无引擎读取 settlements.state；ACTIVE 为中性初始态",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "models_world.py:26",
+          "state": "NEUTRAL_REQUIRES_OWNER_ACK",
+          "value": "ACTIVE"
+        },
+        "target_population": {
+          "source_class": "OWNER_APPROVED",
+          "source_ref": "M6C.1 owner：每聚落人口",
+          "state": "APPROVED_BY_OWNER",
+          "value": 500
+        },
+        "working_name": {
+          "source_class": "LOCAL_CANON",
+          "source_ref": "owner §12 WORKING_NAME_ONLY（非最终世界内名称；改名不得重建聚落 identity）",
+          "state": "WORKING_NAME_ONLY",
+          "value": "SAT-08-WORKING"
+        }
+      }
+    ]
+  },
+  "derivation_rules": [
+    {
+      "inputs": [
+        "GROUP_POPULATIONS（有序群体人数）",
+        "SETTLEMENT_SLOTS（有序聚落容量）"
+      ],
+      "marginals": "BOTH_ROWS_AND_COLUMNS_EXACT",
+      "output": "(group × settlement) 整数名额矩阵 + 行/列合计",
+      "rounding_policy": "FLOOR_THEN_LARGEST_REMAINDER_STAGE_A_MIN_DISTORTION_REPAIR_STAGE_B",
+      "rule_id": "RA-ALLOC-001",
+      "rule_version": "1.0",
+      "tie_break_policy": "REMAINDER_DESC_THEN_ROW_INDEX_ASC_THEN_MIN_COST_THEN_COLUMN_INDEX_ASC",
+      "uses_float": false,
+      "uses_hash_of_seed": false,
+      "uses_rng": false
+    },
+    {
+      "canonical_form": "weight[b] = PROD_{k<b}(1 - mortality[k]); share[b] = weight[b]/SUM",
+      "inputs": [
+        "SpeciesDemographyProfile.cohort_buckets",
+        "SpeciesDemographyProfile.mortality_by_bucket",
+        "population_groups.settlement_ref × species 人口总数"
+      ],
+      "output": "population_groups(age_cohort) 每个 bucket 的整数 count",
+      "rounding_policy": "FLOOR_THEN_LARGEST_REMAINDER",
+      "rule_id": "RA-COHORT-001",
+      "rule_version": "1.0",
+      "tie_break_policy": "REMAINDER_DESC_THEN_BUCKET_INDEX_ASC",
+      "uses_birth_rate": false,
+      "uses_float": false,
+      "uses_hash_of_seed": false,
+      "uses_rng": false
+    },
+    {
+      "inputs": [
+        "owner 指定的年龄带边界（福地年）",
+        "owner 指定的每带年死亡概率（有理数）",
+        "SpeciesDemographyProfile.cohort_buckets"
+      ],
+      "output": "SpeciesDemographyProfile.mortality_by_bucket（逐 bucket 年死亡概率）",
+      "rounding_policy": "NONE_PIECEWISE_CONSTANT_EXPANSION",
+      "rule_id": "RA-MORTALITY-001",
+      "rule_version": "1.0",
+      "status": "DECLARED_AWAITING_OWNER_RATIFICATION（owner §19：压缩 owner 决策数量；输入仍必须是 owner 数值）",
+      "tie_break_policy": "BAND_BOUNDARY_INCLUSIVE_LOWER_BOUND",
+      "uses_float": false,
+      "uses_hash_of_seed": false,
+      "uses_rng": false
+    },
+    {
+      "evidence": "tribulation.py:170-177,356,385-388,420-425; tests/baselines/m3b_causal_history_300y_v1/episode_history_samples.json:8-10",
+      "inputs": [
+        "已批准周期 {REGULAR:10, MAJOR:50, CENTENNIAL:100} 福地年",
+        "冻结窗口谓词 tick % (period_years*1e6) == 0",
+        "max-tier tie-break"
+      ],
+      "output": "首个 omen（PRECURSOR_STARTED）tick 与每 tier 首个窗口",
+      "rounding_policy": "EXACT_INTEGER_MULTIPLE",
+      "rule_id": "RA-TRIB-001",
+      "rule_version": "1.0",
+      "tie_break_policy": "MAX_TIER_REGULAR_LT_MAJOR_LT_CENTENNIAL",
+      "uses_float": false,
+      "uses_rng": false
+    },
+    {
+      "evidence": "economy.py:164-170,359-362; ecology.py:191-199; social.py:568-575; population.py:181-185",
+      "inputs": [
+        "已启用聚落集合",
+        "冻结引擎完整性要求（fail-closed 行）"
+      ],
+      "output": "bootstrap 必须提供的行集合基数（zone/state/feedback/pressure 等）",
+      "rounding_policy": "EXACT_CARDINALITY",
+      "rule_id": "RA-STRUCT-001",
+      "rule_version": "1.0",
+      "tie_break_policy": "NOT_APPLICABLE",
+      "uses_float": false,
+      "uses_rng": false
+    }
+  ],
+  "engine_forced_constraints": [
+    {
+      "attribution_scope": "SECTION",
+      "constraint": "precursor_steps >= 1",
+      "evidence": "tribulation.py:426-433,439-441,472-475,385-388",
+      "id": "EC-1",
+      "source_class": "ENGINE_NEUTRAL_CONSTANT",
+      "why": "precursor_steps=0 → transition_tick == T == end_tick → 同一步内 新建的内存 episode（无 \"id\" 键）进入 p_ep → ep[\"id\"] KeyError"
+    },
+    {
+      "attribution_scope": "SECTION",
+      "constraint": "tick=0 不得存在任何 ACTIVE episode（driver 从不以 blessed_end_tick=0 调用）",
+      "evidence": "tribulation.py:170-177,356; m3a_runner.py:69-73",
+      "id": "EC-2",
+      "source_class": "ENGINE_NEUTRAL_CONSTANT",
+      "why": "_tier_at_tick(schedules, 0) 会命中**所有** enabled 排期并取 max-tier（CENTENNIAL），与真实语义不符"
+    },
+    {
+      "attribution_scope": "SECTION",
+      "constraint": "migration_weights 长度 >= 2",
+      "evidence": "population.py:149-150,370-371",
+      "id": "EC-3",
+      "source_class": "ENGINE_NEUTRAL_CONSTANT",
+      "why": "_settlement_order 仅对 \"TEST-MAIN-A\" 返回 0，其它一律 1，并被用作 migration_weights 下标 → 长度 < 2 即 IndexError；12 个正式聚落全部走 index 1（迁移权重无法按聚落区分）"
+    },
+    {
+      "attribution_scope": "SECTION",
+      "constraint": "每个 (species, settlement_ref) 的 cohort 行必须**恰好**覆盖 0..N-1 各一行",
+      "evidence": "population.py:140-146,289-292,344-346; models_world.py:31-47（无 __table_args__）",
+      "id": "EC-4",
+      "source_class": "ENGINE_NEUTRAL_CONSTANT",
+      "why": "缺行静默丢人口；重复行（含 NULL/负数/非数字 age_cohort 一律 归入 bucket 0）会重复计数；DB 无唯一约束"
+    },
+    {
+      "attribution_scope": "SECTION",
+      "constraint": "population_capacity 若为数值必须 > 该聚落初始人口；否则出生恒为 0（人口冻结）",
+      "evidence": "population.py:187-189,329-332",
+      "id": "EC-5",
+      "source_class": "ENGINE_NEUTRAL_CONSTANT",
+      "why": "room = max(capacity - total_after, 0)/capacity"
+    },
+    {
+      "attribution_scope": "SECTION",
+      "constraint": "species_profile_ref 不得使用 DEMOGRAPHY_PROFILE_REF 常量（\"TEST_PROFILE_001\" 不是 registry key）",
+      "evidence": "population.py:40,116,241-252",
+      "id": "EC-6",
+      "source_class": "ENGINE_NEUTRAL_CONSTANT",
+      "why": "持久化的 profile 引用无法反解回 registry"
+    }
+  ],
+  "engine_required_structured_params": [
+    {
+      "blocked_inputs": [
+        "正式 species profile 的 cohort_buckets 与 mortality_by_bucket"
+      ],
+      "candidate_rule": "RA-COHORT-001",
+      "domain": "POPULATION",
+      "engine_requirement": "population_groups 必须覆盖**每一个** bucket 0..N-1（每 (species, settlement_ref) 各 N 行）；缺行 = 静默丢人口（违 P_INV_12）；同一 bucket 出现两行会**重复计数**",
+      "evidence": "population.py:181-185,289-292,339,344-346,402-424; mini_world.py:154-155; snapshot.py:257-264",
+      "id": "D-B1",
+      "owner_decision_id": "OD-3",
+      "state": "BLOCKED",
+      "title": "人口年龄结构（cohort 划分与占比）"
+    },
+    {
+      "domain": "POPULATION",
+      "id": "D-B2",
+      "note": "双边际严格精确：行 = 群体人数、列 = 聚落目标人口；（一维最大余额无法同时满足主人已批准的两组约束，故规则采用两阶段：列内最大余额 + 行边际最小偏离修复）",
+      "rule": "RA-ALLOC-001",
+      "state": "DERIVED",
+      "title": "人口每聚落分配（含物种×聚落交叉）"
+    },
+    {
+      "domain": "POPULATION/SOCIAL",
+      "evidence": "snapshot.py:88-91,263-264; state_hash.py:40,66; economy.py:133-136,188-211（劳动力 = 聚落总人口，与职业无关）",
+      "id": "D-B3",
+      "note": "M6C.1 更正：occupation_group 全仓**无引擎读取**（WRITE_ONLY；只影响 snapshot 排序与 world_state_hash）；household_stats **零读零写**且不在 snapshot 投影内。二者**不阻塞** tick=0 物化。已批准的“不发明职业结构”原则因此自动满足：occupation_group 保持 NULL/常量即可",
+      "state": "NOT_REQUIRED",
+      "title": "职业组划分与户统计口径"
+    },
+    {
+      "domain": "POPULATION",
+      "id": "D-B4",
+      "note": "名额已批准（4000/3000/2500/2500）；**族身份**（species 值）仍缺 → 与 S-2 合并为同一决策 OD-1",
+      "state": "APPROVED_BY_OWNER",
+      "title": "四族精确名额"
+    },
+    {
+      "domain": "SETTLEMENT",
+      "id": "D-B5",
+      "note": "12 槽位 + MAIN/SATELLITE 类型 + WORKING_NAME_ONLY 已批准；population_capacity 另见 OD-4",
+      "state": "APPROVED_BY_OWNER",
+      "title": "启用聚落集合与类型"
+    },
+    {
+      "domain": "RESOURCE",
+      "id": "D-B6",
+      "owner_decision_id": "OD-6",
+      "state": "BLOCKED",
+      "title": "资源节点集合与正式资源 profile"
+    },
+    {
+      "domain": "ECONOMY",
+      "engine_requirement": "resource_stocks 必须覆盖每个 (working_name 聚落 × 出现的 resource_profile_ref)；economic_pressure_state 每个 (聚落 × 消费类资源) 一行；否则 EconomyStateInconsistent/KeyError",
+      "evidence": "economy.py:164-170,297-305,359-362",
+      "id": "D-B7",
+      "owner_decision_id": "OD-7",
+      "state": "BLOCKED",
+      "title": "初始经济状态（库存/配方/产能/pressure 行）"
+    },
+    {
+      "domain": "ECOLOGY",
+      "engine_requirement": "每区必须有 ecology_zones + ecology_state + ecology_feedback_state 三行；否则 EcologyZoneMissing",
+      "evidence": "ecology.py:156-169,189-199; models_world.py:296-384",
+      "id": "D-B8",
+      "note": "**区间基数已派生**（每聚落 1 区 = 12 区，RA-STRUCT-001；settlement_relation = 聚落 working_name）；**正式 EcologyProfile 数值**（recovery_rate/recovery_ceiling/sensitivity/thresholds/pop_pressure_per_person/renewable_regen）仍为 OD-8",
+      "state": "PARTIAL",
+      "title": "初始生态区集合与正式生态 profile"
+    },
+    {
+      "domain": "SOCIAL",
+      "engine_requirement": "每聚落必须有 settlement_social_state + social_feedback_state；否则 IntegrityError（与人口是否为 0 无关）。households/lineages/institutions **不需要**预置：SOCIAL 自建",
+      "evidence": "social.py:267-299,568-575",
+      "id": "D-B9",
+      "owner_decision_id": "OD-9",
+      "state": "BLOCKED",
+      "title": "正式社会阈值来源"
+    },
+    {
+      "domain": "TRIBULATION",
+      "id": "D-B10",
+      "note": "周期 10/50/100 已批准；**首个前兆时间已派生**（10 BY = tick 10_000_000，RA-TRIB-001；引擎无 pre-T 前导期概念）；剩余：正式灾劫 profile 数值 + 静默回落授权 = OD-10",
+      "state": "PARTIAL",
+      "title": "灾劫正式周期与首个前兆"
+    }
+  ],
+  "header": {
+    "agent_may_promote_to_snapshot_v1": false,
+    "artifact": "SNAPSHOT_V1_CANDIDATE",
+    "engine_baseline": {
+      "alembic_head": "a9d4f2b7c1e8",
+      "formal_world_current_blessed_tick": {
+        "source_class": "OWNER_APPROVED",
+        "source_ref": "M6.0–M6C 不变式",
+        "state": "APPROVED_BY_OWNER",
+        "value": null
+      },
+      "formal_world_db_sha256": "7754b1d4658ea94ce509ae7fb7c06c33c44f98782021b3708e6f29ce69102837",
+      "formal_world_runtime_rows": {
+        "source_class": "OWNER_APPROVED",
+        "source_ref": "M6.0–M6C 不变式",
+        "state": "APPROVED_BY_OWNER",
+        "value": 0
+      },
+      "formal_world_seed_status": {
+        "source_class": "OWNER_APPROVED",
+        "source_ref": "M6.0–M6C 不变式",
+        "state": "APPROVED_BY_OWNER",
+        "value": "PREPARED_NOT_ACTIVATED"
+      },
+      "formal_world_status": {
+        "source_class": "OWNER_APPROVED",
+        "source_ref": "M6.0–M6C 不变式",
+        "state": "APPROVED_BY_OWNER",
+        "value": "NOT_ACTIVATED"
+      },
+      "runtime_commit": "1eb8472adc9e895a87dac15ad74fa4fae2670a39",
+      "world_seed_manifest_sha256": "cc0e4c0e16c7e2ec8cecb4ba871afc3af1a402e94732e645fceb4b1aca73771d"
+    },
+    "formal_activation_allowed": false,
+    "materialization_allowed": false,
+    "produced_by": "M6C.1 SNAPSHOT_V1 CANDIDATE CONSTRUCTION",
+    "red_lines": [
+      "不得实现 materializer（owner §26）",
+      "不得激活正式世界、不得消费正式 Seed、不得部署 live（owner §28）",
+      "不得自行把 SNAPSHOT_V1_CANDIDATE 升级为 SNAPSHOT_V1（owner §25）",
+      "PRODUCTION_TEST_PROFILE_FALLBACK = FORBIDDEN（owner 本轮）",
+      "不得修改冻结引擎语义（M2/M3）"
+    ],
+    "rule_set_version": {
+      "RA-ALLOC-001": "1.0",
+      "RA-COHORT-001": "1.0"
+    },
+    "status": "CANDIDATE_NOT_APPROVED",
+    "world_seed_consumed": false
+  },
+  "minimal_owner_decisions": [
+    {
+      "blocks": [
+        "population_groups.species",
+        "FORMAL_POPULATION_PROFILE_REGISTRY key 集合",
+        "S-2"
+      ],
+      "id": "OD-1",
+      "options": [
+        "批准 12 号文档 OPTION_A/B/C 之一",
+        "直接给出四个 species id 与中文名"
+      ],
+      "title": "S-2 异人种族组合",
+      "why": "名额已批准，但 species **身份字符串**未批准；species 是 NOT NULL 且必须命中 registry（未知 → fail-closed）"
+    },
+    {
+      "blocks": [
+        "S-4 产业",
+        "S-5 资源区",
+        "S-6 荒兽层级",
+        "S-7 社会组织",
+        "S-8 基础设施",
+        "S-9 发展水平"
+      ],
+      "id": "OD-2",
+      "options": [
+        "逐项批准/变更/否决",
+        "对不存在的机制（S-6/S-8）明确“本轮不表达”"
+      ],
+      "title": "S-1/S-4/S-5/S-6/S-7/S-8/S-9 世界层内容",
+      "why": "S-1/S-3 已批准；其余七项仍 PENDING_APPROVAL（canon 11 号文档）"
+    },
+    {
+      "blocks": [
+        "cohort_buckets",
+        "fertile 区间",
+        "birth_rate",
+        "mortality_by_bucket",
+        "emigration_rate",
+        "migration_weights",
+        "population_groups 行数"
+      ],
+      "id": "OD-3",
+      "options": [
+        "给出每族：寿命上限、生育区间、出生率、迁出率、迁移权重(>=2)、年龄带死亡概率",
+        "或批准一个共享 baseline + 每族偏差"
+      ],
+      "title": "人口世界法则数值（年龄结构与生命表）",
+      "why": "冻结引擎无任何默认值；缺 profile → fail-closed。本候选提供压缩机制 RA-MORTALITY-001（按年龄带，而非逐 bucket）"
+    },
+    {
+      "blocks": [
+        "settlements.population_capacity"
+      ],
+      "id": "OD-4",
+      "options": [
+        "NULL（无容量法则）",
+        "按聚落类型的容量数值（须 > 初始人口）"
+      ],
+      "title": "每聚落人口容量法则",
+      "why": "数值 == 初始人口 → 出生恒为 0；NULL = 无容量约束（中性）"
+    },
+    {
+      "blocks": [
+        "production_recipes",
+        "production_state",
+        "经济产出"
+      ],
+      "id": "OD-5",
+      "options": [
+        "批准草案骨架与配方数值",
+        "本轮不设产业"
+      ],
+      "title": "S-4 产业（production_recipes + industries）",
+      "why": "无批准清单 → 不得代填；空配方集合是合法空转"
+    },
+    {
+      "blocks": [
+        "FORMAL_RESOURCE_PROFILE_REGISTRY",
+        "resource_nodes",
+        "resource_stocks",
+        "consumption_category"
+      ],
+      "id": "OD-6",
+      "options": [
+        "批准资源清单 + 每资源 profile 数值",
+        "本轮不设资源"
+      ],
+      "title": "资源集合与正式资源 profile",
+      "why": "S-5 未批准；resource_stocks 必须完整矩阵，否则 KeyError"
+    },
+    {
+      "blocks": [
+        "初始库存",
+        "per_capita_demand",
+        "economic_pressure_state 行"
+      ],
+      "id": "OD-7",
+      "options": [
+        "给出初始库存与人均需求",
+        "以 0 库存 + 中性 pressure 行起步（会立即进入短缺路径，须主人确认）"
+      ],
+      "title": "初始经济状态",
+      "why": "缺 stock/pressure 行 → fail-closed（EconomyStateInconsistent）"
+    },
+    {
+      "blocks": [
+        "recovery_rate/ceiling/sensitivity/thresholds/pop_pressure_per_person/renewable_regen"
+      ],
+      "id": "OD-8",
+      "options": [
+        "批准每区（或全局）EcologyProfile 数值",
+        "明确“不启用生态派生”"
+      ],
+      "title": "生态世界法则数值（正式 EcologyProfile）",
+      "why": "生态区基数已派生为 12；profile 数值无来源（现仅测试档）"
+    },
+    {
+      "blocks": [
+        "formation_size/split_threshold/institution_* 阈值/stress_thresholds/压力权重/各 k"
+      ],
+      "id": "OD-9",
+      "options": [
+        "批准正式阈值",
+        "明确“不启用社会派生”"
+      ],
+      "title": "社会世界法则数值（正式 SocialProfile）",
+      "why": "阈值仅存在于 TEST_SOCIAL_PROFILE，且构造回落是静默的"
+    },
+    {
+      "blocks": [
+        "FORMAL_TRIBULATION_PROFILE_REGISTRY",
+        "S-10 mode",
+        "首个 episode 的强度/风险数值"
+      ],
+      "id": "OD-10",
+      "options": [
+        "批准每 tier 一套 profile 数值 + 授权去除静默回落",
+        "批准数值但暂留回落（不推荐：违反 PRODUCTION_TEST_PROFILE_FALLBACK = FORBIDDEN）"
+      ],
+      "title": "灾劫正式 profile + 静默回落授权",
+      "why": "周期与首个前兆时间已解决（派生）；profile 数值与 `profiles or TEST_PROFILES` 静默回落仍待 owner §18 裁决"
+    }
+  ],
+  "owner_decisions": [
+    {
+      "content": "WORLD_CREATION_REVIEW → S-1..S-10 → SNAPSHOT_V1_CANDIDATE → OWNER APPROVAL → SNAPSHOT_V1 → Materializer → Activation",
+      "id": "D-A",
+      "status": "APPROVED",
+      "title": "SNAPSHOT 流程"
+    },
+    {
+      "content": "WS-0406 胜出；旧 S-3（2~6 聚落）标记 SUPERSEDED_FOR_FORMAL_BOOTSTRAP（保留历史记录）",
+      "id": "D-B1",
+      "status": "APPROVED",
+      "title": "canon 冲突 S-3"
+    },
+    {
+      "content": "INITIAL_SETTLEMENT_COUNT = 12 = MAIN 4 + SATELLITE 8",
+      "id": "D-B2",
+      "status": "APPROVED",
+      "title": "初始聚落数"
+    },
+    {
+      "content": "MAIN-01..04 / SAT-01..08 = WORKING_NAME_ONLY",
+      "id": "D-B3",
+      "status": "APPROVED",
+      "title": "工作名"
+    },
+    {
+      "content": "INITIAL_TOTAL_POPULATION = 12000（设计基线升级为 bootstrap canon）",
+      "id": "D-B4",
+      "status": "APPROVED",
+      "title": "初始总人口"
+    },
+    {
+      "content": "GROUP_1..4 = 4000/3000/2500/2500（沿用既有 group 槽位，不重命名）",
+      "id": "D-B5",
+      "status": "APPROVED",
+      "title": "群体名额"
+    },
+    {
+      "content": "MAIN 2000×4 + SATELLITE 500×8 = 12000",
+      "id": "D-B6",
+      "status": "APPROVED",
+      "title": "每聚落人口"
+    },
+    {
+      "content": "确定性最大余额；固定顺序 + 固定 tie-break；无 RNG / 无 hash(seed)；逐字节相同",
+      "id": "D-B7",
+      "status": "APPROVED",
+      "title": "分配规则"
+    },
+    {
+      "content": "建立六个 FORMAL_*_PROFILE_REGISTRY 作为 BOOTSTRAP CONFIGURATION（非 engine law；不改冻结引擎）",
+      "id": "D-C",
+      "status": "APPROVED",
+      "title": "正式 profile registry"
+    },
+    {
+      "content": "PRODUCTION_TEST_PROFILE_FALLBACK = FORBIDDEN：正式 profile 存在则使用；缺失 = FAIL CLOSED",
+      "id": "D-C2",
+      "status": "APPROVED",
+      "title": "测试档回落"
+    },
+    {
+      "content": "允许显式输入/输出、版本化、确定性、可独立复算、记入 SNAPSHOT_V1、不得用测试夹具、不得改 M2/M3 语义；禁止随机生成 / 未批准 RNG / hash-mod 内容生成",
+      "id": "D-D",
+      "status": "APPROVED_WITH_CONSTRAINTS",
+      "title": "确定性派生"
+    },
+    {
+      "content": "REGULAR=10 / MAJOR=50 / CENTENNIAL=100 福地年",
+      "id": "D-E",
+      "status": "APPROVED",
+      "title": "灾劫周期"
+    },
+    {
+      "content": "由冻结引擎派生（见 RA-TRIB-001）；不再作为 owner 选择题",
+      "id": "D-F",
+      "status": "APPROVED_AS_DERIVED",
+      "title": "首个前兆时间"
+    }
+  ],
+  "profile_registries": {
+    "fallback_policy": "PRODUCTION_TEST_PROFILE_FALLBACK = FORBIDDEN（owner 本轮）",
+    "registries": [
+      {
+        "engine_contract": "population.py:63-97；构造默认 SPECIES_PROFILES（:162）；缺 profile → fail-closed",
+        "fields": [
+          {
+            "class": "METADATA",
+            "field": "species_id",
+            "note": "引擎不读，但必须等于 population_groups.species 与 registry key"
+          },
+          {
+            "class": "WORLD_LAW",
+            "field": "cohort_buckets",
+            "owner_decision_id": "OD-3",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "field": "fertile_min_age/fertile_max_age",
+            "owner_decision_id": "OD-3",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "field": "birth_rate",
+            "owner_decision_id": "OD-3",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "declared_rule": "RA-MORTALITY-001",
+            "field": "mortality_by_bucket",
+            "owner_decision_id": "OD-3",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "field": "emigration_rate",
+            "owner_decision_id": "OD-3",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "engine_forced": "长度 >= 2 且和 == 1（EC-3）",
+            "field": "migration_weights",
+            "owner_decision_id": "OD-3",
+            "state": "BLOCKED"
+          }
+        ],
+        "name": "FORMAL_POPULATION_PROFILE_REGISTRY",
+        "replaces": "SPECIES_PROFILES（TEST-SPECIES-001）"
+      },
+      {
+        "engine_contract": "resource.py:44-88；缺 profile → fail-closed",
+        "fields": [
+          {
+            "class": "IDENTITY",
+            "field": "resource_id",
+            "owner_decision_id": "OD-6",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "engine_forced": "必须 > 0",
+            "field": "quantity_scale",
+            "owner_decision_id": "OD-6",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "field": "renewability/extractability/consumption_category/production_usability",
+            "owner_decision_id": "OD-6",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "METADATA",
+            "field": "semantic_version",
+            "state": "BOOTSTRAP_OWNED"
+          }
+        ],
+        "name": "FORMAL_RESOURCE_PROFILE_REGISTRY",
+        "replaces": "RESOURCE_PROFILES（TEST-RESOURCE-001..003）"
+      },
+      {
+        "engine_contract": "economy.py:52-80；缺 profile → fail-closed",
+        "fields": [
+          {
+            "class": "IDENTITY",
+            "field": "profile_id",
+            "state": "BOOTSTRAP_OWNED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "engine_forced": "键必须是 resource profile id；consumption_category 决定 pressure 行集合",
+            "field": "per_capita_demand",
+            "owner_decision_id": "OD-7",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "METADATA",
+            "field": "semantic_version",
+            "state": "BOOTSTRAP_OWNED"
+          }
+        ],
+        "name": "FORMAL_ECONOMY_PROFILE_REGISTRY",
+        "replaces": "SPECIES_ECONOMY_PROFILES（TEST-SPECIES-001）"
+      },
+      {
+        "engine_contract": "ecology.py:64-119；__post_init__ 校验 0<recovery_ceiling<=ECOLOGY_STATE_SCALE、sensitivity>0、pressure_weights 和=1、thresholds 严格递减且长度=3",
+        "fields": [
+          {
+            "class": "IDENTITY",
+            "field": "profile_id",
+            "state": "BOOTSTRAP_OWNED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "field": "recovery_rate/recovery_ceiling/sensitivity",
+            "owner_decision_id": "OD-8",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "engine_forced": "键固定 {population,extraction,production,depletion}；和必须 == 1",
+            "field": "pressure_weights",
+            "owner_decision_id": "OD-8",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "field": "pop_pressure_per_person/renewable_regen_minor_per_full_quality",
+            "owner_decision_id": "OD-8",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "engine_forced": "长度 3、严格递减、<= ECOLOGY_STATE_SCALE",
+            "field": "thresholds",
+            "owner_decision_id": "OD-8",
+            "state": "BLOCKED"
+          }
+        ],
+        "name": "FORMAL_ECOLOGY_PROFILE_REGISTRY",
+        "replaces": "ECOLOGY_PROFILES（TEST-ECOLOGY-PROFILE-001）"
+      },
+      {
+        "engine_contract": "social.py:70-107；**唯一配置通道是构造参数**，且 `profile or TEST_SOCIAL_PROFILE` 会静默回落",
+        "fields": [
+          {
+            "class": "IDENTITY",
+            "field": "profile_id",
+            "state": "BOOTSTRAP_OWNED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "field": "formation_size/split_threshold/lineage_found_generation/lineage_found_size/lineage_split_households/institution_found_pop/institution_dissolve_pop",
+            "owner_decision_id": "OD-9",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "field": "institution_decline_cohesion/institution_dormant_cohesion/institution_active_cohesion",
+            "owner_decision_id": "OD-9",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "engine_forced": "键固定 {economy,ecology,mobility}；和 == 1",
+            "field": "pressure_weights",
+            "owner_decision_id": "OD-9",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "engine_forced": "长度 2、严格递增、<= SOCIAL_STATE_SCALE",
+            "field": "stress_thresholds",
+            "owner_decision_id": "OD-9",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "field": "migration_modifier_k/fertility_context_k/social_support_k",
+            "owner_decision_id": "OD-9",
+            "state": "BLOCKED"
+          }
+        ],
+        "name": "FORMAL_SOCIAL_PROFILE_REGISTRY",
+        "replaces": "SOCIAL_PROFILES（TEST-SOCIAL-PROFILE-001；死代码）"
+      },
+      {
+        "engine_contract": "tribulation.py:87-107,308（profiles or TEST_PROFILES 静默回落）",
+        "fields": [
+          {
+            "class": "IDENTITY",
+            "engine_forced": "tier 必须命中 REGULAR/MAJOR/CENTENNIAL；无匹配 profile → 该 tier 静默不触发",
+            "field": "profile_id/tier/theme",
+            "owner_decision_id": "OD-10",
+            "state": "PARTIAL"
+          },
+          {
+            "class": "WORLD_LAW",
+            "field": "intensity_min/intensity_max",
+            "owner_decision_id": "OD-10",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "engine_forced": "precursor_steps >= 1（EC-1）",
+            "field": "precursor_steps/preparation_steps/impact_steps/recovery_steps",
+            "owner_decision_id": "OD-10",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "field": "population_risk/resource_damage/inventory_damage/social_displacement/ecology_pressure",
+            "note": "这五项有 adapter 消费者",
+            "owner_decision_id": "OD-10",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "field": "production_disruption/institution_disruption",
+            "note": "仅进入 plan 与 hash，**无 adapter 消费**（今日零领域效果）",
+            "owner_decision_id": "OD-10",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "WORLD_LAW",
+            "field": "succession_rules{allow_candidate,maturation_steps}",
+            "owner_decision_id": "OD-10",
+            "state": "BLOCKED"
+          },
+          {
+            "class": "COSMETIC",
+            "field": "targeting_rules/source_refs",
+            "note": "引擎不读（targeting 实际为 RNG 抽 聚落 working_name）",
+            "state": "BOOTSTRAP_OWNED"
+          }
+        ],
+        "name": "FORMAL_TRIBULATION_PROFILE_REGISTRY",
+        "replaces": "TEST_PROFILES/TEST_SCHEDULE"
+      }
+    ],
+    "status": "CANDIDATE_NOT_APPROVED（BOOTSTRAP CONFIGURATION；非 engine law）"
+  },
+  "source_class_enum": [
+    "OWNER_APPROVED",
+    "LOCAL_CANON",
+    "APPROVED_LOCAL_DESIGN",
+    "DETERMINISTIC_DERIVATION",
+    "ENGINE_NEUTRAL_CONSTANT"
+  ],
+  "structural_rules_declared": [
+    {
+      "note": "见 derivation_rules[0] 与 allocation 段",
+      "rule_id": "RA-ALLOC-001"
+    },
+    {
+      "note": {
+        "canonical_form": "weight[b] = PROD_{k<b}(1 - mortality[k]); share[b] = weight[b]/SUM",
+        "inputs": [
+          "SpeciesDemographyProfile.cohort_buckets",
+          "SpeciesDemographyProfile.mortality_by_bucket",
+          "population_groups.settlement_ref × species 人口总数"
+        ],
+        "output": "population_groups(age_cohort) 每个 bucket 的整数 count",
+        "rounding_policy": "FLOOR_THEN_LARGEST_REMAINDER",
+        "rule_id": "RA-COHORT-001",
+        "rule_version": "1.0",
+        "tie_break_policy": "REMAINDER_DESC_THEN_BUCKET_INDEX_ASC",
+        "uses_birth_rate": false,
+        "uses_float": false,
+        "uses_hash_of_seed": false,
+        "uses_rng": false
+      },
+      "rule_id": "RA-COHORT-001"
+    }
+  ],
+  "unresolved_items": [
+    {
+      "blocking": false,
+      "id": "U-1",
+      "reason": "冻结引擎无对应实体/规则（NOT_FOUND）",
+      "title": "荒兽/异兽层级（S-6）"
+    },
+    {
+      "blocking": false,
+      "id": "U-2",
+      "reason": "冻结引擎无基础设施表/字段；可由 institutions 表达",
+      "title": "基础设施（S-8）"
+    },
+    {
+      "blocking": false,
+      "evidence": "models_world.py:478-490（无 region_id）；ecology.py:210",
+      "id": "U-3",
+      "reason": "该表无 region_id 列（只有 autoincrement id），而 settlements.region_ref / ecology_zones.region_ref 是软字符串引用 → 确定性 region_ref 无法以 insert-only 值表达。本候选采用 REGION_REF_NULL_EVERYWHERE 规避（不创建该表行），故**不阻塞**",
+      "title": "ecological_regions 业务键缺失"
+    },
+    {
+      "blocking": false,
+      "evidence": "population.py:149-150,370-371",
+      "id": "U-4",
+      "reason": "_settlement_order 对正式聚落名一律返回 1（EC-3）；12 个聚落共享 index 1。属冻结引擎既有耦合，本阶段只登记不改（owner §0）",
+      "title": "迁移权重无法按聚落区分"
+    }
+  ],
+  "world_layer_S1_S10": [
+    {
+      "candidate": {
+        "source_class": "OWNER_APPROVED",
+        "source_ref": "M6C.1 owner：INITIAL_TOTAL_POPULATION=12000",
+        "state": "APPROVED_BY_OWNER",
+        "value": 12000
+      },
+      "canon_suggestion": "小型(数百)/中型(数千)/较大(上万)",
+      "snapshot_id": "S-1",
+      "status": "APPROVED_BY_OWNER",
+      "title": "大致总人口"
+    },
+    {
+      "candidate": {
+        "blocking_reason": "species 是 population_groups.species（NOT NULL）且必须命中 正式 species profile registry；未知 species → DemographyProfileUnconfigured（fail-closed）",
+        "evidence": "population.py:166-172; models_world.py:36",
+        "owner_decision_id": "OD-1",
+        "owner_options": [
+          "A/B/C 三个 OPTION（12 号文档）",
+          "四族名额已批准但族**身份**未批准"
+        ],
+        "source_class": null,
+        "state": "BLOCKED",
+        "value": null
+      },
+      "canon_suggestion": "OPTION_A/B/C（12 号文档；SVH-003 11 族候选）",
+      "snapshot_id": "S-2",
+      "status": "BLOCKED",
+      "title": "异人种族组合"
+    },
+    {
+      "candidate": {
+        "source_class": "OWNER_APPROVED",
+        "source_ref": "M6C.1 owner：WS-0406 胜出（4 主 + 8 卫星）；旧草案 SUPERSEDED_FOR_FORMAL_BOOTSTRAP",
+        "state": "APPROVED_BY_OWNER",
+        "value": 12
+      },
+      "canon_suggestion": "核心神社区 + 2~6 聚落（草案）",
+      "snapshot_id": "S-3",
+      "status": "APPROVED_BY_OWNER",
+      "title": "主要聚落数量"
+    },
+    {
+      "candidate": {
+        "blocking_reason": "产业只能由 production_recipes + industries 表达；无批准清单 → 不得代填（owner §19 禁止发明产业）",
+        "evidence": "models_world.py:119-131,223-243",
+        "owner_decision_id": "OD-5",
+        "owner_options": [
+          "批准草案骨架",
+          "改为不设初始产业（配方集合为空 = 合法空转）"
+        ],
+        "source_class": null,
+        "state": "BLOCKED",
+        "value": null
+      },
+      "canon_suggestion": "农业/药园/林产/水产/工坊/贸易（草案骨架）",
+      "snapshot_id": "S-4",
+      "status": "BLOCKED",
+      "title": "主要产业"
+    },
+    {
+      "candidate": {
+        "blocking_reason": "resource_profiles + resource_nodes 无批准集合；resource_stocks 必须是完整矩阵，否则经济引擎 KeyError",
+        "evidence": "economy.py:297-305; resource.py:138-142",
+        "owner_decision_id": "OD-6",
+        "owner_options": [
+          "批准资源清单与 profile 数值",
+          "不设资源（RESOURCE 合法空转）"
+        ],
+        "source_class": null,
+        "state": "BLOCKED",
+        "value": null
+      },
+      "canon_suggestion": "灵田/药园/果园/林区/湖区/矿脉（如选石人）",
+      "snapshot_id": "S-5",
+      "status": "BLOCKED",
+      "title": "主要资源区"
+    },
+    {
+      "candidate": {
+        "evidence": "services/simulation/* 无对应字段",
+        "reason": "冻结引擎无荒兽/异兽实体表或规则（NOT_FOUND）；该项只影响叙事层，不阻塞 materialization",
+        "source_class": null,
+        "state": "UNRESOLVED",
+        "unresolved_id": "U-1",
+        "value": null
+      },
+      "canon_suggestion": "维持 BL-011 语义（豢养异兽）；默认不引入母世界战力映射",
+      "snapshot_id": "S-6",
+      "status": "UNRESOLVED",
+      "title": "荒兽/异兽层级"
+    },
+    {
+      "candidate": {
+        "blocking_reason": "社会派生只用 population 计数 + economic_pressure_state + ecology_feedback_state + 自身状态行；组织形态只能由 formal SocialProfile 阈值表达（现仅存在于 TEST_SOCIAL_PROFILE）",
+        "evidence": "social.py:157-200,566-609",
+        "owner_decision_id": "OD-9",
+        "owner_options": [
+          "批准正式社会阈值",
+          "明确「正式世界不使用阈值」（= 不启用社会派生）"
+        ],
+        "source_class": null,
+        "state": "BLOCKED",
+        "value": null
+      },
+      "canon_suggestion": "神社为管理核心 + 村落自治（草案）",
+      "snapshot_id": "S-7",
+      "status": "BLOCKED",
+      "title": "社会组织"
+    },
+    {
+      "candidate": {
+        "evidence": "models_world.py 无 infra 表",
+        "reason": "冻结引擎无基础设施表/字段（NOT_FOUND）；若需表达应复用 institutions（SOCIAL 自建）或留待后续阶段",
+        "source_class": null,
+        "state": "UNRESOLVED",
+        "unresolved_id": "U-2",
+        "value": null
+      },
+      "canon_suggestion": "道路/水渠/仓/集市场地（草案清单）",
+      "snapshot_id": "S-8",
+      "status": "UNRESOLVED",
+      "title": "基础设施"
+    },
+    {
+      "candidate": {
+        "derivation": {
+          "inputs": [
+            "S-4/S-5/S-8 的批准结果"
+          ],
+          "output": "无独立数值输出（避免发明口径）",
+          "rounding_policy": "NOT_APPLICABLE",
+          "rule_id": "RA-STRUCT-001",
+          "rule_version": "1.0",
+          "tie_break_policy": "NOT_APPLICABLE"
+        },
+        "source_class": "DETERMINISTIC_DERIVATION",
+        "state": "DERIVED",
+        "value": "不设独立数值：发展水平由 S-4 产业 + S-5 资源 + S-8 基础设施的具体集合共同表达（本候选不新增字段）"
+      },
+      "canon_suggestion": "「安居传统小社会 + 现代物零星融入」基调",
+      "snapshot_id": "S-9",
+      "status": "DERIVED",
+      "title": "发展水平"
+    },
+    {
+      "candidate": {
+        "first_omen_tick": {
+          "derivation": {
+            "inputs": [
+              "periods",
+              "窗口谓词",
+              "max-tier tie-break"
+            ],
+            "output": "首个 PRECURSOR_STARTED tick（= REGULAR 首个窗口）",
+            "rounding_policy": "EXACT_INTEGER_MULTIPLE",
+            "rule_id": "RA-TRIB-001",
+            "rule_version": "1.0",
+            "tie_break_policy": "MAX_TIER"
+          },
+          "source_class": "DETERMINISTIC_DERIVATION",
+          "state": "DERIVED",
+          "value": 10000000
+        },
+        "first_window_tick_by_tier": {
+          "derivation": {
+            "inputs": [
+              "periods"
+            ],
+            "output": "每 tier 首个窗口 tick",
+            "rounding_policy": "EXACT_INTEGER_MULTIPLE",
+            "rule_id": "RA-TRIB-001",
+            "rule_version": "1.0",
+            "tie_break_policy": "MAX_TIER"
+          },
+          "source_class": "DETERMINISTIC_DERIVATION",
+          "state": "DERIVED",
+          "value": {
+            "CENTENNIAL": 100000000,
+            "MAJOR": 50000000,
+            "REGULAR": 10000000
+          }
+        },
+        "mode": {
+          "blocking_reason": "S-10 的 mode（UNDECIDED）与正式灾劫 profile 数值未裁决；周期已批准，但 profile 的世界法则数值（intensity/risk/precursor_steps 等）无来源",
+          "evidence": "tribulation.py:87-107; docs/m6c_minimal_bootstrap_canon_audit.md:84,345",
+          "owner_decision_id": "OD-10",
+          "owner_options": [
+            "批准正式灾劫 profile（每 tier 一套数值）",
+            "授权建立 FORMAL_TRIBULATION_PROFILE_REGISTRY 并去除 profiles or TEST_PROFILES 静默回落（owner §18）"
+          ],
+          "source_class": null,
+          "state": "BLOCKED",
+          "value": null
+        },
+        "pre_window_lead_time": {
+          "neutrality_basis": "冻结引擎**没有**窗口前导期/预警窗口概念：PRECURSOR（omen）阶段**始于**窗口 tick T，entered_tick = T，transition_tick = T + precursor_steps*1e6（向后延伸）",
+          "source_class": "ENGINE_NEUTRAL_CONSTANT",
+          "source_ref": "tribulation.py:385-388; 无 pre-T 偏移列",
+          "state": "CONCEPT_ABSENT_IN_FROZEN_ENGINE",
+          "value": null
+        },
+        "tick0_active_tribulation_episodes": {
+          "derivation": {
+            "inputs": [
+              "窗口谓词仅在 step END tick 求值；tick 0 无 step"
+            ],
+            "output": "tick0 不创建 episode",
+            "rounding_policy": "NOT_APPLICABLE",
+            "rule_id": "RA-TRIB-001",
+            "rule_version": "1.0",
+            "tie_break_policy": "NOT_APPLICABLE"
+          },
+          "source_class": "DETERMINISTIC_DERIVATION",
+          "state": "DERIVED",
+          "value": 0
+        }
+      },
+      "canon_suggestion": "mode=UNDECIDED；默认无活跃灾劫叙事",
+      "snapshot_id": "S-10",
+      "status": "BLOCKED",
+      "title": "灾劫状态"
+    }
+  ]
+}

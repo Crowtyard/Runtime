@@ -368,3 +368,29 @@ M6C **不得**临时发明 `hash(seed) % N` 之类的规则。
 - **未修改任何冻结 M2/M3 语义**、未新增人口/资源/经济/生态/社会/灾劫/history 规则；
 - **未把测试 profile 改名当正式 profile**、未接任何测试 registry 到正式路径；
 - **未激活正式世界**、未消费正式 Seed、未读正式 Seed 原值、未写正式库、未部署 live。
+
+---
+
+## ADDENDUM — M6C.1（审计更正；原文不删，逐条并列）
+
+M6C.1（SNAPSHOT_V1 CANDIDATE CONSTRUCTION）对 §8 D-B 列表做了代码级复核，
+发现**一处原文不成立**，登记如下（原文保留以满足历史可追溯）：
+
+| 位置 | 原文主张 | M6C.1 更正 | 证据 |
+| --- | --- | --- | --- |
+| §8 D-B3（本文第 338 行） | `occupation_group` / `household_stats` 阻塞，因为"参与社会派生" | **不成立**。`occupation_group` 在全仓**无任何引擎读取**（WRITE_ONLY：仅影响 snapshot 行序与 `world_state_hash`）；`household_stats` **零读零写**，且**不在** snapshot 字段投影内。二者因此**不阻塞** tick=0 物化，D-B3 可从"阻塞项"降级为"无需裁决" | `snapshot.py:88-91,263-264`；`state_hash.py:40,66`；`economy.py:133-136,188-211`（劳动力 = 聚落总人口，与职业无关）；`social.py:157-200` |
+
+补充确认（M6C.1 新增证据，均不影响原文其余结论）：
+
+- `households` / `lineages` / `institutions` **不需要**预置：SOCIAL 在缺行时自建
+  （`social.py:267-299`），其 fail-closed 只针对 `settlement_social_state`
+  （`568-571`）与 `social_feedback_state`（`572-575`）—— 支持原文 §2.3 判定。
+- `population_groups` **无** `(world_id, species, settlement_ref, age_cohort)` 唯一约束
+  （`models_world.py:31-47` 无 `__table_args__`），而同一 bucket 出现两行会**重复计数**
+  （`population.py:289-292` vs `344-346`）→ "每 bucket 恰好一行"是 **bootstrap 义务**，
+  DB 层无兜底。
+- 灾劫：`precursor_steps = 0` 会在同一步触发 `ep["id"]` **KeyError**
+  （`tribulation.py:426-433,439-441,472-475`）→ `precursor_steps >= 1` 是引擎强制下界。
+
+以上更正已同步进 `docs/world_creation/SNAPSHOT_V1_CANDIDATE.md` §11 与候选 JSON
+`audit_corrections`。
