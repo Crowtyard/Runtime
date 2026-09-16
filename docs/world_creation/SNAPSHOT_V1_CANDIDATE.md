@@ -44,6 +44,23 @@ seed manifest SHA256             = cc0e4c0e16c7e2ec8cecb4ba871afc3af1a402e94732e
 
 以上由独立校验器 `scripts/validate_snapshot_candidate.py` 每次校验（红线漂移即 INVALID）。
 
+**M6C.1 结束时只读实测（live launcher 实例库，`sqlite3 mode=ro`，不写、不建 sidecar）**：
+
+```
+path            = ...\.astrbot_launcher\instances\<instance-id>\core\data\plugin_data\
+                  astrbot_plugin_blessed_land_runtime\blessed_land.sqlite
+size            = 544768 B      sidecars = -wal 0 B / -shm 32768 B
+sha256          = 7754b1d4658ea94ce509ae7fb7c06c33c44f98782021b3708e6f29ce69102837
+                  → 与 M6.0–M6C 基线**一致**
+world_runtime   = 0 行（canonical：0 行 == 世界未激活，`tests/formal_db.py:4-13`）
+其它业务表      = 全部 0 行（唯一非空表 alembic_version = a9d4f2b7c1e8）
+```
+
+> ⚠ **诱饵警告（M6C.1 新发现）**：`D:\MY SELF\AstrBot\data\plugin_data\astrbot_plugin_blessed_land_runtime\blessed_land.sqlite`
+> 是**非权威副本**（mtime 2026-09-10、sha256 `e0c5d32f…8203`、`world_runtime = 1 行`）。
+> live 实例库在 **launcher instance 路径**下。任何红线检查都必须指向 launcher 路径，
+> 否则会读到过期副本并**误判**（该副本的 1 行 `world_runtime` 会让"未激活"断言看起来失败）。
+
 ---
 
 ## 2. S-1..S-10 逐项状态（canon 真实结构：`design/phase1_8/11`）
@@ -293,11 +310,11 @@ python scripts\validate_snapshot_candidate.py         # 独立校验（schema/�
 禁 materializer / 禁止生产变更能力 / 正式世界红线。
 
 ```
-attributed_nodes        = 101
+attributed_nodes        = 106
 owner_approved_nodes    =  19
 derived_nodes           =  18
 neutral_nodes           =  31
 blocked_nodes           =  19
-candidate_sha256        = 61dda474f0a4fc38123de358d3d8784063b985f599b9015bcf09e1b47292363b
+candidate_sha256        = d73cd502ec38744eb25d5d8178b39636e3a7574830ab82788af884b47865f147
 matrix_sha256           = 8dfe3471c1ff9d9c93646df18e4f55335cb93ca634c4afc96a17c86b5b28c457
 ```

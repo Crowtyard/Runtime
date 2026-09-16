@@ -43,7 +43,7 @@ LIVE_DEPLOYED                      = FALSE
 | 文件 | 作用 |
 | --- | --- |
 | `docs/world_creation/SNAPSHOT_V1_CANDIDATE.md` | 人读候选（S-1..S-10、规则、矩阵、行基数、引擎约束、registry 分类、OD 列表、未决项） |
-| `docs/world_creation/SNAPSHOT_V1_CANDIDATE.json` | 机读候选（101 个带 `SOURCE_CLASS` 的值节点；`candidate_sha256 = 61dda474…363b`） |
+| `docs/world_creation/SNAPSHOT_V1_CANDIDATE.json` | 机读候选（106 个带 `SOURCE_CLASS` 的值节点；`candidate_sha256 = d73cd502…f147`） |
 | `services/activation/bootstrap_canon.py` | BOOTSTRAP CONFIGURATION 规则模块（`RA-ALLOC-001` / `RA-COHORT-001`；纯函数、无 DB、无引擎、无 RNG） |
 | `scripts/build_snapshot_candidate.py` | 确定性生成器（`--check` 逐字节复现检查） |
 | `scripts/validate_snapshot_candidate.py` | **独立**校验器（schema / 来源 / 阻塞披露 / 矩阵复算 / 合计 / 禁测 / 禁物化 / 红线） |
@@ -112,13 +112,13 @@ OD-10 灾劫正式 profile 数值 + 去除 `profiles or TEST_PROFILES` 静默回
 ## 6. 校验与测试证据
 
 ```
-python scripts\build_snapshot_candidate.py            → WROTE + candidate_sha256 61dda474…363b
+python scripts\build_snapshot_candidate.py            → WROTE + candidate_sha256 d73cd502…f147
 python scripts\build_snapshot_candidate.py --check     → REPRODUCIBLE（逐字节无漂移）
 python scripts\validate_snapshot_candidate.py          → PASS
-    attributed_nodes = 101 / owner_approved = 19 / derived = 18 / neutral = 31 / blocked = 19
+    attributed_nodes = 106 / owner_approved = 19 / derived = 18 / neutral = 31 / blocked = 19
     matrix_sha256 = 8dfe3471c1ff9d9c93646df18e4f55335cb93ca634c4afc96a17c86b5b28c457
     materialization_allowed = False
-pytest tests\test_m6c1_snapshot_candidate.py           → 23 passed
+pytest tests\test_m6c1_snapshot_candidate.py           → 24 passed
 pytest tests\test_m6c_bootstrap_canon_guard.py         → 6 passed（M6C-G01..G06 未回退）
 ```
 
@@ -166,6 +166,30 @@ ERRORS            = 0
 ```
 
 `GOLDEN_BASELINE_MUTATIONS = 0`（未触碰 `tests/baselines/**`）。
+
+---
+
+## 8b. 正式红线：本阶段结束时**只读实测**（不只是继承断言）
+
+工具：`sqlite3` `mode=ro` 只读连接（不写、不建 sidecar）+ `Get-FileHash`。
+
+```
+FORMAL_DB_PATH（权威）  = C:\Users\<user>\.astrbot_launcher\instances\<instance-id>\
+                          core\data\plugin_data\astrbot_plugin_blessed_land_runtime\
+                          blessed_land.sqlite
+FORMAL_DB_SIZE          = 544768 B      SIDECARS = -wal 0 B / -shm 32768 B
+FORMAL_DB_SHA256        = 7754b1d4658ea94ce509ae7fb7c06c33c44f98782021b3708e6f29ce69102837
+                        → 与 M6.0–M6C 基线**逐字一致**（未漂移）
+world_runtime           = 0 行（canonical：0 行 == 世界未激活）
+非空业务表              = 0（唯一非空表 alembic_version = a9d4f2b7c1e8）
+```
+
+**新发现（重要，防误判）**：`D:\MY SELF\AstrBot\data\plugin_data\...\blessed_land.sqlite`
+是一份**非权威过期副本**（mtime 2026-09-10、sha256 `e0c5d32f…8203`、**`world_runtime = 1` 行**）。
+live 实例库位于 **launcher instance 路径**。若红线检查指向该副本，会得到
+"world_runtime = 1" 的**假阳性违规**。候选已把该陷阱写入
+`formal_world_redline_measurement.decoy_warning`，并由校验器强制要求
+（路径必须含 `instances`、必须实测 0 行、必须披露诱饵），测试 `m6c103b` 钉住。
 
 ---
 

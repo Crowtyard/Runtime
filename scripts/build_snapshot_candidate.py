@@ -137,6 +137,45 @@ def build() -> dict:
                 "world_seed_manifest_sha256":
                     "cc0e4c0e16c7e2ec8cecb4ba871afc3af1a402e94732e645fceb4b1aca73771d",
             },
+            "formal_world_redline_measurement": {
+                "measured_utc": "2026-09-15T09:55Z 之后（M6C.1 结束前，只读探测）",
+                "tool": "sqlite3 mode=ro（只读连接；不写、不建 sidecar）",
+                "authoritative_path_pattern":
+                    "C:\\Users\\<user>\\.astrbot_launcher\\instances\\<instance-id>\\"
+                    "core\\data\\plugin_data\\astrbot_plugin_blessed_land_runtime\\"
+                    "blessed_land.sqlite",
+                "db_size_bytes":
+                    {"value": 544_768, "source_class": "LOCAL_CANON",
+                     "state": "MEASURED_READ_ONLY",
+                     "source_ref": "只读探测实测"},
+                "db_sha256":
+                    "7754b1d4658ea94ce509ae7fb7c06c33c44f98782021b3708e6f29ce69102837",
+                "db_sha256_matches_m6_baseline": True,
+                "world_runtime_rows":
+                    {"value": 0, "source_class": "LOCAL_CANON",
+                     "state": "MEASURED_READ_ONLY",
+                     "source_ref": "canonical 契约：world_runtime 0 行 == 世界未激活"
+                                   "（tests/formal_db.py:4-13）"},
+                "nonempty_business_tables":
+                    {"value": 0, "source_class": "LOCAL_CANON",
+                     "state": "MEASURED_READ_ONLY",
+                     "source_ref": "除 alembic_version(=a9d4f2b7c1e8) 外全部表 0 行"},
+                "sidecars": {
+                    "wal_bytes": {"value": 0, "source_class": "LOCAL_CANON",
+                                  "state": "MEASURED_READ_ONLY",
+                                  "source_ref": "只读探测：-wal 存在但 0 字节"},
+                    "shm_bytes": {"value": 32_768, "source_class": "LOCAL_CANON",
+                                  "state": "MEASURED_READ_ONLY",
+                                  "source_ref": "只读探测：-shm 32 KiB"},
+                },
+                "decoy_warning":
+                    "存在**非权威副本** D:\\MY SELF\\AstrBot\\data\\plugin_data\\"
+                    "astrbot_plugin_blessed_land_runtime\\blessed_land.sqlite"
+                    "（mtime 2026-09-10、sha256 e0c5d32f…8203、world_runtime = 1 行）。"
+                    "它不是 live 实例库（live = launcher instance 路径）。"
+                    "任何红线检查**必须**指向 launcher instance 路径，否则会读到过期"
+                    "副本并误判。",
+            },
             "red_lines": [
                 "不得实现 materializer（owner §26）",
                 "不得激活正式世界、不得消费正式 Seed、不得部署 live（owner §28）",

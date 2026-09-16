@@ -109,6 +109,21 @@ def check_red_lines(doc: dict) -> None:
         actual = node.get("value") if isinstance(node, dict) else node
         if actual != expected:
             _fail(f"formal-world red line {key} drifted: {actual!r} != {expected!r}")
+    measurement = doc["header"].get("formal_world_redline_measurement")
+    if not measurement:
+        _fail("missing formal_world_redline_measurement (M6C.1 requires a read-only "
+              "measurement, not an inherited claim)")
+    if measurement["world_runtime_rows"]["value"] != 0:
+        _fail("measured world_runtime rows must be 0 (canonical NOT_ACTIVATED)")
+    if measurement["nonempty_business_tables"]["value"] != 0:
+        _fail("measured business tables must be empty")
+    if not measurement.get("db_sha256_matches_m6_baseline"):
+        _fail("formal DB sha256 drifted from the M6 baseline")
+    if "instances" not in measurement["authoritative_path_pattern"]:
+        _fail("red-line measurement must point at the launcher instance path "
+              "(a decoy non-authoritative copy exists and must not be used)")
+    if not measurement.get("decoy_warning"):
+        _fail("the non-authoritative DB copy must be disclosed as a decoy")
 
 
 def _walk(node, path: str, attributed: bool, problems: list[str],

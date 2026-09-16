@@ -69,6 +69,19 @@ def test_m6c103_formal_world_red_lines_unchanged(candidate):
     assert baseline["alembic_head"] == "a9d4f2b7c1e8"
 
 
+def test_m6c103b_red_lines_carry_a_readonly_measurement(candidate):
+    """红线必须是**实测**（只读探测），不是继承来的断言。"""
+    measurement = candidate["header"]["formal_world_redline_measurement"]
+    assert "instances" in measurement["authoritative_path_pattern"]
+    assert measurement["world_runtime_rows"]["value"] == 0
+    assert measurement["nonempty_business_tables"]["value"] == 0
+    assert measurement["db_sha256"] == candidate["header"]["engine_baseline"][
+        "formal_world_db_sha256"]
+    assert measurement["db_sha256_matches_m6_baseline"] is True
+    assert measurement["sidecars"]["wal_bytes"]["value"] == 0
+    assert "world_runtime = 1" in measurement["decoy_warning"]
+
+
 def test_m6c104_no_approved_snapshot_artifact_exists():
     assert not (ROOT / "docs/world_creation/SNAPSHOT_V1.md").exists()
     assert not (ROOT / "docs/world_creation/SNAPSHOT_V1.json").exists()
