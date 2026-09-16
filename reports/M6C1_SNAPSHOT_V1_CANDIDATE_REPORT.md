@@ -43,7 +43,7 @@ LIVE_DEPLOYED                      = FALSE
 | 文件 | 作用 |
 | --- | --- |
 | `docs/world_creation/SNAPSHOT_V1_CANDIDATE.md` | 人读候选（S-1..S-10、规则、矩阵、行基数、引擎约束、registry 分类、OD 列表、未决项） |
-| `docs/world_creation/SNAPSHOT_V1_CANDIDATE.json` | 机读候选（106 个带 `SOURCE_CLASS` 的值节点；`candidate_sha256 = d73cd502…f147`） |
+| `docs/world_creation/SNAPSHOT_V1_CANDIDATE.json` | 机读候选（109 个带 `SOURCE_CLASS` 的值节点 + `per_domain_answers`；`candidate_sha256 = 0a7466c7…2f03`） |
 | `services/activation/bootstrap_canon.py` | BOOTSTRAP CONFIGURATION 规则模块（`RA-ALLOC-001` / `RA-COHORT-001`；纯函数、无 DB、无引擎、无 RNG） |
 | `scripts/build_snapshot_candidate.py` | 确定性生成器（`--check` 逐字节复现检查） |
 | `scripts/validate_snapshot_candidate.py` | **独立**校验器（schema / 来源 / 阻塞披露 / 矩阵复算 / 合计 / 禁测 / 禁物化 / 红线） |
@@ -112,14 +112,16 @@ OD-10 灾劫正式 profile 数值 + 去除 `profiles or TEST_PROFILES` 静默回
 ## 6. 校验与测试证据
 
 ```
-python scripts\build_snapshot_candidate.py            → WROTE + candidate_sha256 d73cd502…f147
+python scripts\build_snapshot_candidate.py            → WROTE + candidate_sha256 0a7466c7…2f03
 python scripts\build_snapshot_candidate.py --check     → REPRODUCIBLE（逐字节无漂移）
 python scripts\validate_snapshot_candidate.py          → PASS
-    attributed_nodes = 106 / owner_approved = 19 / derived = 18 / neutral = 31 / blocked = 19
+    attributed_nodes = 109 / owner_approved = 19 / derived = 20 / neutral = 31 / blocked = 19
     matrix_sha256 = 8dfe3471c1ff9d9c93646df18e4f55335cb93ca634c4afc96a17c86b5b28c457
     materialization_allowed = False
-pytest tests\test_m6c1_snapshot_candidate.py           → 24 passed
+pytest tests\test_m6c1_snapshot_candidate.py           → 26 passed
 pytest tests\test_m6c_bootstrap_canon_guard.py         → 6 passed（M6C-G01..G06 未回退）
+World Seed（只读装载校验，同轮）                        → PREPARED_NOT_ACTIVATED / consumed=FALSE /
+                                                         fingerprint cc0e4c0e…771d（= M6 基线）/ 20 条目
 ```
 
 §29 六类要求 → 测试映射：
@@ -134,6 +136,22 @@ pytest tests\test_m6c_bootstrap_canon_guard.py         → 6 passed（M6C-G01..G
 | 无生产变更 | `m6c121`、`m6c122`、`m6c123` |
 
 （完整回归：M6A/M6B/M6C 系列合并运行结果见 §8。）
+
+---
+
+## 6b. owner 逐域提问的逐项回答（M6C.1 新增 · 机读 `per_domain_answers`）
+
+| 域 | 回答状态 | 结论 |
+| --- | --- | --- |
+| 年龄结构 | 结构 DERIVED / 数值 BLOCKED | 结构由引擎定义（bucket 宽 1 福地年、末位开区间、出生入 bucket 0、cohort == 一行）；占比用 `RA-COHORT-001` 从存活曲线派生；缺 `cohort_buckets`/`mortality_by_bucket`（OD-3，可用 `RA-MORTALITY-001` 按年龄带压缩） |
+| 职业 | **NOT_REQUIRED** | `occupation_group` 无引擎读取；`household_stats` 零读零写 → **无 owner 决策** |
+| 户 | **DERIVED_BY_ENGINE** | tick=0 不预置：SOCIAL 首步自建 household/lineage/institution |
+| 资源 | BLOCKED | 结构已派生（`12 × R` 完整矩阵）；R/节点/profile 数值无来源（OD-6） |
+| 经济 | BLOCKED | 结构已派生（`12 × C`）；引擎已定义中性初始行；数值无来源（OD-7） |
+| 生态 | 基数 DERIVED / 数值 BLOCKED | 12 区（每聚落 1 区 × 3 行）；`EcologyProfile` 数值无来源（OD-8） |
+| 社会 | BLOCKED | 形态只能由正式 `SocialProfile` 阈值表达（OD-9） |
+| 灾劫 profile | 字段已分类 / 数值 BLOCKED | 引擎必需 3 / 世界法则 11 / 仅 plan（无 adapter）2 / 引擎不读 2；数值与静默回落待裁（OD-10） |
+| 首个前兆时间 | **DERIVED** | tick 10_000_000 = 10 福地年；"窗口前导期"在冻结引擎中不存在 |
 
 ---
 
@@ -157,11 +175,11 @@ tests/test_m6_world_seed_safety.py -q`
 
 ```
 RESULT            = PASS（exit code 0）
-COLLECTED         = 140
-PASSED            = 140
+COLLECTED         = 143
+PASSED            = 143
 FAILED            = 0
 ERRORS            = 0
-覆盖              = M6A(5 文件) + M6B(3 文件) + M6C 门禁(6) + M6C.1(23) + seed safety
+覆盖              = M6A(5 文件) + M6B(3 文件) + M6C 门禁(6) + M6C.1(26) + seed safety
 说明              = 未新增/未修改任何既有测试；未改冻结引擎；未新增迁移
 ```
 
