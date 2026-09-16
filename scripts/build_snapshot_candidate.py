@@ -183,6 +183,42 @@ def build() -> dict:
                 "PRODUCTION_TEST_PROFILE_FALLBACK = FORBIDDEN（owner 本轮）",
                 "不得修改冻结引擎语义（M2/M3）",
             ],
+            "m6c1b_metadata": {
+                "note": "M6C.1B 只补充 metadata（owner §28）：候选内容与 RA-ALLOC-001 矩阵未改动",
+                "candidate_status_after_review": "ACCEPTED_AS_CANDIDATE",
+                "snapshot_v1": "NOT_APPROVED",
+                "materializer_allowed": "FALSE",
+                "rule_rulings_from_owner": {
+                    "RA-ALLOC-001": "APPROVED_BOOTSTRAP_DERIVATION",
+                    "RA-TRIB-001": "APPROVED_BOOTSTRAP_DERIVATION",
+                    "RA-COHORT-001": "CANDIDATE_ONLY",
+                    "RA-MORTALITY-001": "PENDING_OWNER_DECISION",
+                    "RA-STRUCT-001": "CANDIDATE_ONLY_PENDING_EXPLICIT_REVIEW",
+                },
+                "first_omen_ruling": "FIRST_OMEN_BLESSED_YEAR=10；FIRST_OMEN_TICK=10_000_000"
+                                     "（不得重新解释为新灾劫规则）",
+                "resolved_owner_rulings": {
+                    "PRODUCTION_TEST_PROFILE_FALLBACK": "FORBIDDEN",
+                    "FORMAL_PROFILE_MISSING_BEHAVIOR": "FAIL_CLOSED",
+                    "OCCUPATION_BOOTSTRAP_OWNER_DECISION": "NOT_REQUIRED",
+                    "HOUSEHOLD_BOOTSTRAP_OWNER_DECISION": "NOT_REQUIRED",
+                },
+                "legacy_db_classification": "LEGACY_STALE_NON_AUTHORITATIVE_DB"
+                                            "（preserved=TRUE / authoritative=FALSE；"
+                                            "红线判定只取 authoritative marker 指向的库）",
+                "owner_decision_packet":
+                    "docs/world_creation/M6C1B_OWNER_DECISION_PACKET.md（OD-1..OD-9）",
+                "od_renumbering": {
+                    "old_OD-1": "OD-1", "old_OD-3": "OD-2",
+                    "old_OD-4": "OD-2（子决策：population_capacity）",
+                    "old_OD-6": "OD-3", "old_OD-5": "OD-4", "old_OD-7": "OD-4",
+                    "old_OD-8": "OD-5", "old_OD-9": "OD-6",
+                    "old_OD-10": "OD-7（回落授权部分已由既有决议移除）",
+                    "old_OD-2": "拆入 OD-3/OD-4/OD-5/OD-6；S-6/S-8 转非阻塞登记",
+                    "new_OD-8": "RA-STRUCT-001 显式复核",
+                    "new_OD-9": "DYNAMIC_NEUTRAL 初始状态值",
+                },
+            },
             "world_seed_redline_measurement": {
                 "measured_utc": "2026-09-15（M6C.1 结束前，只读装载校验）",
                 "tool": "services.activation.seed_package.load_seed_package"

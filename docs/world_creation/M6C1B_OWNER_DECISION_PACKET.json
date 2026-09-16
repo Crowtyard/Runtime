@@ -1,0 +1,390 @@
+{
+  "artifact": "M6C1B_OWNER_DECISION_PACKET",
+  "stage": "M6C.1B OWNER DECISION PACKET & AUTHORITY HARDENING",
+  "STATUS": "AWAITING_OWNER_DECISIONS",
+  "SNAPSHOT_V1_CANDIDATE": "ACCEPTED_AS_CANDIDATE",
+  "SNAPSHOT_V1": "NOT_APPROVED",
+  "MATERIALIZER_ALLOWED": false,
+  "FORMAL_ACTIVATION_ALLOWED": false,
+  "FORMAL_WORLD_SEED_CONSUMED": false,
+  "OWNER_DECISION_COUNT": 9,
+  "OD_MAX_ALLOWED": 10,
+  "S1_S10_UNTRACKED_BLOCKERS": 0,
+  "rule_status_from_owner": {
+    "RA-ALLOC-001": {"version": "1.0", "status": "APPROVED_BOOTSTRAP_DERIVATION",
+      "requirements": ["integer-only", "no RNG", "deterministic", "fixed tie-break",
+                       "exact row marginals", "exact column marginals",
+                       "independently reproducible"]},
+    "RA-TRIB-001": {"version": "1.0", "status": "APPROVED_BOOTSTRAP_DERIVATION",
+      "FIRST_OMEN_BLESSED_YEAR": 10, "FIRST_OMEN_TICK": 10000000,
+      "basis": "冻结 Tribulation Engine 的 omen phase 从 tier window T 开始，不存在 pre-T lead period",
+      "constraint": "不得重新解释成一个新灾劫规则"},
+    "RA-COHORT-001": {"version": "1.0", "status": "CANDIDATE_ONLY",
+      "upgrade_gate": "需 Owner 审批 cohort buckets / mortality-survival values / derived cohort ratios"},
+    "RA-MORTALITY-001": {"version": "1.0", "status": "PENDING_OWNER_DECISION"},
+    "RA-STRUCT-001": {"version": "1.0", "status": "CANDIDATE_ONLY_PENDING_EXPLICIT_REVIEW"}
+  },
+  "resolved_not_owner_decisions": {
+    "PRODUCTION_TEST_PROFILE_FALLBACK": "FORBIDDEN",
+    "FORMAL_PROFILE_MISSING_BEHAVIOR": "FAIL_CLOSED",
+    "REMOVE_PRODUCTION_TEST_PROFILE_FALLBACK": true,
+    "FORMAL_PROFILE_REGISTRY_AUTHORIZED": true,
+    "note": "以上为既有 owner 决议，不得再次列为 OD",
+    "OCCUPATION_BOOTSTRAP_OWNER_DECISION": "NOT_REQUIRED",
+    "HOUSEHOLD_BOOTSTRAP_OWNER_DECISION": "NOT_REQUIRED"
+  },
+  "authority": {
+    "AUTHORITATIVE_DB_CONTRACT": "plugin_data/runtime_state/authoritative_db.json（Runtime 写出；plugin_shell/runtime_host.py:212-225）",
+    "AUTHORITATIVE_DB_RESOLUTION": "PASS",
+    "AUTHORITATIVE_DB_PATH_KIND": "launcher instance 解析路径",
+    "LEGACY_DB_DETECTED": true,
+    "LEGACY_DB_CLASSIFICATION": "LEGACY_STALE_NON_AUTHORITATIVE_DB",
+    "LEGACY_DB_PRESERVED": true,
+    "LEGACY_DB_AUTHORITATIVE": false,
+    "LEGACY_DB_WORLD_RUNTIME_ROWS": 1,
+    "STALE_DB_FALSE_POSITIVE": 0,
+    "AMBIGUOUS_DB_FAIL_CLOSED": "PASS",
+    "HARDCODED_PATH_FINDINGS": 4,
+    "HARDCODED_PATH_FINDINGS_WITH_DB_CAPABILITY": 0
+  },
+  "neutral_reclassification": {
+    "counting_units": "TECHNICAL = 字段数；DYNAMIC = 状态族数（每个族含多行）",
+    "TECHNICAL_NEUTRAL_COUNT": 3,
+    "DYNAMIC_NEUTRAL_COUNT": 6,
+    "TECHNICAL_NEUTRAL": [
+      {"FIELD": "settlements.state", "VALUE": "ACTIVE", "ENGINE_READ_COUNT": 0,
+       "WHY_NON_DYNAMIC": "冻结引擎只经 working_name / population_capacity 消费 settlements 行；引擎中 state 键的读取全部属于 resource_nodes / households / institutions。仅影响 snapshot 序列化与 world_state_hash（属序列化用途）",
+       "EVIDENCE": "economy.py:118-121; ecology.py:166-169; social.py:154-156; tribulation.py:367-369; resource.py:220-262; social.py:219,499,540",
+       "AUTO_ACK_ELIGIBLE": true},
+      {"FIELD": "settlements.region_ref", "VALUE": "NULL", "ENGINE_READ_COUNT": 0,
+       "WHY_NON_DYNAMIC": "冻结引擎中 region_ref 的读取**全部**针对 resource_nodes（resource.py:132,151,152,168）、ecology_zones（ecology.py:210）与 tribulations（tribulation.py:553,560,634,648），无一处读取 settlements 行（settlements 消费键集合 = {working_name, population_capacity, species}，其中 species 来自 population_groups）；在 REGION_REF_NULL_EVERYWHERE 且 tick=0 无 resource_nodes 的已批准前提下不产生任何分支",
+       "EVIDENCE": "resource.py:132,151,152,168; ecology.py:210; tribulation.py:553,560,634,648",
+       "REOPEN_TRIGGER": "若 OD-3 批准任何非空 region_ref 的资源节点，该字段升级为 DYNAMIC",
+       "AUTO_ACK_ELIGIBLE": true},
+      {"FIELD": "settlements.settlement_type", "VALUE": "MAIN/SATELLITE", "ENGINE_READ_COUNT": 0,
+       "WHY_NON_DYNAMIC": "无引擎读取；仅 snapshot / world_state_hash 可见。值本身已由 owner 批准（D-B2）",
+       "EVIDENCE": "snapshot.py:86,266; state_hash.py:37,63",
+       "AUTO_ACK_ELIGIBLE": true}
+    ],
+    "DYNAMIC_NEUTRAL": [
+      {"FAMILY": "ecology_state（每区 1 行，12 行）", "ENGINE_CONSUMER": "ecology.py（quality/level_of/regeneration）",
+       "ENGINE_DEFAULT_IS_NEUTRAL": false,
+       "TRAP": "列默认 habitat_quality = 0 = 最差质量（CRITICAL），不是中性初始态",
+       "OWNER_DECISION_ID": "OD-9"},
+      {"FAMILY": "ecology_feedback_state（每区 1 行，12 行）", "ENGINE_CONSUMER": "RESOURCE/DEMOGRAPHY 于下一 committed step 读取",
+       "ENGINE_DEFAULT_IS_NEUTRAL": true,
+       "NEUTRAL_CANDIDATE": "引擎 server default：比值 1/1、stress NONE、regen 0",
+       "OWNER_DECISION_ID": "OD-9"},
+      {"FAMILY": "settlement_social_state（每聚落 1 行，12 行）", "ENGINE_CONSUMER": "social.py（stress/cohesion/stability/mobility）",
+       "ENGINE_DEFAULT_IS_NEUTRAL": true,
+       "NEUTRAL_CANDIDATE": "引擎 server default：stress 0、cohesion 1_000_000、household_stability 1_000_000、mobility 0",
+       "OWNER_DECISION_ID": "OD-9"},
+      {"FAMILY": "social_feedback_state（每聚落 1 行，12 行）", "ENGINE_CONSUMER": "DEMOGRAPHY 于下一 committed step 读取",
+       "ENGINE_DEFAULT_IS_NEUTRAL": true,
+       "NEUTRAL_CANDIDATE": "引擎 server default：全部 1/1 比值、stress 0/1",
+       "OWNER_DECISION_ID": "OD-9"},
+      {"FAMILY": "economic_pressure_state（12 × C 行）", "ENGINE_CONSUMER": "economy.py（demand/fulfilled/unmet/shortage/stress_level）",
+       "ENGINE_DEFAULT_IS_NEUTRAL": true,
+       "NEUTRAL_CANDIDATE": "引擎 server default：全 0、shortage_ratio 0/1、stress_level NONE",
+       "OWNER_DECISION_ID": "OD-9"},
+      {"FAMILY": "resource_stocks（12 × R 行）", "ENGINE_CONSUMER": "resource.py + economy.py（库存/短缺路径）",
+       "ENGINE_DEFAULT_IS_NEUTRAL": false,
+       "TRAP": "quantity = 0 且无开采节点 → 经济永久零产出（dead economy），并经 feedback 影响人口；0 不是世界意义上的中性",
+       "OWNER_DECISION_ID": "OD-9（与 OD-3 联动）"}
+    ]
+  },
+  "owner_decisions": [
+    {
+      "ID": "OD-1", "NAME": "S-2 异人种族身份（species 字符串）",
+      "WHY_BLOCKING": "population_groups.species 为 NOT NULL 且必须命中正式 species profile registry；未知 species → DemographyProfileUnconfigured（fail-closed）。没有 species 字符串就无法物化任何人口行",
+      "FROZEN_CONSUMER": "population.py:166-172（registry lookup）；economy.py:107-131（即使聚落为空也先行解析）",
+      "SCHEMA_FIELDS": "population_groups.species (String(32), NOT NULL)；FORMAL_POPULATION_PROFILE_REGISTRY 的键集合",
+      "UNIT": "NONE（标识符字符串）",
+      "IDENTITY_CANON": "PRESENT",
+      "EXISTING_APPROVED_CONSTRAINTS": [
+        "WS-0502【APPROVED_WORLD_SEED_DESIGN】毛民、石人、鲛人、菇人（主人圈定）— world_bible/05:6-7",
+        "WS-0503【APPROVED_WORLD_SEED_DESIGN】毛民约4,000 ｜ 石人约3,000 ｜ 鲛人约2,500 ｜ 菇人约2,500（合计以约12,000为基线）— world_bible/05:18-19",
+        "owner D-B5：GROUP_1..4 = 4000/3000/2500/2500 已批准（槽位与名额）",
+        "world_seed/05_species_baseline.json:5,9,13,17 声明 name（毛民 Hairy Men / 石人 Rockmen / 鲛人 Mermen / 菇人 Mushroommen）与 canonical_name，population_share 一律 null",
+        "Runtime 既有正式种族名约定：feedback.py:11-12 与 runtime_design/M2B:94-95 使用 Human / Hairy Men / Rockmen / Mermen / Mushroommen",
+        "OPTION_A/B/C（12 号文档）均不等于四族集合（A={人族,小人,毛民,石人}；B 含羽民；C 含墨人）→ 不作为本项候选"
+      ],
+      "CANDIDATES": [
+        {"LABEL": "A", "VALUE": "GROUP_1=Hairy Men(毛民,4000) / GROUP_2=Rockmen(石人,3000) / GROUP_3=Mermen(鲛人,2500) / GROUP_4=Mushroommen(菇人,2500)；人族=0（不建行）",
+         "SOURCE": "OWNER_ALREADY_APPROVED_FACTS（WS-0502/WS-0503 + D-B5）+ world_seed 名称声明",
+         "LONG_TERM_EFFECT": "与已批准名额逐位对齐；人族在本世界 tick=0 不存在，未来若要加人族必须改配额并重算 RA-ALLOC-001"},
+        {"LABEL": "B", "VALUE": "四族名同 A，但把 12000 中划出一部分给人族（需下调四族名额）",
+         "SOURCE": "LOCAL_CANON（WS-0503 括注：余量人族/其他）+ OWNER 数值（须重定四族名额）",
+         "LONG_TERM_EFFECT": "推翻 D-B5 数字 → RA-ALLOC-001 输入变化 → 矩阵与 matrix_sha256 全部改变；需重新批准名额"},
+        {"LABEL": "C", "VALUE": "species 用中文规范名（毛民/石人/鲛人/菇人）作为 registry key 与 DB 值",
+         "SOURCE": "world_seed canonical_name（DETERMINISTIC_DERIVATION_FROM_APPROVED_FACTS）",
+         "LONG_TERM_EFFECT": "与 Runtime 既有正式种族名约定（Human/Hairy Men/…）不一致；需同步改 registry 键与 feedback 映射的对照表"}
+      ],
+      "RECOMMENDED_NEUTRAL_CANDIDATE": "A（不引入新事实，仅把既定 canon 名与已批准名额连起来）",
+      "OWNER_MUST_CHOOSE": "A / B / C / CUSTOM"
+    },
+    {
+      "ID": "OD-2", "NAME": "人口世界法则（年龄结构 / 生命表 / 繁衍 / 迁移 / 聚落容量）",
+      "WHY_BLOCKING": "冻结 population 引擎的 SpeciesDemographyProfile 无任何默认值；缺 profile 即 fail-closed。cohort 行必须覆盖 0..N-1 每个 bucket，缺行静默丢人口",
+      "FROZEN_CONSUMER": "population.py:63-97（profile 结构）、:307（逐 bucket 死亡率）、:325-338（出生）、:361-367（迁出）、:370-371（迁移权重）、:187-189,329-332（容量收缩）",
+      "SCHEMA_FIELDS": "population_groups.age_cohort/species_profile_ref/demography_version；settlements.population_capacity",
+      "UNIT": "cohort_buckets=1 福地年/bucket（无量纲计数）；birth_rate=每 fertile 人每福地年（Fraction）；mortality_by_bucket=每 bucket 每年死亡概率（Fraction 0..1）；emigration_rate=每福地年（Fraction）；migration_weights=无量纲（和必须=1）；population_capacity=人（整数）",
+      "EXISTING_APPROVED_CONSTRAINTS": [
+        "总量 12000、四族名额、每聚落 2000/500 已批准",
+        "引擎结构：bucket 宽 1 福地年；bucket 0 = 出生；末位 bucket 开区间聚合；mortality 长度必须 = cohort_buckets；migration_weights 和 = 1 且长度 >= 2（EC-3）",
+        "canon 只有一条量化寿命：石人「寿千余（有载）」（world_bible/05:11）；毛民/鲛人/菇人寿命 = UNKNOWN；繁衍率、死亡率、生育区间 = 全 canon NOT_FOUND",
+        "石人繁衍机制 canon：无雌性、分裂繁殖（world_bible/05:11）→ 冻结引擎的性别化生育模型无法表达",
+        "canon 明令：UNKNOWN 禁止自行补值（world_bible/05:16；13_known_unknowns.md:3；11 号:3）"
+      ],
+      "CANDIDATES": [
+        {"LABEL": "A", "VALUE": "四族共用同一 profile（单一法则），参数由 owner 给：寿命上限 L → cohort_buckets=L+1；生育区间；birth_rate；emigration_rate；migration_weights(>=2,和=1)；年龄带死亡概率（经 RA-MORTALITY-001 展开）",
+         "SOURCE": "FROZEN_ENGINE_NEUTRAL_CONSTRAINT（结构）+ OWNER 数值",
+         "LONG_TERM_EFFECT": "最简单；但石人「寿千余/分裂繁殖」的 canon 方向无法表达；四族人口学完全同质"},
+        {"LABEL": "B", "VALUE": "共享速率 + 每族寿命上限（cohort_buckets 不同）；石人按 canon 方向给更长上限",
+         "SOURCE": "LOCAL_CANON（石人寿千余，作为方向）+ OWNER 速率",
+         "LONG_TERM_EFFECT": "行数 = 12 × Σ_species(L_s+1)；石人 bucket 数可达千级 → 该族 cohort 行数 = 12×(L+1)，性能与 P_INV 覆盖成本上升"},
+        {"LABEL": "C", "VALUE": "四族完全独立 profile（速率与寿命都各自给）",
+         "SOURCE": "OWNER 数值",
+         "LONG_TERM_EFFECT": "最大保真度；owner 需给 4×6 组数值；引擎不改即可支持"}
+      ],
+      "SUB_DECISIONS": [
+        {"NAME": "石人繁衍语义", "OPTIONS": ["以通用生育窗口模型近似（声明语义不符）", "birth_rate=0（人口只减不增）", "CUSTOM"], "NOTE": "引擎无分裂繁殖概念（NOT_FOUND）"},
+        {"NAME": "settlements.population_capacity（与每聚落人口**不同字段**）",
+         "ENGINE_SEMANTICS": "room = max(capacity - total_after, 0)/capacity 作为出生倍率；NULL → 倍率 1（无约束）",
+         "OPTIONS": ["NULL（引擎中性，无容量法则）", "k × 初始人口（k>1，需 owner 给 k）", "按聚落类型给绝对值"],
+         "TRAP": "capacity == 初始人口 → room=0 → 该聚落出生恒为 0（人口冻结）"}
+      ],
+      "PREVIEW_INPUT_PLACEHOLDER_NOT_A_CANDIDATE": {
+        "note": "以下分布仅演示 RA-COHORT-001 的**机制与后果**；所用死亡率是占位输入，不是数值提案",
+        "rows": 48,
+        "cases": [
+          {"ceiling_years": 40, "q": "1/100", "N": 41, "cohort_rows": 1968, "young_lt15": 0.415, "working_15_64": 0.585, "old_ge65": 0.0},
+          {"ceiling_years": 100, "q": "1/100", "N": 101, "cohort_rows": 4848, "young_lt15": 0.217, "working_15_64": 0.537, "old_ge65": 0.246},
+          {"ceiling_years": 100, "q": "1/200", "N": 101, "cohort_rows": 4848, "young_lt15": 0.18, "working_15_64": 0.519, "old_ge65": 0.301},
+          {"ceiling_years": 1000, "q": "1/1000", "N": 1001, "cohort_rows": 48048, "young_lt15": 0.022, "working_15_64": 0.075, "old_ge65": 0.903}
+        ]
+      },
+      "RULES_NEEDING_RATIFICATION": ["RA-COHORT-001（CANDIDATE_ONLY）", "RA-MORTALITY-001（PENDING_OWNER_DECISION）"],
+      "RECOMMENDED_NEUTRAL_CANDIDATE": "无可推荐中性数值：canon 对全部速率 NOT_FOUND，且明令禁止代填（owner 必须给值或授权规则）",
+      "OWNER_MUST_CHOOSE": "A / B / C / CUSTOM"
+    },
+    {
+      "ID": "OD-3", "NAME": "资源集合、节点与正式 resource profile（S-5）",
+      "WHY_BLOCKING": "resource_stocks 必须是完整矩阵（聚落 × 资源）；缺行 → 经济引擎 KeyError（非契约化异常）。resource_profile_ref 是软引用，无正当集合则无法构造矩阵",
+      "FROZEN_CONSUMER": "economy.py:297-305（stocks 矩阵查表）、economy.py:276-294（消费类别）；resource.py:138-142（无节点即无开采）",
+      "SCHEMA_FIELDS": "resource_profiles(resource_id/unit/quantity_scale/renewability/extractability/consumption_category/production_usability)；resource_nodes(kind/state/resource_profile_ref/settlement_relation/remaining_reserve/extraction_capacity/reserve_ceiling_minor)；resource_stocks.quantity",
+      "UNIT": "minor units（1 canonical unit = quantity_scale minor units）；extraction_capacity = minor units/福地年；remaining_reserve = minor units",
+      "EXISTING_APPROVED_CONSTRAINTS": [
+        "node_types（8，APPROVED_WORLD_SEED）：灵田 / 药园·药材点 / 果园 / 矿脉·石材点 / 水源·水产点 / 林产·采集点 / 菌类点 / 特殊灵性资源点 — world_seed/09_resource_baseline.json:5-7",
+        "8 态状态机 GROWING/STABLE/DECLINING/EXHAUSTED/DAMAGED/MUTATED/NEWLY_FORMED/RECOVERING（CONFIRMED_STATIC_CANON WS-0703）",
+        "WS-0702：资源不能无限生成（产量受节点状态/劳动力/再生/运输/储存/生态承载/风险约束）",
+        "canon 明示：资源节点实例 0；储量/坐标/状态全 UNKNOWN；未确认资源数量不得伪造（world_seed/09:14-17）",
+        "S-5 建议清单（PENDING_APPROVAL）：灵田/药园/果园/林区/湖区/矿脉"
+      ],
+      "CANDIDATES": [
+        {"LABEL": "A", "VALUE": "不设资源：resource_profiles=0、resource_nodes=0、resource_stocks 仍建完整矩阵但 quantity=0",
+         "SOURCE": "FROZEN_ENGINE_NEUTRAL_CONSTRAINT（RESOURCE 合法空转）",
+         "LONG_TERM_EFFECT": "经济引擎可运行但无产出；人口将走短缺路径（需与 OD-9 一起看是否可接受）"},
+        {"LABEL": "B", "VALUE": "按 8 个 node_types 各设 1 个正式 profile（owner 给 unit/quantity_scale/renewability/consumption_category），节点数 = 每聚落 1 个基础节点（12 节点）",
+         "SOURCE": "LOCAL_CANON（node_types 已批准）+ OWNER 数值",
+         "LONG_TERM_EFFECT": "最小非空资源生态；每聚落至少一条开采线，库存可被补充"},
+        {"LABEL": "C", "VALUE": "owner 指定完整资源清单与每节点储量/开采容量",
+         "SOURCE": "OWNER 数值",
+         "LONG_TERM_EFFECT": "最大保真度；owner 需给 节点数×(kind,profile,reserve,capacity) 的一批数值"}
+      ],
+      "RECOMMENDED_NEUTRAL_CANDIDATE": "无可推荐中性数值：canon 对一切资源数量/储量 NOT_FOUND；A 是唯一零发明选项但对经济是硬约束",
+      "OWNER_MUST_CHOOSE": "A / B / C / CUSTOM"
+    },
+    {
+      "ID": "OD-4", "NAME": "初始经济状态与产业配方（S-4 + D-B7）",
+      "WHY_BLOCKING": "resource_stocks 与 economic_pressure_state 缺行即 fail-closed（EconomyStateInconsistent / KeyError）；production_recipes 决定是否有产出",
+      "FROZEN_CONSUMER": "economy.py:164-170（stocks 完整性）、:188-211（batches = min(容量进位, 输入库存, 劳动力)）、:359-362（pressure 行）、:266-294（人均需求）",
+      "SCHEMA_FIELDS": "production_recipes(recipe_id/input_resource_ref/input_qty_minor/output_resource_ref/output_qty_minor/capacity_batches_per_year/labor_per_batch/loss_num/loss_den)；economic_pressure_state 全员字段；resource_stocks.quantity",
+      "UNIT": "input/output_qty_minor = minor units/批；capacity_batches_per_year = 批/福地年；labor_per_batch = 人/批（0 = 无劳动力约束）；per_capita_demand = canonical units/人/福地年（Fraction）",
+      "EXISTING_APPROVED_CONSTRAINTS": [
+        "industry_sectors（7，APPROVED_WORLD_SEED）：农业(灵田/果园) / 采集(山林/药园) / 手工业(工坊/炼制) / 市场(集市+记账) / 交通(道路/水路/运输) / 资源生产 / 外界物品输入 — world_seed/08_economy_baseline.json:5-7",
+        "production_chain = RESOURCE_NODE → 采/种 → 加工 → 运输 → 储存 → 市场 → 消费/培育/储备（CONFIRMED_STATIC_CANON WS-0701）",
+        "USE ≠ MANUFACTURE（CONFIRMED_STATIC_CANON）：可用可学可仿，但不自动拥有现代工业链",
+        "货币形态 UNKNOWN：canon 默认「物/劳务交换 + 记账」（不引入元石/仙元石）",
+        "canon NOT_FOUND：任何配方、产能、劳动力数值、人均需求、初始库存、价格、仓储容量"
+      ],
+      "CANDIDATES": [
+        {"LABEL": "A", "VALUE": "无初始产业：production_recipes=0、无 production_state 行（不生产，不报错）；pressure 行用引擎默认中性值；库存 0",
+         "SOURCE": "FROZEN_ENGINE_NEUTRAL_CONSTRAINT",
+         "LONG_TERM_EFFECT": "零产出世界：消费需求立刻进入短缺路径（feedback 映射会影响人口）。只有在 OD-3 选 A 或 owner 明确接受时成立"},
+        {"LABEL": "B", "VALUE": "按 7 个已批准 sector 各设 1 条基础配方（owner 给 input/output/qty/capacity/labor/loss），库存按 owner 给的缓冲年限起步",
+         "SOURCE": "LOCAL_CANON（sectors 与链条已批准）+ OWNER 数值",
+         "LONG_TERM_EFFECT": "最小自洽经济；产量受节点与劳动力双重限制"},
+        {"LABEL": "C", "VALUE": "owner 指定完整配方表与每聚落初始库存绝对值",
+         "SOURCE": "OWNER 数值",
+         "LONG_TERM_EFFECT": "最大控制力；owner 需填 配方数 + 12×R 个库存数"}
+      ],
+      "RECOMMENDED_NEUTRAL_CANDIDATE": "无可推荐中性数值：canon 对全部经济数量 NOT_FOUND；引擎亦无「经济中性初始态」的正式定义（只有列默认 0，会把世界推进短缺路径）",
+      "OWNER_MUST_CHOOSE": "A / B / C / CUSTOM"
+    },
+    {
+      "ID": "OD-5", "NAME": "生态区与正式 EcologyProfile（D-B8）",
+      "WHY_BLOCKING": "每个生态区必须有 ecology_zones + ecology_state + ecology_feedback_state 三行，缺任一 → EcologyZoneMissing（fail-closed）；正式 EcologyProfile 决定生态轨迹",
+      "FROZEN_CONSUMER": "ecology.py:189-199（三行完整性）、:254-290（压力权重/再生/阈值 level_of）",
+      "SCHEMA_FIELDS": "ecology_zones(zone_id/region_ref/settlement_relation/profile_ref)；ecology_state(habitat_quality/regeneration_capacity/ecological_stress/*_pressure/carry/min-max seen)；ecology_feedback_state(比值字段)",
+      "UNIT": "habitat_quality / stress / pressure ∈ [0, ECOLOGY_STATE_SCALE=1_000_000]；renewable_regen_minor_per_full_quality = minor units/福地年；pop_pressure_per_person = minor units/人；thresholds 长度 3 严格递减",
+      "EXISTING_APPROVED_CONSTRAINTS": [
+        "ecology zone TYPES（11，CONFIRMED_STATIC_CANON）：mountain / forest / lake / river-stream / wetland / grassland / fields(灵田) / medicine_garden(药园) / orchard / resource_zones / settlement_ecology — world_seed/10_ecology_baseline.json:5-7",
+        "ecology 状态字段名（APPROVED_WORLD_SEED WS-0801）：terrain/climate/water/flora/fauna/spiritual_resources/danger_level/carrying_capacity",
+        "WS-0805【PROVISIONAL_DESIGN】carrying_capacity 约束放牧/开垦/采集强度（**无数值**；schema 中为 null）",
+        "carrying_capacity 的**实际公式消费**：无任何冻结引擎读取（仅 snapshot/state_hash 可见）→ 与 EcologyProfile 数值无关",
+        "canon NOT_FOUND：一切生态数值（品质/退化率/恢复率/阈值/压力权重/承载力数值）"
+      ],
+      "CANDIDATES": [
+        {"LABEL": "A", "VALUE": "12 个生态区（每聚落 1 区，settlement_relation = working_name），profile 数值由 owner 给；carrying_capacity 不设（不建 ecological_regions 行）",
+         "SOURCE": "FROZEN_ENGINE_NEUTRAL_CONSTRAINT（区数由 fail-closed 要求派生，RA-STRUCT-001）+ OWNER 数值",
+         "LONG_TERM_EFFECT": "满足引擎完整性；生态轨迹由 owner 数值决定"},
+        {"LABEL": "B", "VALUE": "按 11 个 canon zone TYPES 建模（每类型至少 1 区），或按区域带（world_seed/03 的 8 个 regional_band_slots）建模",
+         "SOURCE": "LOCAL_CANON（类型清单已批准）",
+         "LONG_TERM_EFFECT": "区数 > 12 → ecology_* 三表行数同步放大；需要额外的 区↔聚落 映射（settlement_relation 单值）"},
+        {"LABEL": "C", "VALUE": "owner 指定区集合与每区 profile 数值",
+         "SOURCE": "OWNER 数值",
+         "LONG_TERM_EFFECT": "最大控制力；owner 需给 区数×profile 数值"}
+      ],
+      "RECOMMENDED_NEUTRAL_CANDIDATE": "结构上推荐 A 的 12 区基数（引擎强制）；数值无中性候选",
+      "OWNER_MUST_CHOOSE": "A / B / C / CUSTOM"
+    },
+    {
+      "ID": "OD-6", "NAME": "正式社会阈值（S-7 + D-B9）",
+      "WHY_BLOCKING": "每聚落必须有 settlement_social_state + social_feedback_state（缺行即 IntegrityError，与人口是否为 0 无关）；家庭/机构/宗族的形成与分化全部由 SocialProfile 阈值驱动",
+      "FROZEN_CONSUMER": "social.py:267-299（formation_size 形成户）、:300-345（split_threshold 拆分）、:499-540（institution_found_pop 成立/解散）、:651-652（stress_thresholds）、:76-89（profile 字段）",
+      "SCHEMA_FIELDS": "SocialProfile(formation_size/split_threshold/lineage_found_generation/lineage_found_size/lineage_split_households/institution_found_pop/institution_dissolve_pop/institution_*_cohesion/pressure_weights/stress_thresholds/migration_modifier_k/fertility_context_k/social_support_k)",
+      "UNIT": "formation_size/split_threshold/lineage_*/institution_*_pop = 人或户（整数）；cohesion 与 stress_thresholds ∈ [0, SOCIAL_STATE_SCALE]；pressure_weights 无量纲（和=1，键固定 {economy,ecology,mobility}）；k 为无量纲 Fraction",
+      "EXISTING_APPROVED_CONSTRAINTS": [
+        "WS-0601/0603 SOCIAL_AUTONOMY_PRINCIPLE（CONFIRMED_STATIC_CANON）：社会自行发生出生/成家/代际/机构/传统",
+        "WS-0602【LOCAL_CANON+PROVISIONAL】组织形态存在：家庭/村落/工坊/资源组织/运输/市场/仓储/学徒/公共事务；当前不建立完整国家官僚体系",
+        "WS-0608【APPROVED_DESIGN】允许家庭形成、子女出生、代际变化、职业继承/改变、迁居",
+        "WS-0406：聚落 4 主 + 6~10 卫星（owner 已定为 4+8）；神社为核心区域（WS-0402）",
+        "机构候选 9 项与管理层为 PROVISIONAL_DESIGN（不写 Canon）",
+        "canon NOT_FOUND：户规模数值、任何形成/分化阈值、凝聚力数值、迁移权重数值（现存阈值只在 TEST_SOCIAL_PROFILE，TEST_FIXTURE_ONLY）",
+        "引擎强制：pressure_weights 键固定且和=1；stress_thresholds 长度 2 严格递增"
+      ],
+      "CANDIDATES": [
+        {"LABEL": "A", "VALUE": "owner 给正式阈值集合（户规模、拆分阈值、机构成立/解散人口门槛、凝聚力三档、压力权重、stress 阈值、三个 k）",
+         "SOURCE": "OWNER 数值（结构由 FROZEN_ENGINE_NEUTRAL_CONSTRAINT 约束）",
+         "LONG_TERM_EFFECT": "社会演化按 owner 设定展开；阈值决定 household/lineage/institution 的产出节奏"},
+        {"LABEL": "B", "VALUE": "阈值按聚落人口确定性派生（例如 formation_size 由 owner 给的户规模政策 + 聚落人口推导），并作为**新派生规则**提交 owner 批准",
+         "SOURCE": "DETERMINISTIC_DERIVATION_FROM_APPROVED_FACTS（需 owner 先批准规则）",
+         "LONG_TERM_EFFECT": "owner 只需给少量政策参数；代价是新增一条需版本化、可复算的规则"},
+        {"LABEL": "C", "VALUE": "明确「正式世界不使用社会阈值」= 不启用社会派生（仅建 state/feedback 行以满足 fail-closed）",
+         "SOURCE": "OWNER 决议（FROZEN_ENGINE_NEUTRAL_CONSTRAINT 允许不产出）",
+         "LONG_TERM_EFFECT": "household/lineage/institution 永不产生 → 社会层长期空转；人口仍会演化（社会反馈保持中性 1/1）"}
+      ],
+      "RECOMMENDED_NEUTRAL_CANDIDATE": "无中性数值候选；若 owner 希望零发明且不启用该域，C 是唯一自洽选项（须明确接受社会层空转）",
+      "OWNER_MUST_CHOOSE": "A / B / C / CUSTOM"
+    },
+    {
+      "ID": "OD-7", "NAME": "正式灾劫 profile 数值（S-10 剩余部分）",
+      "WHY_BLOCKING": "无匹配 tier 的正式 profile → 该 tier 静默不触发；正式 profile 数值决定灾劫强度与后果。周期与首个前兆**已解决，不在此列**",
+      "FROZEN_CONSUMER": "tribulation.py:87-107（profile 结构）、:736-744（按 tier 取 profile）、:517-518（intensity 抽值）、:696-729（plan 生成）；适配器消费 population_risk/resource_damage/inventory_damage/social_displacement/ecology_pressure",
+      "SCHEMA_FIELDS": "tribulation_profiles(profile_id/tier/theme/intensity_min/intensity_max/precursor_steps/preparation_steps/impact_steps/recovery_steps/六项风险分数/ecology_pressure/succession_rules)；tribulation_schedules(schedule_id/tier/period_years/enabled)",
+      "UNIT": "intensity ∈ [0,100]（整数）；*_steps = 福地年；六项风险 = Fraction ∈ [0,1]；ecology_pressure ∈ [0,1_000_000]",
+      "EXISTING_APPROVED_CONSTRAINTS": [
+        "周期 REGULAR=10 / MAJOR=50 / CENTENNIAL=100 福地年 = OWNER APPROVED（D-E）— 不得重复请求",
+        "FIRST_OMEN：tick 10_000_000（10 福地年）= RA-TRIB-001 DERIVED（owner 已批准该派生）— 不得重复请求",
+        "REMOVE_PRODUCTION_TEST_PROFILE_FALLBACK = TRUE；FORMAL_PROFILE_MISSING_BEHAVIOR = FAIL_CLOSED（既有 owner 决议，不再是 OD）",
+        "九阶段生命周期（WS-0902 APPROVED_DESIGN）：PRECURSOR→PREPARATION→IMPACT→RESPONSE→STABILIZATION→RESIDUAL_CHANGE→RECOVERY→RESOURCE_SUCCESSION→NEW_NORMAL",
+        "tick=0 无活跃灾劫叙事（world_seed/12 与 M3 preflight：schedule=NOT_ACTIVATED、tribulation_history=EMPTY）",
+        "引擎强制：precursor_steps >= 1（EC-1，=0 触发 KeyError）",
+        "canon NOT_FOUND：intensity/伤害/各 steps 的一切数值；正式灾劫主题名（仅有可配置主题池）",
+        "母世界阶梯名（地灾/天劫/浩劫/万劫）**禁止**本地使用（TRIBULATION_RANK_INFERENCE=0）"
+      ],
+      "CANDIDATES": [
+        {"LABEL": "A", "VALUE": "每 tier 一套正式 profile：theme 取 canon 主题池（灵气潮汐/地脉波动/兽群躁动/生态失衡），intensity 区间、六项风险、四类 steps 由 owner 给",
+         "SOURCE": "LOCAL_CANON（阶段/主题池/风险维度结构）+ OWNER 数值",
+         "LONG_TERM_EFFECT": "灾劫按 owner 数值产生真实后果（人口/资源/库存/社会/生态五路适配器都会生效）"},
+        {"LABEL": "B", "VALUE": "先建 profile 但六项风险置 0（结构合规、零伤害），待后续阶段再给数值",
+         "SOURCE": "FROZEN_ENGINE_NEUTRAL_CONSTRAINT（零伤害 = 无后果）",
+         "LONG_TERM_EFFECT": "灾劫事件会发生但无领域后果（plan 仍生成、history 仍记录）→ 叙事与机制脱节，须 owner 明确接受"},
+        {"LABEL": "C", "VALUE": "owner 指定 theme 名称与全部数值（含 targeting/succession 规则）",
+         "SOURCE": "OWNER 数值",
+         "LONG_TERM_EFFECT": "最大控制力；owner 需给 3×约 14 个字段"}
+      ],
+      "RECOMMENDED_NEUTRAL_CANDIDATE": "无中性数值候选（B 是「零后果」而非引擎中性）",
+      "OWNER_MUST_CHOOSE": "A / B / C / CUSTOM"
+    },
+    {
+      "ID": "OD-8", "NAME": "RA-STRUCT-001 结构基数规则（显式复核）",
+      "WHY_BLOCKING": "该规则产出物化时的行集合基数（区数、state 行数、feedback 行数、排期数）。owner 已标记 CANDIDATE_ONLY_PENDING_EXPLICIT_REVIEW，未复核则不得写进 SNAPSHOT_V1",
+      "FROZEN_CONSUMER": "ecology.py:191-199、social.py:568-575、economy.py:164-170,359-362（fail-closed 行要求）",
+      "SCHEMA_FIELDS": "ecology_zones/ecology_state/ecology_feedback_state/settlement_social_state/social_feedback_state/resource_stocks/economic_pressure_state/tribulation_schedules 的行集合",
+      "UNIT": "行数（整数）",
+      "EXISTING_APPROVED_CONSTRAINTS": [
+        "12 聚落（owner D-B2）、每聚落人口（owner D-B6）、三 tier（owner D-E）已批准",
+        "引擎 fail-closed 要求：每区三行、每聚落两行、每 (聚落×消费资源) 一行、stocks 完整矩阵"
+      ],
+      "CANDIDATES": [
+        {"LABEL": "A", "VALUE": "批准 RA-STRUCT-001 v1.0 作为 bootstrap 派生规则（区=聚落数；state/feedback 行数由引擎要求派生；排期=已批准 tier 数）",
+         "SOURCE": "FROZEN_ENGINE_NEUTRAL_CONSTRAINT",
+         "LONG_TERM_EFFECT": "物化器可依此生成完整行集合；规则版本化可复算"},
+        {"LABEL": "B", "VALUE": "不批准为规则，而是在 SNAPSHOT_V1 中逐表列出显式行数",
+         "SOURCE": "OWNER 决议",
+         "LONG_TERM_EFFECT": "无派生规则，改基数需人工改 SNAPSHOT_V1；但与引擎要求的一致性不再被规则保证"},
+        {"LABEL": "C", "VALUE": "批准规则但限制其范围（仅 ecology/social 的 state 行，不含 resource_stocks 矩阵）",
+         "SOURCE": "OWNER 决议",
+         "LONG_TERM_EFFECT": "矩阵部分回到 OD-3/OD-4 显式给值"}
+      ],
+      "RECOMMENDED_NEUTRAL_CANDIDATE": "A（规则只表达引擎强制要求，不引入任何世界观数值）",
+      "OWNER_MUST_CHOOSE": "A / B / C / CUSTOM"
+    },
+    {
+      "ID": "OD-9", "NAME": "DYNAMIC_NEUTRAL 初始状态值（引擎会读取并影响轨迹）",
+      "WHY_BLOCKING": "这些行必须存在（fail-closed），且其初始值会被冻结引擎读取并影响后续轨迹 → 不属于技术中性，必须 owner 批准",
+      "FROZEN_CONSUMER": "ecology.py（habitat_quality）、economy.py（stocks/pressure）、social.py（cohesion/stability/stress）、feedback.py（短缺/生态/社会 → 人口映射）",
+      "SCHEMA_FIELDS": "ecology_state.habitat_quality 等 12 字段；ecology_feedback_state 其余字段；settlement_social_state 6 字段；social_feedback_state 8 字段；economic_pressure_state 7 字段；resource_stocks.quantity 与 8 个 cum_* 计数器",
+      "UNIT": "quality/pressure ∈ [0,1_000_000]；quantity/cum_* = minor units；比值字段为 num/den（默认 1/1）；stress_level 枚举 NONE/LOW/HIGH",
+      "EXISTING_APPROVED_CONSTRAINTS": [
+        "引擎已为 4 个状态族定义了 server default（全 0 比值 1/1、stress NONE、cohesion/stability 1_000_000）→ 可作「引擎定义中性态」候选",
+        "ecology_state.habitat_quality 的列默认是 0 = 最差质量，**不是**中性初始态",
+        "feedback.py: 短缺→死亡率、生态→人口、社会→生育/迁移 的映射存在（正式种族当前映射为 0/中性）"
+      ],
+      "CANDIDATES": [
+        {"LABEL": "A", "VALUE": "采用引擎 server default 作为初始态（stocks.quantity=0、pressure 全 0、social cohesion/stability=1_000_000、feedback 全 1/1、ecology pressure/stress=0），并把 habitat_quality 设为 ECOLOGY_STATE_SCALE（满质量 = 无退化起点）",
+         "SOURCE": "FROZEN_ENGINE_NEUTRAL_CONSTRAINT（server default）+ 明确声明的无退化起点",
+         "LONG_TERM_EFFECT": "stocks=0 会把经济推入短缺路径（除非 OD-3/OD-4 提供开采或库存）；生态从满质量开始"},
+        {"LABEL": "B", "VALUE": "全部采用 server default（含 habitat_quality=0）",
+         "SOURCE": "FROZEN_ENGINE_NEUTRAL_CONSTRAINT",
+         "LONG_TERM_EFFECT": "生态从最差质量起步 → 立即触发退化/恢复路径；可能产生非预期早期生态事件"},
+        {"LABEL": "C", "VALUE": "owner 指定初始状态值（可配合 OD-3 的库存缓冲政策）",
+         "SOURCE": "OWNER 数值",
+         "LONG_TERM_EFFECT": "可控起点；owner 需给 6 个状态族 × 12 行的关键字段值"}
+      ],
+      "RECOMMENDED_NEUTRAL_CANDIDATE": "A 的引擎默认部分（4 个状态族）+ 明确标注 habitat_quality 需 owner 单独选定（默认 0 有陷阱）；stock=0 的 dead-economy 风险已登记",
+      "OWNER_MUST_CHOOSE": "A / B / C / CUSTOM"
+    }
+  ],
+  "s1_s10_mapping": [
+    {"ID": "S-1", "title": "大致总人口", "status": "ALREADY_OWNER_APPROVED", "detail": "12000（D-B4）"},
+    {"ID": "S-2", "title": "异人种族组合", "status": "BLOCKED_BY_OD_1", "detail": "canon 名已存在（毛民/石人/鲛人/菇人），需 owner 确认"},
+    {"ID": "S-3", "title": "主要聚落数量", "status": "ALREADY_OWNER_APPROVED", "detail": "12 = 4 MAIN + 8 SAT（D-B2；WS-0406 胜出）"},
+    {"ID": "S-4", "title": "主要产业", "status": "BLOCKED_BY_OD_4", "detail": "7 个 sector 已批准，配方数值缺"},
+    {"ID": "S-5", "title": "主要资源区", "status": "BLOCKED_BY_OD_3", "detail": "8 个 node_types 已批准，实例/储量缺"},
+    {"ID": "S-6", "title": "荒兽/异兽层级", "status": "NON_BLOCKING_NO_ENGINE_REPRESENTATION", "detail": "WS-0802 明确 BL-011 异兽 ≠ 荒兽阶梯；引擎无实体 → 不在最小集（已 tracked，非 UNTRACKED）"},
+    {"ID": "S-7", "title": "社会组织", "status": "BLOCKED_BY_OD_6", "detail": "组织形态存在为 CANON，阈值缺"},
+    {"ID": "S-8", "title": "基础设施", "status": "NON_BLOCKING_NO_ENGINE_REPRESENTATION", "detail": "引擎无基础设施表；可由 institutions（SOCIAL 自建）表达 → 不在最小集（已 tracked）"},
+    {"ID": "S-9", "title": "发展水平", "status": "DERIVABLE", "detail": "不设独立字段，由 S-4/S-5/S-8 的集合共同表达"},
+    {"ID": "S-10", "title": "灾劫状态", "status": "ALREADY_OWNER_APPROVED + DERIVABLE + BLOCKED_BY_OD_7", "detail": "周期已批准；首个前兆已派生（RA-TRIB-001）；profile 数值与 mode 待 OD-7"}
+  ],
+  "non_blocking_registry": [
+    {"ID": "U-1", "title": "S-6 荒兽/异兽层级", "reason": "冻结引擎无对应实体/规则；WS-0802 映射 UNDECIDED"},
+    {"ID": "U-2", "title": "S-8 基础设施", "reason": "引擎无基础设施表；可复用 institutions"},
+    {"ID": "U-3", "title": "ecological_regions 业务键缺失", "reason": "该表只有自增 id；本候选用 REGION_REF_NULL_EVERYWHERE 规避；carrying_capacity 无引擎消费"},
+    {"ID": "U-4", "title": "迁移权重无法按聚落区分", "reason": "_settlement_order 对正式聚落名一律返回 1（EC-3）；冻结引擎既有耦合，只登记不改"}
+  ],
+  "prohibitions": [
+    "MATERIALIZER_IMPLEMENTATION = PROHIBITED（本阶段即使候选全部生成，也只返回 owner 审批）",
+    "FORMAL_WORLD_MUTATION = PROHIBITED",
+    "FORMAL_WORLD_SEED_CONSUMPTION = PROHIBITED",
+    "不得把 TEST_PROFILES / synthetic fixtures / 常识猜测 / 模型自行创作 作为候选来源"
+  ],
+  "candidate_sources_used": ["LOCAL_CANON", "APPROVED_LOCAL_DESIGN",
+                             "OWNER_ALREADY_APPROVED_FACTS",
+                             "FROZEN_ENGINE_NEUTRAL_CONSTRAINT",
+                             "DETERMINISTIC_DERIVATION_FROM_APPROVED_FACTS"],
+  "NEXT_ACTION": "AWAIT_OWNER_FINAL_BOOTSTRAP_DECISIONS"
+}

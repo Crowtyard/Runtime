@@ -345,6 +345,15 @@ owner_approved_nodes    =  19
 derived_nodes           =  20
 neutral_nodes           =  31
 blocked_nodes           =  19
-candidate_sha256        = 0a7466c7054c9d51f6a069f94c325e87c20ad0f1f341b806014961c461d62f03
+candidate_sha256        = 00d24192adbf819a4b242414dbe970758b37c94f49e17e12d572c258d64369f8
+                        （M6C.1B 只补充 metadata；分配矩阵 digest 未变）
 matrix_sha256           = 8dfe3471c1ff9d9c93646df18e4f55335cb93ca634c4afc96a17c86b5b28c457
 ```
+
+> **M6C.1B 更新（metadata only）**：主人已裁决 `RA-ALLOC-001` / `RA-TRIB-001` 为
+> `APPROVED_BOOTSTRAP_DERIVATION`，`RA-COHORT-001` = `CANDIDATE_ONLY`，
+> `RA-MORTALITY-001` = `PENDING_OWNER_DECISION`，`RA-STRUCT-001` =
+> `CANDIDATE_ONLY_PENDING_EXPLICIT_REVIEW`；OCCUPATION / HOUSEHOLD = `NOT_REQUIRED`；
+> legacy stale DB 定性为 `LEGACY_STALE_NON_AUTHORITATIVE_DB`。
+> 剩余阻塞已收敛为 **OD-1..OD-9**：见 `docs/world_creation/M6C1B_OWNER_DECISION_PACKET.md`。
+> 本候选内容与分配矩阵**未改动**（`MATERIALIZATION_ALLOWED = FALSE` 保持）。
