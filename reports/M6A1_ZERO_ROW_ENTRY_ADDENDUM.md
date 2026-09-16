@@ -76,13 +76,40 @@ C8/ACK-lost：`read_activation_truth` 判 `COMMITTED`，重复调用得 `ALREADY
 状态零变更（`ACK_LOST_RECONCILIATION = PASS`，`BLIND_ACTIVATION_RETRY_COUNT = 0`）。
 Restart equivalence 与 scheduler 三态（DORMANT / DORMANT / VALID）亦在本模块内实测。
 
-## 8. PostgreSQL 证据 = **缺失（环境阻塞）**
+## 8. PostgreSQL 证据 = PASS（既有 test venv，未安装任何包）
 
-`PG_* = NOT_RUN (ENV_BLOCKED)`：测试侧 `tests/pg_functional_support.py:74` 需要 **psycopg 3**，
-本机解释器未安装；`pip install "psycopg[binary]"` 被本地策略代理拒绝
-（`ProxyError ... 403 Forbidden`，PyPI 不可达）；工作区仅有另一个项目 venv 内的 **psycopg2**，
-不能替代（API 与 import 名不同且不应跨项目借用）。
-`services/writer_lock.py` 已被修改 → **PG targeted gate 仍是未完成义务**，需 owner 提供驱动或放行网络。
+环境：`%TEMP%\blr-pre-m6-pg-venv`（Python 3.11.9，**psycopg 3.3.5** + psycopg_binary 3.3.5，
+SQLAlchemy 2.0.52，pytest 9.1.1）；容器 `blr-pre-m6-postgres`（PostgreSQL 16.15 @127.0.0.1:55432）。
+未安装任何包、未改 live venv、未借用其它项目 psycopg2、**未触碰 stayops-postgres**。
+
+```
+PG_SINGLE_WRITER_REGRESSION   = PASS   PG_FENCING_REGRESSION        = PASS
+PG_LEASE_TAKEOVER_REGRESSION  = PASS   PG_STALE_WRITER_REGRESSION   = PASS
+PG_SHARED_WRITER_LOCK_GATES   = PASS（4/4：single writer exclusive+renew /
+                              single writer concurrent two connections /
+                              lease expiry takeover / stale writer mutations rejected）
+   → writer_lock.py 的 commit=False 新增未改变默认 commit=True 语义。
+
+PG_AMBIGUITY_REGRESSION = PASS（tests/test_pg_commit_ambiguity_gate.py 9/9，exit code 0）
+PG012_PRESENT = TRUE        PG_BLIND_RETRY_COUNT = 0
+
+M6_FORMAL_ACTIVATION_POSTGRES_SUPPORTED = TRUE
+   evidence：services/activation/service.py 与 services/writer_lock.py 无任何 dialect/PostgreSQL
+   分支（`postgres|dialect` 命中 0）→ activation 为 SQLAlchemy 层方言无关实现，必须真跑 PG 并发。
+PG_ZERO_ROW_CONCURRENCY = PASS（tests/test_m6a1pg_zero_row_concurrency.py：fresh PG test DB、
+   真 canonical zero-row、**两个真实 OS 进程**同时激活）
+   PG_CLAIM_WINNERS_MAX = 1   PG_FENCE_WINNERS_MAX = 1   PG_COMMIT_WINNERS_MAX = 1
+   最终 world_runtime = 1 / time_ratio_history = 1 / genesis = 1 / runtime_lock <= 1
+   PG_LOSER_FENCES = 0（落败方从未取得 fence）
+   PG_LOSER_OUTCOME = IntegrityError（psycopg.errors.UniqueViolation: duplicate key world_runtime）
+     ⚠ 记录用事实（未改设计）：PG 在 **claim 阶段**以 unique violation 阻断落败方，
+       不会出现双方同时持有 fence；但落败方拿到的是**未分类的原始 IntegrityError**，
+       而非 SQLite 侧的 canonical 拒绝 / ALREADY_COMMITTED。属待 Owner 裁决的分类差距。
+```
+
+> 早期本 addendum 曾记录 "PostgreSQL 证据 = 缺失（环境阻塞，psycopg3 不可得 / PyPI 403）"；
+> 该结论基于主解释器。随后按 owner 指引找到既有 test-only venv 并完成上述真实 PG gate，
+> 本节为**更新后的权威记录**（旧描述在此更正，历史不改写）。
 
 ## 9. Fast regression
 
