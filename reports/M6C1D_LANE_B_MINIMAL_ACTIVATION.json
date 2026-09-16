@@ -1,0 +1,49 @@
+{
+ "ACTIVATION_BLOCKER_CLASS": "PENDING_OWNER_REVIEW",
+ "DATABASE_FILE": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6c1d_laneb_992c73fv\\lane_b.sqlite",
+ "DATABASE_URL": "sqlite:///C:/Users/Crowtyard/AppData/Local/Temp/m6c1d_laneb_992c73fv/lane_b.sqlite",
+ "FIRST_ACTIVATION": {
+  "class": "ActivationRefused",
+  "error": "ActivationRefused('rate history 为空：未播种自然态速率行（先运行既有 seed 路径）')",
+  "trace_tail": "Traceback (most recent call last):\n  File \"D:\\MY SELF\\IKUN\\小光\\XiaoguangBlessedLandRuntime\\scripts\\_m6c1d_laneB_minimal.py\", line 88, in main\n    out1 = activate_formal_world(factory, request=request)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\MY SELF\\IKUN\\小光\\XiaoguangBlessedLandRuntime\\services\\activation\\service.py\", line 356, in activate_formal_world\n    ratio_id = _effective_ratio(ctx.session, request)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\MY SELF\\IKUN\\小光\\XiaoguangBlessedLandRuntime\\services\\activation\\service.py\", line 249, in _effective_ratio\n    raise ActivationRefused(\nXiaoguangBlessedLandRuntime.domain.errors.ActivationRefused: rate history 为空：未播种自然态速率行（先运行既有 seed 路径）\n"
+ },
+ "MINIMAL_ACTIVATION_REPRO": "FAIL",
+ "POOL_CLASS": "QueuePool",
+ "REQUEST": {
+  "anchor_us": 1767225600000000,
+  "initial_tick": 0,
+  "world_id": "M6C1D-LANE-B"
+ },
+ "connection_facts": [
+  {
+   "connection_id": 2433142117120,
+   "label": "acquire",
+   "pool_class": "QueuePool",
+   "pragma_database_list": [
+    [
+     0,
+     "main",
+     "C:\\Users\\Crowtyard\\AppData\\Local\\Temp\\m6c1d_laneb_992c73fv\\lane_b.sqlite"
+    ]
+   ],
+   "sqlite_version": "3.45.1"
+  },
+  {
+   "connection_id": 2433142119280,
+   "label": "verify",
+   "pool_class": "QueuePool",
+   "pragma_database_list": [
+    [
+     0,
+     "main",
+     "C:\\Users\\Crowtyard\\AppData\\Local\\Temp\\m6c1d_laneb_992c73fv\\lane_b.sqlite"
+    ]
+   ],
+   "sqlite_version": "3.45.1"
+  }
+ ],
+ "lease_rows_after_failure": [],
+ "lease_rows_after_precreate": [],
+ "lease_rows_before": [],
+ "runtime_row_precreated": true
+}

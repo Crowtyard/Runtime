@@ -256,6 +256,26 @@ def _effective_ratio(session: Session, request: ActivationRequest) -> int:
     return ratio_id
 
 
+def _seed_canonical_initial_rate(session: Session,
+                                 request: ActivationRequest) -> None:
+    """在 activation 事务内建立 canonical initial rate binding（幂等）。
+
+    使用 frozen M1 的自然态倍率语义（1 canonical blessed µy / 1 real µs =
+    1_000_000 / 86_400_000_000），与既有 seed 路径同值；**不 invent 新倍率**。
+    已存在 rate 行时不做任何事（第二次 activation 不新增 binding）。
+    """
+    from datetime import datetime, timezone
+    repo = TimeRatioRepository(session)
+    if repo.list_all():
+        return
+    repo.add(
+        world_id=request.world_id,
+        real_effective_from=datetime.fromtimestamp(
+            request.activation_real_us / 1_000_000, tz=timezone.utc),
+        rate_numerator=1_000_000, rate_denominator=86_400_000_000,
+        reason="ACTIVATION", source="ACTIVATION")
+
+
 def _rate_of(row):  # noqa: ANN001
     return TimeRate(row.rate_numerator, row.rate_denominator)
 
@@ -305,11 +325,44 @@ def activate_formal_world(session_factory: sessionmaker[Session], *,
     genesis_uid = _genesis_uid(request)
 
     # ---- 3) 单写者租约（§15）：两个 Activator 只有一个能拿到 -------------------
-    lease_session = session_factory()
-    lease = WriterLease(lease_session, request.world_id,
-                        lease_seconds=request.lease_seconds or 120)
+    # M6A.1 §3/§4/§5：canonical zero-row 入口。租约必须与 activation 处于**同一
+    # 事务**，因此在事务内先建立 transient world_runtime 父行（未提交前对其它连接
+    # 不可见 → TRANSIENT_RUNTIME_ROW_DURABLE_BEFORE_ACTIVATION_COMMIT = FALSE），
+    # 再由同一 session 取得租约/fencing；失败即整体 rollback 回 canonical zero-row。
+    _probe = session_factory()
     try:
-        lease.acquire()
+        _zero_row = RuntimeRepository(_probe).get() is None
+    finally:
+        _probe.close()
+    if _zero_row:
+        _activation_session = session_factory()
+        RuntimeRepository(_activation_session).create_not_activated(
+            world_id=request.world_id, world_bible_version="1.0",
+            simulation_version=request.simulation_version,
+            world_bible_manifest_hash=getattr(seed, "manifest_digest", None))
+        _activation_session.flush()
+        lease_session = _activation_session
+        lease = WriterLease(_activation_session, request.world_id,
+                            lease_seconds=request.lease_seconds or 120)
+        try:
+            lease.acquire(commit=False)
+        except WriterLockConflict as exc:
+            _activation_session.rollback()
+            _activation_session.close()
+            raise ActivationRefused(
+                "另一 Runtime 正在推进该世界；正式激活只允许单写者",
+                detail={"world_id": request.world_id}) from exc
+        except Exception:
+            _activation_session.rollback()
+            _activation_session.close()
+            raise
+    else:
+        lease_session = session_factory()
+        lease = WriterLease(lease_session, request.world_id,
+                            lease_seconds=request.lease_seconds or 120)
+    try:
+        if not _zero_row:
+            lease.acquire()
     except WriterLockConflict as exc:
         lease_session.close()
         raise ActivationRefused(
@@ -336,7 +389,8 @@ def activate_formal_world(session_factory: sessionmaker[Session], *,
     ambiguous = False
     try:
         # ---- 4) 单一 durable 事务（A4/A5）------------------------------------
-        session = session_factory()
+        # zero-row 路径复用租约所在 session（runtime bootstrap 已在其事务内）
+        session = _activation_session if _zero_row else session_factory()
         try:
             try:
                 with WorldMutationContext(
@@ -353,6 +407,9 @@ def activate_formal_world(session_factory: sessionmaker[Session], *,
                         return _already_committed_outcome(
                             session_factory, request, seed,
                             existing_seed_version)
+                    # M6A.1 §7：不再要求外部预播种 time_ratio_history ——
+                    # activation 事务内建立 canonical initial rate binding（M1 自然态倍率）。
+                    _seed_canonical_initial_rate(ctx.session, request)
                     ratio_id = _effective_ratio(ctx.session, request)
                     _assert_pristine_pre_activation_state(ctx.session, request)
                     repo.activate(

@@ -281,14 +281,27 @@ def test_m6ac08c_malformed_seed_package_maps_to_integrity_error(tmp_path,
 
 
 # ------------------------------------------------------------------ AC-09/10
-def test_m6ac09_refuses_without_metadata(tmp_path, session_factory):
-    """无 world_runtime 行 → 拒绝（激活绝不自行发明 metadata）。"""
+def test_m6ac09_zero_row_activation_bootstraps_runtime(tmp_path,
+                                                      session_factory):
+    """M6A.1 契约更新（原「无 world_runtime 行 → 拒绝」）。
+
+    原期望编码的是 CONTRACT_IMPLEMENTATION_DRIFT：它要求外部先建 NOT_ACTIVATED 行，
+    与 canonical zero-row 契约（tests/formal_db.py：0 行 == 未激活）冲突，且使
+    `activate_formal_world` 无法从正式 pre-activation 状态进入 ACTIVE。
+
+    M6A.1 后：canonical zero-row 是**正式激活入口**；activation 在同一 authoritative
+    事务内建立 transient runtime bootstrap，其 simulation_version 取自 request，
+    world_bible/seed 元数据取自已验证 Seed 包 —— 不发明世界内容。
+    """
     seed_dir = build_synthetic_seed(tmp_path)
-    with pytest.raises(ActivationRefused):
-        _activate(seed_dir, session_factory)
+    out = _activate(seed_dir, session_factory)
+    assert getattr(out, "outcome", None) in ("COMMITTED",)
     with session_factory() as s:
-        assert s.execute(text(
-            "SELECT COUNT(*) FROM world_runtime")).scalar() == 0
+        row = s.execute(select(WorldRuntime)).scalar_one()
+        assert row.runtime_status == "ACTIVE"
+        assert row.current_blessed_tick == 0
+        assert int(s.execute(text(
+            "SELECT COUNT(*) FROM world_events")).scalar() or 0) == 1
 
 
 def test_m6ac10_refuses_when_clock_already_initialized(tmp_path,

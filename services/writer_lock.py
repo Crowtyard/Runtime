@@ -81,8 +81,14 @@ class WriterLease:
         row.acquired_at = now
         row.expires_at = expires
 
-    def acquire(self) -> None:
-        """获取或接管租约；成功即 commit（跨进程可见）。"""
+    def acquire(self, *, commit: bool = True) -> None:
+        """获取或接管租约；默认成功即 commit（跨进程可见）。
+
+        M6A.1：``commit=False`` 供 canonical zero-row activation 使用 —— 租约行与
+        activation 的 runtime bootstrap 处于**同一事务**，提交权交给调用方，
+        从而在失败时一起回滚（不产生 durable 半状态）。默认 ``True`` 保持既有
+        调用方（scheduler 等）语义不变。
+        """
         now = utcnow()
         token = secrets.token_hex(16)
         expires = now + timedelta(seconds=self.lease_seconds)
@@ -102,9 +108,20 @@ class WriterLease:
                 self.session.rollback()
                 row = self._load()
                 if row is None:
+                    # M6A.1 §6：不再把所有 IntegrityError 一律报成"竞争期间消失"。
+                    # RuntimeLock.world_id 依赖 world_runtime 父行：父行缺失是
+                    # activation bootstrap 顺序问题（LOCK_PARENT_WORLD_ABSENT），
+                    # 与真实并发竞争（TRUE_CONCURRENT_LOCK_RACE）必须区分。
+                    if not self._parent_world_exists():
+                        raise WriterLockConflict(
+                            "租约父世界不存在：RuntimeLock 需要 world_runtime 行"
+                            "（activation bootstrap 顺序错误）",
+                            detail={"world_id": self.world_id,
+                                    "class": "LOCK_PARENT_WORLD_ABSENT"})
                     raise WriterLockConflict(
                         "租约竞争：锁定行在竞争期间消失",
-                        detail={"world_id": self.world_id})
+                        detail={"world_id": self.world_id,
+                                "class": "TRUE_CONCURRENT_LOCK_RACE"})
                 if row.expires_at > now:
                     raise WriterLockConflict(
                         "另一 Runtime 正在推进该世界",
@@ -113,8 +130,24 @@ class WriterLease:
         else:
             # 行存在且已过期 → STALE_WRITER_RECOVERY：CAS 接管
             self._cas_takeover(row, now, token, expires)
-        self.session.commit()  # 立即提交：租约跨进程可见
+        if commit:
+            self.session.commit()  # 立即提交：租约跨进程可见
         self.token = token
+
+    def _parent_world_exists(self) -> bool:
+        """RuntimeLock 的父行（world_runtime）是否存在。"""
+        try:
+            from .database import models_core  # noqa: F401  (kept lazy: no import cost)
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            from sqlalchemy import select, func
+            from ..database.models_core import WorldRuntime
+            return self.session.execute(
+                select(func.count()).select_from(WorldRuntime).where(
+                    WorldRuntime.world_id == self.world_id)).scalar() == 1
+        except Exception:  # noqa: BLE001
+            return True  # 无法判定时不改变既有分类
 
     def renew(self) -> None:
         """长任务续约：仅同一 token 可续；被接管后续约失败。"""
