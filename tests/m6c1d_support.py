@@ -205,7 +205,7 @@ def build_coordinator() -> SimulationCoordinator:
         [PopulationGroupEngine(profiles=demography_registry()),
          ResourceEngine(profiles=resource_registry()),
          EconomyEngine(profiles=economy_registry()),
-         EcologyEngine(profiles=ecology_profile()),
+         EcologyEngine(profiles={"FORMAL-ECOLOGY-001": ecology_profile()}),
          SocialEngine(profile=social_profile())],
         simulation_version=SIMULATION_VERSION,
         tribulation_engine=TribulationEngine(profiles=tribulation_registry()),
