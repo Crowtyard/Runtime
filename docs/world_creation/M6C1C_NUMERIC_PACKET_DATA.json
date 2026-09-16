@@ -1,0 +1,673 @@
+{
+  "ENGINE_RUN_VERIFICATION": "DEFERRED_TO_NEXT_STAGE",
+  "FORMAL_ACTIVATION_ALLOWED": false,
+  "MATERIALIZER_ALLOWED": false,
+  "NUMERIC_OD_E1": {
+    "candidates": [
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "CONSEQUENCES": {
+          "analytic_fixed_point_share": 1.0,
+          "equilibrium_if_12_zones": 1.0,
+          "projected_100y_share": 0.9812,
+          "quality_100y": 981167,
+          "quality_300y": 980838,
+          "quality_max": 999248,
+          "quality_min": 980838,
+          "solve_note": "closed-form sensitivity",
+          "stable": true,
+          "target_equilibrium_share": 0.98
+        },
+        "EVIDENCE_CLASS": "STATIONARY_STATE_SOLUTION (inverse-solved sensitivity for the owner's quality target) + ENGINE_CONSTRAINT_DERIVATION",
+        "LABEL": "E-A",
+        "POLICY": {
+          "carrying_capacity": "2 x settlement population (no engine consumer)",
+          "ppp_semantics": "1 minor pressure unit per person (ppp = 1)",
+          "zone_count": 1
+        },
+        "VALUES": {
+          "pop_pressure_per_person": 1,
+          "pressure_share_at_MAIN": 0.0005,
+          "recovery_ceiling": 1000000,
+          "recovery_rate": "1/25",
+          "sensitivity": "3998/1275",
+          "sensitivity_decimal": 3.135686
+        }
+      },
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "CONSEQUENCES": {
+          "analytic_fixed_point_share": 1.0,
+          "equilibrium_if_12_zones": 1.0,
+          "projected_100y_share": 0.9531,
+          "quality_100y": 953075,
+          "quality_300y": 952119,
+          "quality_max": 998173,
+          "quality_min": 952119,
+          "solve_note": "closed-form sensitivity",
+          "stable": true,
+          "target_equilibrium_share": 0.95
+        },
+        "EVIDENCE_CLASS": "STATIONARY_STATE_SOLUTION (inverse-solved sensitivity for the owner's quality target) + ENGINE_CONSTRAINT_DERIVATION",
+        "LABEL": "E-B",
+        "POLICY": {
+          "carrying_capacity": "2 x settlement population (no engine consumer)",
+          "ppp_semantics": "1 minor pressure unit per person (ppp = 1)",
+          "zone_count": 1
+        },
+        "VALUES": {
+          "pop_pressure_per_person": 1,
+          "pressure_share_at_MAIN": 0.0005,
+          "recovery_ceiling": 1000000,
+          "recovery_rate": "1/25",
+          "sensitivity": "3998/525",
+          "sensitivity_decimal": 7.615238
+        }
+      },
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "CONSEQUENCES": {
+          "analytic_fixed_point_share": 1.0,
+          "equilibrium_if_12_zones": 1.0,
+          "projected_100y_share": 0.9067,
+          "quality_100y": 906703,
+          "quality_300y": 904406,
+          "quality_max": 996511,
+          "quality_min": 904406,
+          "solve_note": "closed-form sensitivity",
+          "stable": true,
+          "target_equilibrium_share": 0.9
+        },
+        "EVIDENCE_CLASS": "STATIONARY_STATE_SOLUTION (inverse-solved sensitivity for the owner's quality target) + ENGINE_CONSTRAINT_DERIVATION",
+        "LABEL": "E-C",
+        "POLICY": {
+          "carrying_capacity": "2 x settlement population (no engine consumer)",
+          "ppp_semantics": "1 minor pressure unit per person (ppp = 1)",
+          "zone_count": 1
+        },
+        "VALUES": {
+          "pop_pressure_per_person": 1,
+          "pressure_share_at_MAIN": 0.0005,
+          "recovery_ceiling": 1000000,
+          "recovery_rate": "1/25",
+          "sensitivity": "3998/275",
+          "sensitivity_decimal": 14.538182
+        }
+      }
+    ],
+    "initial_habitat_quality": "FULL_QUALITY (owner approved)",
+    "name": "ECOLOGY"
+  },
+  "NUMERIC_OD_P1": {
+    "candidates": [
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "CONSEQUENCES": {
+          "capacity_ratio_effect": {
+            "r=2": {
+              "capacity": 24000,
+              "population_100y": 7394,
+              "population_300y": 6467
+            },
+            "r=3/2": {
+              "capacity": 18000,
+              "population_100y": 6531,
+              "population_300y": 4501
+            },
+            "r=5/4": {
+              "capacity": 15000,
+              "population_100y": 5553,
+              "population_300y": 3451
+            }
+          },
+          "cohort_rows_total": 2928,
+          "elder_share": 0.4615,
+          "expected_lifespan_years": 60.0,
+          "fertile_share": 0.3156,
+          "net_growth_year0": -29,
+          "population_100y": 11981,
+          "population_300y": 10272,
+          "population_4y": 12012,
+          "trajectory_max": 12329,
+          "trajectory_min": 10272,
+          "young_lt15_share": 0.2229
+        },
+        "EVIDENCE_CLASS": "ENGINE_CONSTRAINT_DERIVATION (stationary birth_rate) + EXPERIMENTAL_CANDIDATE (q, fertile window)",
+        "LABEL": "P-A",
+        "PROFILE": {
+          "birth_rate": "185/4096",
+          "cohort_buckets": 61,
+          "emigration_rate": "0",
+          "fertile_window": [
+            15,
+            45
+          ],
+          "migration_weights": [
+            "1/2",
+            "1/2"
+          ],
+          "mortality_per_bucket": "1/60",
+          "population_capacity": "NULL (no capacity law) for the stationary candidate"
+        }
+      },
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "CONSEQUENCES": {
+          "capacity_ratio_effect": {
+            "r=2": {
+              "capacity": 24000,
+              "population_100y": 8350,
+              "population_300y": 1312
+            },
+            "r=3/2": {
+              "capacity": 18000,
+              "population_100y": 7711,
+              "population_300y": 1141
+            },
+            "r=5/4": {
+              "capacity": 15000,
+              "population_100y": 7287,
+              "population_300y": 1049
+            }
+          },
+          "cohort_rows_total": 4848,
+          "elder_share": 0.599,
+          "expected_lifespan_years": 100.0,
+          "fertile_share": 0.2611,
+          "net_growth_year0": -58,
+          "population_100y": 11527,
+          "population_300y": 3515,
+          "population_4y": 12008,
+          "trajectory_max": 12543,
+          "trajectory_min": 3515,
+          "young_lt15_share": 0.1399
+        },
+        "EVIDENCE_CLASS": "ENGINE_CONSTRAINT_DERIVATION (stationary birth_rate) + EXPERIMENTAL_CANDIDATE (q, fertile window)",
+        "LABEL": "P-B",
+        "PROFILE": {
+          "birth_rate": "41/2048",
+          "cohort_buckets": 101,
+          "emigration_rate": "0",
+          "fertile_window": [
+            15,
+            50
+          ],
+          "migration_weights": [
+            "1/2",
+            "1/2"
+          ],
+          "mortality_per_bucket": "1/100",
+          "population_capacity": "NULL (no capacity law) for the stationary candidate"
+        }
+      },
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "CONSEQUENCES": {
+          "capacity_ratio_effect": {
+            "r=2": {
+              "capacity": 24000,
+              "population_100y": 10987,
+              "population_300y": 7349
+            },
+            "r=3/2": {
+              "capacity": 18000,
+              "population_100y": 10817,
+              "population_300y": 7171
+            },
+            "r=5/4": {
+              "capacity": 15000,
+              "population_100y": 10698,
+              "population_300y": 7052
+            }
+          },
+          "cohort_rows_total": 14448,
+          "elder_share": 0.7378,
+          "expected_lifespan_years": 300.0,
+          "fertile_share": 0.2038,
+          "net_growth_year0": -26,
+          "population_100y": 11586,
+          "population_300y": 8138,
+          "population_4y": 12000,
+          "trajectory_max": 12007,
+          "trajectory_min": 8138,
+          "young_lt15_share": 0.0488
+        },
+        "EVIDENCE_CLASS": "ENGINE_CONSTRAINT_DERIVATION (stationary birth_rate) + EXPERIMENTAL_CANDIDATE (q, fertile window)",
+        "LABEL": "P-C",
+        "PROFILE": {
+          "birth_rate": "3/512",
+          "cohort_buckets": 301,
+          "emigration_rate": "0",
+          "fertile_window": [
+            18,
+            90
+          ],
+          "migration_weights": [
+            "1/2",
+            "1/2"
+          ],
+          "mortality_per_bucket": "1/300",
+          "population_capacity": "NULL (no capacity law) for the stationary candidate"
+        }
+      }
+    ],
+    "capacity_candidates": [
+      "r = 1.25",
+      "r = 1.5",
+      "r = 2"
+    ],
+    "capacity_semantics": "population_capacity factor = max(capacity-pop,0)/capacity (population.py:187-189,329-332); NULL -> 1; capacity == initial population -> births = 0",
+    "name": "DEMOGRAPHY",
+    "stationary_note": "RA-COHORT-001 survivor curve IS the stationary distribution for constant mortality, so the solved birth_rate makes tick=0 net growth ~ 0"
+  },
+  "NUMERIC_OD_RE1": {
+    "candidates": [
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "CONSEQUENCES": {
+          "first_shortage_year": null,
+          "first_year_shortage": false,
+          "shortage_years_in_100": 0,
+          "stock_100y": 16500,
+          "stock_10y": 4350
+        },
+        "EVIDENCE_CLASS": "DIMENSIONAL_DERIVATION (N years of demand) + EXPERIMENTAL_CANDIDATE (per-capita demand, recipe qty)",
+        "LABEL": "RE-A",
+        "POLICY": {
+          "buffer_years": 1,
+          "capacity_multiple": "11/10"
+        },
+        "VALUES": {
+          "annual_demand": 3000,
+          "batches_per_year": 33,
+          "buffer_years": 1,
+          "capacity_multiple": "11/10",
+          "initial_stock": 3000,
+          "labor_available": 12000,
+          "labor_limited": false,
+          "labor_need": 330,
+          "labor_per_batch": 10,
+          "loss": "1/20",
+          "per_capita_demand": "1/4",
+          "production_per_year": 3135
+        }
+      },
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "CONSEQUENCES": {
+          "first_shortage_year": null,
+          "first_year_shortage": false,
+          "shortage_years_in_100": 0,
+          "stock_100y": 133500,
+          "stock_10y": 18750
+        },
+        "EVIDENCE_CLASS": "DIMENSIONAL_DERIVATION (N years of demand) + EXPERIMENTAL_CANDIDATE (per-capita demand, recipe qty)",
+        "LABEL": "RE-B",
+        "POLICY": {
+          "buffer_years": 2,
+          "capacity_multiple": "3/2"
+        },
+        "VALUES": {
+          "annual_demand": 3000,
+          "batches_per_year": 45,
+          "buffer_years": 2,
+          "capacity_multiple": "3/2",
+          "initial_stock": 6000,
+          "labor_available": 12000,
+          "labor_limited": false,
+          "labor_need": 450,
+          "labor_per_batch": 10,
+          "loss": "1/20",
+          "per_capita_demand": "1/4",
+          "production_per_year": 4275
+        }
+      },
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "CONSEQUENCES": {
+          "first_shortage_year": null,
+          "first_year_shortage": false,
+          "shortage_years_in_100": 0,
+          "stock_100y": 279000,
+          "stock_10y": 36000
+        },
+        "EVIDENCE_CLASS": "DIMENSIONAL_DERIVATION (N years of demand) + EXPERIMENTAL_CANDIDATE (per-capita demand, recipe qty)",
+        "LABEL": "RE-C",
+        "POLICY": {
+          "buffer_years": 3,
+          "capacity_multiple": "2"
+        },
+        "VALUES": {
+          "annual_demand": 3000,
+          "batches_per_year": 60,
+          "buffer_years": 3,
+          "capacity_multiple": "2",
+          "initial_stock": 9000,
+          "labor_available": 12000,
+          "labor_limited": false,
+          "labor_need": 600,
+          "labor_per_batch": 10,
+          "loss": "1/20",
+          "per_capita_demand": "1/4",
+          "production_per_year": 5700
+        }
+      }
+    ],
+    "demand_basis": "demand = per_capita_demand x pop x 1 blessed year (economy.py:266-294), minor units",
+    "name": "RESOURCE_ECONOMY_BASELINE",
+    "node_topology": {
+      "RESOURCE_NODE_COUNT": 7,
+      "RESOURCE_NODE_KIND_MAP": {
+        "林产": "NODE-林产-01",
+        "果园": "NODE-果园-01",
+        "水源": "NODE-水源-01",
+        "灵田": "NODE-灵田-01",
+        "矿脉": "NODE-矿脉-01",
+        "药园": "NODE-药园-01",
+        "菌类点": "NODE-菌类点-01"
+      },
+      "WHY_MINIMAL": "frozen RESOURCE produces per node; cross-settlement transfer moves stock only and cannot create output (M2B:102-107) => one node per consumption resource kind is the minimum that keeps every economy chain alive; extra nodes add output only",
+      "nodes_for_non_consumption_kinds": 0
+    }
+  },
+  "NUMERIC_OD_S1": {
+    "candidates": [
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "EVIDENCE_CLASS": "DIMENSIONAL_DERIVATION (population share) + OWNER_ALREADY_APPROVED_VALUE (method)",
+        "LABEL": "S-A",
+        "RULE": {
+          "formation_share": 0.0025,
+          "institution_dissolve_share": 0.025,
+          "institution_found_share": 0.04,
+          "lineage_found_share": 0.03,
+          "split_share": 0.5
+        },
+        "THRESHOLDS": {
+          "MAIN": {
+            "formation_size": 5,
+            "households_at_first_step": 400,
+            "institution_dissolve_pop": 50,
+            "institution_found_pop": 80,
+            "lineage_found_size": 60,
+            "population": 2000,
+            "split_threshold_households": 200
+          },
+          "SATELLITE": {
+            "formation_size": 2,
+            "households_at_first_step": 250,
+            "institution_dissolve_pop": 12,
+            "institution_found_pop": 20,
+            "lineage_found_size": 15,
+            "population": 500,
+            "split_threshold_households": 125
+          }
+        }
+      },
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "EVIDENCE_CLASS": "DIMENSIONAL_DERIVATION (population share) + OWNER_ALREADY_APPROVED_VALUE (method)",
+        "LABEL": "S-B",
+        "RULE": {
+          "formation_share": 0.005,
+          "institution_dissolve_share": 0.03,
+          "institution_found_share": 0.06,
+          "lineage_found_share": 0.05,
+          "split_share": 0.4
+        },
+        "THRESHOLDS": {
+          "MAIN": {
+            "formation_size": 10,
+            "households_at_first_step": 200,
+            "institution_dissolve_pop": 60,
+            "institution_found_pop": 120,
+            "lineage_found_size": 100,
+            "population": 2000,
+            "split_threshold_households": 80
+          },
+          "SATELLITE": {
+            "formation_size": 2,
+            "households_at_first_step": 250,
+            "institution_dissolve_pop": 15,
+            "institution_found_pop": 30,
+            "lineage_found_size": 25,
+            "population": 500,
+            "split_threshold_households": 100
+          }
+        }
+      },
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "EVIDENCE_CLASS": "DIMENSIONAL_DERIVATION (population share) + OWNER_ALREADY_APPROVED_VALUE (method)",
+        "LABEL": "S-C",
+        "RULE": {
+          "formation_share": 0.01,
+          "institution_dissolve_share": 0.04,
+          "institution_found_share": 0.08,
+          "lineage_found_share": 0.08,
+          "split_share": 0.3
+        },
+        "THRESHOLDS": {
+          "MAIN": {
+            "formation_size": 20,
+            "households_at_first_step": 100,
+            "institution_dissolve_pop": 80,
+            "institution_found_pop": 160,
+            "lineage_found_size": 160,
+            "population": 2000,
+            "split_threshold_households": 30
+          },
+          "SATELLITE": {
+            "formation_size": 5,
+            "households_at_first_step": 100,
+            "institution_dissolve_pop": 20,
+            "institution_found_pop": 40,
+            "lineage_found_size": 40,
+            "population": 500,
+            "split_threshold_households": 30
+          }
+        }
+      }
+    ],
+    "method": "POPULATION_SCALED_DETERMINISTIC_DERIVATION",
+    "name": "SOCIAL_THRESHOLDS"
+  },
+  "NUMERIC_OD_T1": {
+    "candidates": [
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "ENVELOPES": [
+          {
+            "ecology_pressure": 200,
+            "impact_years": 1,
+            "intensity_fraction": "1/10",
+            "intensity_range": [
+              5,
+              15
+            ],
+            "intensity_typical": 10,
+            "inventory_damage": 0,
+            "population_loss": 2,
+            "precursor_years": 1,
+            "preparation_years": 1,
+            "recovery_years": 3,
+            "resource_damage": 0,
+            "theme": "灵气潮汐",
+            "tier": "REGULAR"
+          },
+          {
+            "ecology_pressure": 3000,
+            "impact_years": 1,
+            "intensity_fraction": "3/10",
+            "intensity_range": [
+              20,
+              40
+            ],
+            "intensity_typical": 30,
+            "inventory_damage": 9,
+            "population_loss": 36,
+            "precursor_years": 1,
+            "preparation_years": 1,
+            "recovery_years": 3,
+            "resource_damage": 4,
+            "theme": "地脉波动",
+            "tier": "MAJOR"
+          },
+          {
+            "ecology_pressure": 18000,
+            "impact_years": 1,
+            "intensity_fraction": "3/5",
+            "intensity_range": [
+              50,
+              70
+            ],
+            "intensity_typical": 60,
+            "inventory_damage": 54,
+            "population_loss": 216,
+            "precursor_years": 1,
+            "preparation_years": 1,
+            "recovery_years": 3,
+            "resource_damage": 27,
+            "theme": "生态失衡",
+            "tier": "CENTENNIAL"
+          }
+        ],
+        "EVIDENCE_CLASS": "ENGINE_CONSTRAINT_DERIVATION (f = intensity/100) + EXPERIMENTAL_CANDIDATE (intensity, risk ratios)",
+        "LABEL": "T-A"
+      },
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "ENVELOPES": [
+          {
+            "ecology_pressure": 600,
+            "impact_years": 1,
+            "intensity_fraction": "3/20",
+            "intensity_range": [
+              10,
+              25
+            ],
+            "intensity_typical": 15,
+            "inventory_damage": 1,
+            "population_loss": 7,
+            "precursor_years": 1,
+            "preparation_years": 1,
+            "recovery_years": 3,
+            "resource_damage": 0,
+            "theme": "灵气潮汐",
+            "tier": "REGULAR"
+          },
+          {
+            "ecology_pressure": 8000,
+            "impact_years": 1,
+            "intensity_fraction": "2/5",
+            "intensity_range": [
+              30,
+              50
+            ],
+            "intensity_typical": 40,
+            "inventory_damage": 24,
+            "population_loss": 96,
+            "precursor_years": 1,
+            "preparation_years": 1,
+            "recovery_years": 3,
+            "resource_damage": 12,
+            "theme": "地脉波动",
+            "tier": "MAJOR"
+          },
+          {
+            "ecology_pressure": 37500,
+            "impact_years": 1,
+            "intensity_fraction": "3/4",
+            "intensity_range": [
+              60,
+              85
+            ],
+            "intensity_typical": 75,
+            "inventory_damage": 112,
+            "population_loss": 450,
+            "precursor_years": 1,
+            "preparation_years": 1,
+            "recovery_years": 3,
+            "resource_damage": 56,
+            "theme": "生态失衡",
+            "tier": "CENTENNIAL"
+          }
+        ],
+        "EVIDENCE_CLASS": "ENGINE_CONSTRAINT_DERIVATION (f = intensity/100) + EXPERIMENTAL_CANDIDATE (intensity, risk ratios)",
+        "LABEL": "T-B"
+      },
+      {
+        "CANON_STATUS": "NOT_CANON_UNTIL_OWNER_APPROVAL",
+        "ENVELOPES": [
+          {
+            "ecology_pressure": 3000,
+            "impact_years": 1,
+            "intensity_fraction": "3/10",
+            "intensity_range": [
+              20,
+              40
+            ],
+            "intensity_typical": 30,
+            "inventory_damage": 9,
+            "population_loss": 36,
+            "precursor_years": 1,
+            "preparation_years": 1,
+            "recovery_years": 3,
+            "resource_damage": 4,
+            "theme": "灵气潮汐",
+            "tier": "REGULAR"
+          },
+          {
+            "ecology_pressure": 30000,
+            "impact_years": 1,
+            "intensity_fraction": "3/5",
+            "intensity_range": [
+              45,
+              70
+            ],
+            "intensity_typical": 60,
+            "inventory_damage": 90,
+            "population_loss": 360,
+            "precursor_years": 1,
+            "preparation_years": 1,
+            "recovery_years": 3,
+            "resource_damage": 45,
+            "theme": "地脉波动",
+            "tier": "MAJOR"
+          },
+          {
+            "ecology_pressure": 90000,
+            "impact_years": 1,
+            "intensity_fraction": "9/10",
+            "intensity_range": [
+              80,
+              100
+            ],
+            "intensity_typical": 90,
+            "inventory_damage": 270,
+            "population_loss": 1080,
+            "precursor_years": 1,
+            "preparation_years": 1,
+            "recovery_years": 3,
+            "resource_damage": 135,
+            "theme": "生态失衡",
+            "tier": "CENTENNIAL"
+          }
+        ],
+        "EVIDENCE_CLASS": "ENGINE_CONSTRAINT_DERIVATION (f = intensity/100) + EXPERIMENTAL_CANDIDATE (intensity, risk ratios)",
+        "LABEL": "T-C"
+      }
+    ],
+    "first_omen_tick": 10000000,
+    "name": "TRIBULATION_PROFILE_INTENSITY",
+    "periods": {
+      "CENTENNIAL": 100,
+      "MAJOR": 50,
+      "REGULAR": 10
+    }
+  },
+  "OWNER_NUMERIC_DECISION_COUNT": 5,
+  "PROJECTION_EVIDENCE_CLASS": "ANALYTIC_REIMPLEMENTATION_OF_FROZEN_STEP_EQUATIONS",
+  "STATUS": "AWAITING_OWNER_FINAL_NUMERIC_CANON_SELECTION",
+  "artifact": "M6C1C_NUMERIC_PACKET_DATA"
+}
