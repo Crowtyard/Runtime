@@ -1,0 +1,47 @@
+{
+ "EXACTLY_ONCE_VIOLATIONS": 0,
+ "MAGNITUDE_RECONCILIATION": {
+  "DEMOGRAPHY": {
+   "applied": 11,
+   "recorded": 11
+  },
+  "ECOLOGY": {
+   "applied": 108860,
+   "recorded": 108860
+  },
+  "ECONOMY": {
+   "applied": 36761405450,
+   "recorded": 36761405450
+  },
+  "RESOURCE": {
+   "applied": 5569849763250,
+   "recorded": 5569849763250
+  },
+  "SOCIAL": {
+   "applied": null,
+   "recorded": null
+  }
+ },
+ "SAME_STEP_COMPOSITION_BAD": 0,
+ "SAME_STEP_COMPOSITION_OK": 469,
+ "TRIBULATION_EFFECTS_APPLIED_MAGNITUDE_BY_TABLE": {
+  "ecology_state": 108860,
+  "population_groups": 11,
+  "resource_nodes": 5569849763250,
+  "resource_stocks": 36761405450,
+  "settlement_social_state": 2043000
+ },
+ "TRIBULATION_EFFECTS_APPLIED_ROWS": 473,
+ "TRIBULATION_EFFECTS_DROPPED": 0,
+ "TRIBULATION_EFFECTS_DROPPED_SAMPLES": [],
+ "TRIBULATION_EFFECTS_RECORDED_MAGNITUDE_BY_EVENT": {
+  "DEMOGRAPHY_IMPACT_APPLIED": 11,
+  "ECOLOGY_IMPACT_APPLIED": 108860,
+  "ECONOMY_IMPACT_APPLIED": 36761405450,
+  "RESOURCE_IMPACT_APPLIED": 5569849763250
+ },
+ "TRIBULATION_EFFECTS_RECORDED_ROWS": 473,
+ "TRIBULATION_EFFECT_APPLIED_IDENTITY": "PASS",
+ "TRIBULATION_IMPACT_EVENTS": 90,
+ "db": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d2_7djpb3hj\\run1\\m6c1d_world.db"
+}

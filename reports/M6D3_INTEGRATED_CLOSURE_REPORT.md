@@ -86,31 +86,35 @@ CANON_SOURCE =
 * **未改**：灾劫概率、T-B profile 数值、period 10/50/100、人口方程、资源/生态/社会定律。
 * 应用点唯一 ⇒ 0 dropped / 0 double-apply。
 
-### 1.5 Identity gate（§6/§9/§10/§11）— 修正后真实世界（T50，`m6d3_short50`）
+### 1.5 Identity gate（§6/§9/§10/§11）— 修正后真实世界（300y，`m6d2_7djpb3hj/run1`）
 
 `scripts/_m6d3_effect_identity.py`（READ-ONLY：链一致性 + 同步合成 + 幅度对账 + exactly-once）：
 
 ```
-TRIBULATION_EFFECTS_RECORDED_ROWS = 64
-TRIBULATION_EFFECTS_APPLIED_ROWS  = 64
-TRIBULATION_EFFECTS_DROPPED       = 0
-SAME_STEP_COMPOSITION_OK / BAD    = 64 / 0
+TRIBULATION_IMPACT_EVENTS         = 90
+TRIBULATION_EFFECTS_RECORDED_ROWS = 473
+TRIBULATION_EFFECTS_APPLIED_ROWS  = 473
+TRIBULATION_EFFECTS_DROPPED       = 0        ← M6D.2（修复前）470
+SAME_STEP_COMPOSITION_OK / BAD    = 469 / 0
 EXACTLY_ONCE_VIOLATIONS           = 0
 TRIBULATION_EFFECT_APPLIED_IDENTITY = PASS
 
 逐域幅度对账（recorded == applied）:
-  RESOURCE  recorded 159,112,116,459 == applied 159,112,116,459
-  ECONOMY   recorded      25,562,006 == applied      25,562,006
-  ECOLOGY   recorded           3,040 == applied           3,040
-  DEMOGRAPHY/SOCIAL 本 T50 窗口尚无该类 impact（null），social_stress 侧
-    应用 228,000（该字段无对应 event payload 字段，故不参与对账）
+  DEMOGRAPHY         11 == 11
+  RESOURCE  5,569,849,763,250 == 5,569,849,763,250
+  ECONOMY      36,761,405,450 == 36,761,405,450
+  ECOLOGY             108,860 == 108,860
+  SOCIAL  （无 SOCIAL_IMPACT_APPLIED 事件；settlement_social_state 侧应用 +2,043,000）
 ```
 
 POPULATION_ACCOUNTING_IDENTITY（同一 DB，逐 tick 账本对账）：
-`mismatch_tick_count = 0`、`residual(births − deaths) = 0`、`residual(incl. casualties) = 0`
+`residual(births − deaths) = −11`、`residual(incl. casualties) = 0`、
+`mismatch_tick_count = 3`（3 处恰为 casualty tick，含 casualty 项即闭合）
 （**M6D.2 的 residual +10 已消失**）。
 
-`T300` 版本（§6 的完整 300y 修正跑）完成后按同一脚本复算并入 §6。
+T50 短程复算（`m6d3_short50`）给出同向结果：RECORDED = APPLIED = 64、DROPPED = 0、
+composition 64/0、exactly-once 0、`mismatch_tick_count = 0`。
+产物：`reports/M6D3_EFFECT_IDENTITY_T300.json`、`reports/M6D3_EFFECT_IDENTITY_T50.json`。
 
 ---
 
@@ -274,27 +278,78 @@ sha256 见 manifest；`M6D2_FORENSIC_EVIDENCE_READ_ONLY = TRUE`，未修改）�
 
 ---
 
-## 6. 修正后 integrated 300y（§23/§24）
+## 6. 修正后 integrated 300y（§23/§24）— COMPLETE
 
-`IN_FLIGHT`：RUN1/RUN2 连续 300y + RUN3（0→100y seed 0 / 100→300y seed 42）正以修正后配置
-（P2-B + RE-LEAN-v2 + **ratified E-B-v2 1/279** + S-B + T-B + effect fix）运行
-（job `pwsh-81`，产物 `reports/M6D3_CORRECTED_INTEGRATED_VERIFICATION.json`）。
+配置：P2-B（birth_rate 53/1000）+ RE-LEAN-v2 + **ratified E-B-v2 1/279**（产物内
+`ecology_effective_config = {sensitivity 1/279, recovery 1/25, ppp 1, env <unset>}`）
++ S-B + T-B + M6D.3 effect fix；`via = activation`、genesis 1、`TEST_PROFILE_USAGE_COUNT = 0`。
+产物：`reports/M6D3_CORRECTED_INTEGRATED_VERIFICATION.json`。
 
-**已完成的修正后短程验证（T50，同一 harness / 同一配置）**：
+### 6.1 检查点
+
+| | T0 | T10 | T50 | T100 | T300 |
+|---|---|---|---|---|---|
+| population total | 12000 | 11704 | 10464 | 8619 | **2936** |
+| Hairy Men | 4000 | — | — | — | **962** |
+| Rockmen | 3000 | — | — | — | **735** |
+| Mermen | 2500 | — | — | — | **584** |
+| Mushroommen | 2500 | — | — | — | **655** |
+| habitat_quality | 1,000,000 | **991,691** | **968,847** | **956,569** | **958,683** |
+| ecological_stress | 0 | — | — | — | 400,319 |
+
+人口会计：`identity_ok = true`、`other_authoritative_losses = 0`、
+`12000 + 26201 − 35254 − 11 = 2936` = actual ✔（`POPULATION_ACCOUNTING_IDENTITY = PASS`；
+逐 tick 对账 `mismatch_tick_count = 3`，3 处全部为 casualty tick 且含 casualty 项即残差 0）。
+
+资源/经济：`RESOURCE_SHORTAGE_YEARS_300 = 0`、`RESOURCE_UNMET_DEMAND_CELLS = 0`、
+`PERMANENT_ZERO_SUPPLY_CELLS = 0`、`demand_minor == fulfilled_minor = 5,138,000,000`、
+`stress_levels = ['NONE']`、`max_sustained_shortage_steps = 0`、84 pressure / 84 production_state / 7 recipes。
+
+灾劫：episodes **30**，tick 序列 10,000,000 → 300,000,000 **每 10,000,000 一点无 drift**，
+first omen tick **10,000,000** ✔，schedules 10/50/100 ✔，casualties **11**（记录）
+== **11**（落地）。
+
+社会：`SOCIAL_EVENTS_T300 = 1301`；households 1220 / institutions 12 / lineages 0。
+
+历史：`world_events = 78,357`、`causal_history_links = 1,182,282`、
+`entity_history_index_rows = 1,181,355`、`HISTORY_ORPHAN_LINKS = 0`、
+`HISTORY_CAUSAL_CYCLES = 0`、`HISTORY_INVALID_REFS = 0`、`clean = True`、
+genesis 1、`TEST_PROFILE_USAGE_COUNT = 0`。
+
+### 6.2 确定性 / 重启（§19–§21）
 
 ```
-FINAL_STATE_HASH (T50)  = a47b4d96bae6acddbc661f9e31a9f43da5eca64723370735fe7b5898f1daa077
-FINAL_EVENT_STREAM_HASH = 3134785a7c00c8ea14038d5147910d53f320909b9a4b5982b47329957032f4dc
-POP_T50 = 10464        RESOURCE_UNMET_DEMAND_CELLS = 0（逐年 unmet 全 0）
-HABITAT_T25 = 979,960  HABITAT_T50 = 968,847   ← 回到 owner 93–97% 政策区间（修复前 2%）
-TRIBULATION_EFFECT_APPLIED_IDENTITY = PASS（dropped 0 / exactly-once 0）
-POPULATION_ACCOUNTING_IDENTITY = PASS（residual 0，含 casualty 口径）
-ecology_effective_config 记录于产物: sensitivity = 1/279, recovery = 1/25, ppp = 1
+RUN1 (continuous, hashseed 未固定)  state 8870f2a9cfe598a3beb0057f4dcd1634d8c90038c952af860935cb0653454f14
+                                    events 16c9fd7d4bbb071c6e6e102a7f04b01de2723ef9bd495d3101ec89abe8b993ac
+RUN2 (continuous, 独立进程, 未固定)  同上（逐字节相同）          → DETERMINISM = PASS
+RUN3 (0→100y @seed0 ; 100→300y @seed42 新进程)
+                                    state/events 同上；causal_history_hash
+                                    72853761b00bcb97cfa3c09d78be99531b6faae1f377597815279395c1ac8db9（links 1,182,282）
+RESTART_EQUIVALENCE = PASS          PYTHONHASHSEED_INDEPENDENT_RESTART = PASS
 ```
 
-300y 完成后填入：T10/T50/T100/T300 人口与四族、habitat 四点、逐域 identity、
-DETERMINISM、RESTART_EQUIVALENCE、history integrity、300y 版
-`TRIBULATION_EFFECTS_RECORDED/APPLIED/DROPPED`。
+### 6.3 300y effect identity（§6/§9/§11）
+
+```
+TRIBULATION_EFFECTS_RECORDED_ROWS = 473
+TRIBULATION_EFFECTS_APPLIED_ROWS  = 473
+TRIBULATION_EFFECTS_DROPPED       = 0            ← M6D.2 为 470
+SAME_STEP_COMPOSITION_OK / BAD    = 469 / 0
+EXACTLY_ONCE_VIOLATIONS           = 0
+TRIBULATION_EFFECT_APPLIED_IDENTITY = PASS
+逐域 identity（recorded == applied）:
+  DEMOGRAPHY          11 == 11
+  RESOURCE   5,569,849,763,250 == 5,569,849,763,250
+  ECONOMY       36,761,405,450 == 36,761,405,450
+  ECOLOGY              108,860 == 108,860
+  SOCIAL   （无 SOCIAL_IMPACT_APPLIED 事件；settlement_social_state 应用 +2,043,000
+            与账本记录一致）
+```
+
+**E_B_V2 结论**：修正后 habitat T10 99.17% / T50 96.88% / T100 95.66% / T300 95.87%
+→ 回到 owner 93–97% 长期政策区间；无 early collapse、无负值、无 runaway。
+`E_B_V2_SENSITIVITY = 1/279` 未改；`E_B_V2_ENGINE_VALIDATION` 可解除 SUSPENDED
+（最终由 Owner 判定）。
 
 旧 M6D.2 数值继续保留为诊断 evidence，不作为最终 Snapshot truth（owner §23）；
 M6D.2 的 habitat ≈2% 轨迹归因于 harness 配置错误（§2），标记

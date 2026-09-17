@@ -1,0 +1,51 @@
+{
+ "db": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d2_7djpb3hj\\run1\\m6c1d_world.db",
+ "history_state_change_rows": 452880,
+ "mismatch_tick_count": 3,
+ "mismatches": [
+  {
+   "births": 134,
+   "blessed_tick": 53000000,
+   "deaths": 169,
+   "impact_events": 1,
+   "net_population_delta": -40,
+   "residual_births_minus_deaths": -5,
+   "residual_incl_casualties": 0,
+   "tribulation_losses": 5,
+   "year": 53.0
+  },
+  {
+   "births": 106,
+   "blessed_tick": 103000000,
+   "deaths": 149,
+   "impact_events": 1,
+   "net_population_delta": -48,
+   "residual_births_minus_deaths": -5,
+   "residual_incl_casualties": 0,
+   "tribulation_losses": 5,
+   "year": 103.0
+  },
+  {
+   "births": 56,
+   "blessed_tick": 203000000,
+   "deaths": 90,
+   "impact_events": 1,
+   "net_population_delta": -35,
+   "residual_births_minus_deaths": -1,
+   "residual_incl_casualties": 0,
+   "tribulation_losses": 1,
+   "year": 203.0
+  }
+ ],
+ "residual_totals": {
+  "births_minus_deaths": -11,
+  "incl_casualties": 0
+ },
+ "ticks": 300,
+ "totals": {
+  "births": 26201,
+  "deaths": 35254,
+  "net_population_delta": -9064,
+  "tribulation_losses": 11
+ }
+}
