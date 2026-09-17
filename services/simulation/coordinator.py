@@ -12,7 +12,7 @@
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from sqlalchemy.orm import Session
 
@@ -272,6 +272,17 @@ class SimulationCoordinator:
             raise RuntimeError("crash: before_apply")
 
         _apply_changes(session, staged.changes)
+        # ---- M6D.3：Tribulation 域影响按冻结语义落地（delta on post-engine state）----
+        # 冻结 pipeline：TRIBULATION 位于 domain engines 之后 → 权威结果必须是
+        #   post_engine_value + recorded_delta，且**恰好一次**。
+        # 修复前：适配器直接 mutate ORM 行，随后被本步 staged 变更的 setattr 覆盖
+        #   （last-write-wins），effect 静默丢失（M6D.2：470/474 冲突行；
+        #   M6D.3 §2 最小复现 population 11→10→effect −2→persisted 10）。
+        if adapter_results:
+            applied_changes = _apply_adapter_effects(session, adapter_results)
+            adapter_results = [
+                replace(res, state_changes=tuple(changes))
+                for res, changes in zip(adapter_results, applied_changes)]
         if crash_after == "during_apply":
             raise RuntimeError("crash: during_apply")
 
@@ -553,6 +564,47 @@ def _history_bundle_kwargs(session, *, world_id, blessed_start_tick,
         recovery_created=tuple(recovery_created),
         residual_created=tuple(residual_created),
         succession_created=tuple(succession_created))
+
+
+def _apply_adapter_effects(session: Session, adapter_results) -> list[list[tuple]]:
+    """M6D.3：把 Tribulation 适配器记录的效果应用到 **post-engine** 权威状态。
+
+    冻结语义（runtime_design/M3A_TRIBULATION_ENGINE.md §14-§20）：每个域影响是
+    相对 delta，pipeline 中 TRIBULATION 在 domain engines 之后 →
+        final = current(post-engine) + (recorded_new - recorded_old)
+    并按 ADAPTER_FIELD_BOUNDS 有界裁剪（population≥0 / reserve≥0 / quality∈[0,1e6] …）。
+
+    每个效果恰好应用一次（应用点唯一）；返回值是**实际生效**的变更元组
+    （old = 应用前真实值, new = 应用后真实值），供 M3b 历史账本记录真实转移，
+    从而保证 `TRIBULATION_EFFECT_APPLIED_IDENTITY`（recorded == applied）。
+    """
+    from .tribulation_adapters import ADAPTER_FIELD_BOUNDS  # 惰性：避免循环导入
+
+    effective: list[list[tuple]] = []
+    for res in adapter_results:
+        applied: list[tuple] = []
+        for change in res.state_changes:
+            table, entity_id, field, old_value, new_value = change[:5]
+            model = _MODEL_BY_TABLE.get(table)
+            if model is None:
+                raise IntegrityError("适配器变更目标表未知",
+                                     detail={"table": table})
+            row = session.get(model, entity_id)
+            if row is None:
+                raise IntegrityError("适配器变更目标实体不存在",
+                                     detail={"table": table, "id": entity_id})
+            delta = int(new_value) - int(old_value)
+            before = int(getattr(row, field))
+            value = before + delta
+            low, high = ADAPTER_FIELD_BOUNDS.get((table, field), (None, None))
+            if low is not None:
+                value = max(low, value)
+            if high is not None:
+                value = min(high, value)
+            setattr(row, field, value)
+            applied.append((table, entity_id, field, before, value))
+        effective.append(applied)
+    return effective
 
 
 def _apply_changes(session: Session, changes) -> None:

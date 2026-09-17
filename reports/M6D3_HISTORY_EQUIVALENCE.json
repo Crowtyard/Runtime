@@ -1,0 +1,186 @@
+{
+ "HASH_DEFINITION_EQUIVALENT": true,
+ "RESTART_HISTORY_EQUIVALENCE": "PASS",
+ "counts": {
+  "run1": {
+   "causal_history_links": 1161583,
+   "entity_history_index": 1160656,
+   "history_episode_index": 30,
+   "history_index_state": 1,
+   "history_state_changes": 604610,
+   "world_events": 77876
+  },
+  "run2": {
+   "causal_history_links": 1161583,
+   "entity_history_index": 1160656,
+   "history_episode_index": 30,
+   "history_index_state": 1,
+   "history_state_changes": 604610,
+   "world_events": 77876
+  },
+  "run3": {
+   "causal_history_links": 1161583,
+   "entity_history_index": 1160656,
+   "history_episode_index": 30,
+   "history_index_state": 1,
+   "history_state_changes": 604610,
+   "world_events": 77876
+  }
+ },
+ "definitions": {
+  "CONTINUOUS_HISTORY_HASH_DEFINITION": {
+   "function": "services/history/service.py::canonical_causal_history_hash",
+   "genesis_inclusion": "world_id in prefix; genesis only via its links",
+   "ordering": "ORDER BY link_id (row-order independent)",
+   "projection": "[schema_version, world_id, count] + per link (relation_type, source_kind, source_id, target_kind, target_id, episode_id, status, committed_tick, semantic_version)",
+   "tables": [
+    "causal_history_links"
+   ],
+   "value_quoted_in_M6D2_report": "921324e2b779e130e273172fbbfa1f3d5b1f2d67b3c7f827398482e82a2ea2cf"
+  },
+  "EVENT_STREAM_HASH_DEFINITION": {
+   "function": "services/simulation/event_stream.py::step_event_stream_hash",
+   "note": "NOT a history hash: different function/table/ordering/projection from the causal history hash -> different value by construction, for the SAME world.",
+   "ordering": "emission order, chained step by step",
+   "projection": "[schema_version, world_id, simulation_version, prev_hash, step events (emission order, canonical dicts)]",
+   "tables": [
+    "(incrementally chained in-memory emitted domain events; mirrored into world_events)"
+   ],
+   "value_quoted_in_M6D2_report": "25b93c40e6f15fdb1d04fc46c406a2d455acfa559c50bdaf353193cab896fcef"
+  },
+  "RESTART_HISTORY_HASH_DEFINITION": {
+   "function": "services/history/service.py::canonical_causal_history_hash",
+   "genesis_inclusion": "identical",
+   "ordering": "ORDER BY link_id",
+   "projection": "IDENTICAL to CONTINUOUS_HISTORY_HASH_DEFINITION",
+   "tables": [
+    "causal_history_links"
+   ],
+   "value_quoted_in_M6D2_report": "921324e2b779e130e273172fbbfa1f3d5b1f2d67b3c7f827398482e82a2ea2cf"
+  }
+ },
+ "digests": {
+  "causal_links": {
+   "diff_run1_vs_run2": {
+    "extra_count_seen": 0,
+    "first_different": [],
+    "first_extra": [],
+    "first_missing": [],
+    "missing_count_seen": 0
+   },
+   "diff_run1_vs_run3": {
+    "extra_count_seen": 0,
+    "first_different": [],
+    "first_extra": [],
+    "first_missing": [],
+    "missing_count_seen": 0
+   },
+   "run1": {
+    "rows": 1161583,
+    "sha256": "ac838ff5ba5839637f802a4051346a777e1bb82dc0f78d9bf63ae6f3ce371b5a"
+   },
+   "run2": {
+    "rows": 1161583,
+    "sha256": "ac838ff5ba5839637f802a4051346a777e1bb82dc0f78d9bf63ae6f3ce371b5a"
+   },
+   "run3": {
+    "rows": 1161583,
+    "sha256": "ac838ff5ba5839637f802a4051346a777e1bb82dc0f78d9bf63ae6f3ce371b5a"
+   }
+  },
+  "entity_history_index": {
+   "diff_run1_vs_run2": {
+    "extra_count_seen": 0,
+    "first_different": [],
+    "first_extra": [],
+    "first_missing": [],
+    "missing_count_seen": 0
+   },
+   "diff_run1_vs_run3": {
+    "extra_count_seen": 0,
+    "first_different": [],
+    "first_extra": [],
+    "first_missing": [],
+    "missing_count_seen": 0
+   },
+   "run1": {
+    "rows": 1160656,
+    "sha256": "cc80f404e1144729419273ad5f2a80675a83ed5cfcedc65f054dd1255f042972"
+   },
+   "run2": {
+    "rows": 1160656,
+    "sha256": "cc80f404e1144729419273ad5f2a80675a83ed5cfcedc65f054dd1255f042972"
+   },
+   "run3": {
+    "rows": 1160656,
+    "sha256": "cc80f404e1144729419273ad5f2a80675a83ed5cfcedc65f054dd1255f042972"
+   }
+  },
+  "history_state_changes": {
+   "diff_run1_vs_run2": {
+    "extra_count_seen": 0,
+    "first_different": [],
+    "first_extra": [],
+    "first_missing": [],
+    "missing_count_seen": 0
+   },
+   "diff_run1_vs_run3": {
+    "extra_count_seen": 0,
+    "first_different": [],
+    "first_extra": [],
+    "first_missing": [],
+    "missing_count_seen": 0
+   },
+   "run1": {
+    "rows": 604610,
+    "sha256": "1fbac6361d66e02e10a569c996b0a914e47152e0e7009da176ce994a67973067"
+   },
+   "run2": {
+    "rows": 604610,
+    "sha256": "1fbac6361d66e02e10a569c996b0a914e47152e0e7009da176ce994a67973067"
+   },
+   "run3": {
+    "rows": 604610,
+    "sha256": "1fbac6361d66e02e10a569c996b0a914e47152e0e7009da176ce994a67973067"
+   }
+  },
+  "world_events_by_uid": {
+   "diff_run1_vs_run2": {
+    "extra_count_seen": 0,
+    "first_different": [],
+    "first_extra": [],
+    "first_missing": [],
+    "missing_count_seen": 0
+   },
+   "diff_run1_vs_run3": {
+    "extra_count_seen": 0,
+    "first_different": [],
+    "first_extra": [],
+    "first_missing": [],
+    "missing_count_seen": 0
+   },
+   "run1": {
+    "rows": 77876,
+    "sha256": "9c495b15f9b8a10c03bd1102d02e3f04b92039a05e304ec825b6b1e2694b4b71"
+   },
+   "run2": {
+    "rows": 77876,
+    "sha256": "9c495b15f9b8a10c03bd1102d02e3f04b92039a05e304ec825b6b1e2694b4b71"
+   },
+   "run3": {
+    "rows": 77876,
+    "sha256": "9c495b15f9b8a10c03bd1102d02e3f04b92039a05e304ec825b6b1e2694b4b71"
+   }
+  }
+ },
+ "recomputed_canonical_causal_history_hash": {
+  "run1": "921324e2b779e130e273172fbbfa1f3d5b1f2d67b3c7f827398482e82a2ea2cf",
+  "run2": "921324e2b779e130e273172fbbfa1f3d5b1f2d67b3c7f827398482e82a2ea2cf",
+  "run3": "921324e2b779e130e273172fbbfa1f3d5b1f2d67b3c7f827398482e82a2ea2cf"
+ },
+ "world_ids": {
+  "run1": "SYNTH-DEMO-001",
+  "run2": "SYNTH-DEMO-001",
+  "run3": "SYNTH-DEMO-001"
+ }
+}

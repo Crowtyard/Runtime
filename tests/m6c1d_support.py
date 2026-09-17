@@ -58,6 +58,9 @@ CONSUMPTION_KINDS = ("灵田", "药园", "果园", "矿脉", "水源", "林产",
 SPECIAL_KIND = "RESOURCE_SLOT_08"
 ALL_RESOURCE_KINDS = CONSUMPTION_KINDS + (SPECIAL_KIND,)
 
+#: M6D.3：owner-ratified E-B-v2 sensitivity（calibration 结论；sensitivity 唯一权威值）
+E_B_V2_RATIFIED_SENSITIVITY = Fraction(1, 279)
+
 
 def _load_sweep():
     spec = importlib.util.spec_from_file_location(
@@ -138,19 +141,26 @@ def economy_registry() -> dict:
 
 
 def ecology_profile() -> EcologyProfile:
-    """E-B payload; sensitivity overridable for calibration via
-    M6C1D_ECOLOGY_SENSITIVITY (test-only, e.g. "1/279")."""
+    """E-B payload；M6D.3 起**默认**使用 owner-ratified E-B-v2 sensitivity。
+
+    M6D.3 §13/§15（harness config 缺陷）：audited packet 的 E-B VALUES 里是
+    **标定前**候选值 `sensitivity = 3998/525 (~7.615)`；owner-ratified E-B-v2 是
+    `1/279 (~0.003584)`。修复前 1/279 只能通过 env `M6C1D_ECOLOGY_SENSITIVITY`
+    生效 → M6D.2 integrated run 未传该 env，静默使用 3998/525（≈2125× 更严苛），
+    导致 habitat_quality 由标定 harness 的 ~99% 掉到 ~2%（伪"生态崩溃"）。
+    现默认即 ratified 值；env 仅用于 re-calibration 扫描（test-only）。
+    """
     import os
     payload = candidate("E1", "E-B")["VALUES"]
+    sensitivity = E_B_V2_RATIFIED_SENSITIVITY
     override = os.environ.get("M6C1D_ECOLOGY_SENSITIVITY")
     if override:
-        payload = dict(payload)
-        payload["sensitivity"] = override
+        sensitivity = Fraction(override)
     return EcologyProfile(
         profile_id="FORMAL-ECOLOGY-001",
         recovery_rate=Fraction(payload["recovery_rate"]),
         recovery_ceiling=int(payload["recovery_ceiling"]),
-        sensitivity=Fraction(payload["sensitivity"]),
+        sensitivity=sensitivity,
         pressure_weights={"population": Fraction(2, 8), "extraction": Fraction(3, 8),
                           "production": Fraction(2, 8), "depletion": Fraction(1, 8)},
         pop_pressure_per_person=int(payload["pop_pressure_per_person"]),

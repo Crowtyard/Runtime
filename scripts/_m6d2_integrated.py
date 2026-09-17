@@ -264,6 +264,21 @@ def main() -> int:
         "history_builder": "HistoryLinkBuilder(real)",
         "checkpoints": {}, "per_year": [],
     }
+    # M6D.3 §13：把生效的 ecology 配置写进产物（防止 harness 静默用错 sensitivity）
+    try:
+        _eco = S.ecology_profile()
+        result["ecology_effective_config"] = {
+            "profile_id": _eco.profile_id,
+            "sensitivity": "%s/%s" % (_eco.sensitivity.numerator,
+                                     _eco.sensitivity.denominator),
+            "recovery_rate": "%s/%s" % (_eco.recovery_rate.numerator,
+                                        _eco.recovery_rate.denominator),
+            "ppp": _eco.pop_pressure_per_person,
+            "env_M6C1D_ECOLOGY_SENSITIVITY": os.environ.get(
+                "M6C1D_ECOLOGY_SENSITIVITY", "<unset>"),
+        }
+    except Exception as exc:  # pragma: no cover
+        result["ecology_effective_config"] = {"ERROR": str(exc)}
 
     if args.mode == "part2":
         env = open_world(workdir, args.world_id)

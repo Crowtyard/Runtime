@@ -10,6 +10,20 @@ Coordinator 在 IMPACT 步调用本模块适配器，把 TribulationImpactPlan �
   TRIBULATION_IMPACT_APPLIED 事件 uid）；
 - affected_entity_ids：最小因果关联。
 适配器零 commit / 零 LLM / 零网络 / 零 wall-clock。
+
+M6D.3 MINIMAL TRIBULATION EFFECT APPLICATION FIX（只改"效果如何进入权威状态"）：
+- 冻结语义（runtime_design/M3A_TRIBULATION_ENGINE.md §14-§20）：各域影响是
+  **相对 delta**（比例损失/扣减），且 pipeline 中 TRIBULATION 位于 domain
+  engines **之后** → 权威结果必须是
+  `post_engine_value + delta`，且**恰好应用一次**。
+- 因此适配器**不再直接 mutate ORM 行**（旧实现直接 setattr，随后被
+  coordinator 对同一步 staged 变更的 `setattr` 覆盖 —— last-write-wins，
+  effect 静默丢失；M6D.3 §2 最小复现：population 11→engine 10→effect −2→
+  persisted 10，应为 8）。
+- 适配器只**计算并返回** state_changes；应用由 coordinator 在本步
+  `_apply_changes` 之后统一执行（见 coordinator._apply_adapter_effects），
+  以 `ADAPTER_FIELD_BOUNDS` 做有界裁剪。
+- 不改概率、不改 T-B profile / period、不改任何域方程。
 """
 from __future__ import annotations
 
@@ -20,6 +34,16 @@ from sqlalchemy import select
 
 from .contracts import DomainEventDraft
 from .tribulation import ENGINE_ID
+
+#: M6D.3：适配器效果的权威裁剪边界 (table, field) -> (min, max|None)
+ADAPTER_FIELD_BOUNDS: dict[tuple[str, str], tuple[int, int | None]] = {
+    ("population_groups", "count"): (0, None),
+    ("resource_nodes", "remaining_reserve"): (0, None),
+    ("resource_stocks", "quantity"): (0, None),
+    ("ecology_state", "habitat_quality"): (0, 1_000_000),
+    ("households", "represented_population"): (0, None),
+    ("settlement_social_state", "social_stress"): (0, 1_000_000),
+}
 
 
 @dataclass(frozen=True)
@@ -62,9 +86,8 @@ class DemographyTribulationAdapter:
                 if loss <= 0:
                     continue
                 changes.append(("population_groups", g.id, "count", g.count,
-                                g.count - loss))
+                                max(g.count - loss, 0)))
                 affected.append(f"population_groups:{g.id}")
-                g.count -= loss
                 total_loss += loss
         events = []
         if total_loss > 0:
@@ -96,9 +119,9 @@ class ResourceTribulationAdapter:
             if loss <= 0:
                 continue
             changes.append(("resource_nodes", n.id, "remaining_reserve",
-                            n.remaining_reserve, n.remaining_reserve - loss))
+                            n.remaining_reserve,
+                            max(n.remaining_reserve - loss, 0)))
             affected.append(f"resource_nodes:{n.id}")
-            n.remaining_reserve -= loss
             total += loss
         events = []
         if total > 0:
@@ -133,9 +156,8 @@ class EconomyTribulationAdapter:
             if loss <= 0:
                 continue
             changes.append(("resource_stocks", r.id, "quantity", r.quantity,
-                            r.quantity - loss))
+                            max(r.quantity - loss, 0)))
             affected.append(f"resource_stocks:{r.id}")
-            r.quantity -= loss
             total += loss
         events = []
         if total > 0:
@@ -165,9 +187,8 @@ class EcologyTribulationAdapter:
                 continue
             changes.append(("ecology_state", st.id, "habitat_quality",
                             st.habitat_quality,
-                            st.habitat_quality - delta_quality))
+                            max(st.habitat_quality - delta_quality, 0)))
             affected.append(f"ecology_state:{st.id}")
-            st.habitat_quality -= delta_quality
         events = []
         if changes:
             events.append(DomainEventDraft(
@@ -200,9 +221,8 @@ class SocialTribulationAdapter:
                     continue
                 changes.append(("households", h.id, "represented_population",
                                 h.represented_population,
-                                h.represented_population - loss))
+                                max(h.represented_population - loss, 0)))
                 affected.append(f"households:{h.id}")
-                h.represented_population -= loss
                 displaced_total += loss
         for sref in _targets(plan):
             for st in session.execute(select(SettlementSocialState).where(
@@ -214,9 +234,8 @@ class SocialTribulationAdapter:
                     continue
                 changes.append(("settlement_social_state", st.id,
                                 "social_stress", st.social_stress,
-                                st.social_stress + bump))
+                                min(st.social_stress + bump, 1_000_000)))
                 affected.append(f"settlement_social_state:{st.id}")
-                st.social_stress += bump
         events = []
         if displaced_total > 0:
             events.append(DomainEventDraft(

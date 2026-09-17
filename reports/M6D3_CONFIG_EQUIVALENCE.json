@@ -1,0 +1,598 @@
+{
+ "CALIBRATION_CONFIG_HASH": "e0989a9e331d940a4ab5ee375bf1ec4e3c752094c61f244c68f06fd66526ef20",
+ "CONFIG_DIFFERENCES": [
+  {
+   "calibration": "1/279",
+   "field": "ecology.sensitivity",
+   "integrated": "3998/525"
+  },
+  {
+   "calibration": "M6C1D_E_B_V2_CALIBRATION",
+   "field": "label",
+   "integrated": "M6D2_INTEGRATED_AS_RUN"
+  }
+ ],
+ "CONFIG_DIFFERENCES_COUNT": 2,
+ "E_B_V2_RATIFIED_SENSITIVITY": "1/279",
+ "FIRST_ECOLOGY_DIVERGENT_INPUT": "ecology.profile.sensitivity (calibration 1/279 vs integrated 3998/525)",
+ "INTEGRATED_CONFIG_HASH": "923a31dcabb4b182ede9feac59d5511869fe9517ec122a4f83f702f9cf58b564",
+ "M6D3_CORRECTED_CONFIG_HASH": "852f924bb9f4143395131941d3ef7e45bc3111eaa4ab56d7d181c1f45c767dac",
+ "PACKET_E_B_SENSITIVITY": "3998/525",
+ "PACKET_E_B_SENSITIVITY_DECIMAL": 7.615238,
+ "calibration_config": {
+  "activation": {
+   "path": "activate_formal_world (canonical zero-row -> genesis -> test-only bootstrap rows)",
+   "runtime_status": "ACTIVE",
+   "simulation_version": "0.3.0"
+  },
+  "ecology": {
+   "initial_habitat_quality": 1000000,
+   "persisted_pressure_fields": [
+    "population_pressure",
+    "extraction_pressure",
+    "production_pressure",
+    "depletion_pressure",
+    "external_pressure",
+    "ecological_stress",
+    "habitat_quality"
+   ],
+   "ppp": 1,
+   "pressure_normalization": "ECOLOGY_STATE_SCALE = 1_000_000",
+   "pressure_weights": {
+    "depletion": "1/8",
+    "extraction": "3/8",
+    "population": "1/4",
+    "production": "1/4"
+   },
+   "profile_id": "FORMAL-ECOLOGY-001",
+   "recovery_ceiling": 1000000,
+   "recovery_rate": "1/25",
+   "regen_minor_per_full_quality": 220000000,
+   "sensitivity": "1/279",
+   "thresholds": [
+    800000,
+    500000,
+    200000
+   ],
+   "zone_count": 1,
+   "zone_refs": [
+    "ZONE-01"
+   ]
+  },
+  "economy": {
+   "per_capita_demand": "1/4",
+   "profile_count": 4
+  },
+  "epoch0_us": 1767225600000000,
+  "history": {
+   "builder": "HistoryLinkBuilder (real)",
+   "hash": "canonical_causal_history_hash"
+  },
+  "label": "M6C1D_E_B_V2_CALIBRATION",
+  "pipeline_order": [
+   "DEMOGRAPHY",
+   "RESOURCE",
+   "ECONOMY",
+   "ECOLOGY",
+   "SOCIAL"
+  ],
+  "population": {
+   "birth_rate": "185/4096",
+   "cohort_buckets": 61,
+   "emigration_rate": "0/1",
+   "fertile_window": [
+    15,
+    45
+   ],
+   "migration_weights": [
+    "1/2",
+    "1/2"
+   ],
+   "mortality_per_bucket": "1/60",
+   "population_capacity": null,
+   "settlements": [
+    {
+     "count": 2000,
+     "ref": "MAIN-01",
+     "type": "MAIN"
+    },
+    {
+     "count": 2000,
+     "ref": "MAIN-02",
+     "type": "MAIN"
+    },
+    {
+     "count": 2000,
+     "ref": "MAIN-03",
+     "type": "MAIN"
+    },
+    {
+     "count": 2000,
+     "ref": "MAIN-04",
+     "type": "MAIN"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-01",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-02",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-03",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-04",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-05",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-06",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-07",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-08",
+     "type": "SATELLITE"
+    }
+   ],
+   "species": [
+    "Hairy Men",
+    "Rockmen",
+    "Mermen",
+    "Mushroommen"
+   ],
+   "totals": [
+    4000,
+    3000,
+    2500,
+    2500
+   ]
+  },
+  "resource": {
+   "capacity_factor": "1.10 x actual served baseline annual demand",
+   "consumption_kinds": [
+    "灵田",
+    "药园",
+    "果园",
+    "矿脉",
+    "水源",
+    "林产",
+    "菌类点"
+   ],
+   "initial_stock_policy": "1 local blessed-year baseline demand (84 cells)",
+   "minor_units": true,
+   "node_count": 7,
+   "profile_count": 7,
+   "quantity_scale": [
+    1000000
+   ],
+   "registry_only_kind": "RESOURCE_SLOT_08"
+  },
+  "social": {
+   "model": "S-B",
+   "profile_ref": "FORMAL-SOCIAL-001"
+  },
+  "steps_per_year": 1,
+  "ticks_per_blessed_year": 1000000,
+  "tribulation": {
+   "adapters": [
+    "DEMOGRAPHY",
+    "ECOLOGY",
+    "ECONOMY",
+    "RESOURCE",
+    "SOCIAL"
+   ],
+   "effect_semantics": "DELTA on domain-owned post-engine state",
+   "first_omen_tick": 10000000,
+   "periods": {
+    "CENTENNIAL": 100,
+    "MAJOR": 50,
+    "REGULAR": 10
+   },
+   "profile_count": 3
+  },
+  "world_id": "SYNTH-DEMO-001",
+  "years_to_T300": 300
+ },
+ "integrated_config_as_run": {
+  "activation": {
+   "path": "activate_formal_world (canonical zero-row -> genesis -> test-only bootstrap rows)",
+   "runtime_status": "ACTIVE",
+   "simulation_version": "0.3.0"
+  },
+  "ecology": {
+   "initial_habitat_quality": 1000000,
+   "persisted_pressure_fields": [
+    "population_pressure",
+    "extraction_pressure",
+    "production_pressure",
+    "depletion_pressure",
+    "external_pressure",
+    "ecological_stress",
+    "habitat_quality"
+   ],
+   "ppp": 1,
+   "pressure_normalization": "ECOLOGY_STATE_SCALE = 1_000_000",
+   "pressure_weights": {
+    "depletion": "1/8",
+    "extraction": "3/8",
+    "population": "1/4",
+    "production": "1/4"
+   },
+   "profile_id": "FORMAL-ECOLOGY-001",
+   "recovery_ceiling": 1000000,
+   "recovery_rate": "1/25",
+   "regen_minor_per_full_quality": 220000000,
+   "sensitivity": "3998/525",
+   "thresholds": [
+    800000,
+    500000,
+    200000
+   ],
+   "zone_count": 1,
+   "zone_refs": [
+    "ZONE-01"
+   ]
+  },
+  "economy": {
+   "per_capita_demand": "1/4",
+   "profile_count": 4
+  },
+  "epoch0_us": 1767225600000000,
+  "history": {
+   "builder": "HistoryLinkBuilder (real)",
+   "hash": "canonical_causal_history_hash"
+  },
+  "label": "M6D2_INTEGRATED_AS_RUN",
+  "pipeline_order": [
+   "DEMOGRAPHY",
+   "RESOURCE",
+   "ECONOMY",
+   "ECOLOGY",
+   "SOCIAL"
+  ],
+  "population": {
+   "birth_rate": "185/4096",
+   "cohort_buckets": 61,
+   "emigration_rate": "0/1",
+   "fertile_window": [
+    15,
+    45
+   ],
+   "migration_weights": [
+    "1/2",
+    "1/2"
+   ],
+   "mortality_per_bucket": "1/60",
+   "population_capacity": null,
+   "settlements": [
+    {
+     "count": 2000,
+     "ref": "MAIN-01",
+     "type": "MAIN"
+    },
+    {
+     "count": 2000,
+     "ref": "MAIN-02",
+     "type": "MAIN"
+    },
+    {
+     "count": 2000,
+     "ref": "MAIN-03",
+     "type": "MAIN"
+    },
+    {
+     "count": 2000,
+     "ref": "MAIN-04",
+     "type": "MAIN"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-01",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-02",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-03",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-04",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-05",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-06",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-07",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-08",
+     "type": "SATELLITE"
+    }
+   ],
+   "species": [
+    "Hairy Men",
+    "Rockmen",
+    "Mermen",
+    "Mushroommen"
+   ],
+   "totals": [
+    4000,
+    3000,
+    2500,
+    2500
+   ]
+  },
+  "resource": {
+   "capacity_factor": "1.10 x actual served baseline annual demand",
+   "consumption_kinds": [
+    "灵田",
+    "药园",
+    "果园",
+    "矿脉",
+    "水源",
+    "林产",
+    "菌类点"
+   ],
+   "initial_stock_policy": "1 local blessed-year baseline demand (84 cells)",
+   "minor_units": true,
+   "node_count": 7,
+   "profile_count": 7,
+   "quantity_scale": [
+    1000000
+   ],
+   "registry_only_kind": "RESOURCE_SLOT_08"
+  },
+  "social": {
+   "model": "S-B",
+   "profile_ref": "FORMAL-SOCIAL-001"
+  },
+  "steps_per_year": 1,
+  "ticks_per_blessed_year": 1000000,
+  "tribulation": {
+   "adapters": [
+    "DEMOGRAPHY",
+    "ECOLOGY",
+    "ECONOMY",
+    "RESOURCE",
+    "SOCIAL"
+   ],
+   "effect_semantics": "DELTA on domain-owned post-engine state",
+   "first_omen_tick": 10000000,
+   "periods": {
+    "CENTENNIAL": 100,
+    "MAJOR": 50,
+    "REGULAR": 10
+   },
+   "profile_count": 3
+  },
+  "world_id": "SYNTH-DEMO-001",
+  "years_to_T300": 300
+ },
+ "m6d3_corrected_config": {
+  "activation": {
+   "path": "activate_formal_world (canonical zero-row -> genesis -> test-only bootstrap rows)",
+   "runtime_status": "ACTIVE",
+   "simulation_version": "0.3.0"
+  },
+  "ecology": {
+   "initial_habitat_quality": 1000000,
+   "persisted_pressure_fields": [
+    "population_pressure",
+    "extraction_pressure",
+    "production_pressure",
+    "depletion_pressure",
+    "external_pressure",
+    "ecological_stress",
+    "habitat_quality"
+   ],
+   "ppp": 1,
+   "pressure_normalization": "ECOLOGY_STATE_SCALE = 1_000_000",
+   "pressure_weights": {
+    "depletion": "1/8",
+    "extraction": "3/8",
+    "population": "1/4",
+    "production": "1/4"
+   },
+   "profile_id": "FORMAL-ECOLOGY-001",
+   "recovery_ceiling": 1000000,
+   "recovery_rate": "1/25",
+   "regen_minor_per_full_quality": 220000000,
+   "sensitivity": "1/279",
+   "thresholds": [
+    800000,
+    500000,
+    200000
+   ],
+   "zone_count": 1,
+   "zone_refs": [
+    "ZONE-01"
+   ]
+  },
+  "economy": {
+   "per_capita_demand": "1/4",
+   "profile_count": 4
+  },
+  "epoch0_us": 1767225600000000,
+  "history": {
+   "builder": "HistoryLinkBuilder (real)",
+   "hash": "canonical_causal_history_hash"
+  },
+  "label": "M6D3_INTEGRATED_CORRECTED",
+  "pipeline_order": [
+   "DEMOGRAPHY",
+   "RESOURCE",
+   "ECONOMY",
+   "ECOLOGY",
+   "SOCIAL"
+  ],
+  "population": {
+   "birth_rate": "185/4096",
+   "cohort_buckets": 61,
+   "emigration_rate": "0/1",
+   "fertile_window": [
+    15,
+    45
+   ],
+   "migration_weights": [
+    "1/2",
+    "1/2"
+   ],
+   "mortality_per_bucket": "1/60",
+   "population_capacity": null,
+   "settlements": [
+    {
+     "count": 2000,
+     "ref": "MAIN-01",
+     "type": "MAIN"
+    },
+    {
+     "count": 2000,
+     "ref": "MAIN-02",
+     "type": "MAIN"
+    },
+    {
+     "count": 2000,
+     "ref": "MAIN-03",
+     "type": "MAIN"
+    },
+    {
+     "count": 2000,
+     "ref": "MAIN-04",
+     "type": "MAIN"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-01",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-02",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-03",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-04",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-05",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-06",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-07",
+     "type": "SATELLITE"
+    },
+    {
+     "count": 500,
+     "ref": "SAT-08",
+     "type": "SATELLITE"
+    }
+   ],
+   "species": [
+    "Hairy Men",
+    "Rockmen",
+    "Mermen",
+    "Mushroommen"
+   ],
+   "totals": [
+    4000,
+    3000,
+    2500,
+    2500
+   ]
+  },
+  "resource": {
+   "capacity_factor": "1.10 x actual served baseline annual demand",
+   "consumption_kinds": [
+    "灵田",
+    "药园",
+    "果园",
+    "矿脉",
+    "水源",
+    "林产",
+    "菌类点"
+   ],
+   "initial_stock_policy": "1 local blessed-year baseline demand (84 cells)",
+   "minor_units": true,
+   "node_count": 7,
+   "profile_count": 7,
+   "quantity_scale": [
+    1000000
+   ],
+   "registry_only_kind": "RESOURCE_SLOT_08"
+  },
+  "social": {
+   "model": "S-B",
+   "profile_ref": "FORMAL-SOCIAL-001"
+  },
+  "steps_per_year": 1,
+  "ticks_per_blessed_year": 1000000,
+  "tribulation": {
+   "adapters": [
+    "DEMOGRAPHY",
+    "ECOLOGY",
+    "ECONOMY",
+    "RESOURCE",
+    "SOCIAL"
+   ],
+   "effect_semantics": "DELTA on domain-owned post-engine state",
+   "first_omen_tick": 10000000,
+   "periods": {
+    "CENTENNIAL": 100,
+    "MAJOR": 50,
+    "REGULAR": 10
+   },
+   "profile_count": 3
+  },
+  "world_id": "SYNTH-DEMO-001",
+  "years_to_T300": 300
+ }
+}

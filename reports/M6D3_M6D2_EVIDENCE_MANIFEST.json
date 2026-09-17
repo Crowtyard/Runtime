@@ -1,0 +1,57 @@
+{
+ "M6D2_FORENSIC_EVIDENCE_READ_ONLY": true,
+ "entries": [
+  {
+   "filename": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d2_5ohuj6y7\\run1\\m6c1d_world.db",
+   "relative": "run1/m6c1d_world.db",
+   "role": "RUN1_CONTINUOUS_300Y_REFERENCE (determinism reference, hashseed unpinned)",
+   "sha256": "d2573767a087cb4c890a9179443f25c7178e17bc7a1dc94040bcc988dd5de827",
+   "size_bytes": 1096151040
+  },
+  {
+   "filename": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d2_5ohuj6y7\\run2\\m6c1d_world.db",
+   "relative": "run2/m6c1d_world.db",
+   "role": "RUN2_CONTINUOUS_300Y_DETERMINISM_REPLICA (independent process, hashseed unpinned)",
+   "sha256": "64a65cd83a80d9ff6094929361c7016066cf628855f11e18b70c0f4425ccfd1f",
+   "size_bytes": 1096151040
+  },
+  {
+   "filename": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d2_5ohuj6y7\\run3\\m6c1d_world.db",
+   "relative": "run3/m6c1d_world.db",
+   "role": "RUN3_RESTART_CHAIN (0->100y @seed0 written here, then NEW process 100->300y @seed42 continued the same file)",
+   "sha256": "7ebe5f0af11216ff49d58c35bb57cb394b83d3e09fcd41f8bb80c6387a574c36",
+   "size_bytes": 1096151040
+  },
+  {
+   "filename": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d2_5ohuj6y7\\RUN1_continuous.json",
+   "relative": "RUN1_continuous.json",
+   "role": "M6D.2 stage artifact (runner/driver output)",
+   "sha256": "094ac62b31b9d49b3a151dd7a97e65ac6a17a3b25697bf38e2c691646d8f1e66",
+   "size_bytes": 38299
+  },
+  {
+   "filename": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d2_5ohuj6y7\\RUN2_continuous.json",
+   "relative": "RUN2_continuous.json",
+   "role": "M6D.2 stage artifact (runner/driver output)",
+   "sha256": "fc0e3aecd57c59fe2fb17ae8dedf40e35552629bbcb585d5b8f60d7209250aeb",
+   "size_bytes": 38299
+  },
+  {
+   "filename": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d2_5ohuj6y7\\RUN3a_part1.json",
+   "relative": "RUN3a_part1.json",
+   "role": "M6D.2 stage artifact (runner/driver output)",
+   "sha256": "1389d33a53687eae86321e0196a586e46a7ab011963d7f6b17db1a88c05bbd3e",
+   "size_bytes": 20427
+  },
+  {
+   "filename": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d2_5ohuj6y7\\RUN3b_part2.json",
+   "relative": "RUN3b_part2.json",
+   "role": "M6D.2 stage artifact (runner/driver output)",
+   "sha256": "c3a575563e50b0ba04673d344118c9e6e85593f8e65e2069d924661f179a562d",
+   "size_bytes": 21184
+  }
+ ],
+ "note": "这些 DB 不得修改；后续修复验证一律使用新的 temporary DB。",
+ "packet": "M6D3_M6D2_FORENSIC_EVIDENCE_MANIFEST",
+ "root": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d2_5ohuj6y7"
+}
