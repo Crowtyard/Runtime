@@ -1,0 +1,380 @@
+{
+ "runs": [
+  {
+   "birth_rate": "53/1000",
+   "final_event_stream_hash": "7b29ce9b32f148c0bf11e49b27facf8746cc8628c735dec8f1d1683420a8a225",
+   "final_population": 12360,
+   "final_state_hash": "2bafc544ca4653a83e7f350aa2353d493b4e1ce4f8773a8b26f0e638feab6908",
+   "identity_all_ok": true,
+   "repeat_event_hash": "7b29ce9b32f148c0bf11e49b27facf8746cc8628c735dec8f1d1683420a8a225",
+   "repeat_identical": true,
+   "repeat_state_hash": "2bafc544ca4653a83e7f350aa2353d493b4e1ce4f8773a8b26f0e638feab6908",
+   "series": {
+    "T0": {
+     "cum": {
+      "births": 0,
+      "deaths": 0,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "population": 12000
+    },
+    "T10": {
+     "cum": {
+      "births": 1980,
+      "deaths": 2005,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 11975,
+     "population": 11975
+    },
+    "T100": {
+     "cum": {
+      "births": 20073,
+      "deaths": 19913,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12160,
+     "population": 12160
+    },
+    "T300": {
+     "cum": {
+      "births": 60847,
+      "deaths": 60487,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12360,
+     "population": 12360
+    },
+    "T50": {
+     "cum": {
+      "births": 9952,
+      "deaths": 9943,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12009,
+     "population": 12009
+    }
+   },
+   "until": 300,
+   "world_id": "SYNTH-DEMO-001"
+  },
+  {
+   "birth_rate": "53/1000",
+   "final_event_stream_hash": "c88f2058354ad0801862faa62567de7e632e4e2f18f4029da5db38fd8528c21c",
+   "final_population": 12490,
+   "final_state_hash": "bc0ee7bf8010427ee04036152f87da13a5b83759eb9cc89ad22d2bc33505e3fc",
+   "identity_all_ok": true,
+   "repeat_event_hash": "c88f2058354ad0801862faa62567de7e632e4e2f18f4029da5db38fd8528c21c",
+   "repeat_identical": true,
+   "repeat_state_hash": "bc0ee7bf8010427ee04036152f87da13a5b83759eb9cc89ad22d2bc33505e3fc",
+   "series": {
+    "T0": {
+     "cum": {
+      "births": 0,
+      "deaths": 0,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "population": 12000
+    },
+    "T10": {
+     "cum": {
+      "births": 1965,
+      "deaths": 1987,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 11978,
+     "population": 11978
+    },
+    "T100": {
+     "cum": {
+      "births": 19953,
+      "deaths": 19956,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 11997,
+     "population": 11997
+    },
+    "T300": {
+     "cum": {
+      "births": 61015,
+      "deaths": 60525,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12490,
+     "population": 12490
+    },
+    "T50": {
+     "cum": {
+      "births": 9914,
+      "deaths": 9942,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 11972,
+     "population": 11972
+    }
+   },
+   "until": 300,
+   "world_id": "SYNTH-DEMO-002"
+  },
+  {
+   "birth_rate": "53/1000",
+   "final_event_stream_hash": "82b1d2618bc358c2949b7c51dfc8b19bd601fa46dcb53b700c148c8d8dd30ad6",
+   "final_population": 12058,
+   "final_state_hash": "bbb69cc6f6ce9bf8502e0e13dc2a77304a9b1400ea511b88683e936b707be5a4",
+   "identity_all_ok": true,
+   "repeat_event_hash": "82b1d2618bc358c2949b7c51dfc8b19bd601fa46dcb53b700c148c8d8dd30ad6",
+   "repeat_identical": true,
+   "repeat_state_hash": "bbb69cc6f6ce9bf8502e0e13dc2a77304a9b1400ea511b88683e936b707be5a4",
+   "series": {
+    "T0": {
+     "cum": {
+      "births": 0,
+      "deaths": 0,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "population": 12000
+    },
+    "T10": {
+     "cum": {
+      "births": 1954,
+      "deaths": 2010,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 11944,
+     "population": 11944
+    },
+    "T100": {
+     "cum": {
+      "births": 19606,
+      "deaths": 19785,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 11821,
+     "population": 11821
+    },
+    "T300": {
+     "cum": {
+      "births": 59383,
+      "deaths": 59325,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12058,
+     "population": 12058
+    },
+    "T50": {
+     "cum": {
+      "births": 9781,
+      "deaths": 9969,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 11812,
+     "population": 11812
+    }
+   },
+   "until": 300,
+   "world_id": "SYNTH-DEMO-003"
+  },
+  {
+   "birth_rate": "53/1000",
+   "final_event_stream_hash": "3d2be8f45174ca0ed1b50b570e1716cabbf2357701e3cc27d75ba0add71d5061",
+   "final_population": 12223,
+   "final_state_hash": "d3ea1bfd24523ed0205303c99b63ece58e0ee87563613b65c41cd9a0089bcc10",
+   "identity_all_ok": true,
+   "repeat_event_hash": "3d2be8f45174ca0ed1b50b570e1716cabbf2357701e3cc27d75ba0add71d5061",
+   "repeat_identical": true,
+   "repeat_state_hash": "d3ea1bfd24523ed0205303c99b63ece58e0ee87563613b65c41cd9a0089bcc10",
+   "series": {
+    "T0": {
+     "cum": {
+      "births": 0,
+      "deaths": 0,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "population": 12000
+    },
+    "T10": {
+     "cum": {
+      "births": 1976,
+      "deaths": 1967,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12009,
+     "population": 12009
+    },
+    "T100": {
+     "cum": {
+      "births": 19931,
+      "deaths": 19932,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 11999,
+     "population": 11999
+    },
+    "T300": {
+     "cum": {
+      "births": 60398,
+      "deaths": 60175,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12223,
+     "population": 12223
+    },
+    "T50": {
+     "cum": {
+      "births": 9913,
+      "deaths": 9844,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12069,
+     "population": 12069
+    }
+   },
+   "until": 300,
+   "world_id": "SYNTH-DEMO-004"
+  },
+  {
+   "birth_rate": "53/1000",
+   "final_event_stream_hash": "1f0fe3d5ad06675ae29e7da903eb3ccf92be448d6f71f3c6e544f477f568e792",
+   "final_population": 12564,
+   "final_state_hash": "be0868a125bf4018b9dfd403006781474e2cbd930ecf66929371c933e4938c51",
+   "identity_all_ok": true,
+   "repeat_event_hash": "1f0fe3d5ad06675ae29e7da903eb3ccf92be448d6f71f3c6e544f477f568e792",
+   "repeat_identical": true,
+   "repeat_state_hash": "be0868a125bf4018b9dfd403006781474e2cbd930ecf66929371c933e4938c51",
+   "series": {
+    "T0": {
+     "cum": {
+      "births": 0,
+      "deaths": 0,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "population": 12000
+    },
+    "T10": {
+     "cum": {
+      "births": 1977,
+      "deaths": 1975,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12002,
+     "population": 12002
+    },
+    "T100": {
+     "cum": {
+      "births": 20092,
+      "deaths": 20006,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12086,
+     "population": 12086
+    },
+    "T300": {
+     "cum": {
+      "births": 61522,
+      "deaths": 60958,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12564,
+     "population": 12564
+    },
+    "T50": {
+     "cum": {
+      "births": 10013,
+      "deaths": 9978,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12035,
+     "population": 12035
+    }
+   },
+   "until": 300,
+   "world_id": "SYNTH-DEMO-005"
+  }
+ ],
+ "summary": {
+  "BAND": [
+   11400,
+   12600
+  ],
+  "DETERMINISTIC_RNG_REPRODUCIBILITY": "PASS",
+  "IN_BAND_PER_SEED": [
+   true,
+   true,
+   true,
+   true,
+   true
+  ],
+  "MULTI_SEED_MAX": 12564,
+  "MULTI_SEED_MEAN": 12339.0,
+  "MULTI_SEED_MEDIAN": 12360,
+  "MULTI_SEED_MIN": 12058,
+  "P2_B_BIRTH_RATE": "53/1000",
+  "P2_B_MULTI_SEED_ROBUSTNESS": "PASS",
+  "POPULATION_ACCOUNTING_IDENTITY": "PASS",
+  "SEEDS_IN_BAND": 5,
+  "T100_PER_SEED": [
+   12160,
+   11997,
+   11821,
+   11999,
+   12086
+  ],
+  "T300_PER_SEED": [
+   12360,
+   12490,
+   12058,
+   12223,
+   12564
+  ]
+ }
+}

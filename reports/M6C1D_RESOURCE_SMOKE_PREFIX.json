@@ -1,0 +1,4140 @@
+{
+ "bootstrap": {
+  "resource_nodes": 7,
+  "resource_profiles": 7
+ },
+ "checkpoints": {
+  "T1": {
+   "ecology": {
+    "depletion_pressure": 110,
+    "ecological_stress": 518162,
+    "extraction_pressure": 1000000,
+    "habitat_quality": 19273,
+    "population_pressure": 1989,
+    "production_pressure": 570605,
+    "regeneration_capacity": 19273
+   },
+   "engine": {
+    "cells": {
+     "MAIN-01|林产": {
+      "consumption": 497250000,
+      "ending_stock": 2879850000,
+      "extraction": 3300000000,
+      "lost": 94050000,
+      "production": 1881000000,
+      "transfer_in": 0,
+      "transfer_out": 229850000
+     },
+     "MAIN-01|果园": {
+      "consumption": 497250000,
+      "ending_stock": 2714850000,
+      "extraction": 3135000000,
+      "lost": 94050000,
+      "production": 1881000000,
+      "transfer_in": 0,
+      "transfer_out": 229850000
+     },
+     "MAIN-01|水源": {
+      "consumption": 497250000,
+      "ending_stock": 2384850000,
+      "extraction": 2805000000,
+      "lost": 94050000,
+      "production": 1881000000,
+      "transfer_in": 0,
+      "transfer_out": 229850000
+     },
+     "MAIN-01|灵田": {
+      "consumption": 497250000,
+      "ending_stock": 2549850000,
+      "extraction": 2970000000,
+      "lost": 94050000,
+      "production": 1881000000,
+      "transfer_in": 0,
+      "transfer_out": 229850000
+     },
+     "MAIN-01|矿脉": {
+      "consumption": 497250000,
+      "ending_stock": 2384850000,
+      "extraction": 2805000000,
+      "lost": 94050000,
+      "production": 1881000000,
+      "transfer_in": 0,
+      "transfer_out": 229850000
+     },
+     "MAIN-01|药园": {
+      "consumption": 497250000,
+      "ending_stock": 2384850000,
+      "extraction": 2805000000,
+      "lost": 94050000,
+      "production": 1881000000,
+      "transfer_in": 0,
+      "transfer_out": 229850000
+     },
+     "MAIN-01|菌类点": {
+      "consumption": 497250000,
+      "ending_stock": 2384850000,
+      "extraction": 2805000000,
+      "lost": 94050000,
+      "production": 1881000000,
+      "transfer_in": 0,
+      "transfer_out": 229850000
+     },
+     "MAIN-02|林产": {
+      "consumption": 498250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 47000000,
+      "transfer_out": 0
+     },
+     "MAIN-02|果园": {
+      "consumption": 498250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 47000000,
+      "transfer_out": 0
+     },
+     "MAIN-02|水源": {
+      "consumption": 498250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 47000000,
+      "transfer_out": 0
+     },
+     "MAIN-02|灵田": {
+      "consumption": 498250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 47000000,
+      "transfer_out": 0
+     },
+     "MAIN-02|矿脉": {
+      "consumption": 498250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 47000000,
+      "transfer_out": 0
+     },
+     "MAIN-02|药园": {
+      "consumption": 498250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 47000000,
+      "transfer_out": 0
+     },
+     "MAIN-02|菌类点": {
+      "consumption": 498250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 47000000,
+      "transfer_out": 0
+     },
+     "MAIN-03|林产": {
+      "consumption": 496500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 45250000,
+      "transfer_out": 0
+     },
+     "MAIN-03|果园": {
+      "consumption": 496500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 45250000,
+      "transfer_out": 0
+     },
+     "MAIN-03|水源": {
+      "consumption": 496500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 45250000,
+      "transfer_out": 0
+     },
+     "MAIN-03|灵田": {
+      "consumption": 496500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 45250000,
+      "transfer_out": 0
+     },
+     "MAIN-03|矿脉": {
+      "consumption": 496500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 45250000,
+      "transfer_out": 0
+     },
+     "MAIN-03|药园": {
+      "consumption": 496500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 45250000,
+      "transfer_out": 0
+     },
+     "MAIN-03|菌类点": {
+      "consumption": 496500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 45250000,
+      "transfer_out": 0
+     },
+     "MAIN-04|林产": {
+      "consumption": 498500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 47250000,
+      "transfer_out": 0
+     },
+     "MAIN-04|果园": {
+      "consumption": 498500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 47250000,
+      "transfer_out": 0
+     },
+     "MAIN-04|水源": {
+      "consumption": 498500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 47250000,
+      "transfer_out": 0
+     },
+     "MAIN-04|灵田": {
+      "consumption": 498500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 47250000,
+      "transfer_out": 0
+     },
+     "MAIN-04|矿脉": {
+      "consumption": 498500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 47250000,
+      "transfer_out": 0
+     },
+     "MAIN-04|药园": {
+      "consumption": 498500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 47250000,
+      "transfer_out": 0
+     },
+     "MAIN-04|菌类点": {
+      "consumption": 498500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 47250000,
+      "transfer_out": 0
+     },
+     "SAT-01|林产": {
+      "consumption": 125500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 12200000,
+      "transfer_out": 0
+     },
+     "SAT-01|果园": {
+      "consumption": 125500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 12200000,
+      "transfer_out": 0
+     },
+     "SAT-01|水源": {
+      "consumption": 125500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 12200000,
+      "transfer_out": 0
+     },
+     "SAT-01|灵田": {
+      "consumption": 125500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 12200000,
+      "transfer_out": 0
+     },
+     "SAT-01|矿脉": {
+      "consumption": 125500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 12200000,
+      "transfer_out": 0
+     },
+     "SAT-01|药园": {
+      "consumption": 125500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 12200000,
+      "transfer_out": 0
+     },
+     "SAT-01|菌类点": {
+      "consumption": 125500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 12200000,
+      "transfer_out": 0
+     },
+     "SAT-02|林产": {
+      "consumption": 124500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11200000,
+      "transfer_out": 0
+     },
+     "SAT-02|果园": {
+      "consumption": 124500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11200000,
+      "transfer_out": 0
+     },
+     "SAT-02|水源": {
+      "consumption": 124500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11200000,
+      "transfer_out": 0
+     },
+     "SAT-02|灵田": {
+      "consumption": 124500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11200000,
+      "transfer_out": 0
+     },
+     "SAT-02|矿脉": {
+      "consumption": 124500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11200000,
+      "transfer_out": 0
+     },
+     "SAT-02|药园": {
+      "consumption": 124500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11200000,
+      "transfer_out": 0
+     },
+     "SAT-02|菌类点": {
+      "consumption": 124500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11200000,
+      "transfer_out": 0
+     },
+     "SAT-03|林产": {
+      "consumption": 124250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10950000,
+      "transfer_out": 0
+     },
+     "SAT-03|果园": {
+      "consumption": 124250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10950000,
+      "transfer_out": 0
+     },
+     "SAT-03|水源": {
+      "consumption": 124250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10950000,
+      "transfer_out": 0
+     },
+     "SAT-03|灵田": {
+      "consumption": 124250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10950000,
+      "transfer_out": 0
+     },
+     "SAT-03|矿脉": {
+      "consumption": 124250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10950000,
+      "transfer_out": 0
+     },
+     "SAT-03|药园": {
+      "consumption": 124250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10950000,
+      "transfer_out": 0
+     },
+     "SAT-03|菌类点": {
+      "consumption": 124250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10950000,
+      "transfer_out": 0
+     },
+     "SAT-04|林产": {
+      "consumption": 125000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11700000,
+      "transfer_out": 0
+     },
+     "SAT-04|果园": {
+      "consumption": 125000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11700000,
+      "transfer_out": 0
+     },
+     "SAT-04|水源": {
+      "consumption": 125000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11700000,
+      "transfer_out": 0
+     },
+     "SAT-04|灵田": {
+      "consumption": 125000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11700000,
+      "transfer_out": 0
+     },
+     "SAT-04|矿脉": {
+      "consumption": 125000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11700000,
+      "transfer_out": 0
+     },
+     "SAT-04|药园": {
+      "consumption": 125000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11700000,
+      "transfer_out": 0
+     },
+     "SAT-04|菌类点": {
+      "consumption": 125000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11700000,
+      "transfer_out": 0
+     },
+     "SAT-05|林产": {
+      "consumption": 124000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10700000,
+      "transfer_out": 0
+     },
+     "SAT-05|果园": {
+      "consumption": 124000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10700000,
+      "transfer_out": 0
+     },
+     "SAT-05|水源": {
+      "consumption": 124000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10700000,
+      "transfer_out": 0
+     },
+     "SAT-05|灵田": {
+      "consumption": 124000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10700000,
+      "transfer_out": 0
+     },
+     "SAT-05|矿脉": {
+      "consumption": 124000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10700000,
+      "transfer_out": 0
+     },
+     "SAT-05|药园": {
+      "consumption": 124000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10700000,
+      "transfer_out": 0
+     },
+     "SAT-05|菌类点": {
+      "consumption": 124000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10700000,
+      "transfer_out": 0
+     },
+     "SAT-06|林产": {
+      "consumption": 125500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 12200000,
+      "transfer_out": 0
+     },
+     "SAT-06|果园": {
+      "consumption": 125500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 12200000,
+      "transfer_out": 0
+     },
+     "SAT-06|水源": {
+      "consumption": 125500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 12200000,
+      "transfer_out": 0
+     },
+     "SAT-06|灵田": {
+      "consumption": 125500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 12200000,
+      "transfer_out": 0
+     },
+     "SAT-06|矿脉": {
+      "consumption": 125500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 12200000,
+      "transfer_out": 0
+     },
+     "SAT-06|药园": {
+      "consumption": 125500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 12200000,
+      "transfer_out": 0
+     },
+     "SAT-06|菌类点": {
+      "consumption": 125500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 12200000,
+      "transfer_out": 0
+     },
+     "SAT-07|林产": {
+      "consumption": 123500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10200000,
+      "transfer_out": 0
+     },
+     "SAT-07|果园": {
+      "consumption": 123500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10200000,
+      "transfer_out": 0
+     },
+     "SAT-07|水源": {
+      "consumption": 123500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10200000,
+      "transfer_out": 0
+     },
+     "SAT-07|灵田": {
+      "consumption": 123500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10200000,
+      "transfer_out": 0
+     },
+     "SAT-07|矿脉": {
+      "consumption": 123500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10200000,
+      "transfer_out": 0
+     },
+     "SAT-07|药园": {
+      "consumption": 123500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10200000,
+      "transfer_out": 0
+     },
+     "SAT-07|菌类点": {
+      "consumption": 123500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 10200000,
+      "transfer_out": 0
+     },
+     "SAT-08|林产": {
+      "consumption": 124500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11200000,
+      "transfer_out": 0
+     },
+     "SAT-08|果园": {
+      "consumption": 124500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11200000,
+      "transfer_out": 0
+     },
+     "SAT-08|水源": {
+      "consumption": 124500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11200000,
+      "transfer_out": 0
+     },
+     "SAT-08|灵田": {
+      "consumption": 124500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11200000,
+      "transfer_out": 0
+     },
+     "SAT-08|矿脉": {
+      "consumption": 124500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11200000,
+      "transfer_out": 0
+     },
+     "SAT-08|药园": {
+      "consumption": 124500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11200000,
+      "transfer_out": 0
+     },
+     "SAT-08|菌类点": {
+      "consumption": 124500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 11200000,
+      "transfer_out": 0
+     }
+    },
+    "pressure": {
+     "MAIN-01|林产": {
+      "demand_minor": 497250000,
+      "fulfilled_minor": 497250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|果园": {
+      "demand_minor": 497250000,
+      "fulfilled_minor": 497250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|水源": {
+      "demand_minor": 497250000,
+      "fulfilled_minor": 497250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|灵田": {
+      "demand_minor": 497250000,
+      "fulfilled_minor": 497250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|矿脉": {
+      "demand_minor": 497250000,
+      "fulfilled_minor": 497250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|药园": {
+      "demand_minor": 497250000,
+      "fulfilled_minor": 497250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|菌类点": {
+      "demand_minor": 497250000,
+      "fulfilled_minor": 497250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|林产": {
+      "demand_minor": 498250000,
+      "fulfilled_minor": 498250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|果园": {
+      "demand_minor": 498250000,
+      "fulfilled_minor": 498250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|水源": {
+      "demand_minor": 498250000,
+      "fulfilled_minor": 498250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|灵田": {
+      "demand_minor": 498250000,
+      "fulfilled_minor": 498250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|矿脉": {
+      "demand_minor": 498250000,
+      "fulfilled_minor": 498250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|药园": {
+      "demand_minor": 498250000,
+      "fulfilled_minor": 498250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|菌类点": {
+      "demand_minor": 498250000,
+      "fulfilled_minor": 498250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|林产": {
+      "demand_minor": 496500000,
+      "fulfilled_minor": 496500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|果园": {
+      "demand_minor": 496500000,
+      "fulfilled_minor": 496500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|水源": {
+      "demand_minor": 496500000,
+      "fulfilled_minor": 496500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|灵田": {
+      "demand_minor": 496500000,
+      "fulfilled_minor": 496500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|矿脉": {
+      "demand_minor": 496500000,
+      "fulfilled_minor": 496500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|药园": {
+      "demand_minor": 496500000,
+      "fulfilled_minor": 496500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|菌类点": {
+      "demand_minor": 496500000,
+      "fulfilled_minor": 496500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|林产": {
+      "demand_minor": 498500000,
+      "fulfilled_minor": 498500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|果园": {
+      "demand_minor": 498500000,
+      "fulfilled_minor": 498500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|水源": {
+      "demand_minor": 498500000,
+      "fulfilled_minor": 498500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|灵田": {
+      "demand_minor": 498500000,
+      "fulfilled_minor": 498500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|矿脉": {
+      "demand_minor": 498500000,
+      "fulfilled_minor": 498500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|药园": {
+      "demand_minor": 498500000,
+      "fulfilled_minor": 498500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|菌类点": {
+      "demand_minor": 498500000,
+      "fulfilled_minor": 498500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|林产": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|果园": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|水源": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|灵田": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|矿脉": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|药园": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|菌类点": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|林产": {
+      "demand_minor": 124500000,
+      "fulfilled_minor": 124500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|果园": {
+      "demand_minor": 124500000,
+      "fulfilled_minor": 124500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|水源": {
+      "demand_minor": 124500000,
+      "fulfilled_minor": 124500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|灵田": {
+      "demand_minor": 124500000,
+      "fulfilled_minor": 124500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|矿脉": {
+      "demand_minor": 124500000,
+      "fulfilled_minor": 124500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|药园": {
+      "demand_minor": 124500000,
+      "fulfilled_minor": 124500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|菌类点": {
+      "demand_minor": 124500000,
+      "fulfilled_minor": 124500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|林产": {
+      "demand_minor": 124250000,
+      "fulfilled_minor": 124250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|果园": {
+      "demand_minor": 124250000,
+      "fulfilled_minor": 124250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|水源": {
+      "demand_minor": 124250000,
+      "fulfilled_minor": 124250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|灵田": {
+      "demand_minor": 124250000,
+      "fulfilled_minor": 124250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|矿脉": {
+      "demand_minor": 124250000,
+      "fulfilled_minor": 124250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|药园": {
+      "demand_minor": 124250000,
+      "fulfilled_minor": 124250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|菌类点": {
+      "demand_minor": 124250000,
+      "fulfilled_minor": 124250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|林产": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|果园": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|水源": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|灵田": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|矿脉": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|药园": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|菌类点": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|林产": {
+      "demand_minor": 124000000,
+      "fulfilled_minor": 124000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|果园": {
+      "demand_minor": 124000000,
+      "fulfilled_minor": 124000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|水源": {
+      "demand_minor": 124000000,
+      "fulfilled_minor": 124000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|灵田": {
+      "demand_minor": 124000000,
+      "fulfilled_minor": 124000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|矿脉": {
+      "demand_minor": 124000000,
+      "fulfilled_minor": 124000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|药园": {
+      "demand_minor": 124000000,
+      "fulfilled_minor": 124000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|菌类点": {
+      "demand_minor": 124000000,
+      "fulfilled_minor": 124000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|林产": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|果园": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|水源": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|灵田": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|矿脉": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|药园": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|菌类点": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|林产": {
+      "demand_minor": 123500000,
+      "fulfilled_minor": 123500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|果园": {
+      "demand_minor": 123500000,
+      "fulfilled_minor": 123500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|水源": {
+      "demand_minor": 123500000,
+      "fulfilled_minor": 123500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|灵田": {
+      "demand_minor": 123500000,
+      "fulfilled_minor": 123500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|矿脉": {
+      "demand_minor": 123500000,
+      "fulfilled_minor": 123500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|药园": {
+      "demand_minor": 123500000,
+      "fulfilled_minor": 123500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|菌类点": {
+      "demand_minor": 123500000,
+      "fulfilled_minor": 123500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|林产": {
+      "demand_minor": 124500000,
+      "fulfilled_minor": 124500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|果园": {
+      "demand_minor": 124500000,
+      "fulfilled_minor": 124500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|水源": {
+      "demand_minor": 124500000,
+      "fulfilled_minor": 124500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|灵田": {
+      "demand_minor": 124500000,
+      "fulfilled_minor": 124500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|矿脉": {
+      "demand_minor": 124500000,
+      "fulfilled_minor": 124500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|药园": {
+      "demand_minor": 124500000,
+      "fulfilled_minor": 124500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|菌类点": {
+      "demand_minor": 124500000,
+      "fulfilled_minor": 124500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     }
+    }
+   },
+   "final_blessed_tick": 1000000,
+   "state_hash": "4d03b73900666fd0fb94d953956b6213f247e0067ba3bd0122ce357709aa1dc0"
+  },
+  "T10": {
+   "ecology": {
+    "depletion_pressure": 110,
+    "ecological_stress": 515269,
+    "extraction_pressure": 1000000,
+    "habitat_quality": 19390,
+    "population_pressure": 1947,
+    "production_pressure": 559077,
+    "regeneration_capacity": 19390
+   },
+   "engine": {
+    "cells": {
+     "MAIN-01|林产": {
+      "consumption": 4911250000,
+      "ending_stock": 3052650000,
+      "extraction": 31680000000,
+      "lost": 931000000,
+      "production": 18620000000,
+      "transfer_in": 0,
+      "transfer_out": 22305100000
+     },
+     "MAIN-01|果园": {
+      "consumption": 4911250000,
+      "ending_stock": 2887650000,
+      "extraction": 31515000000,
+      "lost": 931000000,
+      "production": 18620000000,
+      "transfer_in": 0,
+      "transfer_out": 22305100000
+     },
+     "MAIN-01|水源": {
+      "consumption": 4911250000,
+      "ending_stock": 1732650000,
+      "extraction": 30360000000,
+      "lost": 931000000,
+      "production": 18620000000,
+      "transfer_in": 0,
+      "transfer_out": 22305100000
+     },
+     "MAIN-01|灵田": {
+      "consumption": 4911250000,
+      "ending_stock": 1732650000,
+      "extraction": 30360000000,
+      "lost": 931000000,
+      "production": 18620000000,
+      "transfer_in": 0,
+      "transfer_out": 22305100000
+     },
+     "MAIN-01|矿脉": {
+      "consumption": 4911250000,
+      "ending_stock": 1237650000,
+      "extraction": 29865000000,
+      "lost": 931000000,
+      "production": 18620000000,
+      "transfer_in": 0,
+      "transfer_out": 22305100000
+     },
+     "MAIN-01|药园": {
+      "consumption": 4911250000,
+      "ending_stock": 1567650000,
+      "extraction": 30195000000,
+      "lost": 931000000,
+      "production": 18620000000,
+      "transfer_in": 0,
+      "transfer_out": 22305100000
+     },
+     "MAIN-01|菌类点": {
+      "consumption": 4911250000,
+      "ending_stock": 2392650000,
+      "extraction": 31020000000,
+      "lost": 931000000,
+      "production": 18620000000,
+      "transfer_in": 0,
+      "transfer_out": 22305100000
+     },
+     "MAIN-02|林产": {
+      "consumption": 4915000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4463750000,
+      "transfer_out": 0
+     },
+     "MAIN-02|果园": {
+      "consumption": 4915000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4463750000,
+      "transfer_out": 0
+     },
+     "MAIN-02|水源": {
+      "consumption": 4915000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4463750000,
+      "transfer_out": 0
+     },
+     "MAIN-02|灵田": {
+      "consumption": 4915000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4463750000,
+      "transfer_out": 0
+     },
+     "MAIN-02|矿脉": {
+      "consumption": 4915000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4463750000,
+      "transfer_out": 0
+     },
+     "MAIN-02|药园": {
+      "consumption": 4915000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4463750000,
+      "transfer_out": 0
+     },
+     "MAIN-02|菌类点": {
+      "consumption": 4915000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4463750000,
+      "transfer_out": 0
+     },
+     "MAIN-03|林产": {
+      "consumption": 4916750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4465500000,
+      "transfer_out": 0
+     },
+     "MAIN-03|果园": {
+      "consumption": 4916750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4465500000,
+      "transfer_out": 0
+     },
+     "MAIN-03|水源": {
+      "consumption": 4916750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4465500000,
+      "transfer_out": 0
+     },
+     "MAIN-03|灵田": {
+      "consumption": 4916750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4465500000,
+      "transfer_out": 0
+     },
+     "MAIN-03|矿脉": {
+      "consumption": 4916750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4465500000,
+      "transfer_out": 0
+     },
+     "MAIN-03|药园": {
+      "consumption": 4916750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4465500000,
+      "transfer_out": 0
+     },
+     "MAIN-03|菌类点": {
+      "consumption": 4916750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4465500000,
+      "transfer_out": 0
+     },
+     "MAIN-04|林产": {
+      "consumption": 4942750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4491500000,
+      "transfer_out": 0
+     },
+     "MAIN-04|果园": {
+      "consumption": 4942750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4491500000,
+      "transfer_out": 0
+     },
+     "MAIN-04|水源": {
+      "consumption": 4942750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4491500000,
+      "transfer_out": 0
+     },
+     "MAIN-04|灵田": {
+      "consumption": 4942750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4491500000,
+      "transfer_out": 0
+     },
+     "MAIN-04|矿脉": {
+      "consumption": 4942750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4491500000,
+      "transfer_out": 0
+     },
+     "MAIN-04|药园": {
+      "consumption": 4942750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4491500000,
+      "transfer_out": 0
+     },
+     "MAIN-04|菌类点": {
+      "consumption": 4942750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 4491500000,
+      "transfer_out": 0
+     },
+     "SAT-01|林产": {
+      "consumption": 1253750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1140450000,
+      "transfer_out": 0
+     },
+     "SAT-01|果园": {
+      "consumption": 1253750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1140450000,
+      "transfer_out": 0
+     },
+     "SAT-01|水源": {
+      "consumption": 1253750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1140450000,
+      "transfer_out": 0
+     },
+     "SAT-01|灵田": {
+      "consumption": 1253750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1140450000,
+      "transfer_out": 0
+     },
+     "SAT-01|矿脉": {
+      "consumption": 1253750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1140450000,
+      "transfer_out": 0
+     },
+     "SAT-01|药园": {
+      "consumption": 1253750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1140450000,
+      "transfer_out": 0
+     },
+     "SAT-01|菌类点": {
+      "consumption": 1253750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1140450000,
+      "transfer_out": 0
+     },
+     "SAT-02|林产": {
+      "consumption": 1240500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1127200000,
+      "transfer_out": 0
+     },
+     "SAT-02|果园": {
+      "consumption": 1240500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1127200000,
+      "transfer_out": 0
+     },
+     "SAT-02|水源": {
+      "consumption": 1240500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1127200000,
+      "transfer_out": 0
+     },
+     "SAT-02|灵田": {
+      "consumption": 1240500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1127200000,
+      "transfer_out": 0
+     },
+     "SAT-02|矿脉": {
+      "consumption": 1240500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1127200000,
+      "transfer_out": 0
+     },
+     "SAT-02|药园": {
+      "consumption": 1240500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1127200000,
+      "transfer_out": 0
+     },
+     "SAT-02|菌类点": {
+      "consumption": 1240500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1127200000,
+      "transfer_out": 0
+     },
+     "SAT-03|林产": {
+      "consumption": 1219250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1105950000,
+      "transfer_out": 0
+     },
+     "SAT-03|果园": {
+      "consumption": 1219250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1105950000,
+      "transfer_out": 0
+     },
+     "SAT-03|水源": {
+      "consumption": 1219250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1105950000,
+      "transfer_out": 0
+     },
+     "SAT-03|灵田": {
+      "consumption": 1219250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1105950000,
+      "transfer_out": 0
+     },
+     "SAT-03|矿脉": {
+      "consumption": 1219250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1105950000,
+      "transfer_out": 0
+     },
+     "SAT-03|药园": {
+      "consumption": 1219250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1105950000,
+      "transfer_out": 0
+     },
+     "SAT-03|菌类点": {
+      "consumption": 1219250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1105950000,
+      "transfer_out": 0
+     },
+     "SAT-04|林产": {
+      "consumption": 1224500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1111200000,
+      "transfer_out": 0
+     },
+     "SAT-04|果园": {
+      "consumption": 1224500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1111200000,
+      "transfer_out": 0
+     },
+     "SAT-04|水源": {
+      "consumption": 1224500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1111200000,
+      "transfer_out": 0
+     },
+     "SAT-04|灵田": {
+      "consumption": 1224500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1111200000,
+      "transfer_out": 0
+     },
+     "SAT-04|矿脉": {
+      "consumption": 1224500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1111200000,
+      "transfer_out": 0
+     },
+     "SAT-04|药园": {
+      "consumption": 1224500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1111200000,
+      "transfer_out": 0
+     },
+     "SAT-04|菌类点": {
+      "consumption": 1224500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1111200000,
+      "transfer_out": 0
+     },
+     "SAT-05|林产": {
+      "consumption": 1226500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1113200000,
+      "transfer_out": 0
+     },
+     "SAT-05|果园": {
+      "consumption": 1226500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1113200000,
+      "transfer_out": 0
+     },
+     "SAT-05|水源": {
+      "consumption": 1226500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1113200000,
+      "transfer_out": 0
+     },
+     "SAT-05|灵田": {
+      "consumption": 1226500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1113200000,
+      "transfer_out": 0
+     },
+     "SAT-05|矿脉": {
+      "consumption": 1226500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1113200000,
+      "transfer_out": 0
+     },
+     "SAT-05|药园": {
+      "consumption": 1226500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1113200000,
+      "transfer_out": 0
+     },
+     "SAT-05|菌类点": {
+      "consumption": 1226500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1113200000,
+      "transfer_out": 0
+     },
+     "SAT-06|林产": {
+      "consumption": 1211000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1097700000,
+      "transfer_out": 0
+     },
+     "SAT-06|果园": {
+      "consumption": 1211000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1097700000,
+      "transfer_out": 0
+     },
+     "SAT-06|水源": {
+      "consumption": 1211000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1097700000,
+      "transfer_out": 0
+     },
+     "SAT-06|灵田": {
+      "consumption": 1211000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1097700000,
+      "transfer_out": 0
+     },
+     "SAT-06|矿脉": {
+      "consumption": 1211000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1097700000,
+      "transfer_out": 0
+     },
+     "SAT-06|药园": {
+      "consumption": 1211000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1097700000,
+      "transfer_out": 0
+     },
+     "SAT-06|菌类点": {
+      "consumption": 1211000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1097700000,
+      "transfer_out": 0
+     },
+     "SAT-07|林产": {
+      "consumption": 1202250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1088950000,
+      "transfer_out": 0
+     },
+     "SAT-07|果园": {
+      "consumption": 1202250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1088950000,
+      "transfer_out": 0
+     },
+     "SAT-07|水源": {
+      "consumption": 1202250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1088950000,
+      "transfer_out": 0
+     },
+     "SAT-07|灵田": {
+      "consumption": 1202250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1088950000,
+      "transfer_out": 0
+     },
+     "SAT-07|矿脉": {
+      "consumption": 1202250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1088950000,
+      "transfer_out": 0
+     },
+     "SAT-07|药园": {
+      "consumption": 1202250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1088950000,
+      "transfer_out": 0
+     },
+     "SAT-07|菌类点": {
+      "consumption": 1202250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1088950000,
+      "transfer_out": 0
+     },
+     "SAT-08|林产": {
+      "consumption": 1213000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1099700000,
+      "transfer_out": 0
+     },
+     "SAT-08|果园": {
+      "consumption": 1213000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1099700000,
+      "transfer_out": 0
+     },
+     "SAT-08|水源": {
+      "consumption": 1213000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1099700000,
+      "transfer_out": 0
+     },
+     "SAT-08|灵田": {
+      "consumption": 1213000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1099700000,
+      "transfer_out": 0
+     },
+     "SAT-08|矿脉": {
+      "consumption": 1213000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1099700000,
+      "transfer_out": 0
+     },
+     "SAT-08|药园": {
+      "consumption": 1213000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1099700000,
+      "transfer_out": 0
+     },
+     "SAT-08|菌类点": {
+      "consumption": 1213000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 1099700000,
+      "transfer_out": 0
+     }
+    },
+    "pressure": {
+     "MAIN-01|林产": {
+      "demand_minor": 486750000,
+      "fulfilled_minor": 486750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|果园": {
+      "demand_minor": 486750000,
+      "fulfilled_minor": 486750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|水源": {
+      "demand_minor": 486750000,
+      "fulfilled_minor": 486750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|灵田": {
+      "demand_minor": 486750000,
+      "fulfilled_minor": 486750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|矿脉": {
+      "demand_minor": 486750000,
+      "fulfilled_minor": 486750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|药园": {
+      "demand_minor": 486750000,
+      "fulfilled_minor": 486750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|菌类点": {
+      "demand_minor": 486750000,
+      "fulfilled_minor": 486750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|林产": {
+      "demand_minor": 483500000,
+      "fulfilled_minor": 483500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|果园": {
+      "demand_minor": 483500000,
+      "fulfilled_minor": 483500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|水源": {
+      "demand_minor": 483500000,
+      "fulfilled_minor": 483500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|灵田": {
+      "demand_minor": 483500000,
+      "fulfilled_minor": 483500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|矿脉": {
+      "demand_minor": 483500000,
+      "fulfilled_minor": 483500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|药园": {
+      "demand_minor": 483500000,
+      "fulfilled_minor": 483500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|菌类点": {
+      "demand_minor": 483500000,
+      "fulfilled_minor": 483500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|林产": {
+      "demand_minor": 488000000,
+      "fulfilled_minor": 488000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|果园": {
+      "demand_minor": 488000000,
+      "fulfilled_minor": 488000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|水源": {
+      "demand_minor": 488000000,
+      "fulfilled_minor": 488000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|灵田": {
+      "demand_minor": 488000000,
+      "fulfilled_minor": 488000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|矿脉": {
+      "demand_minor": 488000000,
+      "fulfilled_minor": 488000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|药园": {
+      "demand_minor": 488000000,
+      "fulfilled_minor": 488000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|菌类点": {
+      "demand_minor": 488000000,
+      "fulfilled_minor": 488000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|林产": {
+      "demand_minor": 491000000,
+      "fulfilled_minor": 491000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|果园": {
+      "demand_minor": 491000000,
+      "fulfilled_minor": 491000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|水源": {
+      "demand_minor": 491000000,
+      "fulfilled_minor": 491000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|灵田": {
+      "demand_minor": 491000000,
+      "fulfilled_minor": 491000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|矿脉": {
+      "demand_minor": 491000000,
+      "fulfilled_minor": 491000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|药园": {
+      "demand_minor": 491000000,
+      "fulfilled_minor": 491000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|菌类点": {
+      "demand_minor": 491000000,
+      "fulfilled_minor": 491000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|林产": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|果园": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|水源": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|灵田": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|矿脉": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|药园": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|菌类点": {
+      "demand_minor": 125500000,
+      "fulfilled_minor": 125500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|林产": {
+      "demand_minor": 123000000,
+      "fulfilled_minor": 123000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|果园": {
+      "demand_minor": 123000000,
+      "fulfilled_minor": 123000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|水源": {
+      "demand_minor": 123000000,
+      "fulfilled_minor": 123000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|灵田": {
+      "demand_minor": 123000000,
+      "fulfilled_minor": 123000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|矿脉": {
+      "demand_minor": 123000000,
+      "fulfilled_minor": 123000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|药园": {
+      "demand_minor": 123000000,
+      "fulfilled_minor": 123000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|菌类点": {
+      "demand_minor": 123000000,
+      "fulfilled_minor": 123000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|林产": {
+      "demand_minor": 119000000,
+      "fulfilled_minor": 119000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|果园": {
+      "demand_minor": 119000000,
+      "fulfilled_minor": 119000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|水源": {
+      "demand_minor": 119000000,
+      "fulfilled_minor": 119000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|灵田": {
+      "demand_minor": 119000000,
+      "fulfilled_minor": 119000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|矿脉": {
+      "demand_minor": 119000000,
+      "fulfilled_minor": 119000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|药园": {
+      "demand_minor": 119000000,
+      "fulfilled_minor": 119000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|菌类点": {
+      "demand_minor": 119000000,
+      "fulfilled_minor": 119000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|林产": {
+      "demand_minor": 120500000,
+      "fulfilled_minor": 120500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|果园": {
+      "demand_minor": 120500000,
+      "fulfilled_minor": 120500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|水源": {
+      "demand_minor": 120500000,
+      "fulfilled_minor": 120500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|灵田": {
+      "demand_minor": 120500000,
+      "fulfilled_minor": 120500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|矿脉": {
+      "demand_minor": 120500000,
+      "fulfilled_minor": 120500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|药园": {
+      "demand_minor": 120500000,
+      "fulfilled_minor": 120500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|菌类点": {
+      "demand_minor": 120500000,
+      "fulfilled_minor": 120500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|林产": {
+      "demand_minor": 122500000,
+      "fulfilled_minor": 122500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|果园": {
+      "demand_minor": 122500000,
+      "fulfilled_minor": 122500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|水源": {
+      "demand_minor": 122500000,
+      "fulfilled_minor": 122500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|灵田": {
+      "demand_minor": 122500000,
+      "fulfilled_minor": 122500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|矿脉": {
+      "demand_minor": 122500000,
+      "fulfilled_minor": 122500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|药园": {
+      "demand_minor": 122500000,
+      "fulfilled_minor": 122500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|菌类点": {
+      "demand_minor": 122500000,
+      "fulfilled_minor": 122500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|林产": {
+      "demand_minor": 118750000,
+      "fulfilled_minor": 118750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|果园": {
+      "demand_minor": 118750000,
+      "fulfilled_minor": 118750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|水源": {
+      "demand_minor": 118750000,
+      "fulfilled_minor": 118750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|灵田": {
+      "demand_minor": 118750000,
+      "fulfilled_minor": 118750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|矿脉": {
+      "demand_minor": 118750000,
+      "fulfilled_minor": 118750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|药园": {
+      "demand_minor": 118750000,
+      "fulfilled_minor": 118750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|菌类点": {
+      "demand_minor": 118750000,
+      "fulfilled_minor": 118750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|林产": {
+      "demand_minor": 116750000,
+      "fulfilled_minor": 116750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|果园": {
+      "demand_minor": 116750000,
+      "fulfilled_minor": 116750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|水源": {
+      "demand_minor": 116750000,
+      "fulfilled_minor": 116750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|灵田": {
+      "demand_minor": 116750000,
+      "fulfilled_minor": 116750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|矿脉": {
+      "demand_minor": 116750000,
+      "fulfilled_minor": 116750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|药园": {
+      "demand_minor": 116750000,
+      "fulfilled_minor": 116750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|菌类点": {
+      "demand_minor": 116750000,
+      "fulfilled_minor": 116750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|林产": {
+      "demand_minor": 118250000,
+      "fulfilled_minor": 118250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|果园": {
+      "demand_minor": 118250000,
+      "fulfilled_minor": 118250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|水源": {
+      "demand_minor": 118250000,
+      "fulfilled_minor": 118250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|灵田": {
+      "demand_minor": 118250000,
+      "fulfilled_minor": 118250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|矿脉": {
+      "demand_minor": 118250000,
+      "fulfilled_minor": 118250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|药园": {
+      "demand_minor": 118250000,
+      "fulfilled_minor": 118250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|菌类点": {
+      "demand_minor": 118250000,
+      "fulfilled_minor": 118250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     }
+    }
+   },
+   "final_blessed_tick": 10000000,
+   "state_hash": "ef62d5d86f184611dee7eaf5c999587d219295b5991624cc75c4d9ce8dbc8923"
+  },
+  "T4": {
+   "ecology": {
+    "depletion_pressure": 110,
+    "ecological_stress": 517437,
+    "extraction_pressure": 1000000,
+    "habitat_quality": 19303,
+    "population_pressure": 1971,
+    "production_pressure": 567723,
+    "regeneration_capacity": 19303
+   },
+   "engine": {
+    "cells": {
+     "MAIN-01|林产": {
+      "consumption": 1978750000,
+      "ending_stock": 3133150000,
+      "extraction": 13035000000,
+      "lost": 375250000,
+      "production": 7505000000,
+      "transfer_in": 0,
+      "transfer_out": 7652850000
+     },
+     "MAIN-01|果园": {
+      "consumption": 1978750000,
+      "ending_stock": 2638150000,
+      "extraction": 12540000000,
+      "lost": 375250000,
+      "production": 7505000000,
+      "transfer_in": 0,
+      "transfer_out": 7652850000
+     },
+     "MAIN-01|水源": {
+      "consumption": 1978750000,
+      "ending_stock": 2143150000,
+      "extraction": 12045000000,
+      "lost": 375250000,
+      "production": 7505000000,
+      "transfer_in": 0,
+      "transfer_out": 7652850000
+     },
+     "MAIN-01|灵田": {
+      "consumption": 1978750000,
+      "ending_stock": 2473150000,
+      "extraction": 12375000000,
+      "lost": 375250000,
+      "production": 7505000000,
+      "transfer_in": 0,
+      "transfer_out": 7652850000
+     },
+     "MAIN-01|矿脉": {
+      "consumption": 1978750000,
+      "ending_stock": 1813150000,
+      "extraction": 11715000000,
+      "lost": 375250000,
+      "production": 7505000000,
+      "transfer_in": 0,
+      "transfer_out": 7652850000
+     },
+     "MAIN-01|药园": {
+      "consumption": 1978750000,
+      "ending_stock": 1318150000,
+      "extraction": 11220000000,
+      "lost": 375250000,
+      "production": 7505000000,
+      "transfer_in": 0,
+      "transfer_out": 7652850000
+     },
+     "MAIN-01|菌类点": {
+      "consumption": 1978750000,
+      "ending_stock": 1813150000,
+      "extraction": 11715000000,
+      "lost": 375250000,
+      "production": 7505000000,
+      "transfer_in": 0,
+      "transfer_out": 7652850000
+     },
+     "MAIN-02|林产": {
+      "consumption": 1984000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1532750000,
+      "transfer_out": 0
+     },
+     "MAIN-02|果园": {
+      "consumption": 1984000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1532750000,
+      "transfer_out": 0
+     },
+     "MAIN-02|水源": {
+      "consumption": 1984000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1532750000,
+      "transfer_out": 0
+     },
+     "MAIN-02|灵田": {
+      "consumption": 1984000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1532750000,
+      "transfer_out": 0
+     },
+     "MAIN-02|矿脉": {
+      "consumption": 1984000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1532750000,
+      "transfer_out": 0
+     },
+     "MAIN-02|药园": {
+      "consumption": 1984000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1532750000,
+      "transfer_out": 0
+     },
+     "MAIN-02|菌类点": {
+      "consumption": 1984000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1532750000,
+      "transfer_out": 0
+     },
+     "MAIN-03|林产": {
+      "consumption": 1982750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1531500000,
+      "transfer_out": 0
+     },
+     "MAIN-03|果园": {
+      "consumption": 1982750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1531500000,
+      "transfer_out": 0
+     },
+     "MAIN-03|水源": {
+      "consumption": 1982750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1531500000,
+      "transfer_out": 0
+     },
+     "MAIN-03|灵田": {
+      "consumption": 1982750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1531500000,
+      "transfer_out": 0
+     },
+     "MAIN-03|矿脉": {
+      "consumption": 1982750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1531500000,
+      "transfer_out": 0
+     },
+     "MAIN-03|药园": {
+      "consumption": 1982750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1531500000,
+      "transfer_out": 0
+     },
+     "MAIN-03|菌类点": {
+      "consumption": 1982750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1531500000,
+      "transfer_out": 0
+     },
+     "MAIN-04|林产": {
+      "consumption": 1988750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1537500000,
+      "transfer_out": 0
+     },
+     "MAIN-04|果园": {
+      "consumption": 1988750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1537500000,
+      "transfer_out": 0
+     },
+     "MAIN-04|水源": {
+      "consumption": 1988750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1537500000,
+      "transfer_out": 0
+     },
+     "MAIN-04|灵田": {
+      "consumption": 1988750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1537500000,
+      "transfer_out": 0
+     },
+     "MAIN-04|矿脉": {
+      "consumption": 1988750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1537500000,
+      "transfer_out": 0
+     },
+     "MAIN-04|药园": {
+      "consumption": 1988750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1537500000,
+      "transfer_out": 0
+     },
+     "MAIN-04|菌类点": {
+      "consumption": 1988750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 23750000,
+      "production": 475000000,
+      "transfer_in": 1537500000,
+      "transfer_out": 0
+     },
+     "SAT-01|林产": {
+      "consumption": 500000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 386700000,
+      "transfer_out": 0
+     },
+     "SAT-01|果园": {
+      "consumption": 500000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 386700000,
+      "transfer_out": 0
+     },
+     "SAT-01|水源": {
+      "consumption": 500000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 386700000,
+      "transfer_out": 0
+     },
+     "SAT-01|灵田": {
+      "consumption": 500000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 386700000,
+      "transfer_out": 0
+     },
+     "SAT-01|矿脉": {
+      "consumption": 500000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 386700000,
+      "transfer_out": 0
+     },
+     "SAT-01|药园": {
+      "consumption": 500000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 386700000,
+      "transfer_out": 0
+     },
+     "SAT-01|菌类点": {
+      "consumption": 500000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 386700000,
+      "transfer_out": 0
+     },
+     "SAT-02|林产": {
+      "consumption": 498750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 385450000,
+      "transfer_out": 0
+     },
+     "SAT-02|果园": {
+      "consumption": 498750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 385450000,
+      "transfer_out": 0
+     },
+     "SAT-02|水源": {
+      "consumption": 498750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 385450000,
+      "transfer_out": 0
+     },
+     "SAT-02|灵田": {
+      "consumption": 498750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 385450000,
+      "transfer_out": 0
+     },
+     "SAT-02|矿脉": {
+      "consumption": 498750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 385450000,
+      "transfer_out": 0
+     },
+     "SAT-02|药园": {
+      "consumption": 498750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 385450000,
+      "transfer_out": 0
+     },
+     "SAT-02|菌类点": {
+      "consumption": 498750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 385450000,
+      "transfer_out": 0
+     },
+     "SAT-03|林产": {
+      "consumption": 494250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 380950000,
+      "transfer_out": 0
+     },
+     "SAT-03|果园": {
+      "consumption": 494250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 380950000,
+      "transfer_out": 0
+     },
+     "SAT-03|水源": {
+      "consumption": 494250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 380950000,
+      "transfer_out": 0
+     },
+     "SAT-03|灵田": {
+      "consumption": 494250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 380950000,
+      "transfer_out": 0
+     },
+     "SAT-03|矿脉": {
+      "consumption": 494250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 380950000,
+      "transfer_out": 0
+     },
+     "SAT-03|药园": {
+      "consumption": 494250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 380950000,
+      "transfer_out": 0
+     },
+     "SAT-03|菌类点": {
+      "consumption": 494250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 380950000,
+      "transfer_out": 0
+     },
+     "SAT-04|林产": {
+      "consumption": 496750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 383450000,
+      "transfer_out": 0
+     },
+     "SAT-04|果园": {
+      "consumption": 496750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 383450000,
+      "transfer_out": 0
+     },
+     "SAT-04|水源": {
+      "consumption": 496750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 383450000,
+      "transfer_out": 0
+     },
+     "SAT-04|灵田": {
+      "consumption": 496750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 383450000,
+      "transfer_out": 0
+     },
+     "SAT-04|矿脉": {
+      "consumption": 496750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 383450000,
+      "transfer_out": 0
+     },
+     "SAT-04|药园": {
+      "consumption": 496750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 383450000,
+      "transfer_out": 0
+     },
+     "SAT-04|菌类点": {
+      "consumption": 496750000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 383450000,
+      "transfer_out": 0
+     },
+     "SAT-05|林产": {
+      "consumption": 492000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 378700000,
+      "transfer_out": 0
+     },
+     "SAT-05|果园": {
+      "consumption": 492000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 378700000,
+      "transfer_out": 0
+     },
+     "SAT-05|水源": {
+      "consumption": 492000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 378700000,
+      "transfer_out": 0
+     },
+     "SAT-05|灵田": {
+      "consumption": 492000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 378700000,
+      "transfer_out": 0
+     },
+     "SAT-05|矿脉": {
+      "consumption": 492000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 378700000,
+      "transfer_out": 0
+     },
+     "SAT-05|药园": {
+      "consumption": 492000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 378700000,
+      "transfer_out": 0
+     },
+     "SAT-05|菌类点": {
+      "consumption": 492000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 378700000,
+      "transfer_out": 0
+     },
+     "SAT-06|林产": {
+      "consumption": 494250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 380950000,
+      "transfer_out": 0
+     },
+     "SAT-06|果园": {
+      "consumption": 494250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 380950000,
+      "transfer_out": 0
+     },
+     "SAT-06|水源": {
+      "consumption": 494250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 380950000,
+      "transfer_out": 0
+     },
+     "SAT-06|灵田": {
+      "consumption": 494250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 380950000,
+      "transfer_out": 0
+     },
+     "SAT-06|矿脉": {
+      "consumption": 494250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 380950000,
+      "transfer_out": 0
+     },
+     "SAT-06|药园": {
+      "consumption": 494250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 380950000,
+      "transfer_out": 0
+     },
+     "SAT-06|菌类点": {
+      "consumption": 494250000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 380950000,
+      "transfer_out": 0
+     },
+     "SAT-07|林产": {
+      "consumption": 488500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 375200000,
+      "transfer_out": 0
+     },
+     "SAT-07|果园": {
+      "consumption": 488500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 375200000,
+      "transfer_out": 0
+     },
+     "SAT-07|水源": {
+      "consumption": 488500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 375200000,
+      "transfer_out": 0
+     },
+     "SAT-07|灵田": {
+      "consumption": 488500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 375200000,
+      "transfer_out": 0
+     },
+     "SAT-07|矿脉": {
+      "consumption": 488500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 375200000,
+      "transfer_out": 0
+     },
+     "SAT-07|药园": {
+      "consumption": 488500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 375200000,
+      "transfer_out": 0
+     },
+     "SAT-07|菌类点": {
+      "consumption": 488500000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 375200000,
+      "transfer_out": 0
+     },
+     "SAT-08|林产": {
+      "consumption": 493000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 379700000,
+      "transfer_out": 0
+     },
+     "SAT-08|果园": {
+      "consumption": 493000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 379700000,
+      "transfer_out": 0
+     },
+     "SAT-08|水源": {
+      "consumption": 493000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 379700000,
+      "transfer_out": 0
+     },
+     "SAT-08|灵田": {
+      "consumption": 493000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 379700000,
+      "transfer_out": 0
+     },
+     "SAT-08|矿脉": {
+      "consumption": 493000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 379700000,
+      "transfer_out": 0
+     },
+     "SAT-08|药园": {
+      "consumption": 493000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 379700000,
+      "transfer_out": 0
+     },
+     "SAT-08|菌类点": {
+      "consumption": 493000000,
+      "ending_stock": 0,
+      "extraction": 0,
+      "lost": 5700000,
+      "production": 114000000,
+      "transfer_in": 379700000,
+      "transfer_out": 0
+     }
+    },
+    "pressure": {
+     "MAIN-01|林产": {
+      "demand_minor": 492750000,
+      "fulfilled_minor": 492750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|果园": {
+      "demand_minor": 492750000,
+      "fulfilled_minor": 492750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|水源": {
+      "demand_minor": 492750000,
+      "fulfilled_minor": 492750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|灵田": {
+      "demand_minor": 492750000,
+      "fulfilled_minor": 492750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|矿脉": {
+      "demand_minor": 492750000,
+      "fulfilled_minor": 492750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|药园": {
+      "demand_minor": 492750000,
+      "fulfilled_minor": 492750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-01|菌类点": {
+      "demand_minor": 492750000,
+      "fulfilled_minor": 492750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|林产": {
+      "demand_minor": 493750000,
+      "fulfilled_minor": 493750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|果园": {
+      "demand_minor": 493750000,
+      "fulfilled_minor": 493750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|水源": {
+      "demand_minor": 493750000,
+      "fulfilled_minor": 493750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|灵田": {
+      "demand_minor": 493750000,
+      "fulfilled_minor": 493750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|矿脉": {
+      "demand_minor": 493750000,
+      "fulfilled_minor": 493750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|药园": {
+      "demand_minor": 493750000,
+      "fulfilled_minor": 493750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-02|菌类点": {
+      "demand_minor": 493750000,
+      "fulfilled_minor": 493750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|林产": {
+      "demand_minor": 495000000,
+      "fulfilled_minor": 495000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|果园": {
+      "demand_minor": 495000000,
+      "fulfilled_minor": 495000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|水源": {
+      "demand_minor": 495000000,
+      "fulfilled_minor": 495000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|灵田": {
+      "demand_minor": 495000000,
+      "fulfilled_minor": 495000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|矿脉": {
+      "demand_minor": 495000000,
+      "fulfilled_minor": 495000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|药园": {
+      "demand_minor": 495000000,
+      "fulfilled_minor": 495000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-03|菌类点": {
+      "demand_minor": 495000000,
+      "fulfilled_minor": 495000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|林产": {
+      "demand_minor": 495250000,
+      "fulfilled_minor": 495250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|果园": {
+      "demand_minor": 495250000,
+      "fulfilled_minor": 495250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|水源": {
+      "demand_minor": 495250000,
+      "fulfilled_minor": 495250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|灵田": {
+      "demand_minor": 495250000,
+      "fulfilled_minor": 495250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|矿脉": {
+      "demand_minor": 495250000,
+      "fulfilled_minor": 495250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|药园": {
+      "demand_minor": 495250000,
+      "fulfilled_minor": 495250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "MAIN-04|菌类点": {
+      "demand_minor": 495250000,
+      "fulfilled_minor": 495250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|林产": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|果园": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|水源": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|灵田": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|矿脉": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|药园": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-01|菌类点": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|林产": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|果园": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|水源": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|灵田": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|矿脉": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|药园": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-02|菌类点": {
+      "demand_minor": 125000000,
+      "fulfilled_minor": 125000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|林产": {
+      "demand_minor": 123500000,
+      "fulfilled_minor": 123500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|果园": {
+      "demand_minor": 123500000,
+      "fulfilled_minor": 123500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|水源": {
+      "demand_minor": 123500000,
+      "fulfilled_minor": 123500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|灵田": {
+      "demand_minor": 123500000,
+      "fulfilled_minor": 123500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|矿脉": {
+      "demand_minor": 123500000,
+      "fulfilled_minor": 123500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|药园": {
+      "demand_minor": 123500000,
+      "fulfilled_minor": 123500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-03|菌类点": {
+      "demand_minor": 123500000,
+      "fulfilled_minor": 123500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|林产": {
+      "demand_minor": 123750000,
+      "fulfilled_minor": 123750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|果园": {
+      "demand_minor": 123750000,
+      "fulfilled_minor": 123750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|水源": {
+      "demand_minor": 123750000,
+      "fulfilled_minor": 123750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|灵田": {
+      "demand_minor": 123750000,
+      "fulfilled_minor": 123750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|矿脉": {
+      "demand_minor": 123750000,
+      "fulfilled_minor": 123750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|药园": {
+      "demand_minor": 123750000,
+      "fulfilled_minor": 123750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-04|菌类点": {
+      "demand_minor": 123750000,
+      "fulfilled_minor": 123750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|林产": {
+      "demand_minor": 122500000,
+      "fulfilled_minor": 122500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|果园": {
+      "demand_minor": 122500000,
+      "fulfilled_minor": 122500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|水源": {
+      "demand_minor": 122500000,
+      "fulfilled_minor": 122500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|灵田": {
+      "demand_minor": 122500000,
+      "fulfilled_minor": 122500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|矿脉": {
+      "demand_minor": 122500000,
+      "fulfilled_minor": 122500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|药园": {
+      "demand_minor": 122500000,
+      "fulfilled_minor": 122500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-05|菌类点": {
+      "demand_minor": 122500000,
+      "fulfilled_minor": 122500000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|林产": {
+      "demand_minor": 122250000,
+      "fulfilled_minor": 122250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|果园": {
+      "demand_minor": 122250000,
+      "fulfilled_minor": 122250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|水源": {
+      "demand_minor": 122250000,
+      "fulfilled_minor": 122250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|灵田": {
+      "demand_minor": 122250000,
+      "fulfilled_minor": 122250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|矿脉": {
+      "demand_minor": 122250000,
+      "fulfilled_minor": 122250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|药园": {
+      "demand_minor": 122250000,
+      "fulfilled_minor": 122250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-06|菌类点": {
+      "demand_minor": 122250000,
+      "fulfilled_minor": 122250000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|林产": {
+      "demand_minor": 121000000,
+      "fulfilled_minor": 121000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|果园": {
+      "demand_minor": 121000000,
+      "fulfilled_minor": 121000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|水源": {
+      "demand_minor": 121000000,
+      "fulfilled_minor": 121000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|灵田": {
+      "demand_minor": 121000000,
+      "fulfilled_minor": 121000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|矿脉": {
+      "demand_minor": 121000000,
+      "fulfilled_minor": 121000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|药园": {
+      "demand_minor": 121000000,
+      "fulfilled_minor": 121000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-07|菌类点": {
+      "demand_minor": 121000000,
+      "fulfilled_minor": 121000000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|林产": {
+      "demand_minor": 122750000,
+      "fulfilled_minor": 122750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|果园": {
+      "demand_minor": 122750000,
+      "fulfilled_minor": 122750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|水源": {
+      "demand_minor": 122750000,
+      "fulfilled_minor": 122750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|灵田": {
+      "demand_minor": 122750000,
+      "fulfilled_minor": 122750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|矿脉": {
+      "demand_minor": 122750000,
+      "fulfilled_minor": 122750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|药园": {
+      "demand_minor": 122750000,
+      "fulfilled_minor": 122750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     },
+     "SAT-08|菌类点": {
+      "demand_minor": 122750000,
+      "fulfilled_minor": 122750000,
+      "stress_level": "NONE",
+      "sustained_shortage_steps": 0,
+      "unmet_minor": 0
+     }
+    }
+   },
+   "final_blessed_tick": 4000000,
+   "state_hash": "e68000dca222f1ed51d56f26e404d61d78178a29d2035c731fa5edb13deaf49c"
+  }
+ },
+ "drop_kind": null,
+ "self_check": {
+  "ECOLOGY_FEEDBACK_ROWS": 1,
+  "ECOLOGY_ROOT_ROWS": 1,
+  "ECOLOGY_STATE_ROWS": 1,
+  "GROUP_TOTALS": [
+   4000,
+   3000,
+   2500,
+   2500
+  ],
+  "GROUP_TOTALS_OK": true,
+  "POPULATION_GROUP_ROWS": 2928,
+  "POPULATION_SUM": 12000,
+  "POPULATION_TOTAL_OK": true,
+  "RESOURCE_NODE_ROWS": 7,
+  "RESOURCE_PROFILE_ROWS": 7,
+  "RESOURCE_STOCK_ROWS": 84,
+  "ROWS_OK": true,
+  "SELF_CHECK": true,
+  "SETTLEMENT_ROWS": 12,
+  "SETTLEMENT_TOTALS": [
+   2000,
+   2000,
+   2000,
+   2000,
+   500,
+   500,
+   500,
+   500,
+   500,
+   500,
+   500,
+   500
+  ],
+  "SETTLEMENT_TOTALS_OK": true,
+  "SOCIAL_ROWS": 24,
+  "TEST_PROFILE_REFERENCES": 0,
+  "TRIBULATION_SCHEDULE_ROWS": 3,
+  "TWIN_GENESIS": 0
+ },
+ "via": "direct",
+ "work_dir": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6c1d_r1c_xtbqz92y"
+}

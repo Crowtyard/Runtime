@@ -1,0 +1,286 @@
+{
+ "runs": [
+  {
+   "birth_rate": "7/125",
+   "birth_rate_decimal": 0.056,
+   "external_feedback": "NEUTRAL_DEFAULTS_NO_OTHER_ENGINES",
+   "final_population": 20060,
+   "identity_all_ok": true,
+   "series": {
+    "T0": {
+     "cum": {
+      "births": 0,
+      "deaths": 0,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "population": 12000
+    },
+    "T10": {
+     "by_species": {
+      "Hairy Men": 3992,
+      "Mermen": 2538,
+      "Mushroommen": 2496,
+      "Rockmen": 3004
+     },
+     "cohort_rows": 2928,
+     "cum": {
+      "births": 2058,
+      "deaths": 2028,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12030,
+     "population": 12030
+    },
+    "T100": {
+     "by_species": {
+      "Hairy Men": 4510,
+      "Mermen": 2869,
+      "Mushroommen": 2645,
+      "Rockmen": 3468
+     },
+     "cohort_rows": 2928,
+     "cum": {
+      "births": 22471,
+      "deaths": 20979,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 13492,
+     "population": 13492
+    },
+    "T300": {
+     "by_species": {
+      "Hairy Men": 6996,
+      "Mermen": 4137,
+      "Mushroommen": 3965,
+      "Rockmen": 4962
+     },
+     "cohort_rows": 2928,
+     "cum": {
+      "births": 84372,
+      "deaths": 76312,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 20060,
+     "population": 20060
+    },
+    "T50": {
+     "by_species": {
+      "Hairy Men": 4175,
+      "Mermen": 2580,
+      "Mushroommen": 2528,
+      "Rockmen": 3198
+     },
+     "cohort_rows": 2928,
+     "cum": {
+      "births": 10663,
+      "deaths": 10182,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12481,
+     "population": 12481
+    }
+   },
+   "until": 300,
+   "with_tribulation": false,
+   "work_dir": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6c1d_demog_s632_aa2d_7t1"
+  },
+  {
+   "birth_rate": "31/500",
+   "birth_rate_decimal": 0.062,
+   "external_feedback": "NEUTRAL_DEFAULTS_NO_OTHER_ENGINES",
+   "final_population": 51958,
+   "identity_all_ok": true,
+   "series": {
+    "T0": {
+     "cum": {
+      "births": 0,
+      "deaths": 0,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "population": 12000
+    },
+    "T10": {
+     "by_species": {
+      "Hairy Men": 4056,
+      "Mermen": 2566,
+      "Mushroommen": 2538,
+      "Rockmen": 3049
+     },
+     "cohort_rows": 2928,
+     "cum": {
+      "births": 2267,
+      "deaths": 2058,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12209,
+     "population": 12209
+    },
+    "T100": {
+     "by_species": {
+      "Hairy Men": 5762,
+      "Mermen": 3617,
+      "Mushroommen": 3573,
+      "Rockmen": 4405
+     },
+     "cohort_rows": 2928,
+     "cum": {
+      "births": 28835,
+      "deaths": 23478,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 17357,
+     "population": 17357
+    },
+    "T300": {
+     "by_species": {
+      "Hairy Men": 17047,
+      "Mermen": 11101,
+      "Mushroommen": 10700,
+      "Rockmen": 13110
+     },
+     "cohort_rows": 2928,
+     "cum": {
+      "births": 167964,
+      "deaths": 128006,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 51958,
+     "population": 51958
+    },
+    "T50": {
+     "by_species": {
+      "Hairy Men": 4597,
+      "Mermen": 2838,
+      "Mushroommen": 2820,
+      "Rockmen": 3501
+     },
+     "cohort_rows": 2928,
+     "cum": {
+      "births": 12388,
+      "deaths": 10632,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 13756,
+     "population": 13756
+    }
+   },
+   "until": 300,
+   "with_tribulation": false,
+   "work_dir": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6c1d_demog_s216_cd1z4vrg"
+  },
+  {
+   "birth_rate": "17/250",
+   "birth_rate_decimal": 0.068,
+   "external_feedback": "NEUTRAL_DEFAULTS_NO_OTHER_ENGINES",
+   "final_population": 126677,
+   "identity_all_ok": true,
+   "series": {
+    "T0": {
+     "cum": {
+      "births": 0,
+      "deaths": 0,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "population": 12000
+    },
+    "T10": {
+     "by_species": {
+      "Hairy Men": 4119,
+      "Mermen": 2614,
+      "Mushroommen": 2589,
+      "Rockmen": 3104
+     },
+     "cohort_rows": 2928,
+     "cum": {
+      "births": 2490,
+      "deaths": 2064,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 12426,
+     "population": 12426
+    },
+    "T100": {
+     "by_species": {
+      "Hairy Men": 7450,
+      "Mermen": 4375,
+      "Mushroommen": 4427,
+      "Rockmen": 5697
+     },
+     "cohort_rows": 2928,
+     "cum": {
+      "births": 36309,
+      "deaths": 26360,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 21949,
+     "population": 21949
+    },
+    "T300": {
+     "by_species": {
+      "Hairy Men": 43961,
+      "Mermen": 25090,
+      "Mushroommen": 25606,
+      "Rockmen": 32020
+     },
+     "cohort_rows": 2928,
+     "cum": {
+      "births": 337841,
+      "deaths": 223164,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 126677,
+     "population": 126677
+    },
+    "T50": {
+     "by_species": {
+      "Hairy Men": 5091,
+      "Mermen": 3117,
+      "Mushroommen": 3090,
+      "Rockmen": 3904
+     },
+     "cohort_rows": 2928,
+     "cum": {
+      "births": 14291,
+      "deaths": 11089,
+      "emigration": 0,
+      "immigration": 0
+     },
+     "identity_ok": true,
+     "identity_rhs": 15202,
+     "population": 15202
+    }
+   },
+   "until": 300,
+   "with_tribulation": false,
+   "work_dir": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6c1d_demog_s602_6kraadt7"
+  }
+ ]
+}

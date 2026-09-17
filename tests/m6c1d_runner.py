@@ -77,20 +77,24 @@ def write_bootstrap_rows(session) -> dict:
                     demography_version="formal-1.0"))
 
     # resources: 7 formal profiles + 7 nodes (minimal topology) + 12x7 stocks
-    per_capita = Fraction(re_a["VALUES"]["per_capita_demand"])
+    per_capita = Fraction(re_a["VALUES"]["per_capita_demand"])   # canonical units/人/年
     loss = Fraction(re_a["VALUES"]["loss"])
-    recipe_input = 100
-    recipe_output = int(Fraction(recipe_input) * (Fraction(1) - loss))
     capacity_multiple = Fraction(re_a["VALUES"]["capacity_multiple"])
+    # M6C.1D-R1C：所有库存/配方/开采量必须以 **minor units** 表达
+    quantity_scale = 1_000_000
+    recipe_input = 10 * quantity_scale                 # 10 canonical units / batch
+    recipe_output = int(Fraction(recipe_input) * (Fraction(1) - loss))
     node_extraction_total = 0
-    main_annual = int(Fraction(S.SETTLEMENT_SLOTS[0][2]) * per_capita)
+    # M6C.1D-R1C §5：容量必须按 **ACTUAL SERVED DEMAND** 定容，不得用 host 聚落本地需求
+    global_annual = int(Fraction(sum(pop for _s, _k, pop in S.SETTLEMENT_SLOTS))
+                        * per_capita * quantity_scale)      # minor units / 福地年
     for kind in S.CONSUMPTION_KINDS:
         session.add(ProductionRecipe(
             world_id=WORLD_ID, recipe_id=f"RECIPE-{kind}",
             input_resource_ref=kind, input_qty_minor=recipe_input,
             output_resource_ref=kind, output_qty_minor=recipe_output,
             capacity_batches_per_year=max(1, int(
-                Fraction(main_annual) * capacity_multiple / recipe_output)),
+                Fraction(global_annual) * capacity_multiple / recipe_output)),
             labor_per_batch=10, loss_num=loss.numerator,
             loss_den=loss.denominator, semantic_version="formal-1.0"))
         session.add(ResourceProfile(
@@ -101,7 +105,8 @@ def write_bootstrap_rows(session) -> dict:
     stocks_rows = 0
     for j, (slot, _k, _c) in enumerate(S.SETTLEMENT_SLOTS):
         settlement_pop = sum(matrix[i][j] for i in range(len(S.SPECIES)))
-        annual = int(Fraction(settlement_pop) * per_capita)
+        annual = int(Fraction(settlement_pop) * per_capita
+                     * quantity_scale)                     # minor units / 福地年
         for kind in S.CONSUMPTION_KINDS:
             session.add(ResourceStock(
                 world_id=WORLD_ID, settlement_ref=slot, resource_profile_ref=kind,
@@ -113,13 +118,14 @@ def write_bootstrap_rows(session) -> dict:
                 world_id=WORLD_ID, settlement_ref=slot,
                 recipe_ref=f"RECIPE-{kind}", production_carry=0,
                 updated_blessed_tick=0))
-    node_reserve = 10_000_000_000
+    node_reserve = 10_000 * global_annual               # 充裕储量，避免"一夜挖空"假象
     for kind in S.CONSUMPTION_KINDS:
+        # 该资源在 12 聚落上的 baseline 年需求总和（served demand）
         annual_total = int(Fraction(
             sum(sum(matrix[i][j] for i in range(len(S.SPECIES)))
-                for j in range(len(S.SETTLEMENT_SLOTS)))) * per_capita)
-        extraction = int(Fraction(annual_total) * capacity_multiple
-                         / len(S.CONSUMPTION_KINDS))
+                for j in range(len(S.SETTLEMENT_SLOTS)))) * per_capita
+            * quantity_scale)                               # minor units / 福地年
+        extraction = int(Fraction(annual_total) * capacity_multiple)
         node_extraction_total += extraction
         session.add(ResourceNode(
             world_id=WORLD_ID, kind=kind, region_ref=None, state="STABLE",
@@ -191,7 +197,7 @@ def write_bootstrap_rows(session) -> dict:
 
 # ------------------------------------------------------------------ world build
 def build_world(work: pathlib.Path, *, tag: str = "world",
-                via: str = "activation") -> dict:
+                via: str = "activation", world_id: str | None = None) -> dict:
     """migrated temp DB -> ACTIVE synthetic world -> test-only bootstrap rows.
 
     via="activation"：走真实 activation service（owner §3 首选流程）。
@@ -199,6 +205,8 @@ def build_world(work: pathlib.Path, *, tag: str = "world",
                       writer-lease 在 SQLite 独立进程下会竞争失败；direct 模式只跳过
                       激活路径本身，**不改任何 production semantics**）。
     """
+    global WORLD_ID   # M6C.1D: business rows must follow the requested world identity
+    world_id = world_id or WORLD_ID   # RNG identity derives from world_id (RngService)
     work.mkdir(parents=True, exist_ok=True)
     db_path = work / f"m6c1d_{tag}.db"
     url = "sqlite:///" + str(db_path).replace("\\", "/")
@@ -213,7 +221,7 @@ def build_world(work: pathlib.Path, *, tag: str = "world",
         from XiaoguangBlessedLandRuntime.services.activation import (
             activate_formal_world)
         seed_dir = build_synthetic_seed(work, name=f"seed_{tag}")
-        request = synthetic_request(seed_dir, world_id=WORLD_ID,
+        request = synthetic_request(seed_dir, world_id=world_id,
                                     activation_anchor_us=EPOCH0_US)
         outcome = activate_formal_world(factory, request=request)
     else:
@@ -224,7 +232,7 @@ def build_world(work: pathlib.Path, *, tag: str = "world",
         from datetime import datetime, timezone
         with factory() as session:
             RuntimeRepository(session).create_not_activated(
-                world_id=WORLD_ID, world_bible_version="1.0",
+                world_id=world_id, world_bible_version="1.0",
                 simulation_version=SIMULATION_VERSION,
                 world_bible_manifest_hash="synthetic-m6c1d")
             row = session.execute(select(WorldRuntime)).scalar_one()
@@ -234,16 +242,22 @@ def build_world(work: pathlib.Path, *, tag: str = "world",
             row.last_committed_real_us = EPOCH0_US
             row.time_rate_remainder = 0
             rate = TimeRatioRepository(session).add(
-                world_id=WORLD_ID,
+                world_id=world_id,
                 real_effective_from=datetime.fromtimestamp(
                     EPOCH0_US / 1_000_000, tz=timezone.utc),
                 rate_numerator=1_000_000, rate_denominator=86_400_000_000,
                 reason="TEST", source="TEST")
             row.current_time_ratio_id = rate.ratio_id
             session.commit()
-    with factory() as session:
-        info = write_bootstrap_rows(session)
-        session.commit()
+    # business rows must carry the SAME world_id as the runtime row (FK integrity)
+    _previous_world_id = WORLD_ID
+    WORLD_ID = world_id
+    try:
+        with factory() as session:
+            info = write_bootstrap_rows(session)
+            session.commit()
+    finally:
+        WORLD_ID = _previous_world_id
     return {"url": url, "factory": factory, "engine": engine, "db_path": db_path,
             "seed_dir": seed_dir, "outcome": outcome, "info": info, "via": via}
 

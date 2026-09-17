@@ -1,0 +1,145 @@
+{
+  "packet": "M6D1_DIVERGENCE_LOCALIZATION",
+  "status": "ROOT_CAUSE_PROVEN_MINIMAL_FIX_APPLIED",
+  "created_for_milestone": "M6D.1 — FIRST DIVERGENCE LOCALIZATION",
+  "authority": "test_only_evidence_no_canon_change",
+  "redlines": {
+    "SNAPSHOT_V1": "NOT_APPROVED",
+    "MATERIALIZER_ALLOWED": false,
+    "FORMAL_ACTIVATION_ALLOWED": false,
+    "FORMAL_WORLD_RUNTIME_ROWS": 0,
+    "CURRENT_BLESSED_TICK": null,
+    "FORMAL_WORLD_STATUS": "NOT_ACTIVATED",
+    "FORMAL_WORLD_SEED_CONSUMED": false,
+    "FORMAL_DB_SHA256": "7754b1d4658ea94ce509ae7fb7c06c33c44f98782021b3708e6f29ce69102837",
+    "LEGACY_STALE_DB": "NON_AUTHORITATIVE"
+  },
+  "localization": {
+    "PYTHON_HASH_ORDER_DEPENDENCY": "CONFIRMED",
+    "FIRST_DIVERGENT_YEAR": 1,
+    "FIRST_DIVERGENT_PHASE": "DEMOGRAPHY",
+    "FIRST_DIVERGENT_STEP": 1,
+    "FIRST_DIVERGENT_ENGINE": "DEMOGRAPHY",
+    "FIRST_DIVERGENT_RNG_CALL_INDEX": 0,
+    "FIRST_DIVERGENT_RNG_STREAM": "DEMOGRAPHY@0",
+    "FIRST_DIFFERENT_ENTITY_POSITION": 0,
+    "CASE_CLASSIFICATION": "CASE_B_SAME_RNG_SEQUENCE_DIFFERENT_ENTITY",
+    "RNG_SERVICE_RULED_OUT": true,
+    "RNG_SERVICE_RULED_OUT_REASON": "derive_seed = SHA-256(world_id|simulation_version|blessed_period_tick|subsystem|entity_scope)，入参全为常量/整数；两进程流标签与每流调用序号一致",
+    "ENTITY_SET_IDENTICAL": true,
+    "ENTITY_POSITION_MISMATCH_COUNT": 40,
+    "ENTITY_TOTAL": 48,
+    "RNG_DRAWS_PER_STEP": 2928,
+    "AS_IS": {
+      "H0_entity0": ["MAIN-03", "Hairy Men"],
+      "H1_entity0": ["SAT-05", "Hairy Men"],
+      "H0_first_draw": {"stream": "DEMOGRAPHY@0", "stream_call_index": 0, "p": "0.18333333333333332", "result": false},
+      "H1_first_draw": {"stream": "DEMOGRAPHY@0", "stream_call_index": 0, "p": "0.05", "result": false},
+      "H0_Y1_state_hash": "45828221c4c1b47fc2b72d8c58ef651cb6ec80bd42bddd04d6c8394d4eb60bc8",
+      "H1_Y1_state_hash": "bcd1d42f3af8307b3934affac3bc54c32bd49357cd603ac33f72de3ecf16d272",
+      "H0_Y1_event_hash": "4989d2928381285d79799f5ef1d54d1fdf838c27e2c6a531e2ed57724f8914f6",
+      "H1_Y1_event_hash": "d2fd3cbea217040785ba99323f62602acc5bc3b35a9986cbfa7ff58242037eec"
+    },
+    "TEST_ONLY_NORMALIZED": {
+      "method": "intercept population-module sorted() for set-of-tuples only（_settlement_order 语义不动）",
+      "H0N_Y1_state_hash": "d4fc73f4421c017c44332fde946fdf74a84d608d49df8e6bb3ba7a2a6f0ee2de",
+      "H1N_Y1_state_hash": "d4fc73f4421c017c44332fde946fdf74a84d608d49df8e6bb3ba7a2a6f0ee2de",
+      "H0N_Y1_event_hash": "0e8e7ed2ec68f91ae5a731d1612b683269ba9cfb1c5654790a403c646c0467d7",
+      "H1N_Y1_event_hash": "0e8e7ed2ec68f91ae5a731d1612b683269ba9cfb1c5654790a403c646c0467d7",
+      "entity_position_mismatch_count": 0,
+      "rng_probability_sequence_identical": true,
+      "rng_result_sequence_identical": true,
+      "STATE_HASH_EQUAL": true
+    }
+  },
+  "root_cause": {
+    "file": "services/simulation/population.py",
+    "lines_pre_fix": "191-193",
+    "source_collection": "{(r[\"settlement_ref\"], r[\"species\"]) for r in rows}",
+    "why_order_matters": "group_keys 顺序 = ctx.rng（DEMOGRAPHY@<tick> 单一流）消耗顺序；顺序变化使同一随机序列落到不同 (settlement, species)，出生/死亡余数 Bernoulli 抽样错配",
+    "current_nondeterministic_behavior": "H0 vs H1：40/48 实体位置不同，STATE_HASH_EQUAL=False；进程内重复一致，跨进程不一致",
+    "canonical_sort_key": ["_settlement_order(settlement_ref)", "settlement_ref", "species"],
+    "non_total_key_pre_fix": ["_settlement_order(settlement_ref)", "species"],
+    "non_total_reason": "_settlement_order 仅对 TEST-MAIN-A 返回 0，其余一律 1 → 12 个正式聚落并列 → 稳定排序保留集合哈希顺序",
+    "changed": "only_sort_key_and_comment",
+    "not_changed": ["population equations", "mortality", "fertility", "birth_rate", "RNG algorithm", "RNG seed derivation", "world rules", "_settlement_order semantics", "migration_weights indexing semantics"],
+    "lineage_vs_all_settlements": {
+      "authoritative_enumeration": "LOCAL_FULL_COVERAGE_NODE_COUNT / EC-3（build_snapshot_candidate.py:707-712）已记录 _settlement_order 为二值下标",
+      "effect_of_fix": "12 个正式聚落现按 settlement_ref 字典序处理（MAIN-01..04 先于 SAT-01..08，同聚落内 Hairy Men/Mermen/Mushroommen/Rockmen）"
+    }
+  },
+  "other_candidates_ruled_out": [
+    {"site": "coordinator.py:475", "construct": "tuple({...} for i in range(s,e))", "ast_node": "GeneratorExp", "verdict": "NOT_A_SOURCE（生成器；元素为 dict，若为集合会 TypeError）"},
+    {"site": "coordinator.py:482", "construct": "tuple((eid, tuple(slice)) for ...)", "ast_node": "GeneratorExp", "verdict": "ORDERED"},
+    {"site": "coordinator.py:530", "construct": "snap_residual_ids = {r[\"id\"] ...}", "ast_node": "SetComp", "verdict": "MEMBERSHIP_ONLY"},
+    {"site": "coordinator.py:492/550", "construct": "eps_touched set", "verdict": "SORTED_AT_EXIT tuple(sorted(...))"},
+    {"site": "feedback.py:78,94", "construct": "zone_ids = {...}", "verdict": "MEMBERSHIP_ONLY"},
+    {"site": "social.py:157", "construct": "sorted({g[\"species\"] ...})", "verdict": "SORTED"},
+    {"site": "population.py:176-180", "construct": "sorted(rows, key=(order, species, bucket, id))", "verdict": "TOTAL_ORDER_VIA_ID（保持不动，最小修复面）"}
+  ],
+  "gates": {
+    "HASH_SEED_GATE": "PASS",
+    "HASH_SEED_GATE_VALUES": ["0", "1", "42", "default", "0-repeat"],
+    "HASH_SEED_GATE_UNTIL": 100,
+    "HASH_SEED_GATE_per_year_checked": 10,
+    "post_fix_final_state_hash": "ea4094a1105c47052c9e9edd4487afe1583d0dc2568c8f26490a634c9541c233",
+    "post_fix_final_event_stream_hash": "178e53cab6bd745aedb46f6be88bafebede60d6a6d952664acfc37e8a98aff85",
+    "post_fix_population_checkpoints": {"T0": 12000, "T50": 12009, "T100": 12160},
+    "post_fix_accounting_identity": "PASS",
+    "INTEGRATED_HASH_SEED_GATE": "PASS",
+    "INTEGRATED_HASH_SEED_VALUES": ["0", "1"],
+    "INTEGRATED_UNTIL": 100,
+    "INTEGRATED_CHECKPOINTS": ["T1", "T4", "T10", "T50", "T100"],
+    "INTEGRATED_T100_state_hash": "f5bf7322926038b77cbc67de66700dad078b5d8599113fd6d9d67e481a458038",
+    "INTEGRATED_PIPELINE_COVERAGE": ["TIME", "DEMOGRAPHY", "RESOURCE", "ECONOMY", "ECOLOGY", "SOCIAL", "TRIBULATION", "HISTORY"],
+    "POST_FIX_TRACE_LEVEL_PROOF": {
+      "production_path_no_hooks": true,
+      "H0_first_entity": ["MAIN-01", "Hairy Men"],
+      "H1_first_entity": ["MAIN-01", "Hairy Men"],
+      "FIRST_DIFFERENT_ENTITY_POSITION": null,
+      "ENTITY_POSITION_MISMATCH_COUNT": 0,
+      "FIRST_DIVERGENT_RNG_CALL_INDEX": null,
+      "RNG_PROBABILITY_SEQUENCE_IDENTICAL": true,
+      "STATE_HASH_EQUAL": true,
+      "Y1_state_hash": "d4fc73f4421c017c44332fde946fdf74a84d608d49df8e6bb3ba7a2a6f0ee2de",
+      "note": "与修复前 test-only 规范化实验 H0N/H1N 逐字节相同"
+    },
+    "SEED_ROBUSTNESS_POSTFIX": {
+      "P2_B_BIRTH_RATE": "53/1000",
+      "T100_PER_SEED": [12160, 11997, 11821, 11999, 12086],
+      "T300_PER_SEED": [12360, 12490, 12058, 12223, 12564],
+      "MIN": 12058, "MAX": 12564, "MEAN": 12339, "MEDIAN": 12360,
+      "BAND": [11400, 12600],
+      "SEEDS_IN_BAND": 5,
+      "P2_B_MULTI_SEED_ROBUSTNESS": "PASS",
+      "POPULATION_ACCOUNTING_IDENTITY": "PASS",
+      "DETERMINISTIC_RNG_REPRODUCIBILITY": "PASS",
+      "UPPER_BOUND_MARGIN": 36
+    },
+    "SEED_ROBUSTNESS_PREFIX_TWO_RUNS": {
+      "run1_T300": [12444, 12266, 11998, 11752, 12571],
+      "run2_T300": [11911, 12526, 12193, 11660, 12255],
+      "per_seed_delta": [-533, 260, 195, -92, -316],
+      "interpretation": "修复前跨进程发散（进程内重复一致）的独立佐证"
+    },
+    "FAST_REGRESSION": "RUNNING_BACKGROUND_JOB_NOT_YET_DECLARED",
+    "FAST_REGRESSION_COMMAND": "pytest tests -q --ignore=tests/test_m3_integrated_long.py",
+    "TARGETED_M2_GOLDEN": {
+      "command": "pytest tests/test_m2a_population.py tests/test_m2b_resource_economy.py tests/test_m2c_ecology.py tests/test_m2d_social.py tests/test_m2_review.py -q",
+      "exit_code": 0,
+      "tests": 230,
+      "skipped": 7,
+      "failed": 0,
+      "errors": 0,
+      "baselines_dir_modified": false
+    },
+    "GOLDEN_BASELINE_MUTATIONS": 0,
+    "GOLDEN_BASELINE_MUTATIONS_BASIS": "静态下界（全部 committed 基线来自 mini_world：TEST-MAIN-A=order0 / TEST-SATELLITE-B=order1，两值不同、永不并列 → 新增并列键结构上不可能生效）+ targeted 实测 4 处 final_world_state_hash 比对通过 + tests/baselines 无变更"
+  },
+  "not_done_this_round": [
+    "materializer", "formal activation", "formal Seed reads", "live deploy",
+    "global sorted() sweep", "M3b history integrity with real history_builder",
+    "300y integrated long run", "300y x2 integrated determinism", "restart equivalence",
+    "S-B event-level collection", "T-B casualty/effect collection"
+  ]
+}

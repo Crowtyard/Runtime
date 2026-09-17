@@ -54,6 +54,9 @@ SETTLEMENT_SLOTS = tuple(
 SPECIES = (("Hairy Men", 4_000), ("Rockmen", 3_000),
            ("Mermen", 2_500), ("Mushroommen", 2_500))
 CONSUMPTION_KINDS = ("灵田", "药园", "果园", "矿脉", "水源", "林产", "菌类点")
+#: canon 第 8 类「特殊灵性资源点（未命名）」—— 只进正式 registry，不建节点/库存/需求
+SPECIAL_KIND = "RESOURCE_SLOT_08"
+ALL_RESOURCE_KINDS = CONSUMPTION_KINDS + (SPECIAL_KIND,)
 
 
 def _load_sweep():
@@ -135,7 +138,14 @@ def economy_registry() -> dict:
 
 
 def ecology_profile() -> EcologyProfile:
+    """E-B payload; sensitivity overridable for calibration via
+    M6C1D_ECOLOGY_SENSITIVITY (test-only, e.g. "1/279")."""
+    import os
     payload = candidate("E1", "E-B")["VALUES"]
+    override = os.environ.get("M6C1D_ECOLOGY_SENSITIVITY")
+    if override:
+        payload = dict(payload)
+        payload["sensitivity"] = override
     return EcologyProfile(
         profile_id="FORMAL-ECOLOGY-001",
         recovery_rate=Fraction(payload["recovery_rate"]),
