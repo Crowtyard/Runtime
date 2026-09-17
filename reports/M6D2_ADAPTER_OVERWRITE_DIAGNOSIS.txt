@@ -1,0 +1,9 @@
+﻿adapter_change_rows 474
+adapter_keys_total 474
+ADAPTER_OVERLAPS_ENGINE_SAME_STEP 470
+ADAPTER_ONLY 4
+  ecology_state            overlap_keys=27   adapter_only_keys=2    overlap_adapter_delta=-78817 adapter_only_delta=-7080
+  population_groups        overlap_keys=8    adapter_only_keys=2    overlap_adapter_delta=-10   adapter_only_delta=-2
+  resource_nodes           overlap_keys=203  adapter_only_keys=0    overlap_adapter_delta=-5630091327675 adapter_only_delta=0
+  resource_stocks          overlap_keys=203  adapter_only_keys=0    overlap_adapter_delta=-37873380427 adapter_only_delta=0
+  settlement_social_state  overlap_keys=29   adapter_only_keys=0    overlap_adapter_delta=2043000 adapter_only_delta=0
