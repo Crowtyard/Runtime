@@ -188,9 +188,21 @@ class PopulationGroupEngine:
                     for r in staged.rows("settlements")
                     if r.get("population_capacity")}
 
+        # M6D.1 MINIMAL DETERMINISTIC ORDERING FIX（只改排序，不改任何方程）：
+        # WHY_ORDER_MATTERS：group_keys 的顺序 = ctx.rng（DEMOGRAPHY@<tick> 单一流）
+        #   被消耗的顺序；顺序变 → 同一条随机序列落到不同 (settlement, species) 上
+        #   （M6D.1 实测 case B：H0/H1 首抽即分属 MAIN-03 与 SAT-05）→ 出生/死亡
+        #   Bernoulli 结果错配 → T1 起 state/event hash 分叉。
+        # SOURCE_COLLECTION：`{... for r in rows}` 集合字面量（迭代顺序随
+        #   PYTHONHASHSEED 变化；_settlement_order 对 12 个正式聚落恒返回 1，
+        #   旧键 (order, species) 非全序 → 稳定排序保留集合的哈希顺序）。
+        # CURRENT_NONDETERMINISTIC_BEHAVIOR：H0 vs H1 = 48 个实体中 40 个位置不同，
+        #   STATE_HASH_EQUAL=False；仅规范化此一处后 H0N == H1N 逐字节相同。
+        # CANONICAL_SORT_KEY：(settlement_order, settlement_ref, species)。
         group_keys = sorted({(r["settlement_ref"], r["species"])
                              for r in rows},
-                            key=lambda k: (_settlement_order(k[0]), k[1]))
+                            key=lambda k: (_settlement_order(k[0]),
+                                           k[0] or "", k[1]))
         # M2d 社会反馈（NEXT_COMMITTED_STEP；无反馈行 → 中性 1/1）
         social_fert = {key[0]: demography_social_fertility_modifier(
             ctx.snapshot, settlement_ref=key[0]) for key in group_keys}
