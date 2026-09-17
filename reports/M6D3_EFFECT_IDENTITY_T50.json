@@ -1,0 +1,45 @@
+{
+ "EXACTLY_ONCE_VIOLATIONS": 0,
+ "MAGNITUDE_RECONCILIATION": {
+  "DEMOGRAPHY": {
+   "applied": null,
+   "recorded": null
+  },
+  "ECOLOGY": {
+   "applied": 3040,
+   "recorded": 3040
+  },
+  "ECONOMY": {
+   "applied": 25562006,
+   "recorded": 25562006
+  },
+  "RESOURCE": {
+   "applied": 159112116459,
+   "recorded": 159112116459
+  },
+  "SOCIAL": {
+   "applied": null,
+   "recorded": null
+  }
+ },
+ "SAME_STEP_COMPOSITION_BAD": 0,
+ "SAME_STEP_COMPOSITION_OK": 64,
+ "TRIBULATION_EFFECTS_APPLIED_MAGNITUDE_BY_TABLE": {
+  "ecology_state": 3040,
+  "resource_nodes": 159112116459,
+  "resource_stocks": 25562006,
+  "settlement_social_state": 228000
+ },
+ "TRIBULATION_EFFECTS_APPLIED_ROWS": 64,
+ "TRIBULATION_EFFECTS_DROPPED": 0,
+ "TRIBULATION_EFFECTS_DROPPED_SAMPLES": [],
+ "TRIBULATION_EFFECTS_RECORDED_MAGNITUDE_BY_EVENT": {
+  "ECOLOGY_IMPACT_APPLIED": 3040,
+  "ECONOMY_IMPACT_APPLIED": 25562006,
+  "RESOURCE_IMPACT_APPLIED": 159112116459
+ },
+ "TRIBULATION_EFFECTS_RECORDED_ROWS": 64,
+ "TRIBULATION_EFFECT_APPLIED_IDENTITY": "PASS",
+ "TRIBULATION_IMPACT_EVENTS": 12,
+ "db": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_short50\\m6c1d_world.db"
+}
