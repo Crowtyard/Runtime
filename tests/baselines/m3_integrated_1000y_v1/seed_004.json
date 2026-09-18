@@ -1,14 +1,14 @@
 {
  "world_id": "M3LONG-004",
  "years": 1000,
- "wall_seconds": 490.43,
- "db_size_mb": 173.215,
+ "wall_seconds": 399.41,
+ "db_size_mb": 171.254,
  "final_blessed_tick": 1000000000,
  "counts": {
-  "world_events": 14859,
+  "world_events": 14809,
   "population_groups": 80,
-  "households": 203,
-  "lineages": 18,
+  "households": 202,
+  "lineages": 13,
   "institutions": 2,
   "resource_nodes": 2,
   "resource_stocks": 6,
@@ -19,12 +19,12 @@
   "tribulation_episodes": 100,
   "tribulation_recovery_states": 99,
   "resource_succession_candidates": 99,
-  "causal_history_links": 201935,
-  "entity_history_index": 198917,
-  "history_state_changes": 118714,
+  "causal_history_links": 199380,
+  "entity_history_index": 196362,
+  "history_state_changes": 116069,
   "history_episode_index": 100,
-  "distinct_entities_with_history": 224,
-  "entity_history_index_rows": 198917
+  "distinct_entities_with_history": 222,
+  "entity_history_index_rows": 196362
  },
  "tribulation": {
   "scheduled_episodes": 100,
@@ -42,9 +42,9 @@
   "max_recovery_duration_years": 3
  },
  "hashes": {
-  "world_state_hash": "e457b4d3159af37bd5af4a2d5efe649d0a9a75c0af9211d1876a0d92621d99c8",
-  "event_stream_hash": "7a1385fa12fde5f134824e684723a36c91da92c94fbf15b102750cde9c898c2f",
-  "causal_history_hash": "169b1d879baea1ea7f72c09e115e04ba6aa1d91bac125538f06ecb07f0a56b54"
+  "world_state_hash": "9edd519173b32fcc3019a61ab4168c309d093b110857e61d6bb3df71ce3bc9e8",
+  "event_stream_hash": "3dba9ddf4f2001d46bda2b590b53807d14f72dedfe8208f88bd7ef1467661f6a",
+  "causal_history_hash": "14e25b77c6e75491fbf31e09a5111d6b0e10a3d301f8a606cc27a962cf04c2b3"
  },
  "invariant_issues": []
 }
