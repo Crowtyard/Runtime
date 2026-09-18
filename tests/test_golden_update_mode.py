@@ -19,6 +19,7 @@ from __future__ import annotations
 import ast
 import json
 import pathlib
+import re
 
 import pytest
 
@@ -237,3 +238,31 @@ def test_g_expected_helper_reads_committed_baseline_only():
                       "relation_density_audit", "growth_projection",
                       "causal_history_hash"):
         assert forbidden not in calls, forbidden
+
+
+# ------------------------------------------- M6D.3 B2 anti-drift (query service)
+HEXLIKE = re.compile(r"^[0-9a-f]{8,64}$")
+
+
+def test_h_query_service_m3_expectation_has_no_inline_hash():
+    """QUERY_SERVICE_INLINE_HASH_DUPLICATION = 0（AST 口径）。
+
+    `test_m5q46_m3_baselines_unchanged` 的期望值必须来自 committed baseline
+    artifact，且体内不得出现任何 hash 字面量/前缀（旧 `0fc6ece0…`、`c1293e59…`
+    或替代它们的新字面量都算违规）。
+    """
+    path = REPO / "tests" / "test_query_service.py"
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    fn = next(n for n in tree.body if isinstance(n, ast.FunctionDef)
+              and n.name == "test_m5q46_m3_baselines_unchanged")
+    literals = [n.value for n in ast.walk(fn)
+                if isinstance(n, ast.Constant) and isinstance(n.value, str)
+                and HEXLIKE.match(n.value)]
+    assert literals == [], "inline hash literal(s): %r" % literals
+    calls = {getattr(n.func, "id", None) or getattr(n.func, "attr", None)
+             for n in ast.walk(fn) if isinstance(n, ast.Call)}
+    # EXPECTED：baseline loader；ACTUAL：production/query path（两者独立）
+    assert "load_artifact" in calls
+    assert "_fingerprint" in calls or "get_world_snapshot" in calls
+    # 不得 regenerate/写回 baseline
+    assert "dump_artifact" not in calls

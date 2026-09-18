@@ -246,15 +246,50 @@ def test_m5q45_m2_baselines_unchanged():
     assert m["final_world_state_hash"].startswith("7cd769e0")
 
 
-def test_m5q46_m3_baselines_unchanged():
+def test_m5q46_m3_baselines_unchanged(tmp_path):
+    """M5Q46 —— query-service 报告的 M3a 300y 世界身份 == **当前 committed frozen
+    baseline**。
+
+    M6D.3 OPT-B / B2（owner 裁决）：期望值从 committed（已按授权重冻结）golden
+    artifact 读取，actual 由 query service 从本次 production run 独立产出 —— 两者
+    路径独立（非 tautology，二者不是同一个 baseline 文件）。原先把历史 hash
+    （`0fc6ece0…` / `c1293e59…`）硬编码在此处的 duplicated golden truth 已删除，
+    且**未**替换成另一个新字面量。
+
+    命名说明（owner §11，保留 nodeid 以不破坏外部 selector 契约）：
+    "unchanged" 指 query output 与 **CURRENT COMMITTED FROZEN BASELINE** 一致，
+    而不是"永远等于某个历史 hash"——经 owner 授权的合法 baseline 重冻结后 hash 会变，
+    此时本测试仍应通过（因为它跟随 committed baseline）。
+    """
     from tests.golden_baseline import load_artifact
-    m = load_artifact(REPO / "tests/baselines/"
-                      "m3a_tribulation_synthetic_300y_v1/summary.json")
-    assert m["world_state_hash_schema_version"] == 6
-    assert m["final_world_state_hash"].startswith("0fc6ece0")
+    from tests.test_m3a_tribulation import _fresh_m3a, _run as _run_m3a
+    from XiaoguangBlessedLandRuntime.services.simulation.mini_world import (
+        MINI_WORLD_ID)
+
+    # EXPECTED：committed golden artifact（single source of truth）
+    expected = load_artifact(REPO / "tests/baselines/"
+                             "m3a_tribulation_synthetic_300y_v1/summary.json")
+    assert expected["world_state_hash_schema_version"] == 6
+
+    # ACTUAL：production 独立重跑同一 M3a 世界 300y（不经由 expected baseline 读取）
+    env = _fresh_m3a(tmp_path, 46)
+    rep = _run_m3a(env, years=300)
+    assert rep.final_state_hash == expected["final_world_state_hash"]
+
+    # query service 独立确认该世界已 committed 到 300y（读 query 层的 DB 视图）
+    svc = WorldQueryService(session_factory=env["factory"], world_id=MINI_WORLD_ID)
+    fp = svc._fingerprint()
+    assert fp["tick"] == 300_000_000
+    assert fp["checkpoints"] > 0
+
+    # M3b：跨 artifact 不变量（两侧都来自 committed baseline；非查询输出）
+    # M3b 300y 的 state hash 必须与 M3a 300y 的 state hash 一致
+    # （其 causal history hash 的精确身份由 test_hb43 / test_ma20 对同一 committed
+    #    artifact 断言，本处不再复制任何 hash 字面量）
     m3b = load_artifact(REPO / "tests/baselines/"
                         "m3b_causal_history_300y_v1/summary.json")
-    assert m3b["causal_history_hash"].startswith("c1293e59")
+    assert m3b["causal_history_hash_schema"] == "causal-history-hash-v1"
+    assert m3b["world_state_hash"] == expected["final_world_state_hash"]
 
 
 def test_m5q47_m4_scheduler_golden_unchanged(tmp_path):
