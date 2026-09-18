@@ -59,6 +59,20 @@ _golden_bytes_guard = golden_bytes_guard(*[
         "entity_cardinality_audit.json", "relation_density_audit.json",
         "query_performance.json", "growth_projection.json")])
 
+
+def _expected(name: str) -> dict:
+    """M6D.3 OPT-B：EXPECTED 值来自 committed（已 refrozen）golden baseline artifact
+    —— `metric_audit.json` 及其同目录 300y 审计产物是 **single source of golden
+    truth**；测试体不再维护第二份数字副本。
+
+    严格性说明（owner §2/§3）：
+    - ACTUAL 仍由本次 production 计算独立得到（`entity_cardinality_audit(...)` 等），
+      本 helper **只读** committed baseline，绝不使用当前 run 的 artifact 当 expected；
+    - 普通验证模式不 regenerate baseline；比较仍是**精确相等**，未改成
+      range/approximate/≥/nonzero。
+    """
+    return load_artifact(BASELINE_DIR / name)
+
 # 300y 审计基准（模块级构建一次）
 HIST300: dict = {}
 
@@ -142,32 +156,41 @@ def test_ma4_incomplete_metric_semantics_explicit(hist300):
 # ---------------------------------------------------------------- MA5-MA8
 def test_ma5_entity_history_index_rows_correct(hist300):
     ec = entity_cardinality_audit(hist300["env"]["factory"], world_id=W)
+    exp = _expected("entity_cardinality_audit.json")   # OPT-B：single source
     with hist300["env"]["factory"]() as s:
         raw = len(s.execute(select(EntityHistoryIndex).where(
             EntityHistoryIndex.world_id == W)).scalars().all())
-    assert ec["entity_history_index_rows"] == raw == 64_858
+    assert ec["entity_history_index_rows"] == raw \
+        == exp["entity_history_index_rows"]
     assert ec["metric_source_table"] == "entity_history_index"
 
 
 def test_ma6_distinct_entities_with_history_correct(hist300):
     ec = entity_cardinality_audit(hist300["env"]["factory"], world_id=W)
-    assert ec["distinct_entities_with_history"] == 134
-    assert ec["distinct_domain_entities"] == 134
-    assert ec["distinct_entity_ids"] == 134
+    exp = _expected("entity_cardinality_audit.json")   # OPT-B：single source
+    assert ec["distinct_entities_with_history"] \
+        == exp["distinct_entities_with_history"]
+    assert ec["distinct_domain_entities"] == exp["distinct_domain_entities"]
+    assert ec["distinct_entity_ids"] == exp["distinct_entity_ids"]
+    # 结构不变量（与 baseline 无关）：行数 ≠ 实体数（原指标口径错误）
     assert ec["distinct_entities_with_history"] < \
-        ec["entity_history_index_rows"]  # 行数 ≠ 实体数（原指标口径错误）
+        ec["entity_history_index_rows"]
 
 
 def test_ma7_domain_entities_separated_from_index_references(hist300):
     ec = entity_cardinality_audit(hist300["env"]["factory"], world_id=W)
+    exp = _expected("entity_cardinality_audit.json")
+    exp_graph = exp["graph_node_cardinality"]          # OPT-B：single source
     for b in ec["by_entity_type"]:
         assert b["classification"] == "DOMAIN_ENTITY", b["entity_type"]
     # EVENT/STATE_CHANGE/EPISODE 等引用型节点不进 entity index
     assert ec["index_reference_only_types"] == []
     g = ec["graph_node_cardinality"]
-    assert g["distinct_event_ids_indexed"] == 2_184
-    assert g["distinct_state_change_ids_indexed"] == 37_759
-    assert g["distinct_episode_ids_indexed"] == 30
+    assert g["distinct_event_ids_indexed"] == exp_graph["distinct_event_ids_indexed"]
+    assert g["distinct_state_change_ids_indexed"] \
+        == exp_graph["distinct_state_change_ids_indexed"]
+    assert g["distinct_episode_ids_indexed"] \
+        == exp_graph["distinct_episode_ids_indexed"]
 
 
 def test_ma8_entity_type_grouping_correct(hist300):
@@ -185,11 +208,14 @@ def test_ma8_entity_type_grouping_correct(hist300):
 # ---------------------------------------------------------------- MA9-MA12
 def test_ma9_causal_link_density_metrics_correct(hist300):
     rd = relation_density_audit(hist300["env"]["factory"], world_id=W)
-    assert rd["domain_events"] == 4_479
-    assert rd["state_changes"] == 37_818
-    assert rd["causal_links"] == 65_742
-    assert abs(rd["links_per_domain_event"] - 14.6778) < 0.01
-    assert abs(rd["links_per_state_change"] - 1.7384) < 0.01
+    exp = _expected("relation_density_audit.json")     # OPT-B：single source
+    assert rd["domain_events"] == exp["domain_events"]
+    assert rd["state_changes"] == exp["state_changes"]
+    assert rd["causal_links"] == exp["causal_links"]
+    # 精确相等（比原 <0.01 容差更严格），且期望值来自 committed baseline
+    assert rd["links_per_domain_event"] == exp["links_per_domain_event"]
+    assert rd["links_per_state_change"] == exp["links_per_state_change"]
+    # 结构不变量（与 baseline 无关）
     total = sum(d["count"] for d in rd["relation_distribution"])
     assert total == rd["causal_links"]
     # 冻结词表全部 13 类都在分布中（未使用的为 0）
@@ -216,12 +242,16 @@ def test_ma11_transitive_audit_deterministic(hist300):
 
 def test_ma12_growth_projection_reproducible(hist300):
     gp = growth_projection(hist300["env"]["factory"], world_id=W)
-    assert gp["causal_links_per_100y"] == 21_914
-    assert gp["history_index_rows_per_100y"] == 21_619
-    assert gp["state_provenance_rows_per_100y"] == 12_606
-    assert gp["episode_index_rows_per_100y"] == 10
-    assert gp["estimated_1000y_causal_links"] == 219_140
-    assert gp["estimated_5000y_causal_links"] == 1_095_700
+    # OPT-B：single source = committed refrozen growth_projection.json
+    exp = _expected("growth_projection.json")["growth_projection"]
+    assert gp["causal_links_per_100y"] == exp["causal_links_per_100y"]
+    assert gp["history_index_rows_per_100y"] == exp["history_index_rows_per_100y"]
+    assert gp["state_provenance_rows_per_100y"] \
+        == exp["state_provenance_rows_per_100y"]
+    assert gp["episode_index_rows_per_100y"] == exp["episode_index_rows_per_100y"]
+    assert gp["estimated_1000y_causal_links"] == exp["estimated_1000y_causal_links"]
+    assert gp["estimated_5000y_causal_links"] == exp["estimated_5000y_causal_links"]
+    # 语义/结构断言保留（不由 baseline 提供）
     assert gp["projection_mode"] == "LINEAR_PROJECTION_ONLY"
 
 
@@ -362,8 +392,9 @@ def test_ma20_causal_history_hash_stable(hist300):
     svc = _svc(hist300)
     h1 = svc.causal_history_hash(world_id=W)["hash"]
     h2 = svc.causal_history_hash(world_id=W)["hash"]
-    assert h1 == h2 == \
-        "c1293e59d96753e2b3488746f86f176bceb84d2ef6935c9760944c8727046a44"
+    # OPT-B：EXPECTED 取自 committed refrozen metric_audit.json（single source）
+    exp = _expected("metric_audit.json")["hash"]["causal_history_hash"]
+    assert h1 == h2 == exp
 
 
 def test_ma21_row_order_independent_hash(hist300):

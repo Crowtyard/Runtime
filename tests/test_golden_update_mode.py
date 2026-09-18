@@ -164,3 +164,76 @@ def test_e_authorized_artifact_tests_dump_before_compare(rel, name):
         if "dump_artifact" in text and other.name not in rel:
             # M2 家族本轮未授权：不得出现"先 dump 后比较"的新形状
             assert "OPT-1" not in text, other.name
+
+
+# ------------------------------------------------- M6D.3 OPT-B anti-drift
+METRIC_AUDIT_TESTS = (
+    "test_ma5_entity_history_index_rows_correct",
+    "test_ma6_distinct_entities_with_history_correct",
+    "test_ma7_domain_entities_separated_from_index_references",
+    "test_ma9_causal_link_density_metrics_correct",
+    "test_ma12_growth_projection_reproducible",
+    "test_ma20_causal_history_hash_stable",
+)
+
+#: 已被 baseline artifact 覆盖、因此不得再以内联字面量出现的期望值（owner §6）
+FORBIDDEN_INLINE = {
+    64_858, 66_005, 134, 145, 2_184, 2_224, 37_759, 37_826,
+    4_479, 4_535, 37_818, 37_885, 65_742, 66_889,
+    21_914, 22_296, 21_619, 22_002, 12_606, 12_628, 219_140, 222_963,
+    1_095_700, 1_114_817,
+}
+FORBIDDEN_INLINE_STRINGS = {
+    "c1293e59d96753e2b3488746f86f176bceb84d2ef6935c9760944c8727046a44",
+    "d3b8a499257fe40cd7d3f4253438f9a99aca6e7592340a8f6cbdc4fd2ae130ba",
+}
+
+
+def test_f_metric_audit_expectations_come_from_baseline_artifact():
+    """INLINE_GOLDEN_DUPLICATION = 0（AST 口径，非文本 grep）。
+
+    6 个 metric-audit 测试的 expected 值必须来自 committed baseline artifact
+    （`_expected(...)` helper），而不是第二份内联冻结字面量。
+    """
+    path = REPO / "tests" / "test_m3b_metric_audit.py"
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    funcs = {n.name: n for n in tree.body if isinstance(n, ast.FunctionDef)}
+
+    duplicated = []
+    for name in METRIC_AUDIT_TESTS:
+        fn = funcs.get(name)
+        assert fn is not None, name
+        uses_helper = False
+        for node in ast.walk(fn):
+            if isinstance(node, ast.Call):
+                fname = getattr(node.func, "id", None) or \
+                    getattr(node.func, "attr", None)
+                if fname == "_expected":
+                    uses_helper = True
+            if isinstance(node, ast.Constant):
+                if isinstance(node.value, int) and not isinstance(node.value, bool):
+                    if node.value in FORBIDDEN_INLINE:
+                        duplicated.append((name, node.lineno, node.value))
+                if isinstance(node.value, str) \
+                        and node.value in FORBIDDEN_INLINE_STRINGS:
+                    duplicated.append((name, node.lineno, node.value[:16]))
+        assert uses_helper, "%s must read expected values via _expected(...)" % name
+    assert duplicated == [], "inline golden duplication: %r" % duplicated[:8]
+
+
+def test_g_expected_helper_reads_committed_baseline_only():
+    """`_expected` 只读 committed baseline，绝不使用当前 run 的 artifact。"""
+    path = REPO / "tests" / "test_m3b_metric_audit.py"
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    fn = next(n for n in tree.body
+              if isinstance(n, ast.FunctionDef) and n.name == "_expected")
+    calls = {getattr(n.func, "id", None) or getattr(n.func, "attr", None)
+             for n in ast.walk(fn) if isinstance(n, ast.Call)}
+    assert "load_artifact" in calls
+    assert "BASELINE_DIR" in {n.id for n in ast.walk(fn)
+                              if isinstance(n, ast.Name)}
+    # 不得出现"regenerate/写回/计算当前 artifact"的路径
+    for forbidden in ("dump_artifact", "entity_cardinality_audit",
+                      "relation_density_audit", "growth_projection",
+                      "causal_history_hash"):
+        assert forbidden not in calls, forbidden
