@@ -1,0 +1,552 @@
+{
+ "M3_INTEGRATED_CANDIDATE_FILES": [
+  "tests/baselines/m3_integrated_5000y_seed001_v1.json",
+  "tests/baselines/m3_integrated_1000y_v1/seed_001.json",
+  "tests/baselines/m3_integrated_1000y_v1/seed_002.json",
+  "tests/baselines/m3_integrated_1000y_v1/seed_003.json",
+  "tests/baselines/m3_integrated_1000y_v1/seed_004.json",
+  "tests/baselines/m3_integrated_1000y_v1/seed_005.json",
+  "tests/baselines/m3_integrated_1000y_v1/summary.json"
+ ],
+ "M3_INTEGRATED_FILES_WITH_SEMANTIC_CHANGE": [
+  "tests/baselines/m3_integrated_5000y_seed001_v1.json",
+  "tests/baselines/m3_integrated_1000y_v1/seed_001.json",
+  "tests/baselines/m3_integrated_1000y_v1/seed_002.json",
+  "tests/baselines/m3_integrated_1000y_v1/seed_003.json",
+  "tests/baselines/m3_integrated_1000y_v1/seed_004.json",
+  "tests/baselines/m3_integrated_1000y_v1/seed_005.json",
+  "tests/baselines/m3_integrated_1000y_v1/summary.json"
+ ],
+ "M3_INTEGRATED_REFREEZE_COUNT": 7,
+ "NEW_BASELINE_RUN1_EQ_RUN2_DETERMINISTIC": "PASS",
+ "capture_dir": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_m3c_inventory",
+ "files": {
+  "endurance_5000y_seed001.json": {
+   "CANDIDATE_PRESENT_RUN1": true,
+   "CANDIDATE_PRESENT_RUN2": true,
+   "CHANGED_VS_OLD": true,
+   "CHANGE_CAUSED_BY_TRIBULATION_EFFECT_FIX": true,
+   "DETERMINISTIC_FIELDS_CHANGED": [
+    {
+     "change": "940440 -> 954359",
+     "path": "$.counts.causal_history_links"
+    },
+    {
+     "change": "537 -> 525",
+     "path": "$.counts.distinct_entities_with_history"
+    },
+    {
+     "change": "925224 -> 939145",
+     "path": "$.counts.entity_history_index"
+    },
+    {
+     "change": "925224 -> 939145",
+     "path": "$.counts.entity_history_index_rows"
+    },
+    {
+     "change": "561569 -> 560810",
+     "path": "$.counts.history_state_changes"
+    },
+    {
+     "change": "492 -> 479",
+     "path": "$.counts.households"
+    },
+    {
+     "change": "40 -> 37",
+     "path": "$.counts.lineages"
+    },
+    {
+     "change": "70312 -> 71280",
+     "path": "$.counts.world_events"
+    },
+    {
+     "change": "'1cdeaccc70286404ae61eb0aea7ad7e690c0b14660d3d8e0d2651864f74e416a' -> '1f5ac92b93a461abb2a7cc0e1f43d41c9aaf74d7816e775ba504cfd07c011a94'",
+     "path": "$.hashes.causal_history_hash"
+    },
+    {
+     "change": "'69264b4d05a7bdee278c5e19ecfc138270186e65fbbe4cd4c3b8c09195b9b7d1' -> '8810e54574e57e9721483a38dcf56fcef4984cd1886bc2a7c8f52829cd40e9c1'",
+     "path": "$.hashes.event_stream_hash"
+    },
+    {
+     "change": "'dd52b737f3293dd2faab8667a6a2d5b8c67d43e41cd93e139cdcf0b443739a7c' -> 'd0d15262f2c21d2c8ea642779f28371548345e00a191958477882ffd37eeba6a'",
+     "path": "$.hashes.world_state_hash"
+    }
+   ],
+   "DETERMINISTIC_FIELD_CHANGE_COUNT": 11,
+   "FILE": "tests/baselines/m3_integrated_5000y_seed001_v1.json",
+   "NEW_CANDIDATE_SHA256": "c1aa835964ee685d190ea2af467f52e53ad5d90639826c11cf42699064201520",
+   "OLD_SHA256": "17dcc6b70dadbb35cd280fc3e39f75e7a35e2a6364498981315802496919b77e",
+   "ROLE": "M3_INTEGRATED_5000Y_ENDURANCE_RECORD",
+   "RUN1_EQ_RUN2_BYTE": false,
+   "RUN1_EQ_RUN2_DETERMINISTIC": true,
+   "RUN2_SHA256": "2823b20690efbd64afea75adacd718a602e01ee41253407a824fecf09fd7bedb",
+   "STATUS": "OK",
+   "TELEMETRY_FIELDS_CHANGED": [
+    "$.db_size_mb",
+    "$.wall_seconds"
+   ]
+  },
+  "seed_001.json": {
+   "CANDIDATE_PRESENT_RUN1": true,
+   "CANDIDATE_PRESENT_RUN2": true,
+   "CHANGED_VS_OLD": true,
+   "CHANGE_CAUSED_BY_TRIBULATION_EFFECT_FIX": true,
+   "DETERMINISTIC_FIELDS_CHANGED": [
+    {
+     "change": "201619 -> 199707",
+     "path": "$.counts.causal_history_links"
+    },
+    {
+     "change": "219 -> 218",
+     "path": "$.counts.distinct_entities_with_history"
+    },
+    {
+     "change": "198601 -> 196691",
+     "path": "$.counts.entity_history_index"
+    },
+    {
+     "change": "198601 -> 196691",
+     "path": "$.counts.entity_history_index_rows"
+    },
+    {
+     "change": "118534 -> 116022",
+     "path": "$.counts.history_state_changes"
+    },
+    {
+     "change": "203 -> 194",
+     "path": "$.counts.households"
+    },
+    {
+     "change": "14 -> 11",
+     "path": "$.counts.lineages"
+    },
+    {
+     "change": "14857 -> 14810",
+     "path": "$.counts.world_events"
+    },
+    {
+     "change": "'0fd9e788010e9d438dbe4816bd08da8dc390a7d2ed82a9e689edcb04ebd07382' -> '9ac14d746d4e4ce274aa0535b47054f9f1fdf154f8ef327c5a690dcb40f2cd29'",
+     "path": "$.hashes.causal_history_hash"
+    },
+    {
+     "change": "'aeb983a9615cb369376b4b93eeb7dc10e91f8ae882484716eb0a997d67c896d8' -> 'f8e8d07dc9729ed137ff80121bf22101d38588d20b8a5546c4bbc37ad61ce6ca'",
+     "path": "$.hashes.event_stream_hash"
+    },
+    {
+     "change": "'8aeff88587b8f2cf43b377efad8c957e06b9c1adf0fa4df8c5363c9638942b1f' -> '8a7d2f2370689b32dd5250de71eed8b770a3a94c203ee2afdd4754c644ae6e21'",
+     "path": "$.hashes.world_state_hash"
+    }
+   ],
+   "DETERMINISTIC_FIELD_CHANGE_COUNT": 11,
+   "FILE": "tests/baselines/m3_integrated_1000y_v1/seed_001.json",
+   "NEW_CANDIDATE_SHA256": "ac469935ee5cb2cfbe9f51bd6a96d8998645a1ea3d6fd1bcf64a460159402037",
+   "OLD_SHA256": "941b3ff1473a48f26bca52f1bcd5b8ebb1d9de03df32a4824bb131892ffaf2ae",
+   "ROLE": "M3_INTEGRATED_1000Y_SEED_RECORD",
+   "RUN1_EQ_RUN2_BYTE": false,
+   "RUN1_EQ_RUN2_DETERMINISTIC": true,
+   "RUN2_SHA256": "dcf6cf0fa88fb34d917183c664e870de2189afad3db878c307a2f86485ad1f84",
+   "STATUS": "OK",
+   "TELEMETRY_FIELDS_CHANGED": [
+    "$.db_size_mb",
+    "$.wall_seconds"
+   ]
+  },
+  "seed_002.json": {
+   "CANDIDATE_PRESENT_RUN1": true,
+   "CANDIDATE_PRESENT_RUN2": true,
+   "CHANGED_VS_OLD": true,
+   "CHANGE_CAUSED_BY_TRIBULATION_EFFECT_FIX": true,
+   "DETERMINISTIC_FIELDS_CHANGED": [
+    {
+     "change": "202830 -> 201175",
+     "path": "$.counts.causal_history_links"
+    },
+    {
+     "change": "210 -> 206",
+     "path": "$.counts.distinct_entities_with_history"
+    },
+    {
+     "change": "199812 -> 198159",
+     "path": "$.counts.entity_history_index"
+    },
+    {
+     "change": "199812 -> 198159",
+     "path": "$.counts.entity_history_index_rows"
+    },
+    {
+     "change": "119222 -> 116735",
+     "path": "$.counts.history_state_changes"
+    },
+    {
+     "change": "199 -> 194",
+     "path": "$.counts.households"
+    },
+    {
+     "change": "16 -> 11",
+     "path": "$.counts.lineages"
+    },
+    {
+     "change": "14839 -> 14802",
+     "path": "$.counts.world_events"
+    },
+    {
+     "change": "'79d0878abeed36b0562b590dff3971cb28ddcb67e56455d64b7d191d225fda5d' -> '62e887087d8dc20d2d466bf09a10a52a67474906a336a7dc08d66e607512fcb7'",
+     "path": "$.hashes.causal_history_hash"
+    },
+    {
+     "change": "'b5225af019aa7167185f56e73ac5c5571c91c94549c1bec81d64d2583b20f90e' -> 'df25a08ec710cff783fe354bd21d71a1bc5e97b56f020228f798dd1b2ae5ad63'",
+     "path": "$.hashes.event_stream_hash"
+    },
+    {
+     "change": "'08f6d6304bf87dde479d8f721a512a14d02782db074954e50e773478e98d6cc0' -> '8a85f6789ac9098589ca8346283cfcccba3ff25da94660a6f557017f92fc10ae'",
+     "path": "$.hashes.world_state_hash"
+    }
+   ],
+   "DETERMINISTIC_FIELD_CHANGE_COUNT": 11,
+   "FILE": "tests/baselines/m3_integrated_1000y_v1/seed_002.json",
+   "NEW_CANDIDATE_SHA256": "932b40728d19e177e9c49c6d0d336eb87c45a142dfadb7c00bd16339e1647d0a",
+   "OLD_SHA256": "1bcc8d2c239cfff7769d5b0b907ee249e768fb0a8dcb223769471c746efcec51",
+   "ROLE": "M3_INTEGRATED_1000Y_SEED_RECORD",
+   "RUN1_EQ_RUN2_BYTE": false,
+   "RUN1_EQ_RUN2_DETERMINISTIC": true,
+   "RUN2_SHA256": "afd438e0be735e9e17fa9a50947c3cf8107772512bd92b7647bd317e765cc95f",
+   "STATUS": "OK",
+   "TELEMETRY_FIELDS_CHANGED": [
+    "$.db_size_mb",
+    "$.wall_seconds"
+   ]
+  },
+  "seed_003.json": {
+   "CANDIDATE_PRESENT_RUN1": true,
+   "CANDIDATE_PRESENT_RUN2": true,
+   "CHANGED_VS_OLD": true,
+   "CHANGE_CAUSED_BY_TRIBULATION_EFFECT_FIX": true,
+   "DETERMINISTIC_FIELDS_CHANGED": [
+    {
+     "change": "202375 -> 201074",
+     "path": "$.counts.causal_history_links"
+    },
+    {
+     "change": "215 -> 227",
+     "path": "$.counts.distinct_entities_with_history"
+    },
+    {
+     "change": "199357 -> 198058",
+     "path": "$.counts.entity_history_index"
+    },
+    {
+     "change": "199357 -> 198058",
+     "path": "$.counts.entity_history_index_rows"
+    },
+    {
+     "change": "119018 -> 116828",
+     "path": "$.counts.history_state_changes"
+    },
+    {
+     "change": "202 -> 201",
+     "path": "$.counts.households"
+    },
+    {
+     "change": "14 -> 15",
+     "path": "$.counts.lineages"
+    },
+    {
+     "change": "14848 -> 14813",
+     "path": "$.counts.world_events"
+    },
+    {
+     "change": "'a20b5b922d3a2adea026a9da70acbc9ff32cc4953fa8e4992a31e552d89c31c7' -> '92fbf7a3e67af6ab2b5817216883bf98ebd6174304532282f074380ef182f55a'",
+     "path": "$.hashes.causal_history_hash"
+    },
+    {
+     "change": "'04239b4ca0b2bbf74f6c249525d64b0c8d37fca780213e2b3c13c3946008d850' -> '8a6b7616f657732bb63dc65b4881d43059a9cdc224123610f5f4b1c83e724ec4'",
+     "path": "$.hashes.event_stream_hash"
+    },
+    {
+     "change": "'78494d60aa1c57857385a1aed093d871e37cc46817f1de22aad0032d7201b2fa' -> '856bc31ad007be7eb4d39fc0bc798f00198f32042269568da8df404e923bf7ec'",
+     "path": "$.hashes.world_state_hash"
+    }
+   ],
+   "DETERMINISTIC_FIELD_CHANGE_COUNT": 11,
+   "FILE": "tests/baselines/m3_integrated_1000y_v1/seed_003.json",
+   "NEW_CANDIDATE_SHA256": "7bf910bc47c358d01864da085c3f8503988cfd37407b9848a9bfd3b356ece209",
+   "OLD_SHA256": "885014adc36d55f21d44b4ac47bcf0c0bbff8e95afdab6ea833d6694d481979c",
+   "ROLE": "M3_INTEGRATED_1000Y_SEED_RECORD",
+   "RUN1_EQ_RUN2_BYTE": false,
+   "RUN1_EQ_RUN2_DETERMINISTIC": true,
+   "RUN2_SHA256": "88b0302cf002bc98b338d791f58582381ce6b91900d47e6b53b2c8daa8d0700c",
+   "STATUS": "OK",
+   "TELEMETRY_FIELDS_CHANGED": [
+    "$.db_size_mb",
+    "$.wall_seconds"
+   ]
+  },
+  "seed_004.json": {
+   "CANDIDATE_PRESENT_RUN1": true,
+   "CANDIDATE_PRESENT_RUN2": true,
+   "CHANGED_VS_OLD": true,
+   "CHANGE_CAUSED_BY_TRIBULATION_EFFECT_FIX": true,
+   "DETERMINISTIC_FIELDS_CHANGED": [
+    {
+     "change": "201935 -> 199380",
+     "path": "$.counts.causal_history_links"
+    },
+    {
+     "change": "224 -> 222",
+     "path": "$.counts.distinct_entities_with_history"
+    },
+    {
+     "change": "198917 -> 196362",
+     "path": "$.counts.entity_history_index"
+    },
+    {
+     "change": "198917 -> 196362",
+     "path": "$.counts.entity_history_index_rows"
+    },
+    {
+     "change": "118714 -> 116069",
+     "path": "$.counts.history_state_changes"
+    },
+    {
+     "change": "203 -> 202",
+     "path": "$.counts.households"
+    },
+    {
+     "change": "18 -> 13",
+     "path": "$.counts.lineages"
+    },
+    {
+     "change": "14859 -> 14809",
+     "path": "$.counts.world_events"
+    },
+    {
+     "change": "'169b1d879baea1ea7f72c09e115e04ba6aa1d91bac125538f06ecb07f0a56b54' -> '14e25b77c6e75491fbf31e09a5111d6b0e10a3d301f8a606cc27a962cf04c2b3'",
+     "path": "$.hashes.causal_history_hash"
+    },
+    {
+     "change": "'7a1385fa12fde5f134824e684723a36c91da92c94fbf15b102750cde9c898c2f' -> '3dba9ddf4f2001d46bda2b590b53807d14f72dedfe8208f88bd7ef1467661f6a'",
+     "path": "$.hashes.event_stream_hash"
+    },
+    {
+     "change": "'e457b4d3159af37bd5af4a2d5efe649d0a9a75c0af9211d1876a0d92621d99c8' -> '9edd519173b32fcc3019a61ab4168c309d093b110857e61d6bb3df71ce3bc9e8'",
+     "path": "$.hashes.world_state_hash"
+    }
+   ],
+   "DETERMINISTIC_FIELD_CHANGE_COUNT": 11,
+   "FILE": "tests/baselines/m3_integrated_1000y_v1/seed_004.json",
+   "NEW_CANDIDATE_SHA256": "e60dff9f7e05b03d2ab0bf6bad5ad2318b854af238de2f63c5b9d32abaf63f89",
+   "OLD_SHA256": "df92f36f037ecb81fde4e92facfdc41351e45bf3f553994c851b7432410fc832",
+   "ROLE": "M3_INTEGRATED_1000Y_SEED_RECORD",
+   "RUN1_EQ_RUN2_BYTE": false,
+   "RUN1_EQ_RUN2_DETERMINISTIC": true,
+   "RUN2_SHA256": "dc913df332d858582deeb715144abec935a68e1d61d88a3e9ab620db7a15c72a",
+   "STATUS": "OK",
+   "TELEMETRY_FIELDS_CHANGED": [
+    "$.db_size_mb",
+    "$.wall_seconds"
+   ]
+  },
+  "seed_005.json": {
+   "CANDIDATE_PRESENT_RUN1": true,
+   "CANDIDATE_PRESENT_RUN2": true,
+   "CHANGED_VS_OLD": true,
+   "CHANGE_CAUSED_BY_TRIBULATION_EFFECT_FIX": true,
+   "DETERMINISTIC_FIELDS_CHANGED": [
+    {
+     "change": "202753 -> 201434",
+     "path": "$.counts.causal_history_links"
+    },
+    {
+     "change": "239 -> 229",
+     "path": "$.counts.distinct_entities_with_history"
+    },
+    {
+     "change": "199733 -> 198415",
+     "path": "$.counts.entity_history_index"
+    },
+    {
+     "change": "199733 -> 198415",
+     "path": "$.counts.entity_history_index_rows"
+    },
+    {
+     "change": "118908 -> 117091",
+     "path": "$.counts.history_state_changes"
+    },
+    {
+     "change": "205 -> 197",
+     "path": "$.counts.households"
+    },
+    {
+     "change": "20 -> 15",
+     "path": "$.counts.lineages"
+    },
+    {
+     "change": "14879 -> 14802",
+     "path": "$.counts.world_events"
+    },
+    {
+     "change": "'daec8e2d10eb8311d3d86f65199d1fd01029c77765c746785d095eadb84e34a5' -> '57a07a5a8507c29e3668dda9ad6daeb5bea697c35bafb301eda22aca0a1e7485'",
+     "path": "$.hashes.causal_history_hash"
+    },
+    {
+     "change": "'81a82f2da187ba523dc60a744d9d74e2cd928ddafb7a2aae477aa0cd45351484' -> '51ef4e38360e439521d3bb379cd81a92c3ff6c75a6f19281ae8128a558b7c323'",
+     "path": "$.hashes.event_stream_hash"
+    },
+    {
+     "change": "'eaed750f28ce3d0e8f8a8f68e576d50f8adda4913cbbdcc5e5bfd361eb2deaf0' -> '0c223594295f4a8d0dc403f87e259a7ff345331de6f2a0f5961c539119f5f1f7'",
+     "path": "$.hashes.world_state_hash"
+    }
+   ],
+   "DETERMINISTIC_FIELD_CHANGE_COUNT": 11,
+   "FILE": "tests/baselines/m3_integrated_1000y_v1/seed_005.json",
+   "NEW_CANDIDATE_SHA256": "5aba7007363dd804a33f56db0820ac8acdf8906e08c99f0e8d561d93917692c7",
+   "OLD_SHA256": "3f3a6a7719d5a9353ae01e21d09c7f5be181cdbda8bd7d982e884b1975e70654",
+   "ROLE": "M3_INTEGRATED_1000Y_SEED_RECORD",
+   "RUN1_EQ_RUN2_BYTE": false,
+   "RUN1_EQ_RUN2_DETERMINISTIC": true,
+   "RUN2_SHA256": "9dd93318d19c7a7da690d0ae640dbb7d3a2adb8b5bbfac24423ba42da0d6deba",
+   "STATUS": "OK",
+   "TELEMETRY_FIELDS_CHANGED": [
+    "$.db_size_mb",
+    "$.wall_seconds"
+   ]
+  },
+  "summary.json": {
+   "CANDIDATE_PRESENT_RUN1": true,
+   "CANDIDATE_PRESENT_RUN2": true,
+   "CHANGED_VS_OLD": true,
+   "CHANGE_CAUSED_BY_TRIBULATION_EFFECT_FIX": true,
+   "DETERMINISTIC_FIELDS_CHANGED": [
+    {
+     "change": "201619 -> 199707",
+     "path": "$.seeds.M3LONG-001.counts.causal_history_links"
+    },
+    {
+     "change": "219 -> 218",
+     "path": "$.seeds.M3LONG-001.counts.distinct_entities_with_history"
+    },
+    {
+     "change": "198601 -> 196691",
+     "path": "$.seeds.M3LONG-001.counts.entity_history_index"
+    },
+    {
+     "change": "198601 -> 196691",
+     "path": "$.seeds.M3LONG-001.counts.entity_history_index_rows"
+    },
+    {
+     "change": "118534 -> 116022",
+     "path": "$.seeds.M3LONG-001.counts.history_state_changes"
+    },
+    {
+     "change": "203 -> 194",
+     "path": "$.seeds.M3LONG-001.counts.households"
+    },
+    {
+     "change": "14 -> 11",
+     "path": "$.seeds.M3LONG-001.counts.lineages"
+    },
+    {
+     "change": "14857 -> 14810",
+     "path": "$.seeds.M3LONG-001.counts.world_events"
+    },
+    {
+     "change": "'0fd9e788010e9d438dbe4816bd08da8dc390a7d2ed82a9e689edcb04ebd07382' -> '9ac14d746d4e4ce274aa0535b47054f9f1fdf154f8ef327c5a690dcb40f2cd29'",
+     "path": "$.seeds.M3LONG-001.hashes.causal_history_hash"
+    },
+    {
+     "change": "'aeb983a9615cb369376b4b93eeb7dc10e91f8ae882484716eb0a997d67c896d8' -> 'f8e8d07dc9729ed137ff80121bf22101d38588d20b8a5546c4bbc37ad61ce6ca'",
+     "path": "$.seeds.M3LONG-001.hashes.event_stream_hash"
+    },
+    {
+     "change": "'8aeff88587b8f2cf43b377efad8c957e06b9c1adf0fa4df8c5363c9638942b1f' -> '8a7d2f2370689b32dd5250de71eed8b770a3a94c203ee2afdd4754c644ae6e21'",
+     "path": "$.seeds.M3LONG-001.hashes.world_state_hash"
+    },
+    {
+     "change": "202830 -> 201175",
+     "path": "$.seeds.M3LONG-002.counts.causal_history_links"
+    },
+    {
+     "change": "210 -> 206",
+     "path": "$.seeds.M3LONG-002.counts.distinct_entities_with_history"
+    },
+    {
+     "change": "199812 -> 198159",
+     "path": "$.seeds.M3LONG-002.counts.entity_history_index"
+    },
+    {
+     "change": "199812 -> 198159",
+     "path": "$.seeds.M3LONG-002.counts.entity_history_index_rows"
+    },
+    {
+     "change": "119222 -> 116735",
+     "path": "$.seeds.M3LONG-002.counts.history_state_changes"
+    },
+    {
+     "change": "199 -> 194",
+     "path": "$.seeds.M3LONG-002.counts.households"
+    },
+    {
+     "change": "16 -> 11",
+     "path": "$.seeds.M3LONG-002.counts.lineages"
+    },
+    {
+     "change": "14839 -> 14802",
+     "path": "$.seeds.M3LONG-002.counts.world_events"
+    },
+    {
+     "change": "'79d0878abeed36b0562b590dff3971cb28ddcb67e56455d64b7d191d225fda5d' -> '62e887087d8dc20d2d466bf09a10a52a67474906a336a7dc08d66e607512fcb7'",
+     "path": "$.seeds.M3LONG-002.hashes.causal_history_hash"
+    },
+    {
+     "change": "'b5225af019aa7167185f56e73ac5c5571c91c94549c1bec81d64d2583b20f90e' -> 'df25a08ec710cff783fe354bd21d71a1bc5e97b56f020228f798dd1b2ae5ad63'",
+     "path": "$.seeds.M3LONG-002.hashes.event_stream_hash"
+    },
+    {
+     "change": "'08f6d6304bf87dde479d8f721a512a14d02782db074954e50e773478e98d6cc0' -> '8a85f6789ac9098589ca8346283cfcccba3ff25da94660a6f557017f92fc10ae'",
+     "path": "$.seeds.M3LONG-002.hashes.world_state_hash"
+    },
+    {
+     "change": "202375 -> 201074",
+     "path": "$.seeds.M3LONG-003.counts.causal_history_links"
+    },
+    {
+     "change": "215 -> 227",
+     "path": "$.seeds.M3LONG-003.counts.distinct_entities_with_history"
+    }
+   ],
+   "DETERMINISTIC_FIELD_CHANGE_COUNT": 55,
+   "FILE": "tests/baselines/m3_integrated_1000y_v1/summary.json",
+   "NEW_CANDIDATE_SHA256": "4b120af2011c13e09145195712a95a159f279612e05f4f9a3204ece37c28f866",
+   "OLD_SHA256": "f2f59375ecec09a1c44d8f8f9f6cc43a1fabc91228785dfb24114bd5637a7b85",
+   "ROLE": "M3_INTEGRATED_1000Y_SUMMARY",
+   "RUN1_EQ_RUN2_BYTE": false,
+   "RUN1_EQ_RUN2_DETERMINISTIC": true,
+   "RUN2_SHA256": "3f35b9a26335551effa69b990eaea581ebaacdf21bdac24c272e4d9c3c98f000",
+   "STATUS": "OK",
+   "TELEMETRY_FIELDS_CHANGED": [
+    "$.db_growth.per_100y.M3LONG-001",
+    "$.db_growth.per_100y.M3LONG-002",
+    "$.db_growth.per_100y.M3LONG-003",
+    "$.db_growth.per_100y.M3LONG-004",
+    "$.db_growth.per_100y.M3LONG-005",
+    "$.db_growth.size_mb_1000y.M3LONG-001",
+    "$.db_growth.size_mb_1000y.M3LONG-002",
+    "$.db_growth.size_mb_1000y.M3LONG-003",
+    "$.db_growth.size_mb_1000y.M3LONG-004",
+    "$.db_growth.size_mb_1000y.M3LONG-005",
+    "$.query_performance_1000y",
+    "$.seeds.M3LONG-001.db_size_mb"
+   ]
+  }
+ },
+ "packet": "M6D3_M3_INTEGRATED_CANDIDATE_INVENTORY",
+ "telemetry_keys_ignored": [
+  "db_growth",
+  "db_size_mb",
+  "performance",
+  "query_latency_ms",
+  "query_performance_1000y",
+  "wall_seconds",
+  "wall_seconds_queries"
+ ]
+}
