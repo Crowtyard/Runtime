@@ -1,0 +1,962 @@
+{
+ "assertion": "golden baseline deterministic mismatch: m3b_causal_history_300y_v1/timeline_samples.json",
+ "candidate": [
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "elapsed_real_us": 86400000000,
+    "real_interval_end_us": 1793059200000000,
+    "real_interval_start_us": 1792972800000000
+   },
+   "effect": {
+    "delta_ticks": 1000000,
+    "rate_id": 1,
+    "remainder": 0,
+    "simulation_version": "0.3.0-m3a"
+   },
+   "event_type": "TIME_ADVANCE",
+   "event_uid": "fa0f2f38dafaae1b4b44a01901a6873b",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "count": 6,
+    "from": 311
+   },
+   "event_type": "POPULATION_BIRTHS",
+   "event_uid": "8c696480900d4e401da190257ba65165",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "count": 5,
+    "from": 311
+   },
+   "event_type": "POPULATION_DEATHS",
+   "event_uid": "486bd0d5bb61ab0a1b3accee43d63d3b",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "emigrated": 3,
+    "from": 311,
+    "immigrated": 3
+   },
+   "event_type": "POPULATION_MIGRATION",
+   "event_uid": "b35074a219dd9b1cbf88fcaad7042b7b",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "count": 2,
+    "from": 139
+   },
+   "event_type": "POPULATION_BIRTHS",
+   "event_uid": "505d30944fea529d7092a74086cc9edb",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "count": 3,
+    "from": 139
+   },
+   "event_type": "POPULATION_DEATHS",
+   "event_uid": "d082c89ff82b3b2b5825f06c6db013de",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "emigrated": 2,
+    "from": 139,
+    "immigrated": 2
+   },
+   "event_type": "POPULATION_MIGRATION",
+   "event_uid": "962a9cb3e06994d8e63bad37e26a1dd3",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "node_kind": "TEST-ORE-001",
+    "profile_ref": "TEST-RESOURCE-001",
+    "settlement_relation": "TEST-MAIN-A"
+   },
+   "effect": {
+    "efficiency_den": 100,
+    "efficiency_num": 95,
+    "quantity_minor": 886844475,
+    "reserve_after_minor": 13541929257
+   },
+   "event_type": "RESOURCE_EXTRACTED",
+   "event_uid": "59497c50941c7bd0402cf7aef199b637",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "node_kind": "TEST-TIMBER-001",
+    "profile_ref": "TEST-RESOURCE-003",
+    "settlement_relation": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "efficiency_den": 100,
+    "efficiency_num": 95,
+    "quantity_minor": 117106440,
+    "reserve_after_minor": 118838280
+   },
+   "event_type": "RESOURCE_EXTRACTED",
+   "event_uid": "e22313285ce7819cba520af0f01acd06",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "recipe_id": "TEST-RECIPE-ORE-FOOD-001",
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "batches": 360,
+    "input_minor": 720000000,
+    "loss_minor": 3600000,
+    "output_minor": 356400000
+   },
+   "event_type": "PRODUCTION_COMPLETED",
+   "event_uid": "50f357ced5ce3420ceca6b6663dacbb5",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "demand_minor": 364000000,
+    "fulfilled_minor": 356400000,
+    "unmet_minor": 7600000
+   },
+   "event_type": "CONSUMPTION_FULFILLED",
+   "event_uid": "27561741d70b7930357f8f49aaaf0a95",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "demand_minor": 364000000,
+    "shortage_ratio_den": 910,
+    "shortage_ratio_num": 19,
+    "sustained_steps": 7,
+    "unmet_minor": 7600000
+   },
+   "event_type": "RESOURCE_SHORTAGE",
+   "event_uid": "9b5f135e1ac471bf7126636bc4ae70b4",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "demand_minor": 161000004,
+    "fulfilled_minor": 0,
+    "unmet_minor": 161000004
+   },
+   "event_type": "CONSUMPTION_FULFILLED",
+   "event_uid": "47223b358d57c5cfa7abc527f7c258f7",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "demand_minor": 161000004,
+    "shortage_ratio_den": 1,
+    "shortage_ratio_num": 1,
+    "sustained_steps": 299,
+    "unmet_minor": 161000004
+   },
+   "event_type": "RESOURCE_SHORTAGE",
+   "event_uid": "42fbc3fe5bbb6a2b5b27fd978d923bda",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "episode_id": "2c5eb32a4508fb6cdc453949a52f8113"
+   },
+   "effect": {
+    "progress": 100
+   },
+   "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+   "event_uid": "c79f73940a2c60f353c5d2158c2adc3f",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "elapsed_real_us": 86400000000,
+    "real_interval_end_us": 1793145600000000,
+    "real_interval_start_us": 1793059200000000
+   },
+   "effect": {
+    "delta_ticks": 1000000,
+    "rate_id": 1,
+    "remainder": 0,
+    "simulation_version": "0.3.0-m3a"
+   },
+   "event_type": "TIME_ADVANCE",
+   "event_uid": "065827931c026cd9b55122d2fba294e5",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "count": 5,
+    "from": 312
+   },
+   "event_type": "POPULATION_BIRTHS",
+   "event_uid": "d8282dde676edb78996437f47a63c9b8",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "count": 4,
+    "from": 312
+   },
+   "event_type": "POPULATION_DEATHS",
+   "event_uid": "c89f96afb5ba0b91e9000f59314c8aa3",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "emigrated": 4,
+    "from": 312,
+    "immigrated": 3
+   },
+   "event_type": "POPULATION_MIGRATION",
+   "event_uid": "205e2665928e860894d6787337d85f83",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "count": 1,
+    "from": 138
+   },
+   "event_type": "POPULATION_BIRTHS",
+   "event_uid": "1b812cea2a5615b6360a3744f2ae2d15",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "count": 1,
+    "from": 138
+   },
+   "event_type": "POPULATION_DEATHS",
+   "event_uid": "c42f1cd34adfb9afd53ffb808bb16d45",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "emigrated": 2,
+    "from": 138,
+    "immigrated": 3
+   },
+   "event_type": "POPULATION_MIGRATION",
+   "event_uid": "07e58d16e6d6baf5d31de8ebf0d3ab5b",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "node_kind": "TEST-ORE-001",
+    "profile_ref": "TEST-RESOURCE-001",
+    "settlement_relation": "TEST-MAIN-A"
+   },
+   "effect": {
+    "efficiency_den": 100,
+    "efficiency_num": 85,
+    "quantity_minor": 795152220,
+    "reserve_after_minor": 12746777037
+   },
+   "event_type": "RESOURCE_EXTRACTED",
+   "event_uid": "a31136c022b94b805e6a8c4d2289aefc",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "node_kind": "TEST-TIMBER-001",
+    "profile_ref": "TEST-RESOURCE-003",
+    "settlement_relation": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "efficiency_den": 100,
+    "efficiency_num": 85,
+    "quantity_minor": 118838280,
+    "reserve_after_minor": 120509180
+   },
+   "event_type": "RESOURCE_EXTRACTED",
+   "event_uid": "43708504dc3cc8e0c3b92c05c3b74fed",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "recipe_id": "TEST-RECIPE-ORE-FOOD-001",
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "batches": 360,
+    "input_minor": 720000000,
+    "loss_minor": 3600000,
+    "output_minor": 356400000
+   },
+   "event_type": "PRODUCTION_COMPLETED",
+   "event_uid": "0833793dbc3b758ffd161b4f9b49bff8",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "demand_minor": 364000000,
+    "fulfilled_minor": 356400000,
+    "unmet_minor": 7600000
+   },
+   "event_type": "CONSUMPTION_FULFILLED",
+   "event_uid": "071dc0861abcdf898d820bd96c9c086b",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "demand_minor": 364000000,
+    "shortage_ratio_den": 910,
+    "shortage_ratio_num": 19,
+    "sustained_steps": 8,
+    "unmet_minor": 7600000
+   },
+   "event_type": "RESOURCE_SHORTAGE",
+   "event_uid": "9f3f019d01bc2a6dbbe5fc6d17529ae8",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "demand_minor": 162166666,
+    "fulfilled_minor": 0,
+    "unmet_minor": 162166666
+   },
+   "event_type": "CONSUMPTION_FULFILLED",
+   "event_uid": "64fbe77dd8f28fac9eb61b40254282aa",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "demand_minor": 162166666,
+    "shortage_ratio_den": 1,
+    "shortage_ratio_num": 1,
+    "sustained_steps": 300,
+    "unmet_minor": 162166666
+   },
+   "event_type": "RESOURCE_SHORTAGE",
+   "event_uid": "818f53f935a2ea126a9e2d1916f7a016",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "schedule_id": "TEST_TRIBULATION_SCHEDULE_001",
+    "tier": "CENTENNIAL"
+   },
+   "effect": {
+    "episode_id": "dc35b55df55bc4c7d159bdc6aee72428",
+    "scheduled_tick": 300000000
+   },
+   "event_type": "TRIBULATION_SCHEDULED",
+   "event_uid": "875235048630b2567072658085a3ffe1",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "episode_id": "dc35b55df55bc4c7d159bdc6aee72428",
+    "tier": "CENTENNIAL"
+   },
+   "effect": {
+    "anomaly_signals": [
+     "spirit_tide"
+    ],
+    "warning_level": "OBSERVED"
+   },
+   "event_type": "TRIBULATION_PRECURSOR_STARTED",
+   "event_uid": "2e693aff145bd4efaffaa49f7014a3bc",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "episode_id": "2c5eb32a4508fb6cdc453949a52f8113"
+   },
+   "effect": {
+    "candidate_id": "64bd780ebf3ba2c7694a20c0c1d478e2",
+    "resource_node_created": false
+   },
+   "event_type": "RESOURCE_SUCCESSION_CANDIDATE_CREATED",
+   "event_uid": "bf8bc963dd685eb3c51d08ffeb932a23",
+   "source": "SIMULATION"
+  }
+ ],
+ "golden": [
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "elapsed_real_us": 86400000000,
+    "real_interval_end_us": 1793059200000000,
+    "real_interval_start_us": 1792972800000000
+   },
+   "effect": {
+    "delta_ticks": 1000000,
+    "rate_id": 1,
+    "remainder": 0,
+    "simulation_version": "0.3.0-m3a"
+   },
+   "event_type": "TIME_ADVANCE",
+   "event_uid": "fa0f2f38dafaae1b4b44a01901a6873b",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "count": 5,
+    "from": 311
+   },
+   "event_type": "POPULATION_BIRTHS",
+   "event_uid": "8c696480900d4e401da190257ba65165",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "count": 5,
+    "from": 311
+   },
+   "event_type": "POPULATION_DEATHS",
+   "event_uid": "486bd0d5bb61ab0a1b3accee43d63d3b",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "emigrated": 3,
+    "from": 311,
+    "immigrated": 3
+   },
+   "event_type": "POPULATION_MIGRATION",
+   "event_uid": "b35074a219dd9b1cbf88fcaad7042b7b",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "count": 2,
+    "from": 138
+   },
+   "event_type": "POPULATION_BIRTHS",
+   "event_uid": "505d30944fea529d7092a74086cc9edb",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "count": 3,
+    "from": 138
+   },
+   "event_type": "POPULATION_DEATHS",
+   "event_uid": "d082c89ff82b3b2b5825f06c6db013de",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "emigrated": 2,
+    "from": 138,
+    "immigrated": 2
+   },
+   "event_type": "POPULATION_MIGRATION",
+   "event_uid": "962a9cb3e06994d8e63bad37e26a1dd3",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "node_kind": "TEST-ORE-001",
+    "profile_ref": "TEST-RESOURCE-001",
+    "settlement_relation": "TEST-MAIN-A"
+   },
+   "effect": {
+    "efficiency_den": 100,
+    "efficiency_num": 95,
+    "quantity_minor": 1027306155,
+    "reserve_after_minor": 95672191075
+   },
+   "event_type": "RESOURCE_EXTRACTED",
+   "event_uid": "59497c50941c7bd0402cf7aef199b637",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "node_kind": "TEST-TIMBER-001",
+    "profile_ref": "TEST-RESOURCE-003",
+    "settlement_relation": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "efficiency_den": 100,
+    "efficiency_num": 95,
+    "quantity_minor": 181216395,
+    "reserve_after_minor": 4983380093
+   },
+   "event_type": "RESOURCE_EXTRACTED",
+   "event_uid": "e22313285ce7819cba520af0f01acd06",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "recipe_id": "TEST-RECIPE-ORE-FOOD-001",
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "batches": 360,
+    "input_minor": 720000000,
+    "loss_minor": 3600000,
+    "output_minor": 356400000
+   },
+   "event_type": "PRODUCTION_COMPLETED",
+   "event_uid": "50f357ced5ce3420ceca6b6663dacbb5",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "demand_minor": 362833333,
+    "fulfilled_minor": 356400000,
+    "unmet_minor": 6433333
+   },
+   "event_type": "CONSUMPTION_FULFILLED",
+   "event_uid": "27561741d70b7930357f8f49aaaf0a95",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "demand_minor": 362833333,
+    "shortage_ratio_den": 362833333,
+    "shortage_ratio_num": 6433333,
+    "sustained_steps": 6,
+    "unmet_minor": 6433333
+   },
+   "event_type": "RESOURCE_SHORTAGE",
+   "event_uid": "9b5f135e1ac471bf7126636bc4ae70b4",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "demand_minor": 159833333,
+    "fulfilled_minor": 0,
+    "unmet_minor": 159833333
+   },
+   "event_type": "CONSUMPTION_FULFILLED",
+   "event_uid": "47223b358d57c5cfa7abc527f7c258f7",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "demand_minor": 159833333,
+    "shortage_ratio_den": 1,
+    "shortage_ratio_num": 1,
+    "sustained_steps": 299,
+    "unmet_minor": 159833333
+   },
+   "event_type": "RESOURCE_SHORTAGE",
+   "event_uid": "42fbc3fe5bbb6a2b5b27fd978d923bda",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 299000000,
+   "cause": {
+    "episode_id": "2c5eb32a4508fb6cdc453949a52f8113"
+   },
+   "effect": {
+    "progress": 100
+   },
+   "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+   "event_uid": "c79f73940a2c60f353c5d2158c2adc3f",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "elapsed_real_us": 86400000000,
+    "real_interval_end_us": 1793145600000000,
+    "real_interval_start_us": 1793059200000000
+   },
+   "effect": {
+    "delta_ticks": 1000000,
+    "rate_id": 1,
+    "remainder": 0,
+    "simulation_version": "0.3.0-m3a"
+   },
+   "event_type": "TIME_ADVANCE",
+   "event_uid": "065827931c026cd9b55122d2fba294e5",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "count": 5,
+    "from": 311
+   },
+   "event_type": "POPULATION_BIRTHS",
+   "event_uid": "d8282dde676edb78996437f47a63c9b8",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "count": 4,
+    "from": 311
+   },
+   "event_type": "POPULATION_DEATHS",
+   "event_uid": "c89f96afb5ba0b91e9000f59314c8aa3",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "emigrated": 4,
+    "from": 311,
+    "immigrated": 3
+   },
+   "event_type": "POPULATION_MIGRATION",
+   "event_uid": "205e2665928e860894d6787337d85f83",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "count": 1,
+    "from": 137
+   },
+   "event_type": "POPULATION_BIRTHS",
+   "event_uid": "1b812cea2a5615b6360a3744f2ae2d15",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "count": 1,
+    "from": 137
+   },
+   "event_type": "POPULATION_DEATHS",
+   "event_uid": "c42f1cd34adfb9afd53ffb808bb16d45",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "emigrated": 2,
+    "from": 137,
+    "immigrated": 3
+   },
+   "event_type": "POPULATION_MIGRATION",
+   "event_uid": "07e58d16e6d6baf5d31de8ebf0d3ab5b",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "node_kind": "TEST-ORE-001",
+    "profile_ref": "TEST-RESOURCE-001",
+    "settlement_relation": "TEST-MAIN-A"
+   },
+   "effect": {
+    "efficiency_den": 100,
+    "efficiency_num": 85,
+    "quantity_minor": 919082475,
+    "reserve_after_minor": 94753108600
+   },
+   "event_type": "RESOURCE_EXTRACTED",
+   "event_uid": "a31136c022b94b805e6a8c4d2289aefc",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "node_kind": "TEST-TIMBER-001",
+    "profile_ref": "TEST-RESOURCE-003",
+    "settlement_relation": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "efficiency_den": 100,
+    "efficiency_num": 85,
+    "quantity_minor": 162137627,
+    "reserve_after_minor": 5000000000
+   },
+   "event_type": "RESOURCE_EXTRACTED",
+   "event_uid": "43708504dc3cc8e0c3b92c05c3b74fed",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "recipe_id": "TEST-RECIPE-ORE-FOOD-001",
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "batches": 360,
+    "input_minor": 720000000,
+    "loss_minor": 3600000,
+    "output_minor": 356400000
+   },
+   "event_type": "PRODUCTION_COMPLETED",
+   "event_uid": "0833793dbc3b758ffd161b4f9b49bff8",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "demand_minor": 362833333,
+    "fulfilled_minor": 356400000,
+    "unmet_minor": 6433333
+   },
+   "event_type": "CONSUMPTION_FULFILLED",
+   "event_uid": "071dc0861abcdf898d820bd96c9c086b",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-MAIN-A"
+   },
+   "effect": {
+    "demand_minor": 362833333,
+    "shortage_ratio_den": 362833333,
+    "shortage_ratio_num": 6433333,
+    "sustained_steps": 7,
+    "unmet_minor": 6433333
+   },
+   "event_type": "RESOURCE_SHORTAGE",
+   "event_uid": "9f3f019d01bc2a6dbbe5fc6d17529ae8",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "demand_minor": 161000002,
+    "fulfilled_minor": 0,
+    "unmet_minor": 161000002
+   },
+   "event_type": "CONSUMPTION_FULFILLED",
+   "event_uid": "64fbe77dd8f28fac9eb61b40254282aa",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "resource_profile_ref": "TEST-RESOURCE-002",
+    "settlement": "TEST-SATELLITE-B"
+   },
+   "effect": {
+    "demand_minor": 161000002,
+    "shortage_ratio_den": 1,
+    "shortage_ratio_num": 1,
+    "sustained_steps": 300,
+    "unmet_minor": 161000002
+   },
+   "event_type": "RESOURCE_SHORTAGE",
+   "event_uid": "818f53f935a2ea126a9e2d1916f7a016",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "schedule_id": "TEST_TRIBULATION_SCHEDULE_001",
+    "tier": "CENTENNIAL"
+   },
+   "effect": {
+    "episode_id": "dc35b55df55bc4c7d159bdc6aee72428",
+    "scheduled_tick": 300000000
+   },
+   "event_type": "TRIBULATION_SCHEDULED",
+   "event_uid": "875235048630b2567072658085a3ffe1",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "episode_id": "dc35b55df55bc4c7d159bdc6aee72428",
+    "tier": "CENTENNIAL"
+   },
+   "effect": {
+    "anomaly_signals": [
+     "spirit_tide"
+    ],
+    "warning_level": "OBSERVED"
+   },
+   "event_type": "TRIBULATION_PRECURSOR_STARTED",
+   "event_uid": "2e693aff145bd4efaffaa49f7014a3bc",
+   "source": "SIMULATION"
+  },
+  {
+   "blessed_tick": 300000000,
+   "cause": {
+    "episode_id": "2c5eb32a4508fb6cdc453949a52f8113"
+   },
+   "effect": {
+    "candidate_id": "64bd780ebf3ba2c7694a20c0c1d478e2",
+    "resource_node_created": false
+   },
+   "event_type": "RESOURCE_SUCCESSION_CANDIDATE_CREATED",
+   "event_uid": "bf8bc963dd685eb3c51d08ffeb932a23",
+   "source": "SIMULATION"
+  }
+ ],
+ "label": "m3b_causal_history_300y_v1/timeline_samples.json"
+}

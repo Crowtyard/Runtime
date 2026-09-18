@@ -1,0 +1,1812 @@
+{
+ "assertion": "golden baseline deterministic mismatch: m3b_causal_history_300y_v1/episode_history_samples.json",
+ "candidate": [
+  {
+   "completed_tick": 21000000,
+   "completion": "COMPLETED",
+   "decisions": [],
+   "domain_effects": [
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "1",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 806239
+     },
+     "old_value": {
+      "v": 856239
+     },
+     "state_change_id": 1417,
+     "tick": 13000000
+    },
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "2",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 827240
+     },
+     "old_value": {
+      "v": 877240
+     },
+     "state_change_id": 1418,
+     "tick": 13000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "1",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 5503335239
+     },
+     "old_value": {
+      "v": 5516175805
+     },
+     "state_change_id": 1419,
+     "tick": 13000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "6",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 2461276858
+     },
+     "old_value": {
+      "v": 2467008028
+     },
+     "state_change_id": 1420,
+     "tick": 13000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "1",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 384187705328
+     },
+     "old_value": {
+      "v": 386123824195
+     },
+     "state_change_id": 1421,
+     "tick": 13000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "2",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 4952651458
+     },
+     "old_value": {
+      "v": 4977444852
+     },
+     "state_change_id": 1422,
+     "tick": 13000000
+    },
+    {
+     "engine_id": "SOCIAL",
+     "entity_id": "2",
+     "entity_type": "settlement_social_state",
+     "field": "social_stress",
+     "new_value": {
+      "v": 696451
+     },
+     "old_value": {
+      "v": 621451
+     },
+     "state_change_id": 1423,
+     "tick": 13000000
+    }
+   ],
+   "entered_tick": 10000000,
+   "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+   "found": true,
+   "plans": [
+    {
+     "affected_settlements": {
+      "selected": [
+       "TEST-SATELLITE-B"
+      ]
+     },
+     "ecology_pressure": 200000,
+     "intensity": 25,
+     "plan_id": "2a4005c4e7aa22805d3fa69b7a7c4ad7",
+     "population_risk_den": 800,
+     "population_risk_num": 1,
+     "resource_damage_den": 200,
+     "resource_damage_num": 1,
+     "tier": "REGULAR"
+    }
+   ],
+   "profile": {
+    "intensity_range": [
+     20,
+     40
+    ],
+    "profile_id": "TEST_TRIBULATION_PROFILE_001",
+    "theme": "ECOLOGICAL_STRESS"
+   },
+   "recovery": {
+    "progress_den": 100,
+    "progress_num": 100,
+    "started_tick": 17000000,
+    "status": "IN_PROGRESS"
+   },
+   "residual_changes": [
+    {
+     "change_kind": "environment_condition",
+     "id": 1,
+     "payload": {
+      "permanent": true,
+      "theme": "ECOLOGICAL_STRESS"
+     },
+     "persistent": true
+    }
+   ],
+   "schedule": {
+    "period_years": 10,
+    "schedule_id": "TEST_TRIBULATION_SCHEDULE_001"
+   },
+   "stage": "NEW_NORMAL",
+   "stage_events": [
+    {
+     "blessed_tick": 10000000,
+     "effect": {
+      "anomaly_signals": [
+       "ecological_stress"
+      ],
+      "warning_level": "OBSERVED"
+     },
+     "event_type": "TRIBULATION_PRECURSOR_STARTED",
+     "event_uid": "6ba3f9cdb32bdc1ee3424df301054717"
+    },
+    {
+     "blessed_tick": 11000000,
+     "effect": {
+      "stage": "PREPARATION"
+     },
+     "event_type": "TRIBULATION_PREPARATION_STARTED",
+     "event_uid": "36be67293a24aa864691011db11ca017"
+    },
+    {
+     "blessed_tick": 13000000,
+     "effect": {
+      "intensity": 25,
+      "tier": "REGULAR"
+     },
+     "event_type": "TRIBULATION_IMPACT_STARTED",
+     "event_uid": "79e0cc057e4b5b4c8e0864e74dbd86c5"
+    },
+    {
+     "blessed_tick": 13000000,
+     "effect": {
+      "domains": [
+       "DEMOGRAPHY",
+       "ECOLOGY",
+       "ECONOMY",
+       "RESOURCE",
+       "SOCIAL"
+      ]
+     },
+     "event_type": "TRIBULATION_IMPACT_APPLIED",
+     "event_uid": "79c60072946e93f882885a8c66ee353c"
+    },
+    {
+     "blessed_tick": 15000000,
+     "effect": {
+      "danger_controlled": true
+     },
+     "event_type": "TRIBULATION_STABILIZED",
+     "event_uid": "968f2d2b35720b3a8c6e541e10feae77"
+    },
+    {
+     "blessed_tick": 16000000,
+     "effect": {
+      "residual": {
+       "environment_condition": true,
+       "production_constraint": true
+      }
+     },
+     "event_type": "TRIBULATION_RESIDUAL_CHANGE_CREATED",
+     "event_uid": "8db42b10b3d7d8ec3787acb727a94c5b"
+    },
+    {
+     "blessed_tick": 18000000,
+     "effect": {
+      "progress": 50
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "a5c49a21b67212dc6552e5db7ab0d3d8"
+    },
+    {
+     "blessed_tick": 19000000,
+     "effect": {
+      "progress": 100
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "2cadde4450c28b59009c63332c06ce1b"
+    },
+    {
+     "blessed_tick": 20000000,
+     "effect": {
+      "candidate_id": "a812c2f2d321439342c2524d5d042bf3",
+      "resource_node_created": false
+     },
+     "event_type": "RESOURCE_SUCCESSION_CANDIDATE_CREATED",
+     "event_uid": "6edd668125671feb393dc7028feea963"
+    },
+    {
+     "blessed_tick": 21000000,
+     "effect": {
+      "world_not_reset": true
+     },
+     "event_type": "TRIBULATION_NEW_NORMAL_REACHED",
+     "event_uid": "24662075071541b43140b41cf9180eee"
+    },
+    {
+     "blessed_tick": 21000000,
+     "effect": {
+      "stage": "NEW_NORMAL"
+     },
+     "event_type": "TRIBULATION_EPISODE_COMPLETED",
+     "event_uid": "3ab53dc38e2d1286722cd7025c208106"
+    }
+   ],
+   "status": "COMPLETED",
+   "succession_candidates": [
+    {
+     "candidate_id": "a812c2f2d321439342c2524d5d042bf3",
+     "development_status": "NONE",
+     "discovery_status": "UNOBSERVED",
+     "maturation_requirement": 5
+    }
+   ],
+   "targets": {
+    "selected": [
+     "TEST-SATELLITE-B"
+    ]
+   },
+   "tier": "REGULAR",
+   "transition_tick": 21000000
+  },
+  {
+   "completed_tick": 64000000,
+   "completion": "COMPLETED",
+   "decisions": [],
+   "domain_effects": [
+    {
+     "engine_id": "DEMOGRAPHY",
+     "entity_id": "79",
+     "entity_type": "population_groups",
+     "field": "count",
+     "new_value": {
+      "v": 74
+     },
+     "old_value": {
+      "v": 75
+     },
+     "state_change_id": 6332,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "1",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 229539
+     },
+     "old_value": {
+      "v": 564539
+     },
+     "state_change_id": 6333,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "2",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 362746
+     },
+     "old_value": {
+      "v": 697746
+     },
+     "state_change_id": 6334,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "1",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 16895938846
+     },
+     "old_value": {
+      "v": 17473173918
+     },
+     "state_change_id": 6335,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "6",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 9017064685
+     },
+     "old_value": {
+      "v": 9323843892
+     },
+     "state_change_id": 6336,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "1",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 317170875914
+     },
+     "old_value": {
+      "v": 335983692500
+     },
+     "state_change_id": 6337,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "2",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 4283364666
+     },
+     "old_value": {
+      "v": 4537456997
+     },
+     "state_change_id": 6338,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "SOCIAL",
+     "entity_id": "1",
+     "entity_type": "settlement_social_state",
+     "field": "social_stress",
+     "new_value": {
+      "v": 442709
+     },
+     "old_value": {
+      "v": 241709
+     },
+     "state_change_id": 6339,
+     "tick": 53000000
+    }
+   ],
+   "entered_tick": 50000000,
+   "episode_id": "685734559d85c3d0125b61cc4c18db02",
+   "found": true,
+   "plans": [
+    {
+     "affected_settlements": {
+      "selected": [
+       "TEST-MAIN-A"
+      ]
+     },
+     "ecology_pressure": 500000,
+     "intensity": 67,
+     "plan_id": "1f013035706a957f4e49c94ff074b5b8",
+     "population_risk_den": 4000,
+     "population_risk_num": 67,
+     "resource_damage_den": 1200,
+     "resource_damage_num": 67,
+     "tier": "MAJOR"
+    }
+   ],
+   "profile": {
+    "intensity_range": [
+     50,
+     70
+    ],
+    "profile_id": "TEST_TRIBULATION_PROFILE_002",
+    "theme": "EARTH_VEIN_DISTURBANCE"
+   },
+   "recovery": {
+    "progress_den": 100,
+    "progress_num": 100,
+    "started_tick": 57000000,
+    "status": "IN_PROGRESS"
+   },
+   "residual_changes": [
+    {
+     "change_kind": "environment_condition",
+     "id": 5,
+     "payload": {
+      "permanent": true,
+      "theme": "EARTH_VEIN_DISTURBANCE"
+     },
+     "persistent": true
+    }
+   ],
+   "schedule": {
+    "period_years": 50,
+    "schedule_id": "TEST_TRIBULATION_SCHEDULE_001"
+   },
+   "stage": "NEW_NORMAL",
+   "stage_events": [
+    {
+     "blessed_tick": 50000000,
+     "effect": {
+      "anomaly_signals": [
+       "earth_vein_disturbance"
+      ],
+      "warning_level": "OBSERVED"
+     },
+     "event_type": "TRIBULATION_PRECURSOR_STARTED",
+     "event_uid": "ef04d6dccb79540b7bdaa5c0c1e1730d"
+    },
+    {
+     "blessed_tick": 51000000,
+     "effect": {
+      "stage": "PREPARATION"
+     },
+     "event_type": "TRIBULATION_PREPARATION_STARTED",
+     "event_uid": "6db6a94dbb5a43b7d27f3833456ec1ae"
+    },
+    {
+     "blessed_tick": 53000000,
+     "effect": {
+      "intensity": 67,
+      "tier": "MAJOR"
+     },
+     "event_type": "TRIBULATION_IMPACT_STARTED",
+     "event_uid": "61d48bbe636a339116c0cd35eb9c1c60"
+    },
+    {
+     "blessed_tick": 53000000,
+     "effect": {
+      "domains": [
+       "DEMOGRAPHY",
+       "ECOLOGY",
+       "ECONOMY",
+       "RESOURCE",
+       "SOCIAL"
+      ]
+     },
+     "event_type": "TRIBULATION_IMPACT_APPLIED",
+     "event_uid": "3ddc9582b8efe9cb41121310a140f676"
+    },
+    {
+     "blessed_tick": 55000000,
+     "effect": {
+      "danger_controlled": true
+     },
+     "event_type": "TRIBULATION_STABILIZED",
+     "event_uid": "43ca34082b9ccaf5a54eab44e9b76716"
+    },
+    {
+     "blessed_tick": 56000000,
+     "effect": {
+      "residual": {
+       "environment_condition": true,
+       "production_constraint": true
+      }
+     },
+     "event_type": "TRIBULATION_RESIDUAL_CHANGE_CREATED",
+     "event_uid": "dbf6e63d0b246a95d96eda9935979d88"
+    },
+    {
+     "blessed_tick": 58000000,
+     "effect": {
+      "progress": 33
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "d1580453d98ab42e22c756b705ced707"
+    },
+    {
+     "blessed_tick": 59000000,
+     "effect": {
+      "progress": 66
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "fffe9a850d5407af33194e6cade793ff"
+    },
+    {
+     "blessed_tick": 60000000,
+     "effect": {
+      "progress": 99
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "8ce6c8a711e0504c963e0aea2170b774"
+    },
+    {
+     "blessed_tick": 61000000,
+     "effect": {
+      "progress": 100
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "4b172109ed02dd9698fc09230284d340"
+    },
+    {
+     "blessed_tick": 62000000,
+     "effect": {
+      "candidate_id": "309d0a54ab6445944fadddae7bd9e11d",
+      "resource_node_created": false
+     },
+     "event_type": "RESOURCE_SUCCESSION_CANDIDATE_CREATED",
+     "event_uid": "974063f98acf76bcf404f98170251ef7"
+    },
+    {
+     "blessed_tick": 64000000,
+     "effect": {
+      "world_not_reset": true
+     },
+     "event_type": "TRIBULATION_NEW_NORMAL_REACHED",
+     "event_uid": "59200572747ce89b6c9f834f19bb0546"
+    },
+    {
+     "blessed_tick": 64000000,
+     "effect": {
+      "stage": "NEW_NORMAL"
+     },
+     "event_type": "TRIBULATION_EPISODE_COMPLETED",
+     "event_uid": "1547f17c739cf64fd4c742d5d73007df"
+    }
+   ],
+   "status": "COMPLETED",
+   "succession_candidates": [
+    {
+     "candidate_id": "309d0a54ab6445944fadddae7bd9e11d",
+     "development_status": "NONE",
+     "discovery_status": "UNOBSERVED",
+     "maturation_requirement": 8
+    }
+   ],
+   "targets": {
+    "selected": [
+     "TEST-MAIN-A"
+    ]
+   },
+   "tier": "MAJOR",
+   "transition_tick": 63000000
+  },
+  {
+   "completed_tick": 141000000,
+   "completion": "COMPLETED",
+   "decisions": [],
+   "domain_effects": [
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "1",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 118765
+     },
+     "old_value": {
+      "v": 160765
+     },
+     "state_change_id": 16434,
+     "tick": 133000000
+    },
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "2",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 379042
+     },
+     "old_value": {
+      "v": 421042
+     },
+     "state_change_id": 16435,
+     "tick": 133000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "1",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 27231391537
+     },
+     "old_value": {
+      "v": 27288320946
+     },
+     "state_change_id": 16436,
+     "tick": 133000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "6",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 17820979870
+     },
+     "old_value": {
+      "v": 17858299690
+     },
+     "state_change_id": 16437,
+     "tick": 133000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "1",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 192160986994
+     },
+     "old_value": {
+      "v": 192975259211
+     },
+     "state_change_id": 16438,
+     "tick": 133000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "2",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 89488282
+     },
+     "old_value": {
+      "v": 89853500
+     },
+     "state_change_id": 16439,
+     "tick": 133000000
+    },
+    {
+     "engine_id": "SOCIAL",
+     "entity_id": "2",
+     "entity_type": "settlement_social_state",
+     "field": "social_stress",
+     "new_value": {
+      "v": 661384
+     },
+     "old_value": {
+      "v": 598384
+     },
+     "state_change_id": 16440,
+     "tick": 133000000
+    }
+   ],
+   "entered_tick": 130000000,
+   "episode_id": "cb1477d6facd8183dea5bd085f3d41b7",
+   "found": true,
+   "plans": [
+    {
+     "affected_settlements": {
+      "selected": [
+       "TEST-SATELLITE-B"
+      ]
+     },
+     "ecology_pressure": 200000,
+     "intensity": 21,
+     "plan_id": "c8dccf192d4f770c729dd1532fb4e848",
+     "population_risk_den": 20000,
+     "population_risk_num": 21,
+     "resource_damage_den": 5000,
+     "resource_damage_num": 21,
+     "tier": "REGULAR"
+    }
+   ],
+   "profile": {
+    "intensity_range": [
+     20,
+     40
+    ],
+    "profile_id": "TEST_TRIBULATION_PROFILE_001",
+    "theme": "ECOLOGICAL_STRESS"
+   },
+   "recovery": {
+    "progress_den": 100,
+    "progress_num": 100,
+    "started_tick": 137000000,
+    "status": "IN_PROGRESS"
+   },
+   "residual_changes": [
+    {
+     "change_kind": "environment_condition",
+     "id": 13,
+     "payload": {
+      "permanent": true,
+      "theme": "ECOLOGICAL_STRESS"
+     },
+     "persistent": true
+    }
+   ],
+   "schedule": {
+    "period_years": 10,
+    "schedule_id": "TEST_TRIBULATION_SCHEDULE_001"
+   },
+   "stage": "NEW_NORMAL",
+   "stage_events": [
+    {
+     "blessed_tick": 130000000,
+     "effect": {
+      "anomaly_signals": [
+       "ecological_stress"
+      ],
+      "warning_level": "OBSERVED"
+     },
+     "event_type": "TRIBULATION_PRECURSOR_STARTED",
+     "event_uid": "64dd5d14f202bbc3c121e4e86421bcad"
+    },
+    {
+     "blessed_tick": 131000000,
+     "effect": {
+      "stage": "PREPARATION"
+     },
+     "event_type": "TRIBULATION_PREPARATION_STARTED",
+     "event_uid": "85c6875ec40971d47159bbb6961ece5f"
+    },
+    {
+     "blessed_tick": 133000000,
+     "effect": {
+      "intensity": 21,
+      "tier": "REGULAR"
+     },
+     "event_type": "TRIBULATION_IMPACT_STARTED",
+     "event_uid": "fea51e21d61c3402419a4c120208bb3b"
+    },
+    {
+     "blessed_tick": 133000000,
+     "effect": {
+      "domains": [
+       "DEMOGRAPHY",
+       "ECOLOGY",
+       "ECONOMY",
+       "RESOURCE",
+       "SOCIAL"
+      ]
+     },
+     "event_type": "TRIBULATION_IMPACT_APPLIED",
+     "event_uid": "729396fa15cea0e31c395902f68d4ca7"
+    },
+    {
+     "blessed_tick": 135000000,
+     "effect": {
+      "danger_controlled": true
+     },
+     "event_type": "TRIBULATION_STABILIZED",
+     "event_uid": "c3760ed7582b926bd32224bac319fa94"
+    },
+    {
+     "blessed_tick": 136000000,
+     "effect": {
+      "residual": {
+       "environment_condition": true,
+       "production_constraint": true
+      }
+     },
+     "event_type": "TRIBULATION_RESIDUAL_CHANGE_CREATED",
+     "event_uid": "c6034b4d16538b02839cd921d5bb9587"
+    },
+    {
+     "blessed_tick": 138000000,
+     "effect": {
+      "progress": 50
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "a35481a88fbba6d4f78f9e01acef026d"
+    },
+    {
+     "blessed_tick": 139000000,
+     "effect": {
+      "progress": 100
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "d6dd1e014de0b201d0ba2a8594ced85e"
+    },
+    {
+     "blessed_tick": 140000000,
+     "effect": {
+      "candidate_id": "7bd78a73ad9f4ade505c11bfe3b7c932",
+      "resource_node_created": false
+     },
+     "event_type": "RESOURCE_SUCCESSION_CANDIDATE_CREATED",
+     "event_uid": "19b4664e92b94e769f4aa5c08bd893d8"
+    },
+    {
+     "blessed_tick": 141000000,
+     "effect": {
+      "world_not_reset": true
+     },
+     "event_type": "TRIBULATION_NEW_NORMAL_REACHED",
+     "event_uid": "b5a2849fd280d254ae8f17d23eb19c6c"
+    },
+    {
+     "blessed_tick": 141000000,
+     "effect": {
+      "stage": "NEW_NORMAL"
+     },
+     "event_type": "TRIBULATION_EPISODE_COMPLETED",
+     "event_uid": "89299636f3a9fd90ff6bea4b06bf246f"
+    }
+   ],
+   "status": "COMPLETED",
+   "succession_candidates": [
+    {
+     "candidate_id": "7bd78a73ad9f4ade505c11bfe3b7c932",
+     "development_status": "NONE",
+     "discovery_status": "UNOBSERVED",
+     "maturation_requirement": 5
+    }
+   ],
+   "targets": {
+    "selected": [
+     "TEST-SATELLITE-B"
+    ]
+   },
+   "tier": "REGULAR",
+   "transition_tick": 141000000
+  },
+  {
+   "completed_tick": null,
+   "completion": "INCOMPLETE",
+   "decisions": [],
+   "domain_effects": [],
+   "entered_tick": 300000000,
+   "episode_id": "dc35b55df55bc4c7d159bdc6aee72428",
+   "found": true,
+   "plans": [],
+   "profile": {
+    "intensity_range": [
+     80,
+     100
+    ],
+    "profile_id": "TEST_TRIBULATION_PROFILE_003",
+    "theme": "SPIRIT_TIDE"
+   },
+   "recovery": null,
+   "residual_changes": [],
+   "schedule": {
+    "period_years": 100,
+    "schedule_id": "TEST_TRIBULATION_SCHEDULE_001"
+   },
+   "stage": "PRECURSOR",
+   "stage_events": [
+    {
+     "blessed_tick": 300000000,
+     "effect": {
+      "anomaly_signals": [
+       "spirit_tide"
+      ],
+      "warning_level": "OBSERVED"
+     },
+     "event_type": "TRIBULATION_PRECURSOR_STARTED",
+     "event_uid": "2e693aff145bd4efaffaa49f7014a3bc"
+    }
+   ],
+   "status": "ACTIVE",
+   "succession_candidates": [],
+   "targets": {
+    "selected": [
+     "TEST-SATELLITE-B"
+    ]
+   },
+   "tier": "CENTENNIAL",
+   "transition_tick": 301000000
+  }
+ ],
+ "golden": [
+  {
+   "completed_tick": 21000000,
+   "completion": "COMPLETED",
+   "decisions": [],
+   "domain_effects": [
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "1",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 809471
+     },
+     "old_value": {
+      "v": 859471
+     },
+     "state_change_id": 1417,
+     "tick": 13000000
+    },
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "2",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 828663
+     },
+     "old_value": {
+      "v": 878663
+     },
+     "state_change_id": 1418,
+     "tick": 13000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "1",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 5123386004
+     },
+     "old_value": {
+      "v": 5136226570
+     },
+     "state_change_id": 1419,
+     "tick": 13000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "6",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 2286737023
+     },
+     "old_value": {
+      "v": 2292468193
+     },
+     "state_change_id": 1420,
+     "tick": 13000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "1",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 385287654563
+     },
+     "old_value": {
+      "v": 387223773430
+     },
+     "state_change_id": 1421,
+     "tick": 13000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "2",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 4933885433
+     },
+     "old_value": {
+      "v": 4958678827
+     },
+     "state_change_id": 1422,
+     "tick": 13000000
+    },
+    {
+     "engine_id": "SOCIAL",
+     "entity_id": "2",
+     "entity_type": "settlement_social_state",
+     "field": "social_stress",
+     "new_value": {
+      "v": 717336
+     },
+     "old_value": {
+      "v": 642336
+     },
+     "state_change_id": 1423,
+     "tick": 13000000
+    }
+   ],
+   "entered_tick": 10000000,
+   "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+   "found": true,
+   "plans": [
+    {
+     "affected_settlements": {
+      "selected": [
+       "TEST-SATELLITE-B"
+      ]
+     },
+     "ecology_pressure": 200000,
+     "intensity": 25,
+     "plan_id": "2a4005c4e7aa22805d3fa69b7a7c4ad7",
+     "population_risk_den": 800,
+     "population_risk_num": 1,
+     "resource_damage_den": 200,
+     "resource_damage_num": 1,
+     "tier": "REGULAR"
+    }
+   ],
+   "profile": {
+    "intensity_range": [
+     20,
+     40
+    ],
+    "profile_id": "TEST_TRIBULATION_PROFILE_001",
+    "theme": "ECOLOGICAL_STRESS"
+   },
+   "recovery": {
+    "progress_den": 100,
+    "progress_num": 100,
+    "started_tick": 17000000,
+    "status": "IN_PROGRESS"
+   },
+   "residual_changes": [
+    {
+     "change_kind": "environment_condition",
+     "id": 1,
+     "payload": {
+      "permanent": true,
+      "theme": "ECOLOGICAL_STRESS"
+     },
+     "persistent": true
+    }
+   ],
+   "schedule": {
+    "period_years": 10,
+    "schedule_id": "TEST_TRIBULATION_SCHEDULE_001"
+   },
+   "stage": "NEW_NORMAL",
+   "stage_events": [
+    {
+     "blessed_tick": 10000000,
+     "effect": {
+      "anomaly_signals": [
+       "ecological_stress"
+      ],
+      "warning_level": "OBSERVED"
+     },
+     "event_type": "TRIBULATION_PRECURSOR_STARTED",
+     "event_uid": "6ba3f9cdb32bdc1ee3424df301054717"
+    },
+    {
+     "blessed_tick": 11000000,
+     "effect": {
+      "stage": "PREPARATION"
+     },
+     "event_type": "TRIBULATION_PREPARATION_STARTED",
+     "event_uid": "36be67293a24aa864691011db11ca017"
+    },
+    {
+     "blessed_tick": 13000000,
+     "effect": {
+      "intensity": 25,
+      "tier": "REGULAR"
+     },
+     "event_type": "TRIBULATION_IMPACT_STARTED",
+     "event_uid": "79e0cc057e4b5b4c8e0864e74dbd86c5"
+    },
+    {
+     "blessed_tick": 13000000,
+     "effect": {
+      "domains": [
+       "DEMOGRAPHY",
+       "ECOLOGY",
+       "ECONOMY",
+       "RESOURCE",
+       "SOCIAL"
+      ]
+     },
+     "event_type": "TRIBULATION_IMPACT_APPLIED",
+     "event_uid": "79c60072946e93f882885a8c66ee353c"
+    },
+    {
+     "blessed_tick": 15000000,
+     "effect": {
+      "danger_controlled": true
+     },
+     "event_type": "TRIBULATION_STABILIZED",
+     "event_uid": "968f2d2b35720b3a8c6e541e10feae77"
+    },
+    {
+     "blessed_tick": 16000000,
+     "effect": {
+      "residual": {
+       "environment_condition": true,
+       "production_constraint": true
+      }
+     },
+     "event_type": "TRIBULATION_RESIDUAL_CHANGE_CREATED",
+     "event_uid": "856fe6ddb5bca8264597db199f554927"
+    },
+    {
+     "blessed_tick": 18000000,
+     "effect": {
+      "progress": 50
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "a5c49a21b67212dc6552e5db7ab0d3d8"
+    },
+    {
+     "blessed_tick": 19000000,
+     "effect": {
+      "progress": 100
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "2cadde4450c28b59009c63332c06ce1b"
+    },
+    {
+     "blessed_tick": 20000000,
+     "effect": {
+      "candidate_id": "a812c2f2d321439342c2524d5d042bf3",
+      "resource_node_created": false
+     },
+     "event_type": "RESOURCE_SUCCESSION_CANDIDATE_CREATED",
+     "event_uid": "6edd668125671feb393dc7028feea963"
+    },
+    {
+     "blessed_tick": 21000000,
+     "effect": {
+      "world_not_reset": true
+     },
+     "event_type": "TRIBULATION_NEW_NORMAL_REACHED",
+     "event_uid": "24662075071541b43140b41cf9180eee"
+    },
+    {
+     "blessed_tick": 21000000,
+     "effect": {
+      "stage": "NEW_NORMAL"
+     },
+     "event_type": "TRIBULATION_EPISODE_COMPLETED",
+     "event_uid": "3ab53dc38e2d1286722cd7025c208106"
+    }
+   ],
+   "status": "COMPLETED",
+   "succession_candidates": [
+    {
+     "candidate_id": "a812c2f2d321439342c2524d5d042bf3",
+     "development_status": "NONE",
+     "discovery_status": "UNOBSERVED",
+     "maturation_requirement": 5
+    }
+   ],
+   "targets": {
+    "selected": [
+     "TEST-SATELLITE-B"
+    ]
+   },
+   "tier": "REGULAR",
+   "transition_tick": 21000000
+  },
+  {
+   "completed_tick": 64000000,
+   "completion": "COMPLETED",
+   "decisions": [],
+   "domain_effects": [
+    {
+     "engine_id": "DEMOGRAPHY",
+     "entity_id": "79",
+     "entity_type": "population_groups",
+     "field": "count",
+     "new_value": {
+      "v": 73
+     },
+     "old_value": {
+      "v": 74
+     },
+     "state_change_id": 6379,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "1",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 421275
+     },
+     "old_value": {
+      "v": 756275
+     },
+     "state_change_id": 6380,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "2",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 505960
+     },
+     "old_value": {
+      "v": 840960
+     },
+     "state_change_id": 6381,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "1",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 18064879495
+     },
+     "old_value": {
+      "v": 18691028965
+     },
+     "state_change_id": 6382,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "6",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 9093438061
+     },
+     "old_value": {
+      "v": 9408627067
+     },
+     "state_change_id": 6383,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "1",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 325613786819
+     },
+     "old_value": {
+      "v": 344868971035
+     },
+     "state_change_id": 6384,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "2",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 4720833334
+     },
+     "old_value": {
+      "v": 5000000000
+     },
+     "state_change_id": 6385,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "SOCIAL",
+     "entity_id": "1",
+     "entity_type": "settlement_social_state",
+     "field": "social_stress",
+     "new_value": {
+      "v": 440541
+     },
+     "old_value": {
+      "v": 239541
+     },
+     "state_change_id": 6386,
+     "tick": 53000000
+    }
+   ],
+   "entered_tick": 50000000,
+   "episode_id": "685734559d85c3d0125b61cc4c18db02",
+   "found": true,
+   "plans": [
+    {
+     "affected_settlements": {
+      "selected": [
+       "TEST-MAIN-A"
+      ]
+     },
+     "ecology_pressure": 500000,
+     "intensity": 67,
+     "plan_id": "1f013035706a957f4e49c94ff074b5b8",
+     "population_risk_den": 4000,
+     "population_risk_num": 67,
+     "resource_damage_den": 1200,
+     "resource_damage_num": 67,
+     "tier": "MAJOR"
+    }
+   ],
+   "profile": {
+    "intensity_range": [
+     50,
+     70
+    ],
+    "profile_id": "TEST_TRIBULATION_PROFILE_002",
+    "theme": "EARTH_VEIN_DISTURBANCE"
+   },
+   "recovery": {
+    "progress_den": 100,
+    "progress_num": 100,
+    "started_tick": 57000000,
+    "status": "IN_PROGRESS"
+   },
+   "residual_changes": [
+    {
+     "change_kind": "environment_condition",
+     "id": 5,
+     "payload": {
+      "permanent": true,
+      "theme": "EARTH_VEIN_DISTURBANCE"
+     },
+     "persistent": true
+    }
+   ],
+   "schedule": {
+    "period_years": 50,
+    "schedule_id": "TEST_TRIBULATION_SCHEDULE_001"
+   },
+   "stage": "NEW_NORMAL",
+   "stage_events": [
+    {
+     "blessed_tick": 50000000,
+     "effect": {
+      "anomaly_signals": [
+       "earth_vein_disturbance"
+      ],
+      "warning_level": "OBSERVED"
+     },
+     "event_type": "TRIBULATION_PRECURSOR_STARTED",
+     "event_uid": "ef04d6dccb79540b7bdaa5c0c1e1730d"
+    },
+    {
+     "blessed_tick": 51000000,
+     "effect": {
+      "stage": "PREPARATION"
+     },
+     "event_type": "TRIBULATION_PREPARATION_STARTED",
+     "event_uid": "6db6a94dbb5a43b7d27f3833456ec1ae"
+    },
+    {
+     "blessed_tick": 53000000,
+     "effect": {
+      "intensity": 67,
+      "tier": "MAJOR"
+     },
+     "event_type": "TRIBULATION_IMPACT_STARTED",
+     "event_uid": "61d48bbe636a339116c0cd35eb9c1c60"
+    },
+    {
+     "blessed_tick": 53000000,
+     "effect": {
+      "domains": [
+       "DEMOGRAPHY",
+       "ECOLOGY",
+       "ECONOMY",
+       "RESOURCE",
+       "SOCIAL"
+      ]
+     },
+     "event_type": "TRIBULATION_IMPACT_APPLIED",
+     "event_uid": "3ddc9582b8efe9cb41121310a140f676"
+    },
+    {
+     "blessed_tick": 55000000,
+     "effect": {
+      "danger_controlled": true
+     },
+     "event_type": "TRIBULATION_STABILIZED",
+     "event_uid": "43ca34082b9ccaf5a54eab44e9b76716"
+    },
+    {
+     "blessed_tick": 56000000,
+     "effect": {
+      "residual": {
+       "environment_condition": true,
+       "production_constraint": true
+      }
+     },
+     "event_type": "TRIBULATION_RESIDUAL_CHANGE_CREATED",
+     "event_uid": "dbf6e63d0b246a95d96eda9935979d88"
+    },
+    {
+     "blessed_tick": 58000000,
+     "effect": {
+      "progress": 33
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "d1580453d98ab42e22c756b705ced707"
+    },
+    {
+     "blessed_tick": 59000000,
+     "effect": {
+      "progress": 66
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "fffe9a850d5407af33194e6cade793ff"
+    },
+    {
+     "blessed_tick": 60000000,
+     "effect": {
+      "progress": 99
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "8ce6c8a711e0504c963e0aea2170b774"
+    },
+    {
+     "blessed_tick": 61000000,
+     "effect": {
+      "progress": 100
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "4b172109ed02dd9698fc09230284d340"
+    },
+    {
+     "blessed_tick": 62000000,
+     "effect": {
+      "candidate_id": "309d0a54ab6445944fadddae7bd9e11d",
+      "resource_node_created": false
+     },
+     "event_type": "RESOURCE_SUCCESSION_CANDIDATE_CREATED",
+     "event_uid": "974063f98acf76bcf404f98170251ef7"
+    },
+    {
+     "blessed_tick": 64000000,
+     "effect": {
+      "world_not_reset": true
+     },
+     "event_type": "TRIBULATION_NEW_NORMAL_REACHED",
+     "event_uid": "e5009859f6f0fce63a507d29c45f2b19"
+    },
+    {
+     "blessed_tick": 64000000,
+     "effect": {
+      "stage": "NEW_NORMAL"
+     },
+     "event_type": "TRIBULATION_EPISODE_COMPLETED",
+     "event_uid": "7d6e3fc64f9e1c091224bcd8e70d2c85"
+    }
+   ],
+   "status": "COMPLETED",
+   "succession_candidates": [
+    {
+     "candidate_id": "309d0a54ab6445944fadddae7bd9e11d",
+     "development_status": "NONE",
+     "discovery_status": "UNOBSERVED",
+     "maturation_requirement": 8
+    }
+   ],
+   "targets": {
+    "selected": [
+     "TEST-MAIN-A"
+    ]
+   },
+   "tier": "MAJOR",
+   "transition_tick": 63000000
+  },
+  {
+   "completed_tick": 141000000,
+   "completion": "COMPLETED",
+   "decisions": [],
+   "domain_effects": [
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "1",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 610257
+     },
+     "old_value": {
+      "v": 652257
+     },
+     "state_change_id": 16527,
+     "tick": 133000000
+    },
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "2",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 776870
+     },
+     "old_value": {
+      "v": 818870
+     },
+     "state_change_id": 16528,
+     "tick": 133000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "1",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 42914158772
+     },
+     "old_value": {
+      "v": 43004468155
+     },
+     "state_change_id": 16529,
+     "tick": 133000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "6",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 23584314681
+     },
+     "old_value": {
+      "v": 23633945967
+     },
+     "state_change_id": 16530,
+     "tick": 133000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "1",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 261851118612
+     },
+     "old_value": {
+      "v": 262955531845
+     },
+     "state_change_id": 16531,
+     "tick": 133000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "2",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 4977770783
+     },
+     "old_value": {
+      "v": 4998765598
+     },
+     "state_change_id": 16532,
+     "tick": 133000000
+    },
+    {
+     "engine_id": "SOCIAL",
+     "entity_id": "2",
+     "entity_type": "settlement_social_state",
+     "field": "social_stress",
+     "new_value": {
+      "v": 704093
+     },
+     "old_value": {
+      "v": 641093
+     },
+     "state_change_id": 16533,
+     "tick": 133000000
+    }
+   ],
+   "entered_tick": 130000000,
+   "episode_id": "cb1477d6facd8183dea5bd085f3d41b7",
+   "found": true,
+   "plans": [
+    {
+     "affected_settlements": {
+      "selected": [
+       "TEST-SATELLITE-B"
+      ]
+     },
+     "ecology_pressure": 200000,
+     "intensity": 21,
+     "plan_id": "c8dccf192d4f770c729dd1532fb4e848",
+     "population_risk_den": 20000,
+     "population_risk_num": 21,
+     "resource_damage_den": 5000,
+     "resource_damage_num": 21,
+     "tier": "REGULAR"
+    }
+   ],
+   "profile": {
+    "intensity_range": [
+     20,
+     40
+    ],
+    "profile_id": "TEST_TRIBULATION_PROFILE_001",
+    "theme": "ECOLOGICAL_STRESS"
+   },
+   "recovery": {
+    "progress_den": 100,
+    "progress_num": 100,
+    "started_tick": 137000000,
+    "status": "IN_PROGRESS"
+   },
+   "residual_changes": [
+    {
+     "change_kind": "environment_condition",
+     "id": 13,
+     "payload": {
+      "permanent": true,
+      "theme": "ECOLOGICAL_STRESS"
+     },
+     "persistent": true
+    }
+   ],
+   "schedule": {
+    "period_years": 10,
+    "schedule_id": "TEST_TRIBULATION_SCHEDULE_001"
+   },
+   "stage": "NEW_NORMAL",
+   "stage_events": [
+    {
+     "blessed_tick": 130000000,
+     "effect": {
+      "anomaly_signals": [
+       "ecological_stress"
+      ],
+      "warning_level": "OBSERVED"
+     },
+     "event_type": "TRIBULATION_PRECURSOR_STARTED",
+     "event_uid": "64dd5d14f202bbc3c121e4e86421bcad"
+    },
+    {
+     "blessed_tick": 131000000,
+     "effect": {
+      "stage": "PREPARATION"
+     },
+     "event_type": "TRIBULATION_PREPARATION_STARTED",
+     "event_uid": "85c6875ec40971d47159bbb6961ece5f"
+    },
+    {
+     "blessed_tick": 133000000,
+     "effect": {
+      "intensity": 21,
+      "tier": "REGULAR"
+     },
+     "event_type": "TRIBULATION_IMPACT_STARTED",
+     "event_uid": "6ab2a395715a4ce12e97f31a8cd92546"
+    },
+    {
+     "blessed_tick": 133000000,
+     "effect": {
+      "domains": [
+       "DEMOGRAPHY",
+       "ECOLOGY",
+       "ECONOMY",
+       "RESOURCE",
+       "SOCIAL"
+      ]
+     },
+     "event_type": "TRIBULATION_IMPACT_APPLIED",
+     "event_uid": "3f22fdedcc8124ee7a773b4c45cbde91"
+    },
+    {
+     "blessed_tick": 135000000,
+     "effect": {
+      "danger_controlled": true
+     },
+     "event_type": "TRIBULATION_STABILIZED",
+     "event_uid": "d4c431e21e192b2f532b1234d63ab6f4"
+    },
+    {
+     "blessed_tick": 136000000,
+     "effect": {
+      "residual": {
+       "environment_condition": true,
+       "production_constraint": true
+      }
+     },
+     "event_type": "TRIBULATION_RESIDUAL_CHANGE_CREATED",
+     "event_uid": "c1d4cb004a5ae9d6852167577f933db5"
+    },
+    {
+     "blessed_tick": 138000000,
+     "effect": {
+      "progress": 50
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "c250019131e2f4cce2b86d00dc52f079"
+    },
+    {
+     "blessed_tick": 139000000,
+     "effect": {
+      "progress": 100
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "d6dd1e014de0b201d0ba2a8594ced85e"
+    },
+    {
+     "blessed_tick": 140000000,
+     "effect": {
+      "candidate_id": "7bd78a73ad9f4ade505c11bfe3b7c932",
+      "resource_node_created": false
+     },
+     "event_type": "RESOURCE_SUCCESSION_CANDIDATE_CREATED",
+     "event_uid": "19b4664e92b94e769f4aa5c08bd893d8"
+    },
+    {
+     "blessed_tick": 141000000,
+     "effect": {
+      "world_not_reset": true
+     },
+     "event_type": "TRIBULATION_NEW_NORMAL_REACHED",
+     "event_uid": "b5a2849fd280d254ae8f17d23eb19c6c"
+    },
+    {
+     "blessed_tick": 141000000,
+     "effect": {
+      "stage": "NEW_NORMAL"
+     },
+     "event_type": "TRIBULATION_EPISODE_COMPLETED",
+     "event_uid": "89299636f3a9fd90ff6bea4b06bf246f"
+    }
+   ],
+   "status": "COMPLETED",
+   "succession_candidates": [
+    {
+     "candidate_id": "7bd78a73ad9f4ade505c11bfe3b7c932",
+     "development_status": "NONE",
+     "discovery_status": "UNOBSERVED",
+     "maturation_requirement": 5
+    }
+   ],
+   "targets": {
+    "selected": [
+     "TEST-SATELLITE-B"
+    ]
+   },
+   "tier": "REGULAR",
+   "transition_tick": 141000000
+  },
+  {
+   "completed_tick": null,
+   "completion": "INCOMPLETE",
+   "decisions": [],
+   "domain_effects": [],
+   "entered_tick": 300000000,
+   "episode_id": "dc35b55df55bc4c7d159bdc6aee72428",
+   "found": true,
+   "plans": [],
+   "profile": {
+    "intensity_range": [
+     80,
+     100
+    ],
+    "profile_id": "TEST_TRIBULATION_PROFILE_003",
+    "theme": "SPIRIT_TIDE"
+   },
+   "recovery": null,
+   "residual_changes": [],
+   "schedule": {
+    "period_years": 100,
+    "schedule_id": "TEST_TRIBULATION_SCHEDULE_001"
+   },
+   "stage": "PRECURSOR",
+   "stage_events": [
+    {
+     "blessed_tick": 300000000,
+     "effect": {
+      "anomaly_signals": [
+       "spirit_tide"
+      ],
+      "warning_level": "OBSERVED"
+     },
+     "event_type": "TRIBULATION_PRECURSOR_STARTED",
+     "event_uid": "2e693aff145bd4efaffaa49f7014a3bc"
+    }
+   ],
+   "status": "ACTIVE",
+   "succession_candidates": [],
+   "targets": {
+    "selected": [
+     "TEST-SATELLITE-B"
+    ]
+   },
+   "tier": "CENTENNIAL",
+   "transition_tick": 301000000
+  }
+ ],
+ "label": "m3b_causal_history_300y_v1/episode_history_samples.json"
+}

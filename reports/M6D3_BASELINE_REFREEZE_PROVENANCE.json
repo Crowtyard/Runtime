@@ -86,15 +86,325 @@
    "m3b_causal_history_300y_v1/summary.json": "$.average_chain_depth: 112.82 (golden) != 113.918 (candidate)"
   }
  },
+ "CANDIDATE_CAPTURE_MODE": "READ_ONLY observer plugin (scripts/_m6d3_candidate_observer.py): captures the artifact the test computed when the deterministic comparison fails; writes only to %TEMP%, never to tests/baselines; GB10 behaviour unchanged (normal pytest still fails).",
  "FIXED_FORBIDDEN_MUTATIONS": {
   "M2_BASELINE_MUTATIONS": "must stay 0",
   "M6_BASELINES": "must stay 0",
   "OTHER_M3_BASELINES": "must stay 0",
   "SCHEDULER_BASELINES": "must stay 0"
  },
- "NEW_BASELINE_DETERMINISM_RUN1_EQ_RUN2": "NOT_RUN",
- "NEW_BASELINE_INVENTORY": null,
- "NEW_BASELINE_STATUS": "NOT_GENERATED_BLOCKED",
+ "NEW_BASELINE_CANDIDATE_FILE_COUNT": 12,
+ "NEW_BASELINE_CHANGED_FILE_COUNT": 12,
+ "NEW_BASELINE_DETERMINISM_RUN1_EQ_RUN2": "PASS (deterministic fields; byte diffs telemetry-only)",
+ "NEW_BASELINE_INVENTORY": {
+  "m3a_tribulation_synthetic_300y_v1__final_state.json": {
+   "BYTE_EQUAL": true,
+   "CHANGED_VS_OLD": true,
+   "DETERMINISTIC_EQUAL": true,
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN1": "69faeea21c230d2ba4657aaf5cd47985c90a95fb9ae605e41247648702bc1eb4",
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN2": "69faeea21c230d2ba4657aaf5cd47985c90a95fb9ae605e41247648702bc1eb4",
+   "NEW_CANDIDATE_SHA256_RUN1": "7fef3e67efdf83374033c768e34a5ad7b1ee4070b2a63e67905f327ecac07f69",
+   "NEW_CANDIDATE_SHA256_RUN2": "7fef3e67efdf83374033c768e34a5ad7b1ee4070b2a63e67905f327ecac07f69",
+   "NEW_DETERMINISTIC_FIELDS": {},
+   "OLD_BASELINE_SHA256": null,
+   "OLD_DETERMINISTIC_FIELDS": null,
+   "baseline_path": "tests/baselines/m3a_tribulation_synthetic_300y_v1/final_state.json.json",
+   "byte_differences": []
+  },
+  "m3a_tribulation_synthetic_300y_v1__summary.json": {
+   "BYTE_EQUAL": false,
+   "CHANGED_VS_OLD": true,
+   "DETERMINISTIC_EQUAL": true,
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN1": "2b7e2a04e1412a43a7df7bcc624b2e157b69ea650dea54419f69f76f78092915",
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN2": "2b7e2a04e1412a43a7df7bcc624b2e157b69ea650dea54419f69f76f78092915",
+   "NEW_CANDIDATE_SHA256_RUN1": "6b32c97d3ecbbb710ee386cc3c11aedd838110482b7fd3baeac5a67a3026d103",
+   "NEW_CANDIDATE_SHA256_RUN2": "0333b7b3326337b56e6d9749b4068d0e7ac83eb280388f71168444bf60b1d20e",
+   "NEW_DETERMINISTIC_FIELDS": {
+    "final_event_stream_hash": "83bdc08f7d46510604c895097bf1a2418e2da246231833e9a213547c71f4b6c7",
+    "final_world_state_hash": "c5ef2564591eb58f4ce1ba99f3f687969057fc001a83da155fa6e24814e36535",
+    "simulation_version": "0.3.0-m3a",
+    "wall_seconds": 34.964,
+    "world_state_hash_schema_version": 6
+   },
+   "OLD_BASELINE_SHA256": null,
+   "OLD_DETERMINISTIC_FIELDS": null,
+   "baseline_path": "tests/baselines/m3a_tribulation_synthetic_300y_v1/summary.json.json",
+   "byte_differences": [
+    {
+     "class": "TELEMETRY",
+     "path": "$.wall_seconds",
+     "run1": "34.964",
+     "run2": "32.034"
+    }
+   ]
+  },
+  "m3b_causal_history_300y_v1__causal_graph_digest.json": {
+   "BYTE_EQUAL": true,
+   "CHANGED_VS_OLD": true,
+   "DETERMINISTIC_EQUAL": true,
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN1": "dca5bbd9fb80673a2b743028932536ea008ae937326562e3f637b7682b80c69c",
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN2": "dca5bbd9fb80673a2b743028932536ea008ae937326562e3f637b7682b80c69c",
+   "NEW_CANDIDATE_SHA256_RUN1": "c011d6b80abc922a6c077d8c479df285110eb489abcb68ed3c6245039eb439b0",
+   "NEW_CANDIDATE_SHA256_RUN2": "c011d6b80abc922a6c077d8c479df285110eb489abcb68ed3c6245039eb439b0",
+   "NEW_DETERMINISTIC_FIELDS": {
+    "links_total": 66889
+   },
+   "OLD_BASELINE_SHA256": null,
+   "OLD_DETERMINISTIC_FIELDS": null,
+   "baseline_path": "tests/baselines/m3b_causal_history_300y_v1/causal_graph_digest.json.json",
+   "byte_differences": []
+  },
+  "m3b_causal_history_300y_v1__entity_cardinality_audit.json": {
+   "BYTE_EQUAL": true,
+   "CHANGED_VS_OLD": true,
+   "DETERMINISTIC_EQUAL": true,
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN1": "2e3b0e7f9d3b154c4feeb04d39ce1d0c1041c9704b19616fd5bc1f1d48f09ca9",
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN2": "2e3b0e7f9d3b154c4feeb04d39ce1d0c1041c9704b19616fd5bc1f1d48f09ca9",
+   "NEW_CANDIDATE_SHA256_RUN1": "8cd15a4a63b569fdec2a872fef3a00e2ce6a282522c92ad7559f0c92f2ef4420",
+   "NEW_CANDIDATE_SHA256_RUN2": "8cd15a4a63b569fdec2a872fef3a00e2ce6a282522c92ad7559f0c92f2ef4420",
+   "NEW_DETERMINISTIC_FIELDS": {
+    "distinct_entities_with_history": 145,
+    "entity_history_index_rows": 66005,
+    "graph_node_cardinality": {
+     "distinct_event_ids_indexed": 2224
+    }
+   },
+   "OLD_BASELINE_SHA256": null,
+   "OLD_DETERMINISTIC_FIELDS": null,
+   "baseline_path": "tests/baselines/m3b_causal_history_300y_v1/entity_cardinality_audit.json.json",
+   "byte_differences": []
+  },
+  "m3b_causal_history_300y_v1__entity_history_samples.json": {
+   "BYTE_EQUAL": true,
+   "CHANGED_VS_OLD": true,
+   "DETERMINISTIC_EQUAL": true,
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN1": "9c4ba95bab468ac399c43b23199d57e55e8190ccbfbcffcd8cee8fdd8c75cdd6",
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN2": "9c4ba95bab468ac399c43b23199d57e55e8190ccbfbcffcd8cee8fdd8c75cdd6",
+   "NEW_CANDIDATE_SHA256_RUN1": "99aff2190ee9c9f445a5c8020b786b48273a0f12604777442eea203d23c14d0d",
+   "NEW_CANDIDATE_SHA256_RUN2": "99aff2190ee9c9f445a5c8020b786b48273a0f12604777442eea203d23c14d0d",
+   "NEW_DETERMINISTIC_FIELDS": {
+    "settlement": {
+     "domains": {
+      "households": {
+       "entities": {
+        "[0]": {
+         "event_count": 5
+        },
+        "[1]": {
+         "event_count": 2
+        },
+        "[2]": {
+         "event_count": 2
+        }
+       }
+      },
+      "population_groups": {
+       "entities": {
+        "[0]": {
+         "event_count": 117
+        },
+        "[1]": {
+         "event_count": 129
+        },
+        "[2]": {
+         "event_count": 137
+        }
+       }
+      },
+      "resource_stocks": {
+       "entities": {
+        "[0]": {
+         "event_count": 329
+        },
+        "[1]": {
+         "event_count": 300
+        }
+       }
+      },
+      "settlement_social_state": {
+       "entities": {
+        "[0]": {
+         "event_count": 70
+        }
+       }
+      }
+     }
+    }
+   },
+   "OLD_BASELINE_SHA256": null,
+   "OLD_DETERMINISTIC_FIELDS": null,
+   "baseline_path": "tests/baselines/m3b_causal_history_300y_v1/entity_history_samples.json.json",
+   "byte_differences": []
+  },
+  "m3b_causal_history_300y_v1__episode_history_samples.json": {
+   "BYTE_EQUAL": true,
+   "CHANGED_VS_OLD": true,
+   "DETERMINISTIC_EQUAL": true,
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN1": "c66bebb59f6dc1e40d9ada3049f790991da1371c4a9fe753c242da269249d271",
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN2": "c66bebb59f6dc1e40d9ada3049f790991da1371c4a9fe753c242da269249d271",
+   "NEW_CANDIDATE_SHA256_RUN1": "6ee8f1256b09859f45e2c8f31baac992ef02824c3c293bce44d8549eff9e091b",
+   "NEW_CANDIDATE_SHA256_RUN2": "6ee8f1256b09859f45e2c8f31baac992ef02824c3c293bce44d8549eff9e091b",
+   "NEW_DETERMINISTIC_FIELDS": {},
+   "OLD_BASELINE_SHA256": null,
+   "OLD_DETERMINISTIC_FIELDS": null,
+   "baseline_path": "tests/baselines/m3b_causal_history_300y_v1/episode_history_samples.json.json",
+   "byte_differences": []
+  },
+  "m3b_causal_history_300y_v1__growth_projection.json": {
+   "BYTE_EQUAL": true,
+   "CHANGED_VS_OLD": true,
+   "DETERMINISTIC_EQUAL": true,
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN1": "8483bac0c1f6e1964aedbf412ee1c561efc51c0812576a827d1d0f2402f786ce",
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN2": "8483bac0c1f6e1964aedbf412ee1c561efc51c0812576a827d1d0f2402f786ce",
+   "NEW_CANDIDATE_SHA256_RUN1": "2ebfcf7540ac96c4b2cd89d20d538960605e349c02ea263df4900be0e5d82c93",
+   "NEW_CANDIDATE_SHA256_RUN2": "2ebfcf7540ac96c4b2cd89d20d538960605e349c02ea263df4900be0e5d82c93",
+   "NEW_DETERMINISTIC_FIELDS": {},
+   "OLD_BASELINE_SHA256": null,
+   "OLD_DETERMINISTIC_FIELDS": null,
+   "baseline_path": "tests/baselines/m3b_causal_history_300y_v1/growth_projection.json.json",
+   "byte_differences": []
+  },
+  "m3b_causal_history_300y_v1__metric_audit.json": {
+   "BYTE_EQUAL": true,
+   "CHANGED_VS_OLD": true,
+   "DETERMINISTIC_EQUAL": true,
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN1": "5980bffd9959cfadefd6b5cb9aeaf3c651e2a3f605b2ba7549fb67a343e39b39",
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN2": "5980bffd9959cfadefd6b5cb9aeaf3c651e2a3f605b2ba7549fb67a343e39b39",
+   "NEW_CANDIDATE_SHA256_RUN1": "4ace61e391c2ef8761cd5368e5cb7df5ae79819e95cd26153244a79081078500",
+   "NEW_CANDIDATE_SHA256_RUN2": "4ace61e391c2ef8761cd5368e5cb7df5ae79819e95cd26153244a79081078500",
+   "NEW_DETERMINISTIC_FIELDS": {
+    "hash": {
+     "causal_history_hash": "d3b8a499257fe40cd7d3f4253438f9a99aca6e7592340a8f6cbdc4fd2ae130ba",
+     "world_state_hash": "c5ef2564591eb58f4ce1ba99f3f687969057fc001a83da155fa6e24814e36535"
+    }
+   },
+   "OLD_BASELINE_SHA256": null,
+   "OLD_DETERMINISTIC_FIELDS": null,
+   "baseline_path": "tests/baselines/m3b_causal_history_300y_v1/metric_audit.json.json",
+   "byte_differences": []
+  },
+  "m3b_causal_history_300y_v1__relation_density_audit.json": {
+   "BYTE_EQUAL": true,
+   "CHANGED_VS_OLD": true,
+   "DETERMINISTIC_EQUAL": true,
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN1": "52c0772ab1172362ac9a63e163d8dbf6809e93c342d2bc75dcf44206bef3f7fb",
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN2": "52c0772ab1172362ac9a63e163d8dbf6809e93c342d2bc75dcf44206bef3f7fb",
+   "NEW_CANDIDATE_SHA256_RUN1": "8b1dc403e7f430ef0a6cd3d778e300d4d125edf006cd414026fbcfcfa40d321b",
+   "NEW_CANDIDATE_SHA256_RUN2": "8b1dc403e7f430ef0a6cd3d778e300d4d125edf006cd414026fbcfcfa40d321b",
+   "NEW_DETERMINISTIC_FIELDS": {},
+   "OLD_BASELINE_SHA256": null,
+   "OLD_DETERMINISTIC_FIELDS": null,
+   "baseline_path": "tests/baselines/m3b_causal_history_300y_v1/relation_density_audit.json.json",
+   "byte_differences": []
+  },
+  "m3b_causal_history_300y_v1__summary.json": {
+   "BYTE_EQUAL": false,
+   "CHANGED_VS_OLD": true,
+   "DETERMINISTIC_EQUAL": true,
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN1": "55502d070029539479870030ea4424100def3a93067c123140e568f8e7eac6cf",
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN2": "55502d070029539479870030ea4424100def3a93067c123140e568f8e7eac6cf",
+   "NEW_CANDIDATE_SHA256_RUN1": "7d22a7d7b0eb8dd5085e828f3e3e8cb9a965d5247ab8b8b85287318ee30ce768",
+   "NEW_CANDIDATE_SHA256_RUN2": "6c8e529bd1d2e18e6011b79320da47f771a8c110acad986c5d1ba1baef16c418",
+   "NEW_DETERMINISTIC_FIELDS": {
+    "causal_history_hash": "d3b8a499257fe40cd7d3f4253438f9a99aca6e7592340a8f6cbdc4fd2ae130ba",
+    "cycle_count": 0,
+    "distinct_entities_with_history": 145,
+    "entity_history_index_rows": 66005,
+    "orphan_links": 0,
+    "simulation_version": "0.3.0-m3a",
+    "state_changes_indexed": 37885,
+    "world_state_hash": "c5ef2564591eb58f4ce1ba99f3f687969057fc001a83da155fa6e24814e36535"
+   },
+   "OLD_BASELINE_SHA256": null,
+   "OLD_DETERMINISTIC_FIELDS": null,
+   "baseline_path": "tests/baselines/m3b_causal_history_300y_v1/summary.json.json",
+   "byte_differences": [
+    {
+     "class": "TELEMETRY",
+     "path": "$.query_latency_ms.entity_history.single",
+     "run1": "84.69",
+     "run2": "90.74"
+    },
+    {
+     "class": "TELEMETRY",
+     "path": "$.query_latency_ms.episode_history.single",
+     "run1": "178.96",
+     "run2": "178.97"
+    },
+    {
+     "class": "TELEMETRY",
+     "path": "$.query_latency_ms.resource_why.single",
+     "run1": "3.81",
+     "run2": "2.93"
+    },
+    {
+     "class": "TELEMETRY",
+     "path": "$.query_latency_ms.social_why.single",
+     "run1": "2.09",
+     "run2": "1.59"
+    },
+    {
+     "class": "TELEMETRY",
+     "path": "$.query_latency_ms.succession_trace.single",
+     "run1": "4.04",
+     "run2": "2.71"
+    },
+    {
+     "class": "TELEMETRY",
+     "path": "$.query_latency_ms.timeline.single",
+     "run1": "1.89",
+     "run2": "1.98"
+    },
+    {
+     "class": "TELEMETRY",
+     "path": "$.query_latency_ms.why_query.single",
+     "run1": "14.54",
+     "run2": "15.2"
+    },
+    {
+     "class": "TELEMETRY",
+     "path": "$.wall_seconds_queries",
+     "run1": "8.153",
+     "run2": "7.974"
+    }
+   ]
+  },
+  "m3b_causal_history_300y_v1__timeline_samples.json": {
+   "BYTE_EQUAL": true,
+   "CHANGED_VS_OLD": true,
+   "DETERMINISTIC_EQUAL": true,
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN1": "7d054d5e4238229ae7ca5282d36fb2a5992ba3b9f618d5d0bf69507dcdd3ab4f",
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN2": "7d054d5e4238229ae7ca5282d36fb2a5992ba3b9f618d5d0bf69507dcdd3ab4f",
+   "NEW_CANDIDATE_SHA256_RUN1": "c3c045a7bee8128e1dc5d552dd700e7fea72bd5f21ef0eb2d0082c06eaa9d4f3",
+   "NEW_CANDIDATE_SHA256_RUN2": "c3c045a7bee8128e1dc5d552dd700e7fea72bd5f21ef0eb2d0082c06eaa9d4f3",
+   "NEW_DETERMINISTIC_FIELDS": {
+    "[0]": {
+     "effect": {
+      "simulation_version": "0.3.0-m3a"
+     }
+    }
+   },
+   "OLD_BASELINE_SHA256": null,
+   "OLD_DETERMINISTIC_FIELDS": null,
+   "baseline_path": "tests/baselines/m3b_causal_history_300y_v1/timeline_samples.json.json",
+   "byte_differences": []
+  },
+  "m3b_causal_history_300y_v1__why_query_samples.json": {
+   "BYTE_EQUAL": true,
+   "CHANGED_VS_OLD": true,
+   "DETERMINISTIC_EQUAL": true,
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN1": "a6fba7a928086502e2e59da9ec87c12388c72f0fec7745d757dadbb3822c2dd3",
+   "NEW_CANDIDATE_DETERMINISTIC_SHA256_RUN2": "a6fba7a928086502e2e59da9ec87c12388c72f0fec7745d757dadbb3822c2dd3",
+   "NEW_CANDIDATE_SHA256_RUN1": "c13a1b8de3f0269f18315220010f43ba601e0484ae499948b636502ff70a63cd",
+   "NEW_CANDIDATE_SHA256_RUN2": "c13a1b8de3f0269f18315220010f43ba601e0484ae499948b636502ff70a63cd",
+   "NEW_DETERMINISTIC_FIELDS": {},
+   "OLD_BASELINE_SHA256": null,
+   "OLD_DETERMINISTIC_FIELDS": null,
+   "baseline_path": "tests/baselines/m3b_causal_history_300y_v1/why_query_samples.json.json",
+   "byte_differences": []
+  }
+ },
+ "NEW_BASELINE_STATUS": "CANDIDATES_CAPTURED_NOT_WRITTEN",
  "NOTE_ON_OLD_BASELINE": "The old baselines were NOT invalid canon: they faithfully recorded a buggy implementation behaviour that contradicted the already-frozen Tribulation effect application contract.",
  "OLD_BASELINE_INVENTORY": {
   "tests/baselines/m3a_tribulation_synthetic_300y_v1": {

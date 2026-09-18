@@ -1,0 +1,180 @@
+{
+ "assertion": "golden baseline deterministic mismatch: m3b_causal_history_300y_v1/entity_cardinality_audit.json",
+ "candidate": {
+  "by_entity_type": [
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 2,
+    "entity_type": "ecology_feedback_state",
+    "row_count": 3911
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 2,
+    "entity_type": "ecology_state",
+    "row_count": 9765
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 2,
+    "entity_type": "economic_pressure_state",
+    "row_count": 5150
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 39,
+    "entity_type": "households",
+    "row_count": 698
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 1,
+    "entity_type": "institutions",
+    "row_count": 1
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 9,
+    "entity_type": "lineages",
+    "row_count": 538
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 80,
+    "entity_type": "population_groups",
+    "row_count": 29956
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 2,
+    "entity_type": "resource_nodes",
+    "row_count": 2512
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 4,
+    "entity_type": "resource_stocks",
+    "row_count": 6256
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 2,
+    "entity_type": "settlement_social_state",
+    "row_count": 2290
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 2,
+    "entity_type": "social_feedback_state",
+    "row_count": 4928
+   }
+  ],
+  "distinct_domain_entities": 145,
+  "distinct_entities_with_history": 145,
+  "distinct_entity_ids": 145,
+  "entity_history_index_rows": 66005,
+  "graph_node_cardinality": {
+   "distinct_episode_ids_indexed": 30,
+   "distinct_event_ids_indexed": 2224,
+   "distinct_relation_sources": 39862,
+   "distinct_relation_targets": 38055,
+   "distinct_state_change_ids_indexed": 37826,
+   "domain_events_total": 4835,
+   "state_changes_total": 37885
+  },
+  "index_reference_only_types": [],
+  "metric_semantics": "raw index row count; one row per (entity_type, entity_id, link_id); NOT distinct entities",
+  "metric_source_query": "SELECT COUNT(*) FROM entity_history_index WHERE world_id = :w",
+  "metric_source_table": "entity_history_index",
+  "world_id": "MINIWORLD-TEST-001"
+ },
+ "golden": {
+  "by_entity_type": [
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 2,
+    "entity_type": "ecology_feedback_state",
+    "row_count": 3759
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 2,
+    "entity_type": "ecology_state",
+    "row_count": 9810
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 2,
+    "entity_type": "economic_pressure_state",
+    "row_count": 5116
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 30,
+    "entity_type": "households",
+    "row_count": 663
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 1,
+    "entity_type": "institutions",
+    "row_count": 1
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 7,
+    "entity_type": "lineages",
+    "row_count": 537
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 80,
+    "entity_type": "population_groups",
+    "row_count": 29322
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 2,
+    "entity_type": "resource_nodes",
+    "row_count": 2458
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 4,
+    "entity_type": "resource_stocks",
+    "row_count": 6372
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 2,
+    "entity_type": "settlement_social_state",
+    "row_count": 2171
+   },
+   {
+    "classification": "DOMAIN_ENTITY",
+    "distinct_entity_count": 2,
+    "entity_type": "social_feedback_state",
+    "row_count": 4649
+   }
+  ],
+  "distinct_domain_entities": 134,
+  "distinct_entities_with_history": 134,
+  "distinct_entity_ids": 134,
+  "entity_history_index_rows": 64858,
+  "graph_node_cardinality": {
+   "distinct_episode_ids_indexed": 30,
+   "distinct_event_ids_indexed": 2184,
+   "distinct_relation_sources": 39768,
+   "distinct_relation_targets": 37992,
+   "distinct_state_change_ids_indexed": 37759,
+   "domain_events_total": 4779,
+   "state_changes_total": 37818
+  },
+  "index_reference_only_types": [],
+  "metric_semantics": "raw index row count; one row per (entity_type, entity_id, link_id); NOT distinct entities",
+  "metric_source_query": "SELECT COUNT(*) FROM entity_history_index WHERE world_id = :w",
+  "metric_source_table": "entity_history_index",
+  "world_id": "MINIWORLD-TEST-001"
+ },
+ "label": "m3b_causal_history_300y_v1/entity_cardinality_audit.json"
+}

@@ -1,0 +1,26 @@
+{
+ "links_total": 66889,
+ "relations": {
+  "CAUSES": 4800,
+  "TRIGGERS": 0,
+  "RESULTS_IN": 88,
+  "AFFECTS": 23629,
+  "CONTINUES": 37777,
+  "RECOVERS_FROM": 0,
+  "CORRECTS": 0,
+  "SUPERSEDES": 0,
+  "REVERSES": 0,
+  "DECIDED_BY": 29,
+  "PART_OF_EPISODE": 508,
+  "DERIVED_FROM": 58,
+  "MATERIALIZES_IN": 0
+ },
+ "node_kinds": {
+  "EVENT": 24685,
+  "STATE_CHANGE": 108381,
+  "EPISODE": 538,
+  "PLAN": 87,
+  "RESIDUAL": 58,
+  "SUCCESSION": 29
+ }
+}

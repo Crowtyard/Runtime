@@ -1,0 +1,106 @@
+{
+ "assertion": "golden baseline deterministic mismatch: m3b_causal_history_300y_v1/summary.json",
+ "candidate": {
+  "average_chain_depth": 113.918,
+  "causal_history_hash": "d3b8a499257fe40cd7d3f4253438f9a99aca6e7592340a8f6cbdc4fd2ae130ba",
+  "causal_history_hash_schema": "causal-history-hash-v1",
+  "causal_link_id_schema": "causal-link-id-v1",
+  "causal_links": 66889,
+  "cycle_count": 0,
+  "distinct_entities_with_history": 145,
+  "entity_history_index_rows": 66005,
+  "episodes_indexed": 30,
+  "event_stream_hash": "83bdc08f7d46510604c895097bf1a2418e2da246231833e9a213547c71f4b6c7",
+  "fixture_version": "mini_world_v1",
+  "history_schema_version": "history-v1",
+  "incomplete_episodes": 2,
+  "max_chain_depth": 330,
+  "metric_rename": {
+   "NEW_METRIC_NAME": "entity_history_index_rows",
+   "OLD_METRIC_NAME": "entities_with_history",
+   "REASON": "raw index row count (entity,link) pairs, not distinct entities"
+  },
+  "nonterminal_total": 2,
+  "orphan_links": 0,
+  "query_latency_ms": {
+   "entity_history": {
+    "single": 84.69
+   },
+   "episode_history": {
+    "single": 178.96
+   },
+   "resource_why": {
+    "single": 3.81
+   },
+   "social_why": {
+    "single": 2.09
+   },
+   "succession_trace": {
+    "single": 4.04
+   },
+   "timeline": {
+    "single": 1.89
+   },
+   "why_query": {
+    "single": 14.54
+   }
+  },
+  "simulation_version": "0.3.0-m3a",
+  "state_changes_indexed": 37885,
+  "superseded_links": 0,
+  "wall_seconds_queries": 8.153,
+  "world_state_hash": "c5ef2564591eb58f4ce1ba99f3f687969057fc001a83da155fa6e24814e36535"
+ },
+ "golden": {
+  "average_chain_depth": 112.82,
+  "causal_history_hash": "c1293e59d96753e2b3488746f86f176bceb84d2ef6935c9760944c8727046a44",
+  "causal_history_hash_schema": "causal-history-hash-v1",
+  "causal_link_id_schema": "causal-link-id-v1",
+  "causal_links": 65742,
+  "cycle_count": 0,
+  "distinct_entities_with_history": 134,
+  "entity_history_index_rows": 64858,
+  "episodes_indexed": 30,
+  "event_stream_hash": "8b117097d65863b74e6ef486a1959511674feceb838e09cdc837f04ab7bc868a",
+  "fixture_version": "mini_world_v1",
+  "history_schema_version": "history-v1",
+  "incomplete_episodes": 2,
+  "max_chain_depth": 330,
+  "metric_rename": {
+   "NEW_METRIC_NAME": "entity_history_index_rows",
+   "OLD_METRIC_NAME": "entities_with_history",
+   "REASON": "raw index row count (entity,link) pairs, not distinct entities"
+  },
+  "nonterminal_total": 2,
+  "orphan_links": 0,
+  "query_latency_ms": {
+   "entity_history": {
+    "single": 111.04
+   },
+   "episode_history": {
+    "single": 4.86
+   },
+   "resource_why": {
+    "single": 3.96
+   },
+   "social_why": {
+    "single": 1.97
+   },
+   "succession_trace": {
+    "single": 3.72
+   },
+   "timeline": {
+    "single": 2.83
+   },
+   "why_query": {
+    "single": 13.69
+   }
+  },
+  "simulation_version": "0.3.0-m3a",
+  "state_changes_indexed": 37818,
+  "superseded_links": 0,
+  "wall_seconds_queries": 10.663,
+  "world_state_hash": "0fc6ece03ba12c1b919beceef0ad0a44bd978eba88f56cdf9c57e5338809e4da"
+ },
+ "label": "m3b_causal_history_300y_v1/summary.json"
+}

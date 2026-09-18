@@ -1,0 +1,3438 @@
+{
+ "assertion": "golden baseline deterministic mismatch: m3b_causal_history_300y_v1/why_query_samples.json",
+ "candidate": {
+  "A_major_consequences": {
+   "completed_tick": 64000000,
+   "completion": "COMPLETED",
+   "decisions": [],
+   "domain_effects": [
+    {
+     "engine_id": "DEMOGRAPHY",
+     "entity_id": "79",
+     "entity_type": "population_groups",
+     "field": "count",
+     "new_value": {
+      "v": 74
+     },
+     "old_value": {
+      "v": 75
+     },
+     "state_change_id": 6332,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "1",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 229539
+     },
+     "old_value": {
+      "v": 564539
+     },
+     "state_change_id": 6333,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "2",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 362746
+     },
+     "old_value": {
+      "v": 697746
+     },
+     "state_change_id": 6334,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "1",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 16895938846
+     },
+     "old_value": {
+      "v": 17473173918
+     },
+     "state_change_id": 6335,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "6",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 9017064685
+     },
+     "old_value": {
+      "v": 9323843892
+     },
+     "state_change_id": 6336,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "1",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 317170875914
+     },
+     "old_value": {
+      "v": 335983692500
+     },
+     "state_change_id": 6337,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "2",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 4283364666
+     },
+     "old_value": {
+      "v": 4537456997
+     },
+     "state_change_id": 6338,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "SOCIAL",
+     "entity_id": "1",
+     "entity_type": "settlement_social_state",
+     "field": "social_stress",
+     "new_value": {
+      "v": 442709
+     },
+     "old_value": {
+      "v": 241709
+     },
+     "state_change_id": 6339,
+     "tick": 53000000
+    }
+   ],
+   "entered_tick": 50000000,
+   "episode_id": "685734559d85c3d0125b61cc4c18db02",
+   "found": true,
+   "plans": [
+    {
+     "affected_settlements": {
+      "selected": [
+       "TEST-MAIN-A"
+      ]
+     },
+     "ecology_pressure": 500000,
+     "intensity": 67,
+     "plan_id": "1f013035706a957f4e49c94ff074b5b8",
+     "population_risk_den": 4000,
+     "population_risk_num": 67,
+     "resource_damage_den": 1200,
+     "resource_damage_num": 67,
+     "tier": "MAJOR"
+    }
+   ],
+   "profile": {
+    "intensity_range": [
+     50,
+     70
+    ],
+    "profile_id": "TEST_TRIBULATION_PROFILE_002",
+    "theme": "EARTH_VEIN_DISTURBANCE"
+   },
+   "recovery": {
+    "progress_den": 100,
+    "progress_num": 100,
+    "started_tick": 57000000,
+    "status": "IN_PROGRESS"
+   },
+   "residual_changes": [
+    {
+     "change_kind": "environment_condition",
+     "id": 5,
+     "payload": {
+      "permanent": true,
+      "theme": "EARTH_VEIN_DISTURBANCE"
+     },
+     "persistent": true
+    }
+   ],
+   "schedule": {
+    "period_years": 50,
+    "schedule_id": "TEST_TRIBULATION_SCHEDULE_001"
+   },
+   "stage": "NEW_NORMAL",
+   "stage_events": [
+    {
+     "blessed_tick": 50000000,
+     "effect": {
+      "anomaly_signals": [
+       "earth_vein_disturbance"
+      ],
+      "warning_level": "OBSERVED"
+     },
+     "event_type": "TRIBULATION_PRECURSOR_STARTED",
+     "event_uid": "ef04d6dccb79540b7bdaa5c0c1e1730d"
+    },
+    {
+     "blessed_tick": 51000000,
+     "effect": {
+      "stage": "PREPARATION"
+     },
+     "event_type": "TRIBULATION_PREPARATION_STARTED",
+     "event_uid": "6db6a94dbb5a43b7d27f3833456ec1ae"
+    },
+    {
+     "blessed_tick": 53000000,
+     "effect": {
+      "intensity": 67,
+      "tier": "MAJOR"
+     },
+     "event_type": "TRIBULATION_IMPACT_STARTED",
+     "event_uid": "61d48bbe636a339116c0cd35eb9c1c60"
+    },
+    {
+     "blessed_tick": 53000000,
+     "effect": {
+      "domains": [
+       "DEMOGRAPHY",
+       "ECOLOGY",
+       "ECONOMY",
+       "RESOURCE",
+       "SOCIAL"
+      ]
+     },
+     "event_type": "TRIBULATION_IMPACT_APPLIED",
+     "event_uid": "3ddc9582b8efe9cb41121310a140f676"
+    },
+    {
+     "blessed_tick": 55000000,
+     "effect": {
+      "danger_controlled": true
+     },
+     "event_type": "TRIBULATION_STABILIZED",
+     "event_uid": "43ca34082b9ccaf5a54eab44e9b76716"
+    },
+    {
+     "blessed_tick": 56000000,
+     "effect": {
+      "residual": {
+       "environment_condition": true,
+       "production_constraint": true
+      }
+     },
+     "event_type": "TRIBULATION_RESIDUAL_CHANGE_CREATED",
+     "event_uid": "dbf6e63d0b246a95d96eda9935979d88"
+    },
+    {
+     "blessed_tick": 58000000,
+     "effect": {
+      "progress": 33
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "d1580453d98ab42e22c756b705ced707"
+    },
+    {
+     "blessed_tick": 59000000,
+     "effect": {
+      "progress": 66
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "fffe9a850d5407af33194e6cade793ff"
+    },
+    {
+     "blessed_tick": 60000000,
+     "effect": {
+      "progress": 99
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "8ce6c8a711e0504c963e0aea2170b774"
+    },
+    {
+     "blessed_tick": 61000000,
+     "effect": {
+      "progress": 100
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "4b172109ed02dd9698fc09230284d340"
+    },
+    {
+     "blessed_tick": 62000000,
+     "effect": {
+      "candidate_id": "309d0a54ab6445944fadddae7bd9e11d",
+      "resource_node_created": false
+     },
+     "event_type": "RESOURCE_SUCCESSION_CANDIDATE_CREATED",
+     "event_uid": "974063f98acf76bcf404f98170251ef7"
+    },
+    {
+     "blessed_tick": 64000000,
+     "effect": {
+      "world_not_reset": true
+     },
+     "event_type": "TRIBULATION_NEW_NORMAL_REACHED",
+     "event_uid": "59200572747ce89b6c9f834f19bb0546"
+    },
+    {
+     "blessed_tick": 64000000,
+     "effect": {
+      "stage": "NEW_NORMAL"
+     },
+     "event_type": "TRIBULATION_EPISODE_COMPLETED",
+     "event_uid": "1547f17c739cf64fd4c742d5d73007df"
+    }
+   ],
+   "status": "COMPLETED",
+   "succession_candidates": [
+    {
+     "candidate_id": "309d0a54ab6445944fadddae7bd9e11d",
+     "development_status": "NONE",
+     "discovery_status": "UNOBSERVED",
+     "maturation_requirement": 8
+    }
+   ],
+   "targets": {
+    "selected": [
+     "TEST-MAIN-A"
+    ]
+   },
+   "tier": "MAJOR",
+   "transition_tick": 63000000
+  },
+  "B_why_ecology_quality": {
+   "causes": [
+    {
+     "committed_tick": 300000000,
+     "detail": {
+      "blessed_tick": 300000000,
+      "entity_id": "1",
+      "entity_type": "resource_nodes",
+      "field": "remaining_reserve",
+      "new_value": {
+       "v": 12746777037
+      },
+      "old_value": {
+       "v": 13541929257
+      },
+      "state_change_id": 37820
+     },
+     "episode_id": null,
+     "relation": "CAUSES",
+     "source": {
+      "id": "37820",
+      "kind": "STATE_CHANGE"
+     },
+     "status": "ACTIVE",
+     "upstream": [
+      {
+       "committed_tick": 300000000,
+       "detail": {
+        "blessed_tick": 300000000,
+        "cause": {
+         "node_kind": "TEST-ORE-001",
+         "profile_ref": "TEST-RESOURCE-001",
+         "settlement_relation": "TEST-MAIN-A"
+        },
+        "effect": {
+         "efficiency_den": 100,
+         "efficiency_num": 85,
+         "quantity_minor": 795152220,
+         "reserve_after_minor": 12746777037
+        },
+        "event_type": "RESOURCE_EXTRACTED",
+        "event_uid": "a31136c022b94b805e6a8c4d2289aefc"
+       },
+       "episode_id": null,
+       "relation": "AFFECTS",
+       "source": {
+        "id": "a31136c022b94b805e6a8c4d2289aefc",
+        "kind": "EVENT"
+       },
+       "status": "ACTIVE",
+       "upstream": []
+      },
+      {
+       "committed_tick": 300000000,
+       "detail": {
+        "blessed_tick": 299000000,
+        "entity_id": "1",
+        "entity_type": "resource_nodes",
+        "field": "remaining_reserve",
+        "new_value": {
+         "v": 13541929257
+        },
+        "old_value": {
+         "v": 14428773732
+        },
+        "state_change_id": 37691
+       },
+       "episode_id": null,
+       "relation": "CONTINUES",
+       "source": {
+        "id": "37691",
+        "kind": "STATE_CHANGE"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 299000000,
+          "cause": {
+           "node_kind": "TEST-ORE-001",
+           "profile_ref": "TEST-RESOURCE-001",
+           "settlement_relation": "TEST-MAIN-A"
+          },
+          "effect": {
+           "efficiency_den": 100,
+           "efficiency_num": 95,
+           "quantity_minor": 886844475,
+           "reserve_after_minor": 13541929257
+          },
+          "event_type": "RESOURCE_EXTRACTED",
+          "event_uid": "59497c50941c7bd0402cf7aef199b637"
+         },
+         "episode_id": null,
+         "relation": "AFFECTS",
+         "source": {
+          "id": "59497c50941c7bd0402cf7aef199b637",
+          "kind": "EVENT"
+         },
+         "status": "ACTIVE",
+         "upstream": []
+        },
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 298000000,
+          "entity_id": "1",
+          "entity_type": "resource_nodes",
+          "field": "remaining_reserve",
+          "new_value": {
+           "v": 14428773732
+          },
+          "old_value": {
+           "v": 15266977662
+          },
+          "state_change_id": 37567
+         },
+         "episode_id": null,
+         "relation": "CONTINUES",
+         "source": {
+          "id": "37567",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 298000000,
+            "cause": {
+             "node_kind": "TEST-ORE-001",
+             "profile_ref": "TEST-RESOURCE-001",
+             "settlement_relation": "TEST-MAIN-A"
+            },
+            "effect": {
+             "efficiency_den": 100,
+             "efficiency_num": 90,
+             "quantity_minor": 838203930,
+             "reserve_after_minor": 14428773732
+            },
+            "event_type": "RESOURCE_EXTRACTED",
+            "event_uid": "12a57dc29188b06e0b8019f68731cffd"
+           },
+           "episode_id": null,
+           "relation": "AFFECTS",
+           "source": {
+            "id": "12a57dc29188b06e0b8019f68731cffd",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "remaining_reserve",
+            "new_value": {
+             "v": 15266977662
+            },
+            "old_value": {
+             "v": 16149820737
+            },
+            "state_change_id": 37442
+           },
+           "episode_id": null,
+           "relation": "CONTINUES",
+           "source": {
+            "id": "37442",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "committed_tick": 300000000,
+     "detail": {
+      "blessed_tick": 300000000,
+      "entity_id": "1",
+      "entity_type": "resource_nodes",
+      "field": "last_extracted_minor",
+      "new_value": {
+       "v": 795152220
+      },
+      "old_value": {
+       "v": 886844475
+      },
+      "state_change_id": 37821
+     },
+     "episode_id": null,
+     "relation": "CAUSES",
+     "source": {
+      "id": "37821",
+      "kind": "STATE_CHANGE"
+     },
+     "status": "ACTIVE",
+     "upstream": [
+      {
+       "committed_tick": 300000000,
+       "detail": {
+        "blessed_tick": 300000000,
+        "cause": {
+         "node_kind": "TEST-ORE-001",
+         "profile_ref": "TEST-RESOURCE-001",
+         "settlement_relation": "TEST-MAIN-A"
+        },
+        "effect": {
+         "efficiency_den": 100,
+         "efficiency_num": 85,
+         "quantity_minor": 795152220,
+         "reserve_after_minor": 12746777037
+        },
+        "event_type": "RESOURCE_EXTRACTED",
+        "event_uid": "a31136c022b94b805e6a8c4d2289aefc"
+       },
+       "episode_id": null,
+       "relation": "AFFECTS",
+       "source": {
+        "id": "a31136c022b94b805e6a8c4d2289aefc",
+        "kind": "EVENT"
+       },
+       "status": "ACTIVE",
+       "upstream": []
+      },
+      {
+       "committed_tick": 300000000,
+       "detail": {
+        "blessed_tick": 299000000,
+        "entity_id": "1",
+        "entity_type": "resource_nodes",
+        "field": "last_extracted_minor",
+        "new_value": {
+         "v": 886844475
+        },
+        "old_value": {
+         "v": 838203930
+        },
+        "state_change_id": 37692
+       },
+       "episode_id": null,
+       "relation": "CONTINUES",
+       "source": {
+        "id": "37692",
+        "kind": "STATE_CHANGE"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 299000000,
+          "cause": {
+           "node_kind": "TEST-ORE-001",
+           "profile_ref": "TEST-RESOURCE-001",
+           "settlement_relation": "TEST-MAIN-A"
+          },
+          "effect": {
+           "efficiency_den": 100,
+           "efficiency_num": 95,
+           "quantity_minor": 886844475,
+           "reserve_after_minor": 13541929257
+          },
+          "event_type": "RESOURCE_EXTRACTED",
+          "event_uid": "59497c50941c7bd0402cf7aef199b637"
+         },
+         "episode_id": null,
+         "relation": "AFFECTS",
+         "source": {
+          "id": "59497c50941c7bd0402cf7aef199b637",
+          "kind": "EVENT"
+         },
+         "status": "ACTIVE",
+         "upstream": []
+        },
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 298000000,
+          "entity_id": "1",
+          "entity_type": "resource_nodes",
+          "field": "last_extracted_minor",
+          "new_value": {
+           "v": 838203930
+          },
+          "old_value": {
+           "v": 882843075
+          },
+          "state_change_id": 37568
+         },
+         "episode_id": null,
+         "relation": "CONTINUES",
+         "source": {
+          "id": "37568",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 298000000,
+            "cause": {
+             "node_kind": "TEST-ORE-001",
+             "profile_ref": "TEST-RESOURCE-001",
+             "settlement_relation": "TEST-MAIN-A"
+            },
+            "effect": {
+             "efficiency_den": 100,
+             "efficiency_num": 90,
+             "quantity_minor": 838203930,
+             "reserve_after_minor": 14428773732
+            },
+            "event_type": "RESOURCE_EXTRACTED",
+            "event_uid": "12a57dc29188b06e0b8019f68731cffd"
+           },
+           "episode_id": null,
+           "relation": "AFFECTS",
+           "source": {
+            "id": "12a57dc29188b06e0b8019f68731cffd",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "last_extracted_minor",
+            "new_value": {
+             "v": 882843075
+            },
+            "old_value": {
+             "v": 927427500
+            },
+            "state_change_id": 37443
+           },
+           "episode_id": null,
+           "relation": "CONTINUES",
+           "source": {
+            "id": "37443",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "committed_tick": 300000000,
+     "detail": {
+      "blessed_tick": 299000000,
+      "entity_id": "1",
+      "entity_type": "ecology_state",
+      "field": "habitat_quality",
+      "new_value": {
+       "v": 118244
+      },
+      "old_value": {
+       "v": 111735
+      },
+      "state_change_id": 37712
+     },
+     "episode_id": null,
+     "relation": "CONTINUES",
+     "source": {
+      "id": "37712",
+      "kind": "STATE_CHANGE"
+     },
+     "status": "ACTIVE",
+     "upstream": [
+      {
+       "committed_tick": 299000000,
+       "detail": {
+        "blessed_tick": 299000000,
+        "entity_id": "1",
+        "entity_type": "resource_nodes",
+        "field": "remaining_reserve",
+        "new_value": {
+         "v": 13541929257
+        },
+        "old_value": {
+         "v": 14428773732
+        },
+        "state_change_id": 37691
+       },
+       "episode_id": null,
+       "relation": "CAUSES",
+       "source": {
+        "id": "37691",
+        "kind": "STATE_CHANGE"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 299000000,
+          "cause": {
+           "node_kind": "TEST-ORE-001",
+           "profile_ref": "TEST-RESOURCE-001",
+           "settlement_relation": "TEST-MAIN-A"
+          },
+          "effect": {
+           "efficiency_den": 100,
+           "efficiency_num": 95,
+           "quantity_minor": 886844475,
+           "reserve_after_minor": 13541929257
+          },
+          "event_type": "RESOURCE_EXTRACTED",
+          "event_uid": "59497c50941c7bd0402cf7aef199b637"
+         },
+         "episode_id": null,
+         "relation": "AFFECTS",
+         "source": {
+          "id": "59497c50941c7bd0402cf7aef199b637",
+          "kind": "EVENT"
+         },
+         "status": "ACTIVE",
+         "upstream": []
+        },
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 298000000,
+          "entity_id": "1",
+          "entity_type": "resource_nodes",
+          "field": "remaining_reserve",
+          "new_value": {
+           "v": 14428773732
+          },
+          "old_value": {
+           "v": 15266977662
+          },
+          "state_change_id": 37567
+         },
+         "episode_id": null,
+         "relation": "CONTINUES",
+         "source": {
+          "id": "37567",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 298000000,
+            "cause": {
+             "node_kind": "TEST-ORE-001",
+             "profile_ref": "TEST-RESOURCE-001",
+             "settlement_relation": "TEST-MAIN-A"
+            },
+            "effect": {
+             "efficiency_den": 100,
+             "efficiency_num": 90,
+             "quantity_minor": 838203930,
+             "reserve_after_minor": 14428773732
+            },
+            "event_type": "RESOURCE_EXTRACTED",
+            "event_uid": "12a57dc29188b06e0b8019f68731cffd"
+           },
+           "episode_id": null,
+           "relation": "AFFECTS",
+           "source": {
+            "id": "12a57dc29188b06e0b8019f68731cffd",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "remaining_reserve",
+            "new_value": {
+             "v": 15266977662
+            },
+            "old_value": {
+             "v": 16149820737
+            },
+            "state_change_id": 37442
+           },
+           "episode_id": null,
+           "relation": "CONTINUES",
+           "source": {
+            "id": "37442",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "committed_tick": 299000000,
+       "detail": {
+        "blessed_tick": 299000000,
+        "entity_id": "1",
+        "entity_type": "resource_nodes",
+        "field": "last_extracted_minor",
+        "new_value": {
+         "v": 886844475
+        },
+        "old_value": {
+         "v": 838203930
+        },
+        "state_change_id": 37692
+       },
+       "episode_id": null,
+       "relation": "CAUSES",
+       "source": {
+        "id": "37692",
+        "kind": "STATE_CHANGE"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 299000000,
+          "cause": {
+           "node_kind": "TEST-ORE-001",
+           "profile_ref": "TEST-RESOURCE-001",
+           "settlement_relation": "TEST-MAIN-A"
+          },
+          "effect": {
+           "efficiency_den": 100,
+           "efficiency_num": 95,
+           "quantity_minor": 886844475,
+           "reserve_after_minor": 13541929257
+          },
+          "event_type": "RESOURCE_EXTRACTED",
+          "event_uid": "59497c50941c7bd0402cf7aef199b637"
+         },
+         "episode_id": null,
+         "relation": "AFFECTS",
+         "source": {
+          "id": "59497c50941c7bd0402cf7aef199b637",
+          "kind": "EVENT"
+         },
+         "status": "ACTIVE",
+         "upstream": []
+        },
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 298000000,
+          "entity_id": "1",
+          "entity_type": "resource_nodes",
+          "field": "last_extracted_minor",
+          "new_value": {
+           "v": 838203930
+          },
+          "old_value": {
+           "v": 882843075
+          },
+          "state_change_id": 37568
+         },
+         "episode_id": null,
+         "relation": "CONTINUES",
+         "source": {
+          "id": "37568",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 298000000,
+            "cause": {
+             "node_kind": "TEST-ORE-001",
+             "profile_ref": "TEST-RESOURCE-001",
+             "settlement_relation": "TEST-MAIN-A"
+            },
+            "effect": {
+             "efficiency_den": 100,
+             "efficiency_num": 90,
+             "quantity_minor": 838203930,
+             "reserve_after_minor": 14428773732
+            },
+            "event_type": "RESOURCE_EXTRACTED",
+            "event_uid": "12a57dc29188b06e0b8019f68731cffd"
+           },
+           "episode_id": null,
+           "relation": "AFFECTS",
+           "source": {
+            "id": "12a57dc29188b06e0b8019f68731cffd",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "last_extracted_minor",
+            "new_value": {
+             "v": 882843075
+            },
+            "old_value": {
+             "v": 927427500
+            },
+            "state_change_id": 37443
+           },
+           "episode_id": null,
+           "relation": "CONTINUES",
+           "source": {
+            "id": "37443",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "committed_tick": 299000000,
+       "detail": {
+        "blessed_tick": 298000000,
+        "entity_id": "1",
+        "entity_type": "ecology_state",
+        "field": "habitat_quality",
+        "new_value": {
+         "v": 111735
+        },
+        "old_value": {
+         "v": 104459
+        },
+        "state_change_id": 37589
+       },
+       "episode_id": null,
+       "relation": "CONTINUES",
+       "source": {
+        "id": "37589",
+        "kind": "STATE_CHANGE"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 298000000,
+         "detail": {
+          "blessed_tick": 298000000,
+          "entity_id": "1",
+          "entity_type": "resource_nodes",
+          "field": "remaining_reserve",
+          "new_value": {
+           "v": 14428773732
+          },
+          "old_value": {
+           "v": 15266977662
+          },
+          "state_change_id": 37567
+         },
+         "episode_id": null,
+         "relation": "CAUSES",
+         "source": {
+          "id": "37567",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 298000000,
+            "cause": {
+             "node_kind": "TEST-ORE-001",
+             "profile_ref": "TEST-RESOURCE-001",
+             "settlement_relation": "TEST-MAIN-A"
+            },
+            "effect": {
+             "efficiency_den": 100,
+             "efficiency_num": 90,
+             "quantity_minor": 838203930,
+             "reserve_after_minor": 14428773732
+            },
+            "event_type": "RESOURCE_EXTRACTED",
+            "event_uid": "12a57dc29188b06e0b8019f68731cffd"
+           },
+           "episode_id": null,
+           "relation": "AFFECTS",
+           "source": {
+            "id": "12a57dc29188b06e0b8019f68731cffd",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "remaining_reserve",
+            "new_value": {
+             "v": 15266977662
+            },
+            "old_value": {
+             "v": 16149820737
+            },
+            "state_change_id": 37442
+           },
+           "episode_id": null,
+           "relation": "CONTINUES",
+           "source": {
+            "id": "37442",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        },
+        {
+         "committed_tick": 298000000,
+         "detail": {
+          "blessed_tick": 298000000,
+          "entity_id": "1",
+          "entity_type": "resource_nodes",
+          "field": "last_extracted_minor",
+          "new_value": {
+           "v": 838203930
+          },
+          "old_value": {
+           "v": 882843075
+          },
+          "state_change_id": 37568
+         },
+         "episode_id": null,
+         "relation": "CAUSES",
+         "source": {
+          "id": "37568",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 298000000,
+            "cause": {
+             "node_kind": "TEST-ORE-001",
+             "profile_ref": "TEST-RESOURCE-001",
+             "settlement_relation": "TEST-MAIN-A"
+            },
+            "effect": {
+             "efficiency_den": 100,
+             "efficiency_num": 90,
+             "quantity_minor": 838203930,
+             "reserve_after_minor": 14428773732
+            },
+            "event_type": "RESOURCE_EXTRACTED",
+            "event_uid": "12a57dc29188b06e0b8019f68731cffd"
+           },
+           "episode_id": null,
+           "relation": "AFFECTS",
+           "source": {
+            "id": "12a57dc29188b06e0b8019f68731cffd",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "last_extracted_minor",
+            "new_value": {
+             "v": 882843075
+            },
+            "old_value": {
+             "v": 927427500
+            },
+            "state_change_id": 37443
+           },
+           "episode_id": null,
+           "relation": "CONTINUES",
+           "source": {
+            "id": "37443",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        },
+        {
+         "committed_tick": 298000000,
+         "detail": {
+          "blessed_tick": 297000000,
+          "entity_id": "1",
+          "entity_type": "ecology_state",
+          "field": "habitat_quality",
+          "new_value": {
+           "v": 104459
+          },
+          "old_value": {
+           "v": 97695
+          },
+          "state_change_id": 37464
+         },
+         "episode_id": null,
+         "relation": "CONTINUES",
+         "source": {
+          "id": "37464",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 297000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "remaining_reserve",
+            "new_value": {
+             "v": 15266977662
+            },
+            "old_value": {
+             "v": 16149820737
+            },
+            "state_change_id": 37442
+           },
+           "episode_id": null,
+           "relation": "CAUSES",
+           "source": {
+            "id": "37442",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 297000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "last_extracted_minor",
+            "new_value": {
+             "v": 882843075
+            },
+            "old_value": {
+             "v": 927427500
+            },
+            "state_change_id": 37443
+           },
+           "episode_id": null,
+           "relation": "CAUSES",
+           "source": {
+            "id": "37443",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 297000000,
+           "detail": {
+            "blessed_tick": 296000000,
+            "entity_id": "1",
+            "entity_type": "ecology_state",
+            "field": "habitat_quality",
+            "new_value": {
+             "v": 97695
+            },
+            "old_value": {
+             "v": 91425
+            },
+            "state_change_id": 37327
+           },
+           "episode_id": null,
+           "relation": "CONTINUES",
+           "source": {
+            "id": "37327",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "current_value": 125849,
+   "current_value_tick": 300000000,
+   "entity_id": "1",
+   "entity_type": "ecology_state",
+   "field": "habitat_quality",
+   "last_state_change": {
+    "blessed_tick": 300000000,
+    "engine_id": "ECOLOGY",
+    "episode_id": null,
+    "event_ref": null,
+    "new_value": {
+     "v": 125849
+    },
+    "old_value": {
+     "v": 118244
+    },
+    "owner_decision_id": null,
+    "simulation_run_id": "8a0e0cf231938422e588058d5c81a50f",
+    "state_change_id": 37837
+   },
+   "nodes_visited": 22,
+   "truncated": false
+  },
+  "C_why_resource_reserve": {
+   "causes": [
+    {
+     "committed_tick": 300000000,
+     "detail": {
+      "blessed_tick": 300000000,
+      "cause": {
+       "node_kind": "TEST-ORE-001",
+       "profile_ref": "TEST-RESOURCE-001",
+       "settlement_relation": "TEST-MAIN-A"
+      },
+      "effect": {
+       "efficiency_den": 100,
+       "efficiency_num": 85,
+       "quantity_minor": 795152220,
+       "reserve_after_minor": 12746777037
+      },
+      "event_type": "RESOURCE_EXTRACTED",
+      "event_uid": "a31136c022b94b805e6a8c4d2289aefc"
+     },
+     "episode_id": null,
+     "relation": "AFFECTS",
+     "source": {
+      "id": "a31136c022b94b805e6a8c4d2289aefc",
+      "kind": "EVENT"
+     },
+     "status": "ACTIVE",
+     "upstream": []
+    },
+    {
+     "committed_tick": 300000000,
+     "detail": {
+      "blessed_tick": 299000000,
+      "entity_id": "1",
+      "entity_type": "resource_nodes",
+      "field": "remaining_reserve",
+      "new_value": {
+       "v": 13541929257
+      },
+      "old_value": {
+       "v": 14428773732
+      },
+      "state_change_id": 37691
+     },
+     "episode_id": null,
+     "relation": "CONTINUES",
+     "source": {
+      "id": "37691",
+      "kind": "STATE_CHANGE"
+     },
+     "status": "ACTIVE",
+     "upstream": [
+      {
+       "committed_tick": 299000000,
+       "detail": {
+        "blessed_tick": 299000000,
+        "cause": {
+         "node_kind": "TEST-ORE-001",
+         "profile_ref": "TEST-RESOURCE-001",
+         "settlement_relation": "TEST-MAIN-A"
+        },
+        "effect": {
+         "efficiency_den": 100,
+         "efficiency_num": 95,
+         "quantity_minor": 886844475,
+         "reserve_after_minor": 13541929257
+        },
+        "event_type": "RESOURCE_EXTRACTED",
+        "event_uid": "59497c50941c7bd0402cf7aef199b637"
+       },
+       "episode_id": null,
+       "relation": "AFFECTS",
+       "source": {
+        "id": "59497c50941c7bd0402cf7aef199b637",
+        "kind": "EVENT"
+       },
+       "status": "ACTIVE",
+       "upstream": []
+      },
+      {
+       "committed_tick": 299000000,
+       "detail": {
+        "blessed_tick": 298000000,
+        "entity_id": "1",
+        "entity_type": "resource_nodes",
+        "field": "remaining_reserve",
+        "new_value": {
+         "v": 14428773732
+        },
+        "old_value": {
+         "v": 15266977662
+        },
+        "state_change_id": 37567
+       },
+       "episode_id": null,
+       "relation": "CONTINUES",
+       "source": {
+        "id": "37567",
+        "kind": "STATE_CHANGE"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 298000000,
+         "detail": {
+          "blessed_tick": 298000000,
+          "cause": {
+           "node_kind": "TEST-ORE-001",
+           "profile_ref": "TEST-RESOURCE-001",
+           "settlement_relation": "TEST-MAIN-A"
+          },
+          "effect": {
+           "efficiency_den": 100,
+           "efficiency_num": 90,
+           "quantity_minor": 838203930,
+           "reserve_after_minor": 14428773732
+          },
+          "event_type": "RESOURCE_EXTRACTED",
+          "event_uid": "12a57dc29188b06e0b8019f68731cffd"
+         },
+         "episode_id": null,
+         "relation": "AFFECTS",
+         "source": {
+          "id": "12a57dc29188b06e0b8019f68731cffd",
+          "kind": "EVENT"
+         },
+         "status": "ACTIVE"
+        },
+        {
+         "committed_tick": 298000000,
+         "detail": {
+          "blessed_tick": 297000000,
+          "entity_id": "1",
+          "entity_type": "resource_nodes",
+          "field": "remaining_reserve",
+          "new_value": {
+           "v": 15266977662
+          },
+          "old_value": {
+           "v": 16149820737
+          },
+          "state_change_id": 37442
+         },
+         "episode_id": null,
+         "relation": "CONTINUES",
+         "source": {
+          "id": "37442",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "current_value": 12746777037,
+   "current_value_tick": 300000000,
+   "entity_id": "1",
+   "entity_type": "resource_nodes",
+   "field": "remaining_reserve",
+   "last_state_change": {
+    "blessed_tick": 300000000,
+    "engine_id": "RESOURCE",
+    "episode_id": null,
+    "event_ref": "a31136c022b94b805e6a8c4d2289aefc",
+    "new_value": {
+     "v": 12746777037
+    },
+    "old_value": {
+     "v": 13541929257
+    },
+    "owner_decision_id": null,
+    "simulation_run_id": "8a0e0cf231938422e588058d5c81a50f",
+    "state_change_id": 37820
+   },
+   "nodes_visited": 5,
+   "truncated": false
+  },
+  "D_why_social_stress": {
+   "causes": [
+    {
+     "committed_tick": 300000000,
+     "detail": {
+      "blessed_tick": 299000000,
+      "entity_id": "1",
+      "entity_type": "settlement_social_state",
+      "field": "social_stress",
+      "new_value": {
+       "v": 240648
+      },
+      "old_value": {
+       "v": 233375
+      },
+      "state_change_id": 37741
+     },
+     "episode_id": null,
+     "relation": "CONTINUES",
+     "source": {
+      "id": "37741",
+      "kind": "STATE_CHANGE"
+     },
+     "status": "ACTIVE",
+     "upstream": [
+      {
+       "committed_tick": 299000000,
+       "detail": {
+        "blessed_tick": 298000000,
+        "entity_id": "1",
+        "entity_type": "settlement_social_state",
+        "field": "social_stress",
+        "new_value": {
+         "v": 233375
+        },
+        "old_value": {
+         "v": 241516
+        },
+        "state_change_id": 37615
+       },
+       "episode_id": null,
+       "relation": "CONTINUES",
+       "source": {
+        "id": "37615",
+        "kind": "STATE_CHANGE"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 298000000,
+         "detail": {
+          "blessed_tick": 297000000,
+          "entity_id": "1",
+          "entity_type": "settlement_social_state",
+          "field": "social_stress",
+          "new_value": {
+           "v": 241516
+          },
+          "old_value": {
+           "v": 245068
+          },
+          "state_change_id": 37489
+         },
+         "episode_id": null,
+         "relation": "CONTINUES",
+         "source": {
+          "id": "37489",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "current_value": 229373,
+   "current_value_tick": 300000000,
+   "entity_id": "1",
+   "entity_type": "settlement_social_state",
+   "field": "social_stress",
+   "last_state_change": {
+    "blessed_tick": 300000000,
+    "engine_id": "SOCIAL",
+    "episode_id": null,
+    "event_ref": null,
+    "new_value": {
+     "v": 229373
+    },
+    "old_value": {
+     "v": 240648
+    },
+    "owner_decision_id": null,
+    "simulation_run_id": "8a0e0cf231938422e588058d5c81a50f",
+    "state_change_id": 37865
+   },
+   "nodes_visited": 3,
+   "truncated": false
+  },
+  "E_succession_trace": {
+   "causes": [
+    {
+     "committed_tick": 20000000,
+     "detail": {
+      "change_kind": "environment_condition",
+      "id": 1,
+      "payload": {
+       "permanent": true,
+       "theme": "ECOLOGICAL_STRESS"
+      }
+     },
+     "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+     "relation": "DERIVED_FROM",
+     "source": {
+      "id": "1",
+      "kind": "RESIDUAL"
+     },
+     "status": "ACTIVE",
+     "upstream": [
+      {
+       "committed_tick": 16000000,
+       "detail": {
+        "blessed_tick": 13000000,
+        "cause": {
+         "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+         "plan_id": "2a4005c4e7aa22805d3fa69b7a7c4ad7"
+        },
+        "effect": {
+         "domains": [
+          "DEMOGRAPHY",
+          "ECOLOGY",
+          "ECONOMY",
+          "RESOURCE",
+          "SOCIAL"
+         ]
+        },
+        "event_type": "TRIBULATION_IMPACT_APPLIED",
+        "event_uid": "79c60072946e93f882885a8c66ee353c"
+       },
+       "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+       "relation": "DERIVED_FROM",
+       "source": {
+        "id": "79c60072946e93f882885a8c66ee353c",
+        "kind": "EVENT"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 13000000,
+         "detail": {
+          "intensity": 25,
+          "plan_id": "2a4005c4e7aa22805d3fa69b7a7c4ad7",
+          "tier": "REGULAR"
+         },
+         "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+         "relation": "RESULTS_IN",
+         "source": {
+          "id": "2a4005c4e7aa22805d3fa69b7a7c4ad7",
+          "kind": "PLAN"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 13000000,
+           "detail": {
+            "blessed_tick": 12000000,
+            "cause": {
+             "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed"
+            },
+            "effect": {
+             "policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY"
+            },
+            "event_type": "AUTONOMOUS_RESPONSE_SELECTED",
+            "event_uid": "341d2de93db1da98293676bf890df7b4"
+           },
+           "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+           "relation": "DECIDED_BY",
+           "source": {
+            "id": "341d2de93db1da98293676bf890df7b4",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        },
+        {
+         "committed_tick": 13000000,
+         "detail": {
+          "blessed_tick": 13000000,
+          "cause": {
+           "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+           "plan_id": "2a4005c4e7aa22805d3fa69b7a7c4ad7"
+          },
+          "effect": {
+           "intensity": 25,
+           "tier": "REGULAR"
+          },
+          "event_type": "TRIBULATION_IMPACT_STARTED",
+          "event_uid": "79e0cc057e4b5b4c8e0864e74dbd86c5"
+         },
+         "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+         "relation": "CONTINUES",
+         "source": {
+          "id": "79e0cc057e4b5b4c8e0864e74dbd86c5",
+          "kind": "EVENT"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 13000000,
+           "detail": {
+            "intensity": 25,
+            "plan_id": "2a4005c4e7aa22805d3fa69b7a7c4ad7",
+            "tier": "REGULAR"
+           },
+           "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+           "relation": "RESULTS_IN",
+           "source": {
+            "id": "2a4005c4e7aa22805d3fa69b7a7c4ad7",
+            "kind": "PLAN"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 13000000,
+           "detail": {
+            "blessed_tick": 11000000,
+            "cause": {
+             "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed"
+            },
+            "effect": {
+             "stage": "PREPARATION"
+            },
+            "event_type": "TRIBULATION_PREPARATION_STARTED",
+            "event_uid": "36be67293a24aa864691011db11ca017"
+           },
+           "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+           "relation": "CONTINUES",
+           "source": {
+            "id": "36be67293a24aa864691011db11ca017",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "node": {
+    "id": "a812c2f2d321439342c2524d5d042bf3",
+    "kind": "SUCCESSION"
+   },
+   "nodes_visited": 5,
+   "truncated": false
+  },
+  "F_final_episode_stage": {
+   "completed_tick": null,
+   "completion": "INCOMPLETE",
+   "decisions": [],
+   "domain_effects": [],
+   "entered_tick": 300000000,
+   "episode_id": "dc35b55df55bc4c7d159bdc6aee72428",
+   "found": true,
+   "plans": [],
+   "profile": {
+    "intensity_range": [
+     80,
+     100
+    ],
+    "profile_id": "TEST_TRIBULATION_PROFILE_003",
+    "theme": "SPIRIT_TIDE"
+   },
+   "recovery": null,
+   "residual_changes": [],
+   "schedule": {
+    "period_years": 100,
+    "schedule_id": "TEST_TRIBULATION_SCHEDULE_001"
+   },
+   "stage": "PRECURSOR",
+   "stage_events": [
+    {
+     "blessed_tick": 300000000,
+     "effect": {
+      "anomaly_signals": [
+       "spirit_tide"
+      ],
+      "warning_level": "OBSERVED"
+     },
+     "event_type": "TRIBULATION_PRECURSOR_STARTED",
+     "event_uid": "2e693aff145bd4efaffaa49f7014a3bc"
+    }
+   ],
+   "status": "ACTIVE",
+   "succession_candidates": [],
+   "targets": {
+    "selected": [
+     "TEST-SATELLITE-B"
+    ]
+   },
+   "tier": "CENTENNIAL",
+   "transition_tick": 301000000
+  }
+ },
+ "golden": {
+  "A_major_consequences": {
+   "completed_tick": 64000000,
+   "completion": "COMPLETED",
+   "decisions": [],
+   "domain_effects": [
+    {
+     "engine_id": "DEMOGRAPHY",
+     "entity_id": "79",
+     "entity_type": "population_groups",
+     "field": "count",
+     "new_value": {
+      "v": 73
+     },
+     "old_value": {
+      "v": 74
+     },
+     "state_change_id": 6379,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "1",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 421275
+     },
+     "old_value": {
+      "v": 756275
+     },
+     "state_change_id": 6380,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECOLOGY",
+     "entity_id": "2",
+     "entity_type": "ecology_state",
+     "field": "habitat_quality",
+     "new_value": {
+      "v": 505960
+     },
+     "old_value": {
+      "v": 840960
+     },
+     "state_change_id": 6381,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "1",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 18064879495
+     },
+     "old_value": {
+      "v": 18691028965
+     },
+     "state_change_id": 6382,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "ECONOMY",
+     "entity_id": "6",
+     "entity_type": "resource_stocks",
+     "field": "quantity",
+     "new_value": {
+      "v": 9093438061
+     },
+     "old_value": {
+      "v": 9408627067
+     },
+     "state_change_id": 6383,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "1",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 325613786819
+     },
+     "old_value": {
+      "v": 344868971035
+     },
+     "state_change_id": 6384,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "RESOURCE",
+     "entity_id": "2",
+     "entity_type": "resource_nodes",
+     "field": "remaining_reserve",
+     "new_value": {
+      "v": 4720833334
+     },
+     "old_value": {
+      "v": 5000000000
+     },
+     "state_change_id": 6385,
+     "tick": 53000000
+    },
+    {
+     "engine_id": "SOCIAL",
+     "entity_id": "1",
+     "entity_type": "settlement_social_state",
+     "field": "social_stress",
+     "new_value": {
+      "v": 440541
+     },
+     "old_value": {
+      "v": 239541
+     },
+     "state_change_id": 6386,
+     "tick": 53000000
+    }
+   ],
+   "entered_tick": 50000000,
+   "episode_id": "685734559d85c3d0125b61cc4c18db02",
+   "found": true,
+   "plans": [
+    {
+     "affected_settlements": {
+      "selected": [
+       "TEST-MAIN-A"
+      ]
+     },
+     "ecology_pressure": 500000,
+     "intensity": 67,
+     "plan_id": "1f013035706a957f4e49c94ff074b5b8",
+     "population_risk_den": 4000,
+     "population_risk_num": 67,
+     "resource_damage_den": 1200,
+     "resource_damage_num": 67,
+     "tier": "MAJOR"
+    }
+   ],
+   "profile": {
+    "intensity_range": [
+     50,
+     70
+    ],
+    "profile_id": "TEST_TRIBULATION_PROFILE_002",
+    "theme": "EARTH_VEIN_DISTURBANCE"
+   },
+   "recovery": {
+    "progress_den": 100,
+    "progress_num": 100,
+    "started_tick": 57000000,
+    "status": "IN_PROGRESS"
+   },
+   "residual_changes": [
+    {
+     "change_kind": "environment_condition",
+     "id": 5,
+     "payload": {
+      "permanent": true,
+      "theme": "EARTH_VEIN_DISTURBANCE"
+     },
+     "persistent": true
+    }
+   ],
+   "schedule": {
+    "period_years": 50,
+    "schedule_id": "TEST_TRIBULATION_SCHEDULE_001"
+   },
+   "stage": "NEW_NORMAL",
+   "stage_events": [
+    {
+     "blessed_tick": 50000000,
+     "effect": {
+      "anomaly_signals": [
+       "earth_vein_disturbance"
+      ],
+      "warning_level": "OBSERVED"
+     },
+     "event_type": "TRIBULATION_PRECURSOR_STARTED",
+     "event_uid": "ef04d6dccb79540b7bdaa5c0c1e1730d"
+    },
+    {
+     "blessed_tick": 51000000,
+     "effect": {
+      "stage": "PREPARATION"
+     },
+     "event_type": "TRIBULATION_PREPARATION_STARTED",
+     "event_uid": "6db6a94dbb5a43b7d27f3833456ec1ae"
+    },
+    {
+     "blessed_tick": 53000000,
+     "effect": {
+      "intensity": 67,
+      "tier": "MAJOR"
+     },
+     "event_type": "TRIBULATION_IMPACT_STARTED",
+     "event_uid": "61d48bbe636a339116c0cd35eb9c1c60"
+    },
+    {
+     "blessed_tick": 53000000,
+     "effect": {
+      "domains": [
+       "DEMOGRAPHY",
+       "ECOLOGY",
+       "ECONOMY",
+       "RESOURCE",
+       "SOCIAL"
+      ]
+     },
+     "event_type": "TRIBULATION_IMPACT_APPLIED",
+     "event_uid": "3ddc9582b8efe9cb41121310a140f676"
+    },
+    {
+     "blessed_tick": 55000000,
+     "effect": {
+      "danger_controlled": true
+     },
+     "event_type": "TRIBULATION_STABILIZED",
+     "event_uid": "43ca34082b9ccaf5a54eab44e9b76716"
+    },
+    {
+     "blessed_tick": 56000000,
+     "effect": {
+      "residual": {
+       "environment_condition": true,
+       "production_constraint": true
+      }
+     },
+     "event_type": "TRIBULATION_RESIDUAL_CHANGE_CREATED",
+     "event_uid": "dbf6e63d0b246a95d96eda9935979d88"
+    },
+    {
+     "blessed_tick": 58000000,
+     "effect": {
+      "progress": 33
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "d1580453d98ab42e22c756b705ced707"
+    },
+    {
+     "blessed_tick": 59000000,
+     "effect": {
+      "progress": 66
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "fffe9a850d5407af33194e6cade793ff"
+    },
+    {
+     "blessed_tick": 60000000,
+     "effect": {
+      "progress": 99
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "8ce6c8a711e0504c963e0aea2170b774"
+    },
+    {
+     "blessed_tick": 61000000,
+     "effect": {
+      "progress": 100
+     },
+     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
+     "event_uid": "4b172109ed02dd9698fc09230284d340"
+    },
+    {
+     "blessed_tick": 62000000,
+     "effect": {
+      "candidate_id": "309d0a54ab6445944fadddae7bd9e11d",
+      "resource_node_created": false
+     },
+     "event_type": "RESOURCE_SUCCESSION_CANDIDATE_CREATED",
+     "event_uid": "974063f98acf76bcf404f98170251ef7"
+    },
+    {
+     "blessed_tick": 64000000,
+     "effect": {
+      "world_not_reset": true
+     },
+     "event_type": "TRIBULATION_NEW_NORMAL_REACHED",
+     "event_uid": "e5009859f6f0fce63a507d29c45f2b19"
+    },
+    {
+     "blessed_tick": 64000000,
+     "effect": {
+      "stage": "NEW_NORMAL"
+     },
+     "event_type": "TRIBULATION_EPISODE_COMPLETED",
+     "event_uid": "7d6e3fc64f9e1c091224bcd8e70d2c85"
+    }
+   ],
+   "status": "COMPLETED",
+   "succession_candidates": [
+    {
+     "candidate_id": "309d0a54ab6445944fadddae7bd9e11d",
+     "development_status": "NONE",
+     "discovery_status": "UNOBSERVED",
+     "maturation_requirement": 8
+    }
+   ],
+   "targets": {
+    "selected": [
+     "TEST-MAIN-A"
+    ]
+   },
+   "tier": "MAJOR",
+   "transition_tick": 63000000
+  },
+  "B_why_ecology_quality": {
+   "causes": [
+    {
+     "committed_tick": 300000000,
+     "detail": {
+      "blessed_tick": 300000000,
+      "entity_id": "1",
+      "entity_type": "resource_nodes",
+      "field": "remaining_reserve",
+      "new_value": {
+       "v": 94753108600
+      },
+      "old_value": {
+       "v": 95672191075
+      },
+      "state_change_id": 37750
+     },
+     "episode_id": null,
+     "relation": "CAUSES",
+     "source": {
+      "id": "37750",
+      "kind": "STATE_CHANGE"
+     },
+     "status": "ACTIVE",
+     "upstream": [
+      {
+       "committed_tick": 300000000,
+       "detail": {
+        "blessed_tick": 300000000,
+        "cause": {
+         "node_kind": "TEST-ORE-001",
+         "profile_ref": "TEST-RESOURCE-001",
+         "settlement_relation": "TEST-MAIN-A"
+        },
+        "effect": {
+         "efficiency_den": 100,
+         "efficiency_num": 85,
+         "quantity_minor": 919082475,
+         "reserve_after_minor": 94753108600
+        },
+        "event_type": "RESOURCE_EXTRACTED",
+        "event_uid": "a31136c022b94b805e6a8c4d2289aefc"
+       },
+       "episode_id": null,
+       "relation": "AFFECTS",
+       "source": {
+        "id": "a31136c022b94b805e6a8c4d2289aefc",
+        "kind": "EVENT"
+       },
+       "status": "ACTIVE",
+       "upstream": []
+      },
+      {
+       "committed_tick": 300000000,
+       "detail": {
+        "blessed_tick": 299000000,
+        "entity_id": "1",
+        "entity_type": "resource_nodes",
+        "field": "remaining_reserve",
+        "new_value": {
+         "v": 95672191075
+        },
+        "old_value": {
+         "v": 96699497230
+        },
+        "state_change_id": 37622
+       },
+       "episode_id": null,
+       "relation": "CONTINUES",
+       "source": {
+        "id": "37622",
+        "kind": "STATE_CHANGE"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 299000000,
+          "cause": {
+           "node_kind": "TEST-ORE-001",
+           "profile_ref": "TEST-RESOURCE-001",
+           "settlement_relation": "TEST-MAIN-A"
+          },
+          "effect": {
+           "efficiency_den": 100,
+           "efficiency_num": 95,
+           "quantity_minor": 1027306155,
+           "reserve_after_minor": 95672191075
+          },
+          "event_type": "RESOURCE_EXTRACTED",
+          "event_uid": "59497c50941c7bd0402cf7aef199b637"
+         },
+         "episode_id": null,
+         "relation": "AFFECTS",
+         "source": {
+          "id": "59497c50941c7bd0402cf7aef199b637",
+          "kind": "EVENT"
+         },
+         "status": "ACTIVE",
+         "upstream": []
+        },
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 298000000,
+          "entity_id": "1",
+          "entity_type": "resource_nodes",
+          "field": "remaining_reserve",
+          "new_value": {
+           "v": 96699497230
+          },
+          "old_value": {
+           "v": 97672735720
+          },
+          "state_change_id": 37497
+         },
+         "episode_id": null,
+         "relation": "CONTINUES",
+         "source": {
+          "id": "37497",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 298000000,
+            "cause": {
+             "node_kind": "TEST-ORE-001",
+             "profile_ref": "TEST-RESOURCE-001",
+             "settlement_relation": "TEST-MAIN-A"
+            },
+            "effect": {
+             "efficiency_den": 100,
+             "efficiency_num": 90,
+             "quantity_minor": 973238490,
+             "reserve_after_minor": 96699497230
+            },
+            "event_type": "RESOURCE_EXTRACTED",
+            "event_uid": "12a57dc29188b06e0b8019f68731cffd"
+           },
+           "episode_id": null,
+           "relation": "AFFECTS",
+           "source": {
+            "id": "12a57dc29188b06e0b8019f68731cffd",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "remaining_reserve",
+            "new_value": {
+             "v": 97672735720
+            },
+            "old_value": {
+             "v": 98700139915
+            },
+            "state_change_id": 37369
+           },
+           "episode_id": null,
+           "relation": "CONTINUES",
+           "source": {
+            "id": "37369",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "committed_tick": 300000000,
+     "detail": {
+      "blessed_tick": 300000000,
+      "entity_id": "1",
+      "entity_type": "resource_nodes",
+      "field": "last_extracted_minor",
+      "new_value": {
+       "v": 919082475
+      },
+      "old_value": {
+       "v": 1027306155
+      },
+      "state_change_id": 37751
+     },
+     "episode_id": null,
+     "relation": "CAUSES",
+     "source": {
+      "id": "37751",
+      "kind": "STATE_CHANGE"
+     },
+     "status": "ACTIVE",
+     "upstream": [
+      {
+       "committed_tick": 300000000,
+       "detail": {
+        "blessed_tick": 300000000,
+        "cause": {
+         "node_kind": "TEST-ORE-001",
+         "profile_ref": "TEST-RESOURCE-001",
+         "settlement_relation": "TEST-MAIN-A"
+        },
+        "effect": {
+         "efficiency_den": 100,
+         "efficiency_num": 85,
+         "quantity_minor": 919082475,
+         "reserve_after_minor": 94753108600
+        },
+        "event_type": "RESOURCE_EXTRACTED",
+        "event_uid": "a31136c022b94b805e6a8c4d2289aefc"
+       },
+       "episode_id": null,
+       "relation": "AFFECTS",
+       "source": {
+        "id": "a31136c022b94b805e6a8c4d2289aefc",
+        "kind": "EVENT"
+       },
+       "status": "ACTIVE",
+       "upstream": []
+      },
+      {
+       "committed_tick": 300000000,
+       "detail": {
+        "blessed_tick": 299000000,
+        "entity_id": "1",
+        "entity_type": "resource_nodes",
+        "field": "last_extracted_minor",
+        "new_value": {
+         "v": 1027306155
+        },
+        "old_value": {
+         "v": 973238490
+        },
+        "state_change_id": 37623
+       },
+       "episode_id": null,
+       "relation": "CONTINUES",
+       "source": {
+        "id": "37623",
+        "kind": "STATE_CHANGE"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 299000000,
+          "cause": {
+           "node_kind": "TEST-ORE-001",
+           "profile_ref": "TEST-RESOURCE-001",
+           "settlement_relation": "TEST-MAIN-A"
+          },
+          "effect": {
+           "efficiency_den": 100,
+           "efficiency_num": 95,
+           "quantity_minor": 1027306155,
+           "reserve_after_minor": 95672191075
+          },
+          "event_type": "RESOURCE_EXTRACTED",
+          "event_uid": "59497c50941c7bd0402cf7aef199b637"
+         },
+         "episode_id": null,
+         "relation": "AFFECTS",
+         "source": {
+          "id": "59497c50941c7bd0402cf7aef199b637",
+          "kind": "EVENT"
+         },
+         "status": "ACTIVE",
+         "upstream": []
+        },
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 298000000,
+          "entity_id": "1",
+          "entity_type": "resource_nodes",
+          "field": "last_extracted_minor",
+          "new_value": {
+           "v": 973238490
+          },
+          "old_value": {
+           "v": 1027404195
+          },
+          "state_change_id": 37498
+         },
+         "episode_id": null,
+         "relation": "CONTINUES",
+         "source": {
+          "id": "37498",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 298000000,
+            "cause": {
+             "node_kind": "TEST-ORE-001",
+             "profile_ref": "TEST-RESOURCE-001",
+             "settlement_relation": "TEST-MAIN-A"
+            },
+            "effect": {
+             "efficiency_den": 100,
+             "efficiency_num": 90,
+             "quantity_minor": 973238490,
+             "reserve_after_minor": 96699497230
+            },
+            "event_type": "RESOURCE_EXTRACTED",
+            "event_uid": "12a57dc29188b06e0b8019f68731cffd"
+           },
+           "episode_id": null,
+           "relation": "AFFECTS",
+           "source": {
+            "id": "12a57dc29188b06e0b8019f68731cffd",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "last_extracted_minor",
+            "new_value": {
+             "v": 1027404195
+            },
+            "old_value": {
+             "v": 1081677600
+            },
+            "state_change_id": 37370
+           },
+           "episode_id": null,
+           "relation": "CONTINUES",
+           "source": {
+            "id": "37370",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "committed_tick": 300000000,
+     "detail": {
+      "blessed_tick": 299000000,
+      "entity_id": "1",
+      "entity_type": "ecology_state",
+      "field": "habitat_quality",
+      "new_value": {
+       "v": 604245
+      },
+      "old_value": {
+       "v": 604583
+      },
+      "state_change_id": 37644
+     },
+     "episode_id": null,
+     "relation": "CONTINUES",
+     "source": {
+      "id": "37644",
+      "kind": "STATE_CHANGE"
+     },
+     "status": "ACTIVE",
+     "upstream": [
+      {
+       "committed_tick": 299000000,
+       "detail": {
+        "blessed_tick": 299000000,
+        "entity_id": "1",
+        "entity_type": "resource_nodes",
+        "field": "remaining_reserve",
+        "new_value": {
+         "v": 95672191075
+        },
+        "old_value": {
+         "v": 96699497230
+        },
+        "state_change_id": 37622
+       },
+       "episode_id": null,
+       "relation": "CAUSES",
+       "source": {
+        "id": "37622",
+        "kind": "STATE_CHANGE"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 299000000,
+          "cause": {
+           "node_kind": "TEST-ORE-001",
+           "profile_ref": "TEST-RESOURCE-001",
+           "settlement_relation": "TEST-MAIN-A"
+          },
+          "effect": {
+           "efficiency_den": 100,
+           "efficiency_num": 95,
+           "quantity_minor": 1027306155,
+           "reserve_after_minor": 95672191075
+          },
+          "event_type": "RESOURCE_EXTRACTED",
+          "event_uid": "59497c50941c7bd0402cf7aef199b637"
+         },
+         "episode_id": null,
+         "relation": "AFFECTS",
+         "source": {
+          "id": "59497c50941c7bd0402cf7aef199b637",
+          "kind": "EVENT"
+         },
+         "status": "ACTIVE",
+         "upstream": []
+        },
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 298000000,
+          "entity_id": "1",
+          "entity_type": "resource_nodes",
+          "field": "remaining_reserve",
+          "new_value": {
+           "v": 96699497230
+          },
+          "old_value": {
+           "v": 97672735720
+          },
+          "state_change_id": 37497
+         },
+         "episode_id": null,
+         "relation": "CONTINUES",
+         "source": {
+          "id": "37497",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 298000000,
+            "cause": {
+             "node_kind": "TEST-ORE-001",
+             "profile_ref": "TEST-RESOURCE-001",
+             "settlement_relation": "TEST-MAIN-A"
+            },
+            "effect": {
+             "efficiency_den": 100,
+             "efficiency_num": 90,
+             "quantity_minor": 973238490,
+             "reserve_after_minor": 96699497230
+            },
+            "event_type": "RESOURCE_EXTRACTED",
+            "event_uid": "12a57dc29188b06e0b8019f68731cffd"
+           },
+           "episode_id": null,
+           "relation": "AFFECTS",
+           "source": {
+            "id": "12a57dc29188b06e0b8019f68731cffd",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "remaining_reserve",
+            "new_value": {
+             "v": 97672735720
+            },
+            "old_value": {
+             "v": 98700139915
+            },
+            "state_change_id": 37369
+           },
+           "episode_id": null,
+           "relation": "CONTINUES",
+           "source": {
+            "id": "37369",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "committed_tick": 299000000,
+       "detail": {
+        "blessed_tick": 299000000,
+        "entity_id": "1",
+        "entity_type": "resource_nodes",
+        "field": "last_extracted_minor",
+        "new_value": {
+         "v": 1027306155
+        },
+        "old_value": {
+         "v": 973238490
+        },
+        "state_change_id": 37623
+       },
+       "episode_id": null,
+       "relation": "CAUSES",
+       "source": {
+        "id": "37623",
+        "kind": "STATE_CHANGE"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 299000000,
+          "cause": {
+           "node_kind": "TEST-ORE-001",
+           "profile_ref": "TEST-RESOURCE-001",
+           "settlement_relation": "TEST-MAIN-A"
+          },
+          "effect": {
+           "efficiency_den": 100,
+           "efficiency_num": 95,
+           "quantity_minor": 1027306155,
+           "reserve_after_minor": 95672191075
+          },
+          "event_type": "RESOURCE_EXTRACTED",
+          "event_uid": "59497c50941c7bd0402cf7aef199b637"
+         },
+         "episode_id": null,
+         "relation": "AFFECTS",
+         "source": {
+          "id": "59497c50941c7bd0402cf7aef199b637",
+          "kind": "EVENT"
+         },
+         "status": "ACTIVE",
+         "upstream": []
+        },
+        {
+         "committed_tick": 299000000,
+         "detail": {
+          "blessed_tick": 298000000,
+          "entity_id": "1",
+          "entity_type": "resource_nodes",
+          "field": "last_extracted_minor",
+          "new_value": {
+           "v": 973238490
+          },
+          "old_value": {
+           "v": 1027404195
+          },
+          "state_change_id": 37498
+         },
+         "episode_id": null,
+         "relation": "CONTINUES",
+         "source": {
+          "id": "37498",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 298000000,
+            "cause": {
+             "node_kind": "TEST-ORE-001",
+             "profile_ref": "TEST-RESOURCE-001",
+             "settlement_relation": "TEST-MAIN-A"
+            },
+            "effect": {
+             "efficiency_den": 100,
+             "efficiency_num": 90,
+             "quantity_minor": 973238490,
+             "reserve_after_minor": 96699497230
+            },
+            "event_type": "RESOURCE_EXTRACTED",
+            "event_uid": "12a57dc29188b06e0b8019f68731cffd"
+           },
+           "episode_id": null,
+           "relation": "AFFECTS",
+           "source": {
+            "id": "12a57dc29188b06e0b8019f68731cffd",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "last_extracted_minor",
+            "new_value": {
+             "v": 1027404195
+            },
+            "old_value": {
+             "v": 1081677600
+            },
+            "state_change_id": 37370
+           },
+           "episode_id": null,
+           "relation": "CONTINUES",
+           "source": {
+            "id": "37370",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "committed_tick": 299000000,
+       "detail": {
+        "blessed_tick": 298000000,
+        "entity_id": "1",
+        "entity_type": "ecology_state",
+        "field": "habitat_quality",
+        "new_value": {
+         "v": 604583
+        },
+        "old_value": {
+         "v": 604587
+        },
+        "state_change_id": 37520
+       },
+       "episode_id": null,
+       "relation": "CONTINUES",
+       "source": {
+        "id": "37520",
+        "kind": "STATE_CHANGE"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 298000000,
+         "detail": {
+          "blessed_tick": 298000000,
+          "entity_id": "1",
+          "entity_type": "resource_nodes",
+          "field": "remaining_reserve",
+          "new_value": {
+           "v": 96699497230
+          },
+          "old_value": {
+           "v": 97672735720
+          },
+          "state_change_id": 37497
+         },
+         "episode_id": null,
+         "relation": "CAUSES",
+         "source": {
+          "id": "37497",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 298000000,
+            "cause": {
+             "node_kind": "TEST-ORE-001",
+             "profile_ref": "TEST-RESOURCE-001",
+             "settlement_relation": "TEST-MAIN-A"
+            },
+            "effect": {
+             "efficiency_den": 100,
+             "efficiency_num": 90,
+             "quantity_minor": 973238490,
+             "reserve_after_minor": 96699497230
+            },
+            "event_type": "RESOURCE_EXTRACTED",
+            "event_uid": "12a57dc29188b06e0b8019f68731cffd"
+           },
+           "episode_id": null,
+           "relation": "AFFECTS",
+           "source": {
+            "id": "12a57dc29188b06e0b8019f68731cffd",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "remaining_reserve",
+            "new_value": {
+             "v": 97672735720
+            },
+            "old_value": {
+             "v": 98700139915
+            },
+            "state_change_id": 37369
+           },
+           "episode_id": null,
+           "relation": "CONTINUES",
+           "source": {
+            "id": "37369",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        },
+        {
+         "committed_tick": 298000000,
+         "detail": {
+          "blessed_tick": 298000000,
+          "entity_id": "1",
+          "entity_type": "resource_nodes",
+          "field": "last_extracted_minor",
+          "new_value": {
+           "v": 973238490
+          },
+          "old_value": {
+           "v": 1027404195
+          },
+          "state_change_id": 37498
+         },
+         "episode_id": null,
+         "relation": "CAUSES",
+         "source": {
+          "id": "37498",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 298000000,
+            "cause": {
+             "node_kind": "TEST-ORE-001",
+             "profile_ref": "TEST-RESOURCE-001",
+             "settlement_relation": "TEST-MAIN-A"
+            },
+            "effect": {
+             "efficiency_den": 100,
+             "efficiency_num": 90,
+             "quantity_minor": 973238490,
+             "reserve_after_minor": 96699497230
+            },
+            "event_type": "RESOURCE_EXTRACTED",
+            "event_uid": "12a57dc29188b06e0b8019f68731cffd"
+           },
+           "episode_id": null,
+           "relation": "AFFECTS",
+           "source": {
+            "id": "12a57dc29188b06e0b8019f68731cffd",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 298000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "last_extracted_minor",
+            "new_value": {
+             "v": 1027404195
+            },
+            "old_value": {
+             "v": 1081677600
+            },
+            "state_change_id": 37370
+           },
+           "episode_id": null,
+           "relation": "CONTINUES",
+           "source": {
+            "id": "37370",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        },
+        {
+         "committed_tick": 298000000,
+         "detail": {
+          "blessed_tick": 297000000,
+          "entity_id": "1",
+          "entity_type": "ecology_state",
+          "field": "habitat_quality",
+          "new_value": {
+           "v": 604587
+          },
+          "old_value": {
+           "v": 604927
+          },
+          "state_change_id": 37391
+         },
+         "episode_id": null,
+         "relation": "CONTINUES",
+         "source": {
+          "id": "37391",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 297000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "remaining_reserve",
+            "new_value": {
+             "v": 97672735720
+            },
+            "old_value": {
+             "v": 98700139915
+            },
+            "state_change_id": 37369
+           },
+           "episode_id": null,
+           "relation": "CAUSES",
+           "source": {
+            "id": "37369",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 297000000,
+           "detail": {
+            "blessed_tick": 297000000,
+            "entity_id": "1",
+            "entity_type": "resource_nodes",
+            "field": "last_extracted_minor",
+            "new_value": {
+             "v": 1027404195
+            },
+            "old_value": {
+             "v": 1081677600
+            },
+            "state_change_id": 37370
+           },
+           "episode_id": null,
+           "relation": "CAUSES",
+           "source": {
+            "id": "37370",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 297000000,
+           "detail": {
+            "blessed_tick": 296000000,
+            "entity_id": "1",
+            "entity_type": "ecology_state",
+            "field": "habitat_quality",
+            "new_value": {
+             "v": 604927
+            },
+            "old_value": {
+             "v": 605592
+            },
+            "state_change_id": 37253
+           },
+           "episode_id": null,
+           "relation": "CONTINUES",
+           "source": {
+            "id": "37253",
+            "kind": "STATE_CHANGE"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "current_value": 604552,
+   "current_value_tick": 300000000,
+   "entity_id": "1",
+   "entity_type": "ecology_state",
+   "field": "habitat_quality",
+   "last_state_change": {
+    "blessed_tick": 300000000,
+    "engine_id": "ECOLOGY",
+    "episode_id": null,
+    "event_ref": null,
+    "new_value": {
+     "v": 604552
+    },
+    "old_value": {
+     "v": 604245
+    },
+    "owner_decision_id": null,
+    "simulation_run_id": "8a0e0cf231938422e588058d5c81a50f",
+    "state_change_id": 37768
+   },
+   "nodes_visited": 22,
+   "truncated": false
+  },
+  "C_why_resource_reserve": {
+   "causes": [
+    {
+     "committed_tick": 300000000,
+     "detail": {
+      "blessed_tick": 300000000,
+      "cause": {
+       "node_kind": "TEST-ORE-001",
+       "profile_ref": "TEST-RESOURCE-001",
+       "settlement_relation": "TEST-MAIN-A"
+      },
+      "effect": {
+       "efficiency_den": 100,
+       "efficiency_num": 85,
+       "quantity_minor": 919082475,
+       "reserve_after_minor": 94753108600
+      },
+      "event_type": "RESOURCE_EXTRACTED",
+      "event_uid": "a31136c022b94b805e6a8c4d2289aefc"
+     },
+     "episode_id": null,
+     "relation": "AFFECTS",
+     "source": {
+      "id": "a31136c022b94b805e6a8c4d2289aefc",
+      "kind": "EVENT"
+     },
+     "status": "ACTIVE",
+     "upstream": []
+    },
+    {
+     "committed_tick": 300000000,
+     "detail": {
+      "blessed_tick": 299000000,
+      "entity_id": "1",
+      "entity_type": "resource_nodes",
+      "field": "remaining_reserve",
+      "new_value": {
+       "v": 95672191075
+      },
+      "old_value": {
+       "v": 96699497230
+      },
+      "state_change_id": 37622
+     },
+     "episode_id": null,
+     "relation": "CONTINUES",
+     "source": {
+      "id": "37622",
+      "kind": "STATE_CHANGE"
+     },
+     "status": "ACTIVE",
+     "upstream": [
+      {
+       "committed_tick": 299000000,
+       "detail": {
+        "blessed_tick": 299000000,
+        "cause": {
+         "node_kind": "TEST-ORE-001",
+         "profile_ref": "TEST-RESOURCE-001",
+         "settlement_relation": "TEST-MAIN-A"
+        },
+        "effect": {
+         "efficiency_den": 100,
+         "efficiency_num": 95,
+         "quantity_minor": 1027306155,
+         "reserve_after_minor": 95672191075
+        },
+        "event_type": "RESOURCE_EXTRACTED",
+        "event_uid": "59497c50941c7bd0402cf7aef199b637"
+       },
+       "episode_id": null,
+       "relation": "AFFECTS",
+       "source": {
+        "id": "59497c50941c7bd0402cf7aef199b637",
+        "kind": "EVENT"
+       },
+       "status": "ACTIVE",
+       "upstream": []
+      },
+      {
+       "committed_tick": 299000000,
+       "detail": {
+        "blessed_tick": 298000000,
+        "entity_id": "1",
+        "entity_type": "resource_nodes",
+        "field": "remaining_reserve",
+        "new_value": {
+         "v": 96699497230
+        },
+        "old_value": {
+         "v": 97672735720
+        },
+        "state_change_id": 37497
+       },
+       "episode_id": null,
+       "relation": "CONTINUES",
+       "source": {
+        "id": "37497",
+        "kind": "STATE_CHANGE"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 298000000,
+         "detail": {
+          "blessed_tick": 298000000,
+          "cause": {
+           "node_kind": "TEST-ORE-001",
+           "profile_ref": "TEST-RESOURCE-001",
+           "settlement_relation": "TEST-MAIN-A"
+          },
+          "effect": {
+           "efficiency_den": 100,
+           "efficiency_num": 90,
+           "quantity_minor": 973238490,
+           "reserve_after_minor": 96699497230
+          },
+          "event_type": "RESOURCE_EXTRACTED",
+          "event_uid": "12a57dc29188b06e0b8019f68731cffd"
+         },
+         "episode_id": null,
+         "relation": "AFFECTS",
+         "source": {
+          "id": "12a57dc29188b06e0b8019f68731cffd",
+          "kind": "EVENT"
+         },
+         "status": "ACTIVE"
+        },
+        {
+         "committed_tick": 298000000,
+         "detail": {
+          "blessed_tick": 297000000,
+          "entity_id": "1",
+          "entity_type": "resource_nodes",
+          "field": "remaining_reserve",
+          "new_value": {
+           "v": 97672735720
+          },
+          "old_value": {
+           "v": 98700139915
+          },
+          "state_change_id": 37369
+         },
+         "episode_id": null,
+         "relation": "CONTINUES",
+         "source": {
+          "id": "37369",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "current_value": 94753108600,
+   "current_value_tick": 300000000,
+   "entity_id": "1",
+   "entity_type": "resource_nodes",
+   "field": "remaining_reserve",
+   "last_state_change": {
+    "blessed_tick": 300000000,
+    "engine_id": "RESOURCE",
+    "episode_id": null,
+    "event_ref": "a31136c022b94b805e6a8c4d2289aefc",
+    "new_value": {
+     "v": 94753108600
+    },
+    "old_value": {
+     "v": 95672191075
+    },
+    "owner_decision_id": null,
+    "simulation_run_id": "8a0e0cf231938422e588058d5c81a50f",
+    "state_change_id": 37750
+   },
+   "nodes_visited": 5,
+   "truncated": false
+  },
+  "D_why_social_stress": {
+   "causes": [
+    {
+     "committed_tick": 300000000,
+     "detail": {
+      "blessed_tick": 299000000,
+      "entity_id": "1",
+      "entity_type": "settlement_social_state",
+      "field": "social_stress",
+      "new_value": {
+       "v": 252656
+      },
+      "old_value": {
+       "v": 246289
+      },
+      "state_change_id": 37673
+     },
+     "episode_id": null,
+     "relation": "CONTINUES",
+     "source": {
+      "id": "37673",
+      "kind": "STATE_CHANGE"
+     },
+     "status": "ACTIVE",
+     "upstream": [
+      {
+       "committed_tick": 299000000,
+       "detail": {
+        "blessed_tick": 298000000,
+        "entity_id": "1",
+        "entity_type": "settlement_social_state",
+        "field": "social_stress",
+        "new_value": {
+         "v": 246289
+        },
+        "old_value": {
+         "v": 253059
+        },
+        "state_change_id": 37547
+       },
+       "episode_id": null,
+       "relation": "CONTINUES",
+       "source": {
+        "id": "37547",
+        "kind": "STATE_CHANGE"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 298000000,
+         "detail": {
+          "blessed_tick": 297000000,
+          "entity_id": "1",
+          "entity_type": "settlement_social_state",
+          "field": "social_stress",
+          "new_value": {
+           "v": 253059
+          },
+          "old_value": {
+           "v": 257763
+          },
+          "state_change_id": 37418
+         },
+         "episode_id": null,
+         "relation": "CONTINUES",
+         "source": {
+          "id": "37418",
+          "kind": "STATE_CHANGE"
+         },
+         "status": "ACTIVE"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "current_value": 239926,
+   "current_value_tick": 300000000,
+   "entity_id": "1",
+   "entity_type": "settlement_social_state",
+   "field": "social_stress",
+   "last_state_change": {
+    "blessed_tick": 300000000,
+    "engine_id": "SOCIAL",
+    "episode_id": null,
+    "event_ref": null,
+    "new_value": {
+     "v": 239926
+    },
+    "old_value": {
+     "v": 252656
+    },
+    "owner_decision_id": null,
+    "simulation_run_id": "8a0e0cf231938422e588058d5c81a50f",
+    "state_change_id": 37797
+   },
+   "nodes_visited": 3,
+   "truncated": false
+  },
+  "E_succession_trace": {
+   "causes": [
+    {
+     "committed_tick": 20000000,
+     "detail": {
+      "change_kind": "environment_condition",
+      "id": 1,
+      "payload": {
+       "permanent": true,
+       "theme": "ECOLOGICAL_STRESS"
+      }
+     },
+     "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+     "relation": "DERIVED_FROM",
+     "source": {
+      "id": "1",
+      "kind": "RESIDUAL"
+     },
+     "status": "ACTIVE",
+     "upstream": [
+      {
+       "committed_tick": 16000000,
+       "detail": {
+        "blessed_tick": 13000000,
+        "cause": {
+         "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+         "plan_id": "2a4005c4e7aa22805d3fa69b7a7c4ad7"
+        },
+        "effect": {
+         "domains": [
+          "DEMOGRAPHY",
+          "ECOLOGY",
+          "ECONOMY",
+          "RESOURCE",
+          "SOCIAL"
+         ]
+        },
+        "event_type": "TRIBULATION_IMPACT_APPLIED",
+        "event_uid": "79c60072946e93f882885a8c66ee353c"
+       },
+       "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+       "relation": "DERIVED_FROM",
+       "source": {
+        "id": "79c60072946e93f882885a8c66ee353c",
+        "kind": "EVENT"
+       },
+       "status": "ACTIVE",
+       "upstream": [
+        {
+         "committed_tick": 13000000,
+         "detail": {
+          "intensity": 25,
+          "plan_id": "2a4005c4e7aa22805d3fa69b7a7c4ad7",
+          "tier": "REGULAR"
+         },
+         "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+         "relation": "RESULTS_IN",
+         "source": {
+          "id": "2a4005c4e7aa22805d3fa69b7a7c4ad7",
+          "kind": "PLAN"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 13000000,
+           "detail": {
+            "blessed_tick": 12000000,
+            "cause": {
+             "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed"
+            },
+            "effect": {
+             "policy": "DEFAULT_AUTONOMOUS_RESPONSE_POLICY"
+            },
+            "event_type": "AUTONOMOUS_RESPONSE_SELECTED",
+            "event_uid": "341d2de93db1da98293676bf890df7b4"
+           },
+           "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+           "relation": "DECIDED_BY",
+           "source": {
+            "id": "341d2de93db1da98293676bf890df7b4",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        },
+        {
+         "committed_tick": 13000000,
+         "detail": {
+          "blessed_tick": 13000000,
+          "cause": {
+           "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+           "plan_id": "2a4005c4e7aa22805d3fa69b7a7c4ad7"
+          },
+          "effect": {
+           "intensity": 25,
+           "tier": "REGULAR"
+          },
+          "event_type": "TRIBULATION_IMPACT_STARTED",
+          "event_uid": "79e0cc057e4b5b4c8e0864e74dbd86c5"
+         },
+         "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+         "relation": "CONTINUES",
+         "source": {
+          "id": "79e0cc057e4b5b4c8e0864e74dbd86c5",
+          "kind": "EVENT"
+         },
+         "status": "ACTIVE",
+         "upstream": [
+          {
+           "committed_tick": 13000000,
+           "detail": {
+            "intensity": 25,
+            "plan_id": "2a4005c4e7aa22805d3fa69b7a7c4ad7",
+            "tier": "REGULAR"
+           },
+           "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+           "relation": "RESULTS_IN",
+           "source": {
+            "id": "2a4005c4e7aa22805d3fa69b7a7c4ad7",
+            "kind": "PLAN"
+           },
+           "status": "ACTIVE"
+          },
+          {
+           "committed_tick": 13000000,
+           "detail": {
+            "blessed_tick": 11000000,
+            "cause": {
+             "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed"
+            },
+            "effect": {
+             "stage": "PREPARATION"
+            },
+            "event_type": "TRIBULATION_PREPARATION_STARTED",
+            "event_uid": "36be67293a24aa864691011db11ca017"
+           },
+           "episode_id": "20d3c78e4b48d16e405a0120d12ec2ed",
+           "relation": "CONTINUES",
+           "source": {
+            "id": "36be67293a24aa864691011db11ca017",
+            "kind": "EVENT"
+           },
+           "status": "ACTIVE"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "node": {
+    "id": "a812c2f2d321439342c2524d5d042bf3",
+    "kind": "SUCCESSION"
+   },
+   "nodes_visited": 5,
+   "truncated": false
+  },
+  "F_final_episode_stage": {
+   "completed_tick": null,
+   "completion": "INCOMPLETE",
+   "decisions": [],
+   "domain_effects": [],
+   "entered_tick": 300000000,
+   "episode_id": "dc35b55df55bc4c7d159bdc6aee72428",
+   "found": true,
+   "plans": [],
+   "profile": {
+    "intensity_range": [
+     80,
+     100
+    ],
+    "profile_id": "TEST_TRIBULATION_PROFILE_003",
+    "theme": "SPIRIT_TIDE"
+   },
+   "recovery": null,
+   "residual_changes": [],
+   "schedule": {
+    "period_years": 100,
+    "schedule_id": "TEST_TRIBULATION_SCHEDULE_001"
+   },
+   "stage": "PRECURSOR",
+   "stage_events": [
+    {
+     "blessed_tick": 300000000,
+     "effect": {
+      "anomaly_signals": [
+       "spirit_tide"
+      ],
+      "warning_level": "OBSERVED"
+     },
+     "event_type": "TRIBULATION_PRECURSOR_STARTED",
+     "event_uid": "2e693aff145bd4efaffaa49f7014a3bc"
+    }
+   ],
+   "status": "ACTIVE",
+   "succession_candidates": [],
+   "targets": {
+    "selected": [
+     "TEST-SATELLITE-B"
+    ]
+   },
+   "tier": "CENTENNIAL",
+   "transition_tick": 301000000
+  }
+ },
+ "label": "m3b_causal_history_300y_v1/why_query_samples.json"
+}

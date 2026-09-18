@@ -2,10 +2,14 @@
 
 **`BASELINE_REFREEZE = BLOCKED_NO_FUNCTIONAL_UPDATE_ENTRYPOINT`**
 **`NEXT_ACTION = AWAIT_OWNER_ON_BASELINE_REFREEZE_FAILURE`**
+（NEW 侧候选**已采集并证明确定性**，只差一个被授权的写入口）
 
 Machine-readable 版本：`reports/M6D3_BASELINE_REFREEZE_PROVENANCE.json`
-（含 18 个基线文件逐项 OLD sha256 + 确定性字段、12 个受影响测试、修复 commits、
-语义契约声明、阻塞证据、三个 remediation 选项；**NEW 侧未生成**）
+（含 18 个基线文件逐项 OLD sha256 + 确定性字段、**12 个 NEW 候选逐文件
+sha256/确定性字段与 OLD→NEW 差异**、12 个受影响测试、修复 commits、语义契约声明、
+阻塞证据、三个 remediation 选项）；候选原样证据：
+`reports/M6D3_BASELINE_REFREEZE_CANDIDATES.json` 与
+`reports/_m6d3_candidates_keep/`。
 
 ---
 
@@ -92,7 +96,42 @@ python scripts/update_baselines.py \
 
 ---
 
-## 3. 需要 Owner 授权的 remediation（三选一；我未实施任何一个）
+## 3. NEW 侧候选已采集（**只差授权写入口**）
+
+用**只读观察插件** `scripts/_m6d3_candidate_observer.py`（`-p` 注入；仅在被比较
+拒绝时把 test **已经算出**的 candidate 落到 `%TEMP%`，**绝不写 `tests/baselines/`**，
+不改 GB10 行为：普通 pytest/`update_baselines.py` 仍然照旧 FAIL）采集两轮独立候选：
+
+```
+NEW_BASELINE_CANDIDATE_FILE_COUNT = 12      （受权重冻结范围内、artifact 测试真正生成的文件）
+NEW_BASELINE_CHANGED_FILE_COUNT   = 12      （相对 OLD 全部变化，符合授权范围）
+NEW_BASELINE_RUN1_EQ_RUN2 (deterministic) = PASS
+NEW_BASELINE_RUN1_EQ_RUN2 (byte)          = FAIL_TELEMETRY_ONLY
+```
+
+| 候选文件（`tests/baselines/…`） | RUN1==RUN2 | 相对 OLD |
+|---|---|---|
+| `m3a_tribulation_synthetic_300y_v1/final_state.json` | BYTE_EQ | CHANGED |
+| `m3a_tribulation_synthetic_300y_v1/summary.json` | TELEM_DIFF（仅 `wall_seconds`） | CHANGED |
+| `m3b_causal_history_300y_v1/causal_graph_digest.json` | BYTE_EQ | CHANGED |
+| `m3b_causal_history_300y_v1/entity_cardinality_audit.json` | BYTE_EQ | CHANGED |
+| `m3b_causal_history_300y_v1/entity_history_samples.json` | BYTE_EQ | CHANGED |
+| `m3b_causal_history_300y_v1/episode_history_samples.json` | BYTE_EQ | CHANGED |
+| `m3b_causal_history_300y_v1/growth_projection.json` | BYTE_EQ | CHANGED |
+| `m3b_causal_history_300y_v1/metric_audit.json` | BYTE_EQ | CHANGED |
+| `m3b_causal_history_300y_v1/relation_density_audit.json` | BYTE_EQ | CHANGED |
+| `m3b_causal_history_300y_v1/summary.json` | TELEM_DIFF（仅 `wall_seconds_queries` + `query_latency_ms.*`） | CHANGED |
+| `m3b_causal_history_300y_v1/timeline_samples.json` | BYTE_EQ | CHANGED |
+| `m3b_causal_history_300y_v1/why_query_samples.json` | BYTE_EQ | CHANGED |
+
+字节差异**全部**属于项目自身在确定性比较前深剥离的 telemetry 键
+（`wall_seconds` / `wall_seconds_queries` / `query_latency_ms`，GB3）；
+剥离后 RUN1 == RUN2 **逐字节相同** ⇒ owner §6 门槛在**确定性字段口径**上满足。
+另外 6 个基线文件（`m3a/decisions.json`、`episode_index.json`、`profiles.json`、
+`schedule.json`、`m3b/episode_state_audit.json`、`query_performance.json`）
+不由这些 artifact 测试生成 ⇒ **不在本次重冻结范围**（保持原样）。
+
+### 3.1 需要 Owner 授权的 remediation（三选一；我未实施任何一个）
 
 | 选项 | 范围 | 做法 | 风险 |
 |---|---|---|---|
@@ -101,9 +140,10 @@ python scripts/update_baselines.py \
 | **OPT-3** | ONE_OFF_OWNER_SANCTIONED | owner 明确授权对这 3 个 artifact 节点做**一次性 sanctioned 生成运行**（仍不手改任何 hash，仍执行 §6 双跑一致性门槛） | 一次性绕过既有流程，须记入 provenance |
 
 授权后我将严格按 owner §5/§6/§7/§9–§12/§18 执行：
-canonical 生成 ×2（RUN1 == RUN2）→ 独立 commit
+以授权入口重新生成（我已有 12 个候选与双跑确定性证据，可直接交叉校验生成结果
+是否与候选逐字节一致）→ 独立 commit
 `test: re-freeze M3 tribulation baselines after effect-application fix` →
-provenance commit `docs: record M6D3 baseline refreeze provenance` →
+本次 provenance commit `docs: record M6D3 baseline refreeze provenance` →
 targeted（M3 → 广域）→ canonical fast regression（chunked，报告实测
 collected/passed/expected skips）→ 最终 baseline 检查 →
 `AUTHORIZED_BASELINE_REFREEZE_COUNT = 12 / UNAUTHORIZED_BASELINE_MUTATIONS = 0`。

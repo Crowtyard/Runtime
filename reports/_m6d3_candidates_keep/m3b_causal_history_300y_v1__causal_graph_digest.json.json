@@ -1,0 +1,56 @@
+{
+ "assertion": "golden baseline deterministic mismatch: m3b_causal_history_300y_v1/causal_graph_digest.json",
+ "candidate": {
+  "links_total": 66889,
+  "node_kinds": {
+   "EPISODE": 538,
+   "EVENT": 24685,
+   "PLAN": 87,
+   "RESIDUAL": 58,
+   "STATE_CHANGE": 108381,
+   "SUCCESSION": 29
+  },
+  "relations": {
+   "AFFECTS": 23629,
+   "CAUSES": 4800,
+   "CONTINUES": 37777,
+   "CORRECTS": 0,
+   "DECIDED_BY": 29,
+   "DERIVED_FROM": 58,
+   "MATERIALIZES_IN": 0,
+   "PART_OF_EPISODE": 508,
+   "RECOVERS_FROM": 0,
+   "RESULTS_IN": 88,
+   "REVERSES": 0,
+   "SUPERSEDES": 0,
+   "TRIGGERS": 0
+  }
+ },
+ "golden": {
+  "links_total": 65742,
+  "node_kinds": {
+   "EPISODE": 538,
+   "EVENT": 23710,
+   "PLAN": 87,
+   "RESIDUAL": 58,
+   "STATE_CHANGE": 107062,
+   "SUCCESSION": 29
+  },
+  "relations": {
+   "AFFECTS": 22654,
+   "CAUSES": 4682,
+   "CONTINUES": 37723,
+   "CORRECTS": 0,
+   "DECIDED_BY": 29,
+   "DERIVED_FROM": 58,
+   "MATERIALIZES_IN": 0,
+   "PART_OF_EPISODE": 508,
+   "RECOVERS_FROM": 0,
+   "RESULTS_IN": 88,
+   "REVERSES": 0,
+   "SUPERSEDES": 0,
+   "TRIGGERS": 0
+  }
+ },
+ "label": "m3b_causal_history_300y_v1/causal_graph_digest.json"
+}

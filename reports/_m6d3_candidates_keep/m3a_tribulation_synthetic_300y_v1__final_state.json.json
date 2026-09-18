@@ -1,0 +1,20 @@
+{
+ "assertion": "golden baseline deterministic mismatch: m3a_tribulation_synthetic_300y_v1/final_state.json",
+ "candidate": {
+  "candidates": 29,
+  "episodes": 30,
+  "events": 4835,
+  "plans": 29,
+  "population": 451,
+  "recovery_rows": 29
+ },
+ "golden": {
+  "candidates": 29,
+  "episodes": 30,
+  "events": 4779,
+  "plans": 29,
+  "population": 449,
+  "recovery_rows": 29
+ },
+ "label": "m3a_tribulation_synthetic_300y_v1/final_state.json"
+}
