@@ -1,0 +1,318 @@
+{
+ "AFFECTED_BASELINE_DIRS": [
+  "tests/baselines/m3a_tribulation_synthetic_300y_v1",
+  "tests/baselines/m3b_causal_history_300y_v1"
+ ],
+ "AFFECTED_TESTS": [
+  {
+   "baseline_dir": "tests/baselines/m3a_tribulation_synthetic_300y_v1",
+   "node": "tests/test_m3a_tribulation.py::test_m3a_baseline_300y_artifact",
+   "role": "ARTIFACT_WRITER"
+  },
+  {
+   "baseline_dir": "tests/baselines/m3a_tribulation_synthetic_300y_v1",
+   "node": "tests/test_m3b_history.py::test_hb34_m3a_baseline_unchanged",
+   "role": "ASSERTION_VS_M3A_BASELINE"
+  },
+  {
+   "baseline_dir": "tests/baselines/m3b_causal_history_300y_v1",
+   "node": "tests/test_m3b_history.py::test_hb43_300y_baseline_artifacts",
+   "role": "ARTIFACT_WRITER"
+  },
+  {
+   "baseline_dir": "tests/baselines/m3b_causal_history_300y_v1",
+   "node": "tests/test_m3b_metric_audit.py::test_ma5_entity_history_index_rows_correct",
+   "role": "FROZEN_METRIC"
+  },
+  {
+   "baseline_dir": "tests/baselines/m3b_causal_history_300y_v1",
+   "node": "tests/test_m3b_metric_audit.py::test_ma6_distinct_entities_with_history_correct",
+   "role": "FROZEN_METRIC"
+  },
+  {
+   "baseline_dir": "tests/baselines/m3b_causal_history_300y_v1",
+   "node": "tests/test_m3b_metric_audit.py::test_ma7_domain_entities_separated_from_index_references",
+   "role": "FROZEN_METRIC"
+  },
+  {
+   "baseline_dir": "tests/baselines/m3b_causal_history_300y_v1",
+   "node": "tests/test_m3b_metric_audit.py::test_ma9_causal_link_density_metrics_correct",
+   "role": "FROZEN_METRIC"
+  },
+  {
+   "baseline_dir": "tests/baselines/m3b_causal_history_300y_v1",
+   "node": "tests/test_m3b_metric_audit.py::test_ma12_growth_projection_reproducible",
+   "role": "FROZEN_METRIC"
+  },
+  {
+   "baseline_dir": "tests/baselines/m3b_causal_history_300y_v1",
+   "node": "tests/test_m3b_metric_audit.py::test_ma20_causal_history_hash_stable",
+   "role": "FROZEN_HASH"
+  },
+  {
+   "baseline_dir": "tests/baselines/m3a_tribulation_synthetic_300y_v1",
+   "node": "tests/test_m3b_metric_audit.py::test_ma22_world_state_hash_unchanged",
+   "role": "FROZEN_HASH"
+  },
+  {
+   "baseline_dir": "tests/baselines/m3a_tribulation_synthetic_300y_v1",
+   "node": "tests/test_m3b_metric_audit.py::test_ma23_event_stream_hash_unchanged",
+   "role": "FROZEN_HASH"
+  },
+  {
+   "baseline_dir": "tests/baselines/m3b_causal_history_300y_v1",
+   "node": "tests/test_m3b_metric_audit.py::test_ma28_metric_audit_baseline_artifacts",
+   "role": "ARTIFACT_WRITER"
+  }
+ ],
+ "AUTHORIZED_BASELINE_REFREEZE_COUNT": 12,
+ "BASELINE_REFREEZE": "BLOCKED_NO_FUNCTIONAL_UPDATE_ENTRYPOINT",
+ "BLOCKER_EVIDENCE": {
+  "UPDATE_ENTRYPOINT_SCOPE": "TELEMETRY_REFRESH_ONLY (works when the deterministic content is identical); NOT_FUNCTIONAL_FOR_BUG_FIX_BASELINE_INVALIDATION",
+  "action_taken": "STOP per owner procedure 5: no self-written overwrite script was used and no baseline byte was modified.",
+  "canonical_entrypoint": "scripts/update_baselines.py (sets BLR_UPDATE_GOLDEN_BASELINES=1; per tests/GOLDEN_BASELINES.md the only legal writer)",
+  "code_cause": [
+   "tests/golden_baseline.py:123-139 assert_deterministic_equal raises on any deterministic difference and has NO update-mode short-circuit",
+   "tests/test_m3a_tribulation.py:961-976 - the update-mode dump_artifact() sits AFTER the comparison => unreachable for a changed candidate",
+   "tests/test_m3b_history.py:~975-984 and tests/test_m3b_metric_audit.py:~518-526 - same ordering",
+   "tests/test_m3a_tribulation.py:979 _write_baseline and tests/test_m2a_population.py:589 _write_baseline are non-test helpers with no callers (dead code); no dedicated update-entrypoint test node exists",
+   "tests/conftest.py:195-207 exempts only the GB1 byte-guard in update mode, not the comparison"
+  ],
+  "entrypoint_result": "FFF - all three artifact tests FAILED with 'golden baseline deterministic mismatch' BEFORE reaching the update dump; nothing was written (git status tests/baselines = clean)",
+  "entrypoint_run": "python scripts/update_baselines.py <3 affected artifact nodes>",
+  "first_diffs_observed": {
+   "m3a_tribulation_synthetic_300y_v1/summary.json": "$.domain_event_count: 4779 (golden) != 4835 (candidate)",
+   "m3b_causal_history_300y_v1/metric_audit.json": "$.hash.causal_history_hash: c1293e59d96753e2b3488746f86f176bceb84d2ef6935c9760944c8727046a44 (golden) != d3b8a499257fe40cd7d3f4253438f9a99aca6e7592340a8f6cbdc4fd2ae130ba (candidate)",
+   "m3b_causal_history_300y_v1/summary.json": "$.average_chain_depth: 112.82 (golden) != 113.918 (candidate)"
+  }
+ },
+ "FIXED_FORBIDDEN_MUTATIONS": {
+  "M2_BASELINE_MUTATIONS": "must stay 0",
+  "M6_BASELINES": "must stay 0",
+  "OTHER_M3_BASELINES": "must stay 0",
+  "SCHEDULER_BASELINES": "must stay 0"
+ },
+ "NEW_BASELINE_DETERMINISM_RUN1_EQ_RUN2": "NOT_RUN",
+ "NEW_BASELINE_INVENTORY": null,
+ "NEW_BASELINE_STATUS": "NOT_GENERATED_BLOCKED",
+ "NOTE_ON_OLD_BASELINE": "The old baselines were NOT invalid canon: they faithfully recorded a buggy implementation behaviour that contradicted the already-frozen Tribulation effect application contract.",
+ "OLD_BASELINE_INVENTORY": {
+  "tests/baselines/m3a_tribulation_synthetic_300y_v1": {
+   "exists": true,
+   "files": {
+    "decisions.json": {
+     "deterministic_fields": {},
+     "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+     "size_bytes": 2
+    },
+    "episode_index.json": {
+     "deterministic_fields": {},
+     "sha256": "2bd7329a477603328ad7b78ea936309969afaf9f30e4768547ce07886f02a8b3",
+     "size_bytes": 9694
+    },
+    "final_state.json": {
+     "deterministic_fields": {},
+     "sha256": "fed5c4f80f33146989ea2c7c80f27bfa975fdc14282f1b2179123afd2b203bbc",
+     "size_bytes": 118
+    },
+    "profiles.json": {
+     "deterministic_fields": {},
+     "sha256": "037076b953ec485a916c3994287c53b1db6914d1081f94e3a3219354c216dff4",
+     "size_bytes": 478
+    },
+    "schedule.json": {
+     "deterministic_fields": {},
+     "sha256": "641d06f87406314e1fa9335607044481dad3c47070493a29b9122d246b22254e",
+     "size_bytes": 164
+    },
+    "summary.json": {
+     "deterministic_fields": {
+      "final_event_stream_hash": "8b117097d65863b74e6ef486a1959511674feceb838e09cdc837f04ab7bc868a",
+      "final_world_state_hash": "0fc6ece03ba12c1b919beceef0ad0a44bd978eba88f56cdf9c57e5338809e4da",
+      "simulation_version": "0.3.0-m3a",
+      "wall_seconds": 32.13,
+      "world_state_hash_schema_version": 6
+     },
+     "sha256": "5f794d9eaacf0900bcbc6427cc5375ff8ad6712685f78fa5c5747ee819e9ab7d",
+     "size_bytes": 1256
+    }
+   }
+  },
+  "tests/baselines/m3b_causal_history_300y_v1": {
+   "exists": true,
+   "files": {
+    "causal_graph_digest.json": {
+     "deterministic_fields": {
+      "links_total": 65742
+     },
+     "sha256": "061edc666ff5a16b7473f682118fa57d15b2f8024f169a52a5dc1a0b7e45c983",
+     "size_bytes": 467
+    },
+    "entity_cardinality_audit.json": {
+     "deterministic_fields": {
+      "distinct_entities_with_history": 134,
+      "entity_history_index_rows": 64858,
+      "graph_node_cardinality": {
+       "distinct_event_ids_indexed": 2184
+      }
+     },
+     "sha256": "51c1b9f186cd29c18bab01f3387e026e0d1c85d450e78bc566e1deb2dcec5b76",
+     "size_bytes": 2374
+    },
+    "entity_history_samples.json": {
+     "deterministic_fields": {
+      "settlement": {
+       "domains": {
+        "households": {
+         "entities": {
+          "[0]": {
+           "event_count": 3
+          },
+          "[1]": {
+           "event_count": 2
+          },
+          "[2]": {
+           "event_count": 0
+          }
+         }
+        },
+        "population_groups": {
+         "entities": {
+          "[0]": {
+           "event_count": 109
+          },
+          "[1]": {
+           "event_count": 122
+          },
+          "[2]": {
+           "event_count": 134
+          }
+         }
+        },
+        "resource_stocks": {
+         "entities": {
+          "[0]": {
+           "event_count": 329
+          },
+          "[1]": {
+           "event_count": 300
+          }
+         }
+        },
+        "settlement_social_state": {
+         "entities": {
+          "[0]": {
+           "event_count": 54
+          }
+         }
+        }
+       }
+      }
+     },
+     "sha256": "c6429e4364e4a3e341f2f8f7f9ffb5b710900021a178d805d6b9f0111c81a682",
+     "size_bytes": 339134
+    },
+    "episode_history_samples.json": {
+     "deterministic_fields": {},
+     "sha256": "54dbddcff45b9a5fc2f632a7ddfe8382c9827c09b208d3af9669f7429b2c28c1",
+     "size_bytes": 20162
+    },
+    "episode_state_audit.json": {
+     "deterministic_fields": {},
+     "sha256": "69713670d9850a9e5717600f36c21971f101e25c530dafb5a32a3eace4e2d480",
+     "size_bytes": 13538
+    },
+    "growth_projection.json": {
+     "deterministic_fields": {},
+     "sha256": "5df5133d74737db3b3e09be937c096fda27369816dfe408f71392558b41807d0",
+     "size_bytes": 2996
+    },
+    "metric_audit.json": {
+     "deterministic_fields": {
+      "hash": {
+       "causal_history_hash": "c1293e59d96753e2b3488746f86f176bceb84d2ef6935c9760944c8727046a44",
+       "world_state_hash": "0fc6ece03ba12c1b919beceef0ad0a44bd978eba88f56cdf9c57e5338809e4da"
+      }
+     },
+     "sha256": "2c8f74220bb6a2ce66edd177b2287ff04936c875d91900ab2b45271d7589678f",
+     "size_bytes": 1919
+    },
+    "query_performance.json": {
+     "deterministic_fields": {},
+     "sha256": "65b790bd522aba20bb900500f94bafbcae132d72f16e56bfff0b15ea39a91345",
+     "size_bytes": 543
+    },
+    "relation_density_audit.json": {
+     "deterministic_fields": {},
+     "sha256": "90aa0cfcbcd585ea5dcd7357d87372a97a7c72e7d87edd03df463532f0738566",
+     "size_bytes": 1353
+    },
+    "summary.json": {
+     "deterministic_fields": {
+      "causal_history_hash": "c1293e59d96753e2b3488746f86f176bceb84d2ef6935c9760944c8727046a44",
+      "cycle_count": 0,
+      "distinct_entities_with_history": 134,
+      "entity_history_index_rows": 64858,
+      "orphan_links": 0,
+      "simulation_version": "0.3.0-m3a",
+      "state_changes_indexed": 37818,
+      "world_state_hash": "0fc6ece03ba12c1b919beceef0ad0a44bd978eba88f56cdf9c57e5338809e4da"
+     },
+     "sha256": "c28d6bfa8b1727e1e1b054a2c53137d0ef2992dbc20739255906ccddce3026e1",
+     "size_bytes": 1432
+    },
+    "timeline_samples.json": {
+     "deterministic_fields": {
+      "[0]": {
+       "effect": {
+        "simulation_version": "0.3.0-m3a"
+       }
+      }
+     },
+     "sha256": "ada7c80daf5cd2759ffc5eac7756ed452d1fd282317656a65164c2f1ef253fc5",
+     "size_bytes": 11224
+    },
+    "why_query_samples.json": {
+     "deterministic_fields": {},
+     "sha256": "c870da05d90ebd6c8df9601e45255e1d674424a0c9af4420f80224d6f8799a95",
+     "size_bytes": 44083
+    }
+   }
+  }
+ },
+ "OLD_BASELINE_STATUS": "SUPERSEDED_BY_CONFIRMED_IMPLEMENTATION_BUG",
+ "OWNER_AUTHORIZATION": {
+  "BASELINE_REFREEZE_CLASS": "BUG_FIX_BASELINE_INVALIDATION",
+  "FROZEN_SEMANTICS_CHANGE": false,
+  "WORLD_LAW_CHANGE": false,
+  "decision": "APPROVE_M3A_M3B_BASELINE_REFREEZE = TRUE"
+ },
+ "PRODUCTION_FIX_COMMITS": [
+  "40a7e79",
+  "160e845",
+  "2a79a82"
+ ],
+ "REMEDIATION_OPTIONS_FOR_OWNER": [
+  {
+   "change": "in update mode, M3 artifact tests dump BEFORE the deterministic comparison (or assert_deterministic_equal records the mismatch instead of raising when BLR_UPDATE_GOLDEN_BASELINES=1); normal pytest behaviour (GB10) unchanged",
+   "id": "OPT-1",
+   "risk": "touches golden-baseline policy code; needs owner sign-off",
+   "scope": "TEST_INFRA_ONLY"
+  },
+  {
+   "change": "add a dedicated, explicitly-selected update-entrypoint test node per M3 module (writes only under the update env var), leaving the artifact tests untouched",
+   "id": "OPT-2",
+   "risk": "adds new test nodes to the canonical suite",
+   "scope": "TEST_INFRA_ONLY"
+  },
+  {
+   "change": "owner explicitly authorizes a one-off sanctioned generator run for these 3 artifact nodes (I would still not edit any hash by hand, and would keep the two-run determinism gate)",
+   "id": "OPT-3",
+   "risk": "bypasses the documented flow once; must be recorded in provenance",
+   "scope": "ONE_OFF_OWNER_SANCTIONED"
+  }
+ ],
+ "SEMANTIC_CONTRACT": "existing frozen M3A/M3B semantics unchanged; the refreeze only makes the committed baselines agree with the already-frozen Tribulation effect application contract (post-domain-engine state + tribulation delta, exactly once).",
+ "WHY_CHANGED": "confirmed tribulation effect application bug: adapters recorded effects but their direct ORM mutations were overwritten by the owning engine's same-step staged change (last-write-wins). The OLD baselines faithfully recorded that buggy implementation behaviour.",
+ "packet": "M6D3_BASELINE_REFREEZE_PROVENANCE"
+}
