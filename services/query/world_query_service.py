@@ -111,9 +111,11 @@ class WorldQueryService:
                 from ...database.models_core import SimulationCheckpoint
                 latest = s.execute(
                     select(SimulationCheckpoint).order_by(
-                        SimulationCheckpoint.blessed_tick.desc())
+                        SimulationCheckpoint.checkpoint_blessed_tick.desc())
                     .limit(1)).scalar_one_or_none()
             except Exception:  # noqa: BLE001
+                # M6D.3：broad-exception 策略本轮**刻意不改**
+                # （QUERY_SERVICE_BROAD_EXCEPTION_TECH_DEBT = OPEN_NON_BLOCKING）。
                 latest = None
         wsh = latest.world_state_hash if latest else None
         esh = (latest.meta or {}).get("event_stream_hash") if latest else None
