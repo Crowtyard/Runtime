@@ -24,7 +24,7 @@
    "settlement": "TEST-MAIN-A"
   },
   "effect": {
-   "count": 5,
+   "count": 6,
    "from": 311
   },
   "source": "SIMULATION"
@@ -65,7 +65,7 @@
   },
   "effect": {
    "count": 2,
-   "from": 138
+   "from": 139
   },
   "source": "SIMULATION"
  },
@@ -78,7 +78,7 @@
   },
   "effect": {
    "count": 3,
-   "from": 138
+   "from": 139
   },
   "source": "SIMULATION"
  },
@@ -92,7 +92,7 @@
   "effect": {
    "emigrated": 2,
    "immigrated": 2,
-   "from": 138
+   "from": 139
   },
   "source": "SIMULATION"
  },
@@ -106,10 +106,10 @@
    "profile_ref": "TEST-RESOURCE-001"
   },
   "effect": {
-   "quantity_minor": 1027306155,
+   "quantity_minor": 886844475,
    "efficiency_num": 95,
    "efficiency_den": 100,
-   "reserve_after_minor": 95672191075
+   "reserve_after_minor": 13541929257
   },
   "source": "SIMULATION"
  },
@@ -123,10 +123,10 @@
    "profile_ref": "TEST-RESOURCE-003"
   },
   "effect": {
-   "quantity_minor": 181216395,
+   "quantity_minor": 117106440,
    "efficiency_num": 95,
    "efficiency_den": 100,
-   "reserve_after_minor": 4983380093
+   "reserve_after_minor": 118838280
   },
   "source": "SIMULATION"
  },
@@ -155,9 +155,9 @@
    "resource_profile_ref": "TEST-RESOURCE-002"
   },
   "effect": {
-   "demand_minor": 362833333,
+   "demand_minor": 364000000,
    "fulfilled_minor": 356400000,
-   "unmet_minor": 6433333
+   "unmet_minor": 7600000
   },
   "source": "SIMULATION"
  },
@@ -170,11 +170,11 @@
    "resource_profile_ref": "TEST-RESOURCE-002"
   },
   "effect": {
-   "unmet_minor": 6433333,
-   "demand_minor": 362833333,
-   "shortage_ratio_num": 6433333,
-   "shortage_ratio_den": 362833333,
-   "sustained_steps": 6
+   "unmet_minor": 7600000,
+   "demand_minor": 364000000,
+   "shortage_ratio_num": 19,
+   "shortage_ratio_den": 910,
+   "sustained_steps": 7
   },
   "source": "SIMULATION"
  },
@@ -187,9 +187,9 @@
    "resource_profile_ref": "TEST-RESOURCE-002"
   },
   "effect": {
-   "demand_minor": 159833333,
+   "demand_minor": 161000004,
    "fulfilled_minor": 0,
-   "unmet_minor": 159833333
+   "unmet_minor": 161000004
   },
   "source": "SIMULATION"
  },
@@ -202,8 +202,8 @@
    "resource_profile_ref": "TEST-RESOURCE-002"
   },
   "effect": {
-   "unmet_minor": 159833333,
-   "demand_minor": 159833333,
+   "unmet_minor": 161000004,
+   "demand_minor": 161000004,
    "shortage_ratio_num": 1,
    "shortage_ratio_den": 1,
    "sustained_steps": 299
@@ -248,7 +248,7 @@
   },
   "effect": {
    "count": 5,
-   "from": 311
+   "from": 312
   },
   "source": "SIMULATION"
  },
@@ -261,7 +261,7 @@
   },
   "effect": {
    "count": 4,
-   "from": 311
+   "from": 312
   },
   "source": "SIMULATION"
  },
@@ -275,7 +275,7 @@
   "effect": {
    "emigrated": 4,
    "immigrated": 3,
-   "from": 311
+   "from": 312
   },
   "source": "SIMULATION"
  },
@@ -288,7 +288,7 @@
   },
   "effect": {
    "count": 1,
-   "from": 137
+   "from": 138
   },
   "source": "SIMULATION"
  },
@@ -301,7 +301,7 @@
   },
   "effect": {
    "count": 1,
-   "from": 137
+   "from": 138
   },
   "source": "SIMULATION"
  },
@@ -315,7 +315,7 @@
   "effect": {
    "emigrated": 2,
    "immigrated": 3,
-   "from": 137
+   "from": 138
   },
   "source": "SIMULATION"
  },
@@ -329,10 +329,10 @@
    "profile_ref": "TEST-RESOURCE-001"
   },
   "effect": {
-   "quantity_minor": 919082475,
+   "quantity_minor": 795152220,
    "efficiency_num": 85,
    "efficiency_den": 100,
-   "reserve_after_minor": 94753108600
+   "reserve_after_minor": 12746777037
   },
   "source": "SIMULATION"
  },
@@ -346,10 +346,10 @@
    "profile_ref": "TEST-RESOURCE-003"
   },
   "effect": {
-   "quantity_minor": 162137627,
+   "quantity_minor": 118838280,
    "efficiency_num": 85,
    "efficiency_den": 100,
-   "reserve_after_minor": 5000000000
+   "reserve_after_minor": 120509180
   },
   "source": "SIMULATION"
  },
@@ -378,9 +378,9 @@
    "resource_profile_ref": "TEST-RESOURCE-002"
   },
   "effect": {
-   "demand_minor": 362833333,
+   "demand_minor": 364000000,
    "fulfilled_minor": 356400000,
-   "unmet_minor": 6433333
+   "unmet_minor": 7600000
   },
   "source": "SIMULATION"
  },
@@ -393,11 +393,11 @@
    "resource_profile_ref": "TEST-RESOURCE-002"
   },
   "effect": {
-   "unmet_minor": 6433333,
-   "demand_minor": 362833333,
-   "shortage_ratio_num": 6433333,
-   "shortage_ratio_den": 362833333,
-   "sustained_steps": 7
+   "unmet_minor": 7600000,
+   "demand_minor": 364000000,
+   "shortage_ratio_num": 19,
+   "shortage_ratio_den": 910,
+   "sustained_steps": 8
   },
   "source": "SIMULATION"
  },
@@ -410,9 +410,9 @@
    "resource_profile_ref": "TEST-RESOURCE-002"
   },
   "effect": {
-   "demand_minor": 161000002,
+   "demand_minor": 162166666,
    "fulfilled_minor": 0,
-   "unmet_minor": 161000002
+   "unmet_minor": 162166666
   },
   "source": "SIMULATION"
  },
@@ -425,8 +425,8 @@
    "resource_profile_ref": "TEST-RESOURCE-002"
   },
   "effect": {
-   "unmet_minor": 161000002,
-   "demand_minor": 161000002,
+   "unmet_minor": 162166666,
+   "demand_minor": 162166666,
    "shortage_ratio_num": 1,
    "shortage_ratio_den": 1,
    "sustained_steps": 300

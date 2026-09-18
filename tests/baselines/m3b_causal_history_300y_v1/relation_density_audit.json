@@ -1,45 +1,45 @@
 {
  "world_id": "MINIWORLD-TEST-001",
- "domain_events": 4479,
- "state_changes": 37818,
- "causal_links": 65742,
- "links_per_domain_event": 14.6778,
- "links_per_state_change": 1.7384,
+ "domain_events": 4535,
+ "state_changes": 37885,
+ "causal_links": 66889,
+ "links_per_domain_event": 14.7495,
+ "links_per_state_change": 1.7656,
  "relation_distribution": [
   {
    "relation_type": "CONTINUES",
-   "count": 37723,
-   "percentage": 57.3804
+   "count": 37777,
+   "percentage": 56.4771
   },
   {
    "relation_type": "AFFECTS",
-   "count": 22654,
-   "percentage": 34.4589
+   "count": 23629,
+   "percentage": 35.3257
   },
   {
    "relation_type": "CAUSES",
-   "count": 4682,
-   "percentage": 7.1218
+   "count": 4800,
+   "percentage": 7.1761
   },
   {
    "relation_type": "PART_OF_EPISODE",
    "count": 508,
-   "percentage": 0.7727
+   "percentage": 0.7595
   },
   {
    "relation_type": "RESULTS_IN",
    "count": 88,
-   "percentage": 0.1339
+   "percentage": 0.1316
   },
   {
    "relation_type": "DERIVED_FROM",
    "count": 58,
-   "percentage": 0.0882
+   "percentage": 0.0867
   },
   {
    "relation_type": "DECIDED_BY",
    "count": 29,
-   "percentage": 0.0441
+   "percentage": 0.0434
   },
   {
    "relation_type": "CORRECTS",

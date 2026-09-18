@@ -4,48 +4,48 @@
  "history_schema_version": "history-v1",
  "causal_link_id_schema": "causal-link-id-v1",
  "causal_history_hash_schema": "causal-history-hash-v1",
- "causal_history_hash": "c1293e59d96753e2b3488746f86f176bceb84d2ef6935c9760944c8727046a44",
- "world_state_hash": "0fc6ece03ba12c1b919beceef0ad0a44bd978eba88f56cdf9c57e5338809e4da",
- "event_stream_hash": "8b117097d65863b74e6ef486a1959511674feceb838e09cdc837f04ab7bc868a",
- "causal_links": 65742,
- "entity_history_index_rows": 64858,
- "distinct_entities_with_history": 134,
+ "causal_history_hash": "d3b8a499257fe40cd7d3f4253438f9a99aca6e7592340a8f6cbdc4fd2ae130ba",
+ "world_state_hash": "c5ef2564591eb58f4ce1ba99f3f687969057fc001a83da155fa6e24814e36535",
+ "event_stream_hash": "83bdc08f7d46510604c895097bf1a2418e2da246231833e9a213547c71f4b6c7",
+ "causal_links": 66889,
+ "entity_history_index_rows": 66005,
+ "distinct_entities_with_history": 145,
  "metric_rename": {
   "OLD_METRIC_NAME": "entities_with_history",
   "NEW_METRIC_NAME": "entity_history_index_rows",
   "REASON": "raw index row count (entity,link) pairs, not distinct entities"
  },
  "episodes_indexed": 30,
- "state_changes_indexed": 37818,
+ "state_changes_indexed": 37885,
  "incomplete_episodes": 2,
  "nonterminal_total": 2,
  "orphan_links": 0,
  "cycle_count": 0,
  "superseded_links": 0,
- "average_chain_depth": 112.82,
+ "average_chain_depth": 113.918,
  "max_chain_depth": 330,
  "query_latency_ms": {
   "timeline": {
-   "single": 2.83
+   "single": 2.12
   },
   "entity_history": {
-   "single": 111.04
+   "single": 267.63
   },
   "episode_history": {
-   "single": 4.86
+   "single": 7.18
   },
   "why_query": {
-   "single": 13.69
+   "single": 10.48
   },
   "resource_why": {
-   "single": 3.96
+   "single": 2.47
   },
   "social_why": {
-   "single": 1.97
+   "single": 1.38
   },
   "succession_trace": {
-   "single": 3.72
+   "single": 2.79
   }
  },
- "wall_seconds_queries": 10.663
+ "wall_seconds_queries": 7.175
 }

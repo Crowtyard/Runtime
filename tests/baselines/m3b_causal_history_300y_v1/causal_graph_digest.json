@@ -1,11 +1,11 @@
 {
- "links_total": 65742,
+ "links_total": 66889,
  "relations": {
-  "CAUSES": 4682,
+  "CAUSES": 4800,
   "TRIGGERS": 0,
   "RESULTS_IN": 88,
-  "AFFECTS": 22654,
-  "CONTINUES": 37723,
+  "AFFECTS": 23629,
+  "CONTINUES": 37777,
   "RECOVERS_FROM": 0,
   "CORRECTS": 0,
   "SUPERSEDES": 0,
@@ -16,8 +16,8 @@
   "MATERIALIZES_IN": 0
  },
  "node_kinds": {
-  "EVENT": 23710,
-  "STATE_CHANGE": 107062,
+  "EVENT": 24685,
+  "STATE_CHANGE": 108381,
   "EPISODE": 538,
   "PLAN": 87,
   "RESIDUAL": 58,

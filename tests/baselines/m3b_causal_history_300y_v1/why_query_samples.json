@@ -46,113 +46,113 @@
   ],
   "domain_effects": [
    {
-    "state_change_id": 6379,
+    "state_change_id": 6332,
     "entity_type": "population_groups",
     "entity_id": "79",
     "field": "count",
     "old_value": {
-     "v": 74
+     "v": 75
     },
     "new_value": {
-     "v": 73
+     "v": 74
     },
     "engine_id": "DEMOGRAPHY",
     "tick": 53000000
    },
    {
-    "state_change_id": 6380,
+    "state_change_id": 6333,
     "entity_type": "ecology_state",
     "entity_id": "1",
     "field": "habitat_quality",
     "old_value": {
-     "v": 756275
+     "v": 564539
     },
     "new_value": {
-     "v": 421275
+     "v": 229539
     },
     "engine_id": "ECOLOGY",
     "tick": 53000000
    },
    {
-    "state_change_id": 6381,
+    "state_change_id": 6334,
     "entity_type": "ecology_state",
     "entity_id": "2",
     "field": "habitat_quality",
     "old_value": {
-     "v": 840960
+     "v": 697746
     },
     "new_value": {
-     "v": 505960
+     "v": 362746
     },
     "engine_id": "ECOLOGY",
     "tick": 53000000
    },
    {
-    "state_change_id": 6382,
+    "state_change_id": 6335,
     "entity_type": "resource_stocks",
     "entity_id": "1",
     "field": "quantity",
     "old_value": {
-     "v": 18691028965
+     "v": 17473173918
     },
     "new_value": {
-     "v": 18064879495
+     "v": 16895938846
     },
     "engine_id": "ECONOMY",
     "tick": 53000000
    },
    {
-    "state_change_id": 6383,
+    "state_change_id": 6336,
     "entity_type": "resource_stocks",
     "entity_id": "6",
     "field": "quantity",
     "old_value": {
-     "v": 9408627067
+     "v": 9323843892
     },
     "new_value": {
-     "v": 9093438061
+     "v": 9017064685
     },
     "engine_id": "ECONOMY",
     "tick": 53000000
    },
    {
-    "state_change_id": 6384,
+    "state_change_id": 6337,
     "entity_type": "resource_nodes",
     "entity_id": "1",
     "field": "remaining_reserve",
     "old_value": {
-     "v": 344868971035
+     "v": 335983692500
     },
     "new_value": {
-     "v": 325613786819
+     "v": 317170875914
     },
     "engine_id": "RESOURCE",
     "tick": 53000000
    },
    {
-    "state_change_id": 6385,
+    "state_change_id": 6338,
     "entity_type": "resource_nodes",
     "entity_id": "2",
     "field": "remaining_reserve",
     "old_value": {
-     "v": 5000000000
+     "v": 4537456997
     },
     "new_value": {
-     "v": 4720833334
+     "v": 4283364666
     },
     "engine_id": "RESOURCE",
     "tick": 53000000
    },
    {
-    "state_change_id": 6386,
+    "state_change_id": 6339,
     "entity_type": "settlement_social_state",
     "entity_id": "1",
     "field": "social_stress",
     "old_value": {
-     "v": 239541
+     "v": 241709
     },
     "new_value": {
-     "v": 440541
+     "v": 442709
     },
     "engine_id": "SOCIAL",
     "tick": 53000000
@@ -287,7 +287,7 @@
     }
    },
    {
-    "event_uid": "e5009859f6f0fce63a507d29c45f2b19",
+    "event_uid": "59200572747ce89b6c9f834f19bb0546",
     "event_type": "TRIBULATION_NEW_NORMAL_REACHED",
     "blessed_tick": 64000000,
     "effect": {
@@ -295,7 +295,7 @@
     }
    },
    {
-    "event_uid": "7d6e3fc64f9e1c091224bcd8e70d2c85",
+    "event_uid": "1547f17c739cf64fd4c742d5d73007df",
     "event_type": "TRIBULATION_EPISODE_COMPLETED",
     "blessed_tick": 64000000,
     "effect": {
@@ -308,15 +308,15 @@
   "entity_type": "ecology_state",
   "entity_id": "1",
   "field": "habitat_quality",
-  "current_value": 604552,
+  "current_value": 125849,
   "current_value_tick": 300000000,
   "last_state_change": {
-   "state_change_id": 37768,
+   "state_change_id": 37837,
    "old_value": {
-    "v": 604245
+    "v": 118244
    },
    "new_value": {
-    "v": 604552
+    "v": 125849
    },
    "blessed_tick": 300000000,
    "event_ref": null,
@@ -330,21 +330,21 @@
     "relation": "CAUSES",
     "source": {
      "kind": "STATE_CHANGE",
-     "id": "37750"
+     "id": "37820"
     },
     "committed_tick": 300000000,
     "episode_id": null,
     "status": "ACTIVE",
     "detail": {
-     "state_change_id": 37750,
+     "state_change_id": 37820,
      "entity_type": "resource_nodes",
      "entity_id": "1",
      "field": "remaining_reserve",
      "old_value": {
-      "v": 95672191075
+      "v": 13541929257
      },
      "new_value": {
-      "v": 94753108600
+      "v": 12746777037
      },
      "blessed_tick": 300000000
     },
@@ -368,10 +368,10 @@
         "profile_ref": "TEST-RESOURCE-001"
        },
        "effect": {
-        "quantity_minor": 919082475,
+        "quantity_minor": 795152220,
         "efficiency_num": 85,
         "efficiency_den": 100,
-        "reserve_after_minor": 94753108600
+        "reserve_after_minor": 12746777037
        }
       },
       "upstream": []
@@ -380,21 +380,21 @@
       "relation": "CONTINUES",
       "source": {
        "kind": "STATE_CHANGE",
-       "id": "37622"
+       "id": "37691"
       },
       "committed_tick": 300000000,
       "episode_id": null,
       "status": "ACTIVE",
       "detail": {
-       "state_change_id": 37622,
+       "state_change_id": 37691,
        "entity_type": "resource_nodes",
        "entity_id": "1",
        "field": "remaining_reserve",
        "old_value": {
-        "v": 96699497230
+        "v": 14428773732
        },
        "new_value": {
-        "v": 95672191075
+        "v": 13541929257
        },
        "blessed_tick": 299000000
       },
@@ -418,10 +418,10 @@
           "profile_ref": "TEST-RESOURCE-001"
          },
          "effect": {
-          "quantity_minor": 1027306155,
+          "quantity_minor": 886844475,
           "efficiency_num": 95,
           "efficiency_den": 100,
-          "reserve_after_minor": 95672191075
+          "reserve_after_minor": 13541929257
          }
         },
         "upstream": []
@@ -430,21 +430,21 @@
         "relation": "CONTINUES",
         "source": {
          "kind": "STATE_CHANGE",
-         "id": "37497"
+         "id": "37567"
         },
         "committed_tick": 299000000,
         "episode_id": null,
         "status": "ACTIVE",
         "detail": {
-         "state_change_id": 37497,
+         "state_change_id": 37567,
          "entity_type": "resource_nodes",
          "entity_id": "1",
          "field": "remaining_reserve",
          "old_value": {
-          "v": 97672735720
+          "v": 15266977662
          },
          "new_value": {
-          "v": 96699497230
+          "v": 14428773732
          },
          "blessed_tick": 298000000
         },
@@ -468,10 +468,10 @@
             "profile_ref": "TEST-RESOURCE-001"
            },
            "effect": {
-            "quantity_minor": 973238490,
+            "quantity_minor": 838203930,
             "efficiency_num": 90,
             "efficiency_den": 100,
-            "reserve_after_minor": 96699497230
+            "reserve_after_minor": 14428773732
            }
           }
          },
@@ -479,21 +479,21 @@
           "relation": "CONTINUES",
           "source": {
            "kind": "STATE_CHANGE",
-           "id": "37369"
+           "id": "37442"
           },
           "committed_tick": 298000000,
           "episode_id": null,
           "status": "ACTIVE",
           "detail": {
-           "state_change_id": 37369,
+           "state_change_id": 37442,
            "entity_type": "resource_nodes",
            "entity_id": "1",
            "field": "remaining_reserve",
            "old_value": {
-            "v": 98700139915
+            "v": 16149820737
            },
            "new_value": {
-            "v": 97672735720
+            "v": 15266977662
            },
            "blessed_tick": 297000000
           }
@@ -508,21 +508,21 @@
     "relation": "CAUSES",
     "source": {
      "kind": "STATE_CHANGE",
-     "id": "37751"
+     "id": "37821"
     },
     "committed_tick": 300000000,
     "episode_id": null,
     "status": "ACTIVE",
     "detail": {
-     "state_change_id": 37751,
+     "state_change_id": 37821,
      "entity_type": "resource_nodes",
      "entity_id": "1",
      "field": "last_extracted_minor",
      "old_value": {
-      "v": 1027306155
+      "v": 886844475
      },
      "new_value": {
-      "v": 919082475
+      "v": 795152220
      },
      "blessed_tick": 300000000
     },
@@ -546,10 +546,10 @@
         "profile_ref": "TEST-RESOURCE-001"
        },
        "effect": {
-        "quantity_minor": 919082475,
+        "quantity_minor": 795152220,
         "efficiency_num": 85,
         "efficiency_den": 100,
-        "reserve_after_minor": 94753108600
+        "reserve_after_minor": 12746777037
        }
       },
       "upstream": []
@@ -558,21 +558,21 @@
       "relation": "CONTINUES",
       "source": {
        "kind": "STATE_CHANGE",
-       "id": "37623"
+       "id": "37692"
       },
       "committed_tick": 300000000,
       "episode_id": null,
       "status": "ACTIVE",
       "detail": {
-       "state_change_id": 37623,
+       "state_change_id": 37692,
        "entity_type": "resource_nodes",
        "entity_id": "1",
        "field": "last_extracted_minor",
        "old_value": {
-        "v": 973238490
+        "v": 838203930
        },
        "new_value": {
-        "v": 1027306155
+        "v": 886844475
        },
        "blessed_tick": 299000000
       },
@@ -596,10 +596,10 @@
           "profile_ref": "TEST-RESOURCE-001"
          },
          "effect": {
-          "quantity_minor": 1027306155,
+          "quantity_minor": 886844475,
           "efficiency_num": 95,
           "efficiency_den": 100,
-          "reserve_after_minor": 95672191075
+          "reserve_after_minor": 13541929257
          }
         },
         "upstream": []
@@ -608,21 +608,21 @@
         "relation": "CONTINUES",
         "source": {
          "kind": "STATE_CHANGE",
-         "id": "37498"
+         "id": "37568"
         },
         "committed_tick": 299000000,
         "episode_id": null,
         "status": "ACTIVE",
         "detail": {
-         "state_change_id": 37498,
+         "state_change_id": 37568,
          "entity_type": "resource_nodes",
          "entity_id": "1",
          "field": "last_extracted_minor",
          "old_value": {
-          "v": 1027404195
+          "v": 882843075
          },
          "new_value": {
-          "v": 973238490
+          "v": 838203930
          },
          "blessed_tick": 298000000
         },
@@ -646,10 +646,10 @@
             "profile_ref": "TEST-RESOURCE-001"
            },
            "effect": {
-            "quantity_minor": 973238490,
+            "quantity_minor": 838203930,
             "efficiency_num": 90,
             "efficiency_den": 100,
-            "reserve_after_minor": 96699497230
+            "reserve_after_minor": 14428773732
            }
           }
          },
@@ -657,21 +657,21 @@
           "relation": "CONTINUES",
           "source": {
            "kind": "STATE_CHANGE",
-           "id": "37370"
+           "id": "37443"
           },
           "committed_tick": 298000000,
           "episode_id": null,
           "status": "ACTIVE",
           "detail": {
-           "state_change_id": 37370,
+           "state_change_id": 37443,
            "entity_type": "resource_nodes",
            "entity_id": "1",
            "field": "last_extracted_minor",
            "old_value": {
-            "v": 1081677600
+            "v": 927427500
            },
            "new_value": {
-            "v": 1027404195
+            "v": 882843075
            },
            "blessed_tick": 297000000
           }
@@ -686,21 +686,21 @@
     "relation": "CONTINUES",
     "source": {
      "kind": "STATE_CHANGE",
-     "id": "37644"
+     "id": "37712"
     },
     "committed_tick": 300000000,
     "episode_id": null,
     "status": "ACTIVE",
     "detail": {
-     "state_change_id": 37644,
+     "state_change_id": 37712,
      "entity_type": "ecology_state",
      "entity_id": "1",
      "field": "habitat_quality",
      "old_value": {
-      "v": 604583
+      "v": 111735
      },
      "new_value": {
-      "v": 604245
+      "v": 118244
      },
      "blessed_tick": 299000000
     },
@@ -709,21 +709,21 @@
       "relation": "CAUSES",
       "source": {
        "kind": "STATE_CHANGE",
-       "id": "37622"
+       "id": "37691"
       },
       "committed_tick": 299000000,
       "episode_id": null,
       "status": "ACTIVE",
       "detail": {
-       "state_change_id": 37622,
+       "state_change_id": 37691,
        "entity_type": "resource_nodes",
        "entity_id": "1",
        "field": "remaining_reserve",
        "old_value": {
-        "v": 96699497230
+        "v": 14428773732
        },
        "new_value": {
-        "v": 95672191075
+        "v": 13541929257
        },
        "blessed_tick": 299000000
       },
@@ -747,10 +747,10 @@
           "profile_ref": "TEST-RESOURCE-001"
          },
          "effect": {
-          "quantity_minor": 1027306155,
+          "quantity_minor": 886844475,
           "efficiency_num": 95,
           "efficiency_den": 100,
-          "reserve_after_minor": 95672191075
+          "reserve_after_minor": 13541929257
          }
         },
         "upstream": []
@@ -759,21 +759,21 @@
         "relation": "CONTINUES",
         "source": {
          "kind": "STATE_CHANGE",
-         "id": "37497"
+         "id": "37567"
         },
         "committed_tick": 299000000,
         "episode_id": null,
         "status": "ACTIVE",
         "detail": {
-         "state_change_id": 37497,
+         "state_change_id": 37567,
          "entity_type": "resource_nodes",
          "entity_id": "1",
          "field": "remaining_reserve",
          "old_value": {
-          "v": 97672735720
+          "v": 15266977662
          },
          "new_value": {
-          "v": 96699497230
+          "v": 14428773732
          },
          "blessed_tick": 298000000
         },
@@ -797,10 +797,10 @@
             "profile_ref": "TEST-RESOURCE-001"
            },
            "effect": {
-            "quantity_minor": 973238490,
+            "quantity_minor": 838203930,
             "efficiency_num": 90,
             "efficiency_den": 100,
-            "reserve_after_minor": 96699497230
+            "reserve_after_minor": 14428773732
            }
           }
          },
@@ -808,21 +808,21 @@
           "relation": "CONTINUES",
           "source": {
            "kind": "STATE_CHANGE",
-           "id": "37369"
+           "id": "37442"
           },
           "committed_tick": 298000000,
           "episode_id": null,
           "status": "ACTIVE",
           "detail": {
-           "state_change_id": 37369,
+           "state_change_id": 37442,
            "entity_type": "resource_nodes",
            "entity_id": "1",
            "field": "remaining_reserve",
            "old_value": {
-            "v": 98700139915
+            "v": 16149820737
            },
            "new_value": {
-            "v": 97672735720
+            "v": 15266977662
            },
            "blessed_tick": 297000000
           }
@@ -835,21 +835,21 @@
       "relation": "CAUSES",
       "source": {
        "kind": "STATE_CHANGE",
-       "id": "37623"
+       "id": "37692"
       },
       "committed_tick": 299000000,
       "episode_id": null,
       "status": "ACTIVE",
       "detail": {
-       "state_change_id": 37623,
+       "state_change_id": 37692,
        "entity_type": "resource_nodes",
        "entity_id": "1",
        "field": "last_extracted_minor",
        "old_value": {
-        "v": 973238490
+        "v": 838203930
        },
        "new_value": {
-        "v": 1027306155
+        "v": 886844475
        },
        "blessed_tick": 299000000
       },
@@ -873,10 +873,10 @@
           "profile_ref": "TEST-RESOURCE-001"
          },
          "effect": {
-          "quantity_minor": 1027306155,
+          "quantity_minor": 886844475,
           "efficiency_num": 95,
           "efficiency_den": 100,
-          "reserve_after_minor": 95672191075
+          "reserve_after_minor": 13541929257
          }
         },
         "upstream": []
@@ -885,21 +885,21 @@
         "relation": "CONTINUES",
         "source": {
          "kind": "STATE_CHANGE",
-         "id": "37498"
+         "id": "37568"
         },
         "committed_tick": 299000000,
         "episode_id": null,
         "status": "ACTIVE",
         "detail": {
-         "state_change_id": 37498,
+         "state_change_id": 37568,
          "entity_type": "resource_nodes",
          "entity_id": "1",
          "field": "last_extracted_minor",
          "old_value": {
-          "v": 1027404195
+          "v": 882843075
          },
          "new_value": {
-          "v": 973238490
+          "v": 838203930
          },
          "blessed_tick": 298000000
         },
@@ -923,10 +923,10 @@
             "profile_ref": "TEST-RESOURCE-001"
            },
            "effect": {
-            "quantity_minor": 973238490,
+            "quantity_minor": 838203930,
             "efficiency_num": 90,
             "efficiency_den": 100,
-            "reserve_after_minor": 96699497230
+            "reserve_after_minor": 14428773732
            }
           }
          },
@@ -934,21 +934,21 @@
           "relation": "CONTINUES",
           "source": {
            "kind": "STATE_CHANGE",
-           "id": "37370"
+           "id": "37443"
           },
           "committed_tick": 298000000,
           "episode_id": null,
           "status": "ACTIVE",
           "detail": {
-           "state_change_id": 37370,
+           "state_change_id": 37443,
            "entity_type": "resource_nodes",
            "entity_id": "1",
            "field": "last_extracted_minor",
            "old_value": {
-            "v": 1081677600
+            "v": 927427500
            },
            "new_value": {
-            "v": 1027404195
+            "v": 882843075
            },
            "blessed_tick": 297000000
           }
@@ -961,21 +961,21 @@
       "relation": "CONTINUES",
       "source": {
        "kind": "STATE_CHANGE",
-       "id": "37520"
+       "id": "37589"
       },
       "committed_tick": 299000000,
       "episode_id": null,
       "status": "ACTIVE",
       "detail": {
-       "state_change_id": 37520,
+       "state_change_id": 37589,
        "entity_type": "ecology_state",
        "entity_id": "1",
        "field": "habitat_quality",
        "old_value": {
-        "v": 604587
+        "v": 104459
        },
        "new_value": {
-        "v": 604583
+        "v": 111735
        },
        "blessed_tick": 298000000
       },
@@ -984,21 +984,21 @@
         "relation": "CAUSES",
         "source": {
          "kind": "STATE_CHANGE",
-         "id": "37497"
+         "id": "37567"
         },
         "committed_tick": 298000000,
         "episode_id": null,
         "status": "ACTIVE",
         "detail": {
-         "state_change_id": 37497,
+         "state_change_id": 37567,
          "entity_type": "resource_nodes",
          "entity_id": "1",
          "field": "remaining_reserve",
          "old_value": {
-          "v": 97672735720
+          "v": 15266977662
          },
          "new_value": {
-          "v": 96699497230
+          "v": 14428773732
          },
          "blessed_tick": 298000000
         },
@@ -1022,10 +1022,10 @@
             "profile_ref": "TEST-RESOURCE-001"
            },
            "effect": {
-            "quantity_minor": 973238490,
+            "quantity_minor": 838203930,
             "efficiency_num": 90,
             "efficiency_den": 100,
-            "reserve_after_minor": 96699497230
+            "reserve_after_minor": 14428773732
            }
           }
          },
@@ -1033,21 +1033,21 @@
           "relation": "CONTINUES",
           "source": {
            "kind": "STATE_CHANGE",
-           "id": "37369"
+           "id": "37442"
           },
           "committed_tick": 298000000,
           "episode_id": null,
           "status": "ACTIVE",
           "detail": {
-           "state_change_id": 37369,
+           "state_change_id": 37442,
            "entity_type": "resource_nodes",
            "entity_id": "1",
            "field": "remaining_reserve",
            "old_value": {
-            "v": 98700139915
+            "v": 16149820737
            },
            "new_value": {
-            "v": 97672735720
+            "v": 15266977662
            },
            "blessed_tick": 297000000
           }
@@ -1058,21 +1058,21 @@
         "relation": "CAUSES",
         "source": {
          "kind": "STATE_CHANGE",
-         "id": "37498"
+         "id": "37568"
         },
         "committed_tick": 298000000,
         "episode_id": null,
         "status": "ACTIVE",
         "detail": {
-         "state_change_id": 37498,
+         "state_change_id": 37568,
          "entity_type": "resource_nodes",
          "entity_id": "1",
          "field": "last_extracted_minor",
          "old_value": {
-          "v": 1027404195
+          "v": 882843075
          },
          "new_value": {
-          "v": 973238490
+          "v": 838203930
          },
          "blessed_tick": 298000000
         },
@@ -1096,10 +1096,10 @@
             "profile_ref": "TEST-RESOURCE-001"
            },
            "effect": {
-            "quantity_minor": 973238490,
+            "quantity_minor": 838203930,
             "efficiency_num": 90,
             "efficiency_den": 100,
-            "reserve_after_minor": 96699497230
+            "reserve_after_minor": 14428773732
            }
           }
          },
@@ -1107,21 +1107,21 @@
           "relation": "CONTINUES",
           "source": {
            "kind": "STATE_CHANGE",
-           "id": "37370"
+           "id": "37443"
           },
           "committed_tick": 298000000,
           "episode_id": null,
           "status": "ACTIVE",
           "detail": {
-           "state_change_id": 37370,
+           "state_change_id": 37443,
            "entity_type": "resource_nodes",
            "entity_id": "1",
            "field": "last_extracted_minor",
            "old_value": {
-            "v": 1081677600
+            "v": 927427500
            },
            "new_value": {
-            "v": 1027404195
+            "v": 882843075
            },
            "blessed_tick": 297000000
           }
@@ -1132,21 +1132,21 @@
         "relation": "CONTINUES",
         "source": {
          "kind": "STATE_CHANGE",
-         "id": "37391"
+         "id": "37464"
         },
         "committed_tick": 298000000,
         "episode_id": null,
         "status": "ACTIVE",
         "detail": {
-         "state_change_id": 37391,
+         "state_change_id": 37464,
          "entity_type": "ecology_state",
          "entity_id": "1",
          "field": "habitat_quality",
          "old_value": {
-          "v": 604927
+          "v": 97695
          },
          "new_value": {
-          "v": 604587
+          "v": 104459
          },
          "blessed_tick": 297000000
         },
@@ -1155,21 +1155,21 @@
           "relation": "CAUSES",
           "source": {
            "kind": "STATE_CHANGE",
-           "id": "37369"
+           "id": "37442"
           },
           "committed_tick": 297000000,
           "episode_id": null,
           "status": "ACTIVE",
           "detail": {
-           "state_change_id": 37369,
+           "state_change_id": 37442,
            "entity_type": "resource_nodes",
            "entity_id": "1",
            "field": "remaining_reserve",
            "old_value": {
-            "v": 98700139915
+            "v": 16149820737
            },
            "new_value": {
-            "v": 97672735720
+            "v": 15266977662
            },
            "blessed_tick": 297000000
           }
@@ -1178,21 +1178,21 @@
           "relation": "CAUSES",
           "source": {
            "kind": "STATE_CHANGE",
-           "id": "37370"
+           "id": "37443"
           },
           "committed_tick": 297000000,
           "episode_id": null,
           "status": "ACTIVE",
           "detail": {
-           "state_change_id": 37370,
+           "state_change_id": 37443,
            "entity_type": "resource_nodes",
            "entity_id": "1",
            "field": "last_extracted_minor",
            "old_value": {
-            "v": 1081677600
+            "v": 927427500
            },
            "new_value": {
-            "v": 1027404195
+            "v": 882843075
            },
            "blessed_tick": 297000000
           }
@@ -1201,21 +1201,21 @@
           "relation": "CONTINUES",
           "source": {
            "kind": "STATE_CHANGE",
-           "id": "37253"
+           "id": "37327"
           },
           "committed_tick": 297000000,
           "episode_id": null,
           "status": "ACTIVE",
           "detail": {
-           "state_change_id": 37253,
+           "state_change_id": 37327,
            "entity_type": "ecology_state",
            "entity_id": "1",
            "field": "habitat_quality",
            "old_value": {
-            "v": 605592
+            "v": 91425
            },
            "new_value": {
-            "v": 604927
+            "v": 97695
            },
            "blessed_tick": 296000000
           }
@@ -1234,15 +1234,15 @@
   "entity_type": "resource_nodes",
   "entity_id": "1",
   "field": "remaining_reserve",
-  "current_value": 94753108600,
+  "current_value": 12746777037,
   "current_value_tick": 300000000,
   "last_state_change": {
-   "state_change_id": 37750,
+   "state_change_id": 37820,
    "old_value": {
-    "v": 95672191075
+    "v": 13541929257
    },
    "new_value": {
-    "v": 94753108600
+    "v": 12746777037
    },
    "blessed_tick": 300000000,
    "event_ref": "a31136c022b94b805e6a8c4d2289aefc",
@@ -1271,10 +1271,10 @@
       "profile_ref": "TEST-RESOURCE-001"
      },
      "effect": {
-      "quantity_minor": 919082475,
+      "quantity_minor": 795152220,
       "efficiency_num": 85,
       "efficiency_den": 100,
-      "reserve_after_minor": 94753108600
+      "reserve_after_minor": 12746777037
      }
     },
     "upstream": []
@@ -1283,21 +1283,21 @@
     "relation": "CONTINUES",
     "source": {
      "kind": "STATE_CHANGE",
-     "id": "37622"
+     "id": "37691"
     },
     "committed_tick": 300000000,
     "episode_id": null,
     "status": "ACTIVE",
     "detail": {
-     "state_change_id": 37622,
+     "state_change_id": 37691,
      "entity_type": "resource_nodes",
      "entity_id": "1",
      "field": "remaining_reserve",
      "old_value": {
-      "v": 96699497230
+      "v": 14428773732
      },
      "new_value": {
-      "v": 95672191075
+      "v": 13541929257
      },
      "blessed_tick": 299000000
     },
@@ -1321,10 +1321,10 @@
         "profile_ref": "TEST-RESOURCE-001"
        },
        "effect": {
-        "quantity_minor": 1027306155,
+        "quantity_minor": 886844475,
         "efficiency_num": 95,
         "efficiency_den": 100,
-        "reserve_after_minor": 95672191075
+        "reserve_after_minor": 13541929257
        }
       },
       "upstream": []
@@ -1333,21 +1333,21 @@
       "relation": "CONTINUES",
       "source": {
        "kind": "STATE_CHANGE",
-       "id": "37497"
+       "id": "37567"
       },
       "committed_tick": 299000000,
       "episode_id": null,
       "status": "ACTIVE",
       "detail": {
-       "state_change_id": 37497,
+       "state_change_id": 37567,
        "entity_type": "resource_nodes",
        "entity_id": "1",
        "field": "remaining_reserve",
        "old_value": {
-        "v": 97672735720
+        "v": 15266977662
        },
        "new_value": {
-        "v": 96699497230
+        "v": 14428773732
        },
        "blessed_tick": 298000000
       },
@@ -1371,10 +1371,10 @@
           "profile_ref": "TEST-RESOURCE-001"
          },
          "effect": {
-          "quantity_minor": 973238490,
+          "quantity_minor": 838203930,
           "efficiency_num": 90,
           "efficiency_den": 100,
-          "reserve_after_minor": 96699497230
+          "reserve_after_minor": 14428773732
          }
         }
        },
@@ -1382,21 +1382,21 @@
         "relation": "CONTINUES",
         "source": {
          "kind": "STATE_CHANGE",
-         "id": "37369"
+         "id": "37442"
         },
         "committed_tick": 298000000,
         "episode_id": null,
         "status": "ACTIVE",
         "detail": {
-         "state_change_id": 37369,
+         "state_change_id": 37442,
          "entity_type": "resource_nodes",
          "entity_id": "1",
          "field": "remaining_reserve",
          "old_value": {
-          "v": 98700139915
+          "v": 16149820737
          },
          "new_value": {
-          "v": 97672735720
+          "v": 15266977662
          },
          "blessed_tick": 297000000
         }
@@ -1413,15 +1413,15 @@
   "entity_type": "settlement_social_state",
   "entity_id": "1",
   "field": "social_stress",
-  "current_value": 239926,
+  "current_value": 229373,
   "current_value_tick": 300000000,
   "last_state_change": {
-   "state_change_id": 37797,
+   "state_change_id": 37865,
    "old_value": {
-    "v": 252656
+    "v": 240648
    },
    "new_value": {
-    "v": 239926
+    "v": 229373
    },
    "blessed_tick": 300000000,
    "event_ref": null,
@@ -1435,21 +1435,21 @@
     "relation": "CONTINUES",
     "source": {
      "kind": "STATE_CHANGE",
-     "id": "37673"
+     "id": "37741"
     },
     "committed_tick": 300000000,
     "episode_id": null,
     "status": "ACTIVE",
     "detail": {
-     "state_change_id": 37673,
+     "state_change_id": 37741,
      "entity_type": "settlement_social_state",
      "entity_id": "1",
      "field": "social_stress",
      "old_value": {
-      "v": 246289
+      "v": 233375
      },
      "new_value": {
-      "v": 252656
+      "v": 240648
      },
      "blessed_tick": 299000000
     },
@@ -1458,21 +1458,21 @@
       "relation": "CONTINUES",
       "source": {
        "kind": "STATE_CHANGE",
-       "id": "37547"
+       "id": "37615"
       },
       "committed_tick": 299000000,
       "episode_id": null,
       "status": "ACTIVE",
       "detail": {
-       "state_change_id": 37547,
+       "state_change_id": 37615,
        "entity_type": "settlement_social_state",
        "entity_id": "1",
        "field": "social_stress",
        "old_value": {
-        "v": 253059
+        "v": 241516
        },
        "new_value": {
-        "v": 246289
+        "v": 233375
        },
        "blessed_tick": 298000000
       },
@@ -1481,21 +1481,21 @@
         "relation": "CONTINUES",
         "source": {
          "kind": "STATE_CHANGE",
-         "id": "37418"
+         "id": "37489"
         },
         "committed_tick": 298000000,
         "episode_id": null,
         "status": "ACTIVE",
         "detail": {
-         "state_change_id": 37418,
+         "state_change_id": 37489,
          "entity_type": "settlement_social_state",
          "entity_id": "1",
          "field": "social_stress",
          "old_value": {
-          "v": 257763
+          "v": 245068
          },
          "new_value": {
-          "v": 253059
+          "v": 241516
          },
          "blessed_tick": 297000000
         }

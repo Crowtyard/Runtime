@@ -3,34 +3,34 @@
  "metric_source_query": "SELECT COUNT(*) FROM entity_history_index WHERE world_id = :w",
  "metric_source_table": "entity_history_index",
  "metric_semantics": "raw index row count; one row per (entity_type, entity_id, link_id); NOT distinct entities",
- "entity_history_index_rows": 64858,
- "distinct_entity_ids": 134,
- "distinct_domain_entities": 134,
- "distinct_entities_with_history": 134,
+ "entity_history_index_rows": 66005,
+ "distinct_entity_ids": 145,
+ "distinct_domain_entities": 145,
+ "distinct_entities_with_history": 145,
  "index_reference_only_types": [],
  "by_entity_type": [
   {
    "entity_type": "ecology_feedback_state",
-   "row_count": 3759,
+   "row_count": 3911,
    "distinct_entity_count": 2,
    "classification": "DOMAIN_ENTITY"
   },
   {
    "entity_type": "ecology_state",
-   "row_count": 9810,
+   "row_count": 9765,
    "distinct_entity_count": 2,
    "classification": "DOMAIN_ENTITY"
   },
   {
    "entity_type": "economic_pressure_state",
-   "row_count": 5116,
+   "row_count": 5150,
    "distinct_entity_count": 2,
    "classification": "DOMAIN_ENTITY"
   },
   {
    "entity_type": "households",
-   "row_count": 663,
-   "distinct_entity_count": 30,
+   "row_count": 698,
+   "distinct_entity_count": 39,
    "classification": "DOMAIN_ENTITY"
   },
   {
@@ -41,48 +41,48 @@
   },
   {
    "entity_type": "lineages",
-   "row_count": 537,
-   "distinct_entity_count": 7,
+   "row_count": 538,
+   "distinct_entity_count": 9,
    "classification": "DOMAIN_ENTITY"
   },
   {
    "entity_type": "population_groups",
-   "row_count": 29322,
+   "row_count": 29956,
    "distinct_entity_count": 80,
    "classification": "DOMAIN_ENTITY"
   },
   {
    "entity_type": "resource_nodes",
-   "row_count": 2458,
+   "row_count": 2512,
    "distinct_entity_count": 2,
    "classification": "DOMAIN_ENTITY"
   },
   {
    "entity_type": "resource_stocks",
-   "row_count": 6372,
+   "row_count": 6256,
    "distinct_entity_count": 4,
    "classification": "DOMAIN_ENTITY"
   },
   {
    "entity_type": "settlement_social_state",
-   "row_count": 2171,
+   "row_count": 2290,
    "distinct_entity_count": 2,
    "classification": "DOMAIN_ENTITY"
   },
   {
    "entity_type": "social_feedback_state",
-   "row_count": 4649,
+   "row_count": 4928,
    "distinct_entity_count": 2,
    "classification": "DOMAIN_ENTITY"
   }
  ],
  "graph_node_cardinality": {
-  "domain_events_total": 4779,
-  "state_changes_total": 37818,
-  "distinct_event_ids_indexed": 2184,
-  "distinct_state_change_ids_indexed": 37759,
+  "domain_events_total": 4835,
+  "state_changes_total": 37885,
+  "distinct_event_ids_indexed": 2224,
+  "distinct_state_change_ids_indexed": 37826,
   "distinct_episode_ids_indexed": 30,
-  "distinct_relation_targets": 37992,
-  "distinct_relation_sources": 39768
+  "distinct_relation_targets": 38055,
+  "distinct_relation_sources": 39862
  }
 }

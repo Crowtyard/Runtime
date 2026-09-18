@@ -51,10 +51,10 @@
     "entity_id": "1",
     "field": "habitat_quality",
     "old_value": {
-     "v": 859471
+     "v": 856239
     },
     "new_value": {
-     "v": 809471
+     "v": 806239
     },
     "engine_id": "ECOLOGY",
     "tick": 13000000
@@ -65,10 +65,10 @@
     "entity_id": "2",
     "field": "habitat_quality",
     "old_value": {
-     "v": 878663
+     "v": 877240
     },
     "new_value": {
-     "v": 828663
+     "v": 827240
     },
     "engine_id": "ECOLOGY",
     "tick": 13000000
@@ -79,10 +79,10 @@
     "entity_id": "1",
     "field": "quantity",
     "old_value": {
-     "v": 5136226570
+     "v": 5516175805
     },
     "new_value": {
-     "v": 5123386004
+     "v": 5503335239
     },
     "engine_id": "ECONOMY",
     "tick": 13000000
@@ -93,10 +93,10 @@
     "entity_id": "6",
     "field": "quantity",
     "old_value": {
-     "v": 2292468193
+     "v": 2467008028
     },
     "new_value": {
-     "v": 2286737023
+     "v": 2461276858
     },
     "engine_id": "ECONOMY",
     "tick": 13000000
@@ -107,10 +107,10 @@
     "entity_id": "1",
     "field": "remaining_reserve",
     "old_value": {
-     "v": 387223773430
+     "v": 386123824195
     },
     "new_value": {
-     "v": 385287654563
+     "v": 384187705328
     },
     "engine_id": "RESOURCE",
     "tick": 13000000
@@ -121,10 +121,10 @@
     "entity_id": "2",
     "field": "remaining_reserve",
     "old_value": {
-     "v": 4958678827
+     "v": 4977444852
     },
     "new_value": {
-     "v": 4933885433
+     "v": 4952651458
     },
     "engine_id": "RESOURCE",
     "tick": 13000000
@@ -135,10 +135,10 @@
     "entity_id": "2",
     "field": "social_stress",
     "old_value": {
-     "v": 642336
+     "v": 621451
     },
     "new_value": {
-     "v": 717336
+     "v": 696451
     },
     "engine_id": "SOCIAL",
     "tick": 13000000
@@ -221,7 +221,7 @@
     }
    },
    {
-    "event_uid": "856fe6ddb5bca8264597db199f554927",
+    "event_uid": "8db42b10b3d7d8ec3787acb727a94c5b",
     "event_type": "TRIBULATION_RESIDUAL_CHANGE_CREATED",
     "blessed_tick": 16000000,
     "effect": {
@@ -321,113 +321,113 @@
   ],
   "domain_effects": [
    {
-    "state_change_id": 6379,
+    "state_change_id": 6332,
     "entity_type": "population_groups",
     "entity_id": "79",
     "field": "count",
     "old_value": {
-     "v": 74
+     "v": 75
     },
     "new_value": {
-     "v": 73
+     "v": 74
     },
     "engine_id": "DEMOGRAPHY",
     "tick": 53000000
    },
    {
-    "state_change_id": 6380,
+    "state_change_id": 6333,
     "entity_type": "ecology_state",
     "entity_id": "1",
     "field": "habitat_quality",
     "old_value": {
-     "v": 756275
+     "v": 564539
     },
     "new_value": {
-     "v": 421275
+     "v": 229539
     },
     "engine_id": "ECOLOGY",
     "tick": 53000000
    },
    {
-    "state_change_id": 6381,
+    "state_change_id": 6334,
     "entity_type": "ecology_state",
     "entity_id": "2",
     "field": "habitat_quality",
     "old_value": {
-     "v": 840960
+     "v": 697746
     },
     "new_value": {
-     "v": 505960
+     "v": 362746
     },
     "engine_id": "ECOLOGY",
     "tick": 53000000
    },
    {
-    "state_change_id": 6382,
+    "state_change_id": 6335,
     "entity_type": "resource_stocks",
     "entity_id": "1",
     "field": "quantity",
     "old_value": {
-     "v": 18691028965
+     "v": 17473173918
     },
     "new_value": {
-     "v": 18064879495
+     "v": 16895938846
     },
     "engine_id": "ECONOMY",
     "tick": 53000000
    },
    {
-    "state_change_id": 6383,
+    "state_change_id": 6336,
     "entity_type": "resource_stocks",
     "entity_id": "6",
     "field": "quantity",
     "old_value": {
-     "v": 9408627067
+     "v": 9323843892
     },
     "new_value": {
-     "v": 9093438061
+     "v": 9017064685
     },
     "engine_id": "ECONOMY",
     "tick": 53000000
    },
    {
-    "state_change_id": 6384,
+    "state_change_id": 6337,
     "entity_type": "resource_nodes",
     "entity_id": "1",
     "field": "remaining_reserve",
     "old_value": {
-     "v": 344868971035
+     "v": 335983692500
     },
     "new_value": {
-     "v": 325613786819
+     "v": 317170875914
     },
     "engine_id": "RESOURCE",
     "tick": 53000000
    },
    {
-    "state_change_id": 6385,
+    "state_change_id": 6338,
     "entity_type": "resource_nodes",
     "entity_id": "2",
     "field": "remaining_reserve",
     "old_value": {
-     "v": 5000000000
+     "v": 4537456997
     },
     "new_value": {
-     "v": 4720833334
+     "v": 4283364666
     },
     "engine_id": "RESOURCE",
     "tick": 53000000
    },
    {
-    "state_change_id": 6386,
+    "state_change_id": 6339,
     "entity_type": "settlement_social_state",
     "entity_id": "1",
     "field": "social_stress",
     "old_value": {
-     "v": 239541
+     "v": 241709
     },
     "new_value": {
-     "v": 440541
+     "v": 442709
     },
     "engine_id": "SOCIAL",
     "tick": 53000000
@@ -562,7 +562,7 @@
     }
    },
    {
-    "event_uid": "e5009859f6f0fce63a507d29c45f2b19",
+    "event_uid": "59200572747ce89b6c9f834f19bb0546",
     "event_type": "TRIBULATION_NEW_NORMAL_REACHED",
     "blessed_tick": 64000000,
     "effect": {
@@ -570,7 +570,7 @@
     }
    },
    {
-    "event_uid": "7d6e3fc64f9e1c091224bcd8e70d2c85",
+    "event_uid": "1547f17c739cf64fd4c742d5d73007df",
     "event_type": "TRIBULATION_EPISODE_COMPLETED",
     "blessed_tick": 64000000,
     "effect": {
@@ -626,99 +626,99 @@
   ],
   "domain_effects": [
    {
-    "state_change_id": 16527,
+    "state_change_id": 16434,
     "entity_type": "ecology_state",
     "entity_id": "1",
     "field": "habitat_quality",
     "old_value": {
-     "v": 652257
+     "v": 160765
     },
     "new_value": {
-     "v": 610257
+     "v": 118765
     },
     "engine_id": "ECOLOGY",
     "tick": 133000000
    },
    {
-    "state_change_id": 16528,
+    "state_change_id": 16435,
     "entity_type": "ecology_state",
     "entity_id": "2",
     "field": "habitat_quality",
     "old_value": {
-     "v": 818870
+     "v": 421042
     },
     "new_value": {
-     "v": 776870
+     "v": 379042
     },
     "engine_id": "ECOLOGY",
     "tick": 133000000
    },
    {
-    "state_change_id": 16529,
+    "state_change_id": 16436,
     "entity_type": "resource_stocks",
     "entity_id": "1",
     "field": "quantity",
     "old_value": {
-     "v": 43004468155
+     "v": 27288320946
     },
     "new_value": {
-     "v": 42914158772
+     "v": 27231391537
     },
     "engine_id": "ECONOMY",
     "tick": 133000000
    },
    {
-    "state_change_id": 16530,
+    "state_change_id": 16437,
     "entity_type": "resource_stocks",
     "entity_id": "6",
     "field": "quantity",
     "old_value": {
-     "v": 23633945967
+     "v": 17858299690
     },
     "new_value": {
-     "v": 23584314681
+     "v": 17820979870
     },
     "engine_id": "ECONOMY",
     "tick": 133000000
    },
    {
-    "state_change_id": 16531,
+    "state_change_id": 16438,
     "entity_type": "resource_nodes",
     "entity_id": "1",
     "field": "remaining_reserve",
     "old_value": {
-     "v": 262955531845
+     "v": 192975259211
     },
     "new_value": {
-     "v": 261851118612
+     "v": 192160986994
     },
     "engine_id": "RESOURCE",
     "tick": 133000000
    },
    {
-    "state_change_id": 16532,
+    "state_change_id": 16439,
     "entity_type": "resource_nodes",
     "entity_id": "2",
     "field": "remaining_reserve",
     "old_value": {
-     "v": 4998765598
+     "v": 89853500
     },
     "new_value": {
-     "v": 4977770783
+     "v": 89488282
     },
     "engine_id": "RESOURCE",
     "tick": 133000000
    },
    {
-    "state_change_id": 16533,
+    "state_change_id": 16440,
     "entity_type": "settlement_social_state",
     "entity_id": "2",
     "field": "social_stress",
     "old_value": {
-     "v": 641093
+     "v": 598384
     },
     "new_value": {
-     "v": 704093
+     "v": 661384
     },
     "engine_id": "SOCIAL",
     "tick": 133000000
@@ -770,7 +770,7 @@
     }
    },
    {
-    "event_uid": "6ab2a395715a4ce12e97f31a8cd92546",
+    "event_uid": "fea51e21d61c3402419a4c120208bb3b",
     "event_type": "TRIBULATION_IMPACT_STARTED",
     "blessed_tick": 133000000,
     "effect": {
@@ -779,7 +779,7 @@
     }
    },
    {
-    "event_uid": "3f22fdedcc8124ee7a773b4c45cbde91",
+    "event_uid": "729396fa15cea0e31c395902f68d4ca7",
     "event_type": "TRIBULATION_IMPACT_APPLIED",
     "blessed_tick": 133000000,
     "effect": {
@@ -793,7 +793,7 @@
     }
    },
    {
-    "event_uid": "d4c431e21e192b2f532b1234d63ab6f4",
+    "event_uid": "c3760ed7582b926bd32224bac319fa94",
     "event_type": "TRIBULATION_STABILIZED",
     "blessed_tick": 135000000,
     "effect": {
@@ -801,7 +801,7 @@
     }
    },
    {
-    "event_uid": "c1d4cb004a5ae9d6852167577f933db5",
+    "event_uid": "c6034b4d16538b02839cd921d5bb9587",
     "event_type": "TRIBULATION_RESIDUAL_CHANGE_CREATED",
     "blessed_tick": 136000000,
     "effect": {
@@ -812,7 +812,7 @@
     }
    },
    {
-    "event_uid": "c250019131e2f4cce2b86d00dc52f079",
+    "event_uid": "a35481a88fbba6d4f78f9e01acef026d",
     "event_type": "TRIBULATION_RECOVERY_PROGRESS",
     "blessed_tick": 138000000,
     "effect": {
