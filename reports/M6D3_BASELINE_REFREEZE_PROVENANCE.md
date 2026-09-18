@@ -131,7 +131,29 @@ NEW_BASELINE_RUN1_EQ_RUN2 (byte)          = FAIL_TELEMETRY_ONLY
 `schedule.json`、`m3b/episode_state_audit.json`、`query_performance.json`）
 不由这些 artifact 测试生成 ⇒ **不在本次重冻结范围**（保持原样）。
 
-### 3.1 需要 Owner 授权的 remediation（三选一；我未实施任何一个）
+### 3.2 关于"先在沙盒里试跑一次"的尝试（**已作废，如实记录**）
+
+为给 Owner 决策提供"重冻结后 12 个测试应全绿"的直接证据，我曾在**一次性 git
+worktree**（`%TEMP%` 内、非 canonical 仓库）里试跑，结果**无效**，原因两条：
+
+1. 我的候选复制脚本存在命名错误（把 `summary.json` 又追加了一次 `.json`，
+   写成 `summary.json.json`），因此 worktree 里的 golden **根本没有被替换**——
+   比较仍然读到旧值（`$.domain_event_count: 4779 != 4835` 等），故那 16 个失败
+   与本次重冻结**无关**；
+2. 该 worktree 的父目录没有同级 `XIAOGUANG_CROW_KB`（world seed manifest 在
+   兄弟仓库），导致 3 个 `*_world_seed_unchanged` 测试 `FileNotFoundError`
+   ——属于 worktree 布局限制，**不是**回归。
+
+worktree 已删除（`git worktree list` 仅剩主仓库），canonical 仓库
+`tests/baselines` 依然零改动。**该试跑不作为任何结论的依据。**
+
+替代论证（推理，非实测，供 Owner 参考）：artifact 测试的判定就是
+"新算出 candidate 的**确定性字段** == golden 的确定性字段"；已有证据表明
+（a）candidate 与当前引擎一致、（b）两轮独立采集在确定性字段上逐字节相同、
+（c）写入的就是这份 candidate。因此一旦经授权写入，12 个测试应当转为通过；
+真正的实测会在 Owner 授权后按 §9/§10 执行。
+
+## 3.1 需要 Owner 授权的 remediation（三选一；我未实施任何一个）
 
 | 选项 | 范围 | 做法 | 风险 |
 |---|---|---|---|
