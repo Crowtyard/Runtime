@@ -35,6 +35,15 @@ AUTHORIZED_NODES = {
     "tests/test_m3b_metric_audit.py": "test_ma28_metric_audit_baseline_artifacts",
 }
 
+#: M6D.3 B1：同一 OPT-1 修复形态必须覆盖 M3 integrated artifact 节点
+INTEGRATED_NODES = {
+    "tests/test_m3_integrated_long.py": [
+        "test_lt1_1000y_five_seeds",
+        "test_lt7_5000y_endurance",
+        "test_lt13_summary_artifact",
+    ],
+}
+
 
 def _artifact(**over):
     base = {"fixture_version": "mini_world_v1", "final_world_state_hash": "a" * 64,
@@ -242,6 +251,21 @@ def test_g_expected_helper_reads_committed_baseline_only():
 
 # ------------------------------------------- M6D.3 B2 anti-drift (query service)
 HEXLIKE = re.compile(r"^[0-9a-f]{8,64}$")
+
+
+@pytest.mark.parametrize("name", INTEGRATED_NODES[
+    "tests/test_m3_integrated_long.py"])
+def test_i_integrated_artifact_nodes_dump_before_compare(name):
+    """M3 integrated artifact 节点必须与 M3a/M3b 同一 OPT-1 形态（防回归）。"""
+    path = REPO / "tests" / "test_m3_integrated_long.py"
+    fn = _artifact_test_fn(path, name)
+    dump_line = _lineno(fn, "dump_artifact", path)
+    compare_line = _lineno(fn, "assert_deterministic_equal", path)
+    assert dump_line < compare_line, (
+        "update-mode dump must precede the deterministic comparison in %s" % name)
+    body = ast.get_source_segment(path.read_text(encoding="utf-8"), fn) or ""
+    assert "update_mode_enabled()" in body
+    assert "load_artifact" in body          # normal mode 仍然严格比较
 
 
 def test_h_query_service_m3_expectation_has_no_inline_hash():

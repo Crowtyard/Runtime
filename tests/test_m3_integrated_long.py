@@ -481,14 +481,18 @@ def test_lt1_1000y_five_seeds(tmp_path, world_id):
     _SEED_RECORDS[seed_no] = record
     _dump_candidate(f"seed_{seed_no}.json", record)
     golden = BASELINE_DIR / f"seed_{seed_no}.json"
+    if update_mode_enabled():
+        # M6D.3 OPT-1（TEST_INFRA_UPDATE_MODE_REPAIR，与 M3a/M3b artifact 测试同一
+        # 修复形态）：update mode 写入**当前** artifact 即完成，不先要求等于旧
+        # baseline；normal mode 行为逐字不变。
+        dump_artifact(record, golden)
+        return
     if golden.exists():
         # 已冻结：candidate 必须逐字段复现（telemetry 剥离），否则 FAIL
         assert_deterministic_equal(
             load_artifact(golden), record,
             label=f"m3_integrated_1000y_v1/seed_{seed_no}",
             golden_path=golden)
-    if update_mode_enabled():  # 显式更新：scripts/update_baselines.py
-        dump_artifact(record, golden)
 
 
 def test_lt2_seed_001_determinism_double_run(tmp_path):
@@ -580,13 +584,15 @@ def test_lt7_5000y_endurance(tmp_path):
     assert links_per_100y < 21914 * 1.6   # 无超线性失控（允许常数放大）
     assert idx_per_100y < 21619 * 1.6
     _dump_candidate("endurance_5000y_seed001.json", record)
+    if update_mode_enabled():
+        # M6D.3 OPT-1：update mode 写入当前 artifact 即完成（形态同 M3a/M3b）。
+        dump_artifact(record, ENDURANCE_PATH)
+        return
     if ENDURANCE_PATH.exists():
         assert_deterministic_equal(
             load_artifact(ENDURANCE_PATH), record,
             label="m3_integrated_5000y_seed001_v1",
             golden_path=ENDURANCE_PATH)
-    if update_mode_enabled():
-        dump_artifact(record, ENDURANCE_PATH)
 
 
 def test_lt8_1000y_query_performance_and_why(tmp_path):
@@ -848,10 +854,12 @@ def test_lt13_summary_artifact():
     if qp:
         summary["query_performance_1000y"] = qp
     _dump_candidate("summary.json", summary)
+    if update_mode_enabled():
+        # M6D.3 OPT-1：update mode 写入当前 artifact 即完成（形态同 M3a/M3b）。
+        dump_artifact(summary, SUMMARY_PATH)
+        return
     if SUMMARY_PATH.exists():
         assert_deterministic_equal(
             load_artifact(SUMMARY_PATH), summary,
             label="m3_integrated_1000y_v1/summary",
             golden_path=SUMMARY_PATH)
-    if update_mode_enabled():
-        dump_artifact(summary, SUMMARY_PATH)
