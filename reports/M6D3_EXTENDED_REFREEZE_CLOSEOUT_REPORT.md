@@ -43,8 +43,30 @@ QUERY_FINGERPRINT_RESTART_EQUIVALENCE = PASS
 QUERY_SERVICE_BROAD_EXCEPTION_TECH_DEBT = OPEN_NON_BLOCKING
 M3_INTEGRATED_BASELINE_ARTIFACT_DIFF_AFTER_QUERY_FIX = 0
 
-WIDER_TARGETED_REGRESSION         = IN_FLIGHT（§J steps 1/2/6 已 PASS；7-9 运行中）
-FAST_REGRESSION                   = PENDING（最终 HEAD 上运行；不复用旧 HEAD chunk）
+WIDER_TARGETED_REGRESSION         = PASS（§J；见下）
+FAST_REGRESSION                   = PASS
+FAST_COLLECTED                    = 1049（chunked runner 实测）
+                                    1048（canonical 口径：runner 额外收集了
+                                    tests/zz_formal_db_guard.py 1 例，该文件不在
+                                    canonical `pytest tests -q` 的收集范围内）
+FAST_PASSED                       = 1006
+FAST_EXPECTED_SKIPS               = 43（chunked 实测）／42（canonical 口径：
+                                    12 × BLR_FORMAL_DB_PATH + 30 × BLR_TEST_PG_DSN）
+FAST_FAILED                       = 0
+FAST_ERRORS                       = 0
+FAST_UNEXPECTED_SKIPS             = 0（全部为既有条件门禁）
+
+§J 分步实测（final HEAD 4779001）：
+  1 query fingerprint   5 / 5
+  2 B2 query service   25 / 25
+  3 scheduler determinism  → 复用 §14 G1（PASS 1/1，428s）
+  4 scheduler endurance    → 复用 §14 G2（PASS 1/1，3222s）
+  5 M3 integrated readers  → 复用 §14 G4（PASS 7/7，5835s）
+  6 M3a/M3b           131 / 134（3 expected skips）
+  7 history integrity 107 / 110（3 expected skips）
+  8 M6 / M6D3         247 / 248（1 expected skip）
+  9 wider targeted    552 / 562（10 expected skips）
+  → 全部 0 failed / 0 errors；TARGETED_REGRESSION = PASS
 
 BASELINE_PROVENANCE_COMPLETE      = TRUE
 
@@ -54,13 +76,33 @@ FORMAL_WORLD_RUNTIME_ROWS         = 0
 FORMAL_WORLD_STATUS               = NOT_ACTIVATED
 FORMAL_WORLD_SEED_CONSUMED        = FALSE
 
-SNAPSHOT_V1_ENGINE_VERIFIED_CANDIDATE = PENDING_FAST_REGRESSION
+SNAPSHOT_V1_ENGINE_VERIFIED_CANDIDATE = TRUE
 SNAPSHOT_V1                       = NOT_APPROVED
 MATERIALIZER_ALLOWED              = FALSE
 FORMAL_ACTIVATION_ALLOWED         = FALSE
 NEXT_ACTION                       = AWAIT_OWNER_FINAL_SNAPSHOT_V1_RATIFICATION
-                                    （or AWAIT_OWNER_ON_EXTENDED_REFREEZE_FAILURE）
 ```
+
+### 0.1 Fast regression 环境说明（如实记录，不影响判定）
+
+首次 final-HEAD fast 运行（chunk 1–8）出现 **2 项失败**，全部位于
+`tests/test_query_isolation.py`：`test_m5q38_runtime_update_isolation` /
+`test_m5q39_companion_update_isolation`，错误为
+`RuntimeError: 无法解析 AstrBot plugin_data 路径（缺少官方路径 API）`
+（`plugin_shell/paths.py:35`）。
+
+* 定性：**环境/测试 harness 配置条件**，与 M6D.3 任何改动无关
+  （本机解释器 `import astrbot` 失败；隔离运行同样失败）。
+* 该模块自带受官方支持的测试覆盖：`plugin_shell/paths.py` 文档说明
+  「测试可通过环境变量 `BLR_TEST_PLUGIN_DATA_DIR` 覆盖（仅测试 harness 使用）」。
+* 验证：以 `BLR_TEST_PLUGIN_DATA_DIR=<tmp>\astrbot_plugin_blessed_land_runtime`
+  （须为**插件同名目录**，否则测试自身断言 `plugin name in str(data_dir)` 失败）
+  运行 `tests/test_query_isolation.py` → **4/4 PASS**。
+* 处理：在**同一 final HEAD**、仅补上该受支持覆盖的前提下**只重跑 chunk 7**
+  （461s，85/85 PASS），其余 chunk 的证据在同一 HEAD 上继续有效（无 HEAD 漂移，
+  未复用跨 HEAD chunk）；随后 `--resume` 重新聚合全部 8 个 chunk 得到上表总计。
+* 若 Owner 要求"零环境覆盖"的 canonical 复跑，可在具备 AstrBot 运行时（或已设
+  `BLR_TEST_PLUGIN_DATA_DIR`）的环境中整轮重跑，本 runner 支持 `--resume`/整轮重跑。
 
 ---
 
