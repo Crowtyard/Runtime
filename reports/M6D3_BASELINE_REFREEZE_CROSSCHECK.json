@@ -1,0 +1,112 @@
+{
+ "GENERATED_MATCHES_CAPTURED_CANDIDATE": "PASS",
+ "REFRESHED_FILE_COUNT": 12,
+ "files": {
+  "m3a_tribulation_synthetic_300y_v1/final_state.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": null,
+   "first_diff_vs_run2": null,
+   "generated_path": "tests/baselines/m3a_tribulation_synthetic_300y_v1/final_state.json"
+  },
+  "m3a_tribulation_synthetic_300y_v1/summary.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": "$.wall_seconds 32.785 != 34.964",
+   "first_diff_vs_run2": "$.wall_seconds 32.785 != 32.034",
+   "generated_path": "tests/baselines/m3a_tribulation_synthetic_300y_v1/summary.json"
+  },
+  "m3b_causal_history_300y_v1/causal_graph_digest.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": null,
+   "first_diff_vs_run2": null,
+   "generated_path": "tests/baselines/m3b_causal_history_300y_v1/causal_graph_digest.json"
+  },
+  "m3b_causal_history_300y_v1/entity_cardinality_audit.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": null,
+   "first_diff_vs_run2": null,
+   "generated_path": "tests/baselines/m3b_causal_history_300y_v1/entity_cardinality_audit.json"
+  },
+  "m3b_causal_history_300y_v1/entity_history_samples.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": null,
+   "first_diff_vs_run2": null,
+   "generated_path": "tests/baselines/m3b_causal_history_300y_v1/entity_history_samples.json"
+  },
+  "m3b_causal_history_300y_v1/episode_history_samples.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": null,
+   "first_diff_vs_run2": null,
+   "generated_path": "tests/baselines/m3b_causal_history_300y_v1/episode_history_samples.json"
+  },
+  "m3b_causal_history_300y_v1/growth_projection.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": null,
+   "first_diff_vs_run2": null,
+   "generated_path": "tests/baselines/m3b_causal_history_300y_v1/growth_projection.json"
+  },
+  "m3b_causal_history_300y_v1/metric_audit.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": null,
+   "first_diff_vs_run2": null,
+   "generated_path": "tests/baselines/m3b_causal_history_300y_v1/metric_audit.json"
+  },
+  "m3b_causal_history_300y_v1/relation_density_audit.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": null,
+   "first_diff_vs_run2": null,
+   "generated_path": "tests/baselines/m3b_causal_history_300y_v1/relation_density_audit.json"
+  },
+  "m3b_causal_history_300y_v1/summary.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": "$.query_latency_ms.entity_history.single 267.63 != 84.69",
+   "first_diff_vs_run2": "$.query_latency_ms.entity_history.single 267.63 != 90.74",
+   "generated_path": "tests/baselines/m3b_causal_history_300y_v1/summary.json"
+  },
+  "m3b_causal_history_300y_v1/timeline_samples.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": null,
+   "first_diff_vs_run2": null,
+   "generated_path": "tests/baselines/m3b_causal_history_300y_v1/timeline_samples.json"
+  },
+  "m3b_causal_history_300y_v1/why_query_samples.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": null,
+   "first_diff_vs_run2": null,
+   "generated_path": "tests/baselines/m3b_causal_history_300y_v1/why_query_samples.json"
+  }
+ },
+ "packet": "M6D3_BASELINE_REFREEZE_CROSSCHECK",
+ "telemetry_keys_ignored": [
+  "db_growth",
+  "db_size_mb",
+  "performance",
+  "query_latency_ms",
+  "query_performance_1000y",
+  "wall_seconds",
+  "wall_seconds_queries"
+ ]
+}
