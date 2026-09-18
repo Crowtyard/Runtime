@@ -1,0 +1,65 @@
+{
+ "INTEGRATED_GENERATED_MATCHES_RUN1_RUN2": "FAIL",
+ "capture_dir": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_m3c_inventory",
+ "files": {
+  "endurance_5000y_seed001.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": "$.wall_seconds 2968.57 != 3402.693",
+   "first_diff_vs_run2": "$.wall_seconds 2968.57 != 3255.386"
+  },
+  "seed_001.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": "$.wall_seconds 381.514 != 485.15",
+   "first_diff_vs_run2": "$.wall_seconds 381.514 != 464.526"
+  },
+  "seed_002.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": "$.wall_seconds 380.113 != 481.946",
+   "first_diff_vs_run2": "$.wall_seconds 380.113 != 449.405"
+  },
+  "seed_003.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": "$.wall_seconds 415.027 != 462.328",
+   "first_diff_vs_run2": "$.wall_seconds 415.027 != 449.178"
+  },
+  "seed_004.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": "$.wall_seconds 399.41 != 469.922",
+   "first_diff_vs_run2": "$.wall_seconds 399.41 != 447.193"
+  },
+  "seed_005.json": {
+   "GENERATED_EQ_RUN1": true,
+   "GENERATED_EQ_RUN2": true,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": "$.wall_seconds 423.366 != 465.178",
+   "first_diff_vs_run2": "$.wall_seconds 423.366 != 451.764"
+  },
+  "summary.json": {
+   "GENERATED_EQ_RUN1": false,
+   "GENERATED_EQ_RUN2": false,
+   "RUN1_EQ_RUN2": true,
+   "first_diff_vs_run1": "$.endurance_5000y.db_size_mb 831.621 != 820.633",
+   "first_diff_vs_run2": "$.endurance_5000y.db_size_mb 831.621 != 820.633"
+  }
+ },
+ "packet": "M6D3_M3_INTEGRATED_REFREEZE_CROSSCHECK",
+ "telemetry_keys_ignored": [
+  "db_growth",
+  "db_size_mb",
+  "performance",
+  "query_latency_ms",
+  "query_performance_1000y",
+  "wall_seconds",
+  "wall_seconds_queries"
+ ]
+}

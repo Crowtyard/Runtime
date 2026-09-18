@@ -1,0 +1,167 @@
+{
+ "M3_INTEGRATED_BASELINE_ARTIFACT_DIFF_AFTER_QUERY_FIX": 0,
+ "TARGETED_REGRESSION": "PASS",
+ "packet": "M6D3_FINAL_TARGETED_REGRESSION",
+ "steps": {
+  "1_query_fingerprint": {
+   "collected": 5,
+   "elapsed_s": 14.2,
+   "error_ids": [],
+   "errors": 0,
+   "failed": 0,
+   "failure_ids": [],
+   "junit": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_final_gojr4m0j\\1_query_fingerprint.xml",
+   "log": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_final_gojr4m0j\\1_query_fingerprint.log",
+   "nodes": [
+    "tests/test_query_fingerprint.py"
+   ],
+   "passed": 5,
+   "rc": 0,
+   "skipped": 0
+  },
+  "2_b2_query_service": {
+   "collected": 25,
+   "elapsed_s": 176.1,
+   "error_ids": [],
+   "errors": 0,
+   "failed": 0,
+   "failure_ids": [],
+   "junit": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_final_gojr4m0j\\2_b2_query_service.xml",
+   "log": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_final_gojr4m0j\\2_b2_query_service.log",
+   "nodes": [
+    "tests/test_query_service.py"
+   ],
+   "passed": 25,
+   "rc": 0,
+   "skipped": 0
+  },
+  "3_scheduler_determinism": {
+   "status": "SKIPPED_BY_REQUEST"
+  },
+  "4_scheduler_endurance": {
+   "status": "SKIPPED_BY_REQUEST"
+  },
+  "5_m3_integrated_readers": {
+   "status": "SKIPPED_BY_REQUEST"
+  },
+  "6_m3a_m3b": {
+   "collected": 134,
+   "elapsed_s": 999.9,
+   "error_ids": [],
+   "errors": 0,
+   "failed": 0,
+   "failure_ids": [],
+   "junit": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_final_gojr4m0j\\6_m3a_m3b.xml",
+   "log": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_final_gojr4m0j\\6_m3a_m3b.log",
+   "nodes": [
+    "tests/test_m3a_tribulation.py",
+    "tests/test_m3b_history.py",
+    "tests/test_m3b_metric_audit.py"
+   ],
+   "passed": 131,
+   "rc": 0,
+   "skipped": 3
+  },
+  "7_history_integrity": {
+   "collected": 110,
+   "elapsed_s": 1740.5,
+   "error_ids": [],
+   "errors": 0,
+   "failed": 0,
+   "failure_ids": [],
+   "junit": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_final_gojr4m0j\\7_history_integrity.xml",
+   "log": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_final_gojr4m0j\\7_history_integrity.log",
+   "nodes": [
+    "tests/test_m3b_metric_audit.py",
+    "tests/test_m3b_history.py",
+    "tests/test_m3_preflight.py"
+   ],
+   "passed": 107,
+   "rc": 0,
+   "skipped": 3
+  },
+  "8_m6_m6d3": {
+   "collected": 248,
+   "elapsed_s": 307.4,
+   "error_ids": [],
+   "errors": 0,
+   "failed": 0,
+   "failure_ids": [],
+   "junit": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_final_gojr4m0j\\8_m6_m6d3.xml",
+   "log": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_final_gojr4m0j\\8_m6_m6d3.log",
+   "nodes": [
+    "tests/test_golden_update_mode.py",
+    "tests/test_m6_activation_contract.py",
+    "tests/test_m6_activation_crash_recovery.py",
+    "tests/test_m6_activation_idempotence.py",
+    "tests/test_m6_activation_single_writer.py",
+    "tests/test_m6_activation_time_anchor.py",
+    "tests/test_m6_world_seed_safety.py",
+    "tests/test_m6a1_zero_row_activation.py",
+    "tests/test_m6a1b_zero_row_concurrency.py",
+    "tests/test_m6a1c_zero_row_crash_matrix.py",
+    "tests/test_m6a1f_claim_fencing.py",
+    "tests/test_m6a1pg_zero_row_concurrency.py",
+    "tests/test_m6b_anchor_atomicity.py",
+    "tests/test_m6b_bootstrap_viability.py",
+    "tests/test_m6b_epoch_wiring.py",
+    "tests/test_m6c1_snapshot_candidate.py",
+    "tests/test_m6c1b_authoritative_db_guard.py",
+    "tests/test_m6c1b_owner_decision_packet.py",
+    "tests/test_m6c1c_numeric_packet.py",
+    "tests/test_m6c_bootstrap_canon_guard.py",
+    "tests/test_m6d3_tribulation_effect_application.py"
+   ],
+   "passed": 247,
+   "rc": 0,
+   "skipped": 1
+  },
+  "9_wider_targeted": {
+   "collected": 562,
+   "elapsed_s": 3515.6,
+   "error_ids": [],
+   "errors": 0,
+   "failed": 0,
+   "failure_ids": [],
+   "junit": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_final_gojr4m0j\\9_wider_targeted.xml",
+   "log": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_final_gojr4m0j\\9_wider_targeted.log",
+   "nodes": [
+    "tests/test_hardening_hp.py",
+    "tests/test_m2_review.py",
+    "tests/test_m2a_population.py",
+    "tests/test_m2b_resource_economy.py",
+    "tests/test_m2c_ecology.py",
+    "tests/test_m2d_social.py",
+    "tests/test_m3_preflight.py",
+    "tests/test_m6_activation_contract.py",
+    "tests/test_m6_activation_crash_recovery.py",
+    "tests/test_m6_activation_idempotence.py",
+    "tests/test_m6_activation_single_writer.py",
+    "tests/test_m6_activation_time_anchor.py",
+    "tests/test_m6_world_seed_safety.py",
+    "tests/test_m6a1_zero_row_activation.py",
+    "tests/test_m6a1b_zero_row_concurrency.py",
+    "tests/test_m6a1c_zero_row_crash_matrix.py",
+    "tests/test_m6a1f_claim_fencing.py",
+    "tests/test_m6a1pg_zero_row_concurrency.py",
+    "tests/test_m6b_anchor_atomicity.py",
+    "tests/test_m6b_bootstrap_viability.py",
+    "tests/test_m6b_epoch_wiring.py",
+    "tests/test_m6c1_snapshot_candidate.py",
+    "tests/test_m6c1b_authoritative_db_guard.py",
+    "tests/test_m6c1b_owner_decision_packet.py",
+    "tests/test_m6c1c_numeric_packet.py",
+    "tests/test_m6c_bootstrap_canon_guard.py",
+    "tests/test_m6d3_tribulation_effect_application.py",
+    "tests/test_preflight_pf.py",
+    "tests/test_scheduler_crash_recovery.py",
+    "tests/test_scheduler_determinism.py",
+    "tests/test_writer_recovery.py"
+   ],
+   "passed": 552,
+   "rc": 0,
+   "skipped": 10
+  }
+ },
+ "workdir": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_final_gojr4m0j"
+}

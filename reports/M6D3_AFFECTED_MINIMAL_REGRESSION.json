@@ -1,0 +1,77 @@
+{
+ "AFFECTED_TARGETED_REGRESSION": "PASS",
+ "groups": {
+  "G1": {
+   "collected": 1,
+   "elapsed_s": 428.3,
+   "error_ids": [],
+   "errors": 0,
+   "failed": 0,
+   "failure_ids": [],
+   "junit": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_affected_k4ks_z2r\\G1.xml",
+   "label": "G1",
+   "log": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_affected_k4ks_z2r\\G1.log",
+   "nodes": [
+    "tests/test_scheduler_determinism.py::test_scheduler_1000y_reproduces_frozen_seed001"
+   ],
+   "passed": 1,
+   "rc": 0,
+   "skipped": 0
+  },
+  "G2": {
+   "collected": 1,
+   "elapsed_s": 3222.4,
+   "error_ids": [],
+   "errors": 0,
+   "failed": 0,
+   "failure_ids": [],
+   "junit": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_affected_k4ks_z2r\\G2.xml",
+   "label": "G2",
+   "log": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_affected_k4ks_z2r\\G2.log",
+   "nodes": [
+    "tests/test_scheduler_endurance.py::test_scheduler_5000y_endurance_reproduces_frozen"
+   ],
+   "passed": 1,
+   "rc": 0,
+   "skipped": 0
+  },
+  "G3": {
+   "collected": 1,
+   "elapsed_s": 35.9,
+   "error_ids": [],
+   "errors": 0,
+   "failed": 0,
+   "failure_ids": [],
+   "junit": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_affected_k4ks_z2r\\G3.xml",
+   "label": "G3",
+   "log": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_affected_k4ks_z2r\\G3.log",
+   "nodes": [
+    "tests/test_query_service.py::test_m5q46_m3_baselines_unchanged"
+   ],
+   "passed": 1,
+   "rc": 0,
+   "skipped": 0
+  },
+  "G4": {
+   "collected": 7,
+   "elapsed_s": 5834.8,
+   "error_ids": [],
+   "errors": 0,
+   "failed": 0,
+   "failure_ids": [],
+   "junit": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_affected_k4ks_z2r\\G4.xml",
+   "label": "G4",
+   "log": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_affected_k4ks_z2r\\G4.log",
+   "nodes": [
+    "tests/test_m3_integrated_long.py::test_lt1_1000y_five_seeds",
+    "tests/test_m3_integrated_long.py::test_lt7_5000y_endurance",
+    "tests/test_m3_integrated_long.py::test_lt13_summary_artifact"
+   ],
+   "passed": 7,
+   "rc": 0,
+   "skipped": 0
+  }
+ },
+ "packet": "M6D3_AFFECTED_MINIMAL_REGRESSION",
+ "workdir": "C:\\Users\\CROWTY~1\\AppData\\Local\\Temp\\m6d3_affected_k4ks_z2r"
+}

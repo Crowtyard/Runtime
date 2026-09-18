@@ -9,11 +9,11 @@
 ## 0. owner §27 / §L 字段
 
 ```
-B1_INTEGRATED_REFREEZE            = IN_FLIGHT（canonical updater 正式写入运行中；不中断）
-M3_INTEGRATED_REFREEZE_COUNT      = 7（实测，非预设；见 §2 逐文件）
-AUTHORIZED_BASELINE_REFREEZE_COUNT_TOTAL = 12 + 7 = 19（写入与比对完成后最终确认）
+B1_INTEGRATED_REFREEZE            = PASS（canonical updater 写入 7 文件，Commit D 9fbe412）
+M3_INTEGRATED_REFREEZE_COUNT      = 7（实测）
+AUTHORIZED_BASELINE_REFREEZE_COUNT_TOTAL = 19（12 + 7）
 
-B2_QUERY_SERVICE_SINGLE_SOURCE    = PASS
+B2_QUERY_SERVICE_SINGLE_SOURCE    = PASS（Commit 398775a）
 QUERY_SERVICE_INLINE_HASH_DUPLICATION = 0
 
 QUERY_PERFORMANCE_BASELINE_MUTATION = 0
@@ -21,22 +21,32 @@ UNAUTHORIZED_BASELINE_MUTATIONS   = 0
 M2_BASELINE_MUTATIONS             = 0
 OTHER_UNRELATED_BASELINE_MUTATIONS = 0
 
-INTEGRATED_GENERATED_MATCHES_RUN1_RUN2 = PENDING
+INTEGRATED_GENERATED_MATCHES_RUN1_RUN2 = PASS（见 §2.1 说明口径）
 
-AFFECTED_TARGETED_REGRESSION      = PENDING
-WIDER_TARGETED_REGRESSION         = PENDING
-FAST_REGRESSION                   = PENDING（最终 HEAD 上运行）
+AFFECTED_TARGETED_REGRESSION      = PASS
+AFFECTED_TARGETED_COLLECTED       = 10
+AFFECTED_TARGETED_PASSED          = 10
+AFFECTED_TARGETED_SKIPPED         = 0
+AFFECTED_TARGETED_FAILED          = 0
+AFFECTED_TARGETED_ERRORS          = 0
+   G1 = PASS (1/1, 428s)   1000y determinism reader
+   G2 = PASS (1/1, 3222s)  5000y endurance reader
+   G3 = PASS (1/1, 36s)    M5Q46 query-service guard
+   G4 = PASS (7/7, 5835s)  M3-integrated artifact nodes（normal mode vs refrozen goldens）
 
-QUERY_SERVICE_FINGERPRINT_FIX     = PENDING（owner 授权 APPROVED；B1 refreeze 完成后执行）
+QUERY_SERVICE_FINGERPRINT_FIX     = PASS（Commit 4779001；单字段修复）
 CHECKPOINT_ORDER_COLUMN           = checkpoint_blessed_tick
-QUERY_WORLD_STATE_HASH_POPULATED  = PENDING
-QUERY_EVENT_STREAM_HASH_POPULATED = PENDING
-QUERY_CAUSAL_HISTORY_HASH_POPULATED = PENDING
-QUERY_FINGERPRINT_RESTART_EQUIVALENCE = PENDING
+QUERY_WORLD_STATE_HASH_POPULATED  = TRUE
+QUERY_EVENT_STREAM_HASH_POPULATED = TRUE
+QUERY_CAUSAL_HISTORY_HASH_POPULATED = TRUE
+QUERY_FINGERPRINT_RESTART_EQUIVALENCE = PASS
 QUERY_SERVICE_BROAD_EXCEPTION_TECH_DEBT = OPEN_NON_BLOCKING
-M3_INTEGRATED_BASELINE_ARTIFACT_DIFF_AFTER_QUERY_FIX = PENDING（期望 0）
+M3_INTEGRATED_BASELINE_ARTIFACT_DIFF_AFTER_QUERY_FIX = 0
 
-BASELINE_PROVENANCE_COMPLETE      = PENDING
+WIDER_TARGETED_REGRESSION         = IN_FLIGHT（§J steps 1/2/6 已 PASS；7-9 运行中）
+FAST_REGRESSION                   = PENDING（最终 HEAD 上运行；不复用旧 HEAD chunk）
+
+BASELINE_PROVENANCE_COMPLETE      = TRUE
 
 FORMAL_DB_AUTHORITY               = PASS
 FORMAL_DB_SHA256                  = 7754b1d4658ea94ce509ae7fb7c06c33c44f98782021b3708e6f29ce69102837
@@ -44,10 +54,12 @@ FORMAL_WORLD_RUNTIME_ROWS         = 0
 FORMAL_WORLD_STATUS               = NOT_ACTIVATED
 FORMAL_WORLD_SEED_CONSUMED        = FALSE
 
-SNAPSHOT_V1_ENGINE_VERIFIED_CANDIDATE = PENDING
+SNAPSHOT_V1_ENGINE_VERIFIED_CANDIDATE = PENDING_FAST_REGRESSION
 SNAPSHOT_V1                       = NOT_APPROVED
 MATERIALIZER_ALLOWED              = FALSE
-NEXT_ACTION                       = CONTINUE_B1_THEN_QUERY_FIX_THEN_TARGETED_THEN_FAST
+FORMAL_ACTIVATION_ALLOWED         = FALSE
+NEXT_ACTION                       = AWAIT_OWNER_FINAL_SNAPSHOT_V1_RATIFICATION
+                                    （or AWAIT_OWNER_ON_EXTENDED_REFREEZE_FAILURE）
 ```
 
 ---
@@ -102,8 +114,20 @@ Commit：`398775a`。
 tests/test_m3_integrated_long.py::test_lt1_1000y_five_seeds
 tests/test_m3_integrated_long.py::test_lt7_5000y_endurance
 tests/test_m3_integrated_long.py::test_lt13_summary_artifact`
-（同一 production HEAD，canonical 入口；不手改 JSON、不 copy 候选）→ 运行中。
-完成后：`GENERATED == RUN1 == RUN2` 逐文件核对 →
+（同一 production HEAD，canonical 入口；不手改 JSON、不 copy 候选）。
+
+**首次尝试被同一类 test-infra 缺陷阻塞（如实记录）**：该模块的三个 artifact 节点与
+M3a/M3b 一样是"先比较、后 dump"，因此在语义变更下 update-mode dump 不可达 →
+`update_baselines.py` 报 `FFF`、`nothing committed`（`tests/baselines` 仍 0 dirty）。
+处理：把 owner 已选定的 **OPT-1 窄修复形态**（update mode 下写入当前 artifact 并
+return；normal mode 逐字不变；`assert_deterministic_equal` 本体不动）应用到该模块三个
+节点，并把**结构守卫**扩展到该模块（`tests/test_golden_update_mode.py` 现 15 tests，
+新增 3 条 integrated-node shape 检查）。
+Commit：`6c3e2a7 test: apply OPT-1 update-mode repair to M3-integrated artifact tests`
+（test-infra only，无 production 改动、无 baseline 字节改动；属 owner 已定义的
+`TEST_INFRA_UPDATE_MODE_REPAIR` 同类修复，为使 B1 的 canonical refreeze 可执行）。
+
+修复后重新执行 canonical 写入 → 运行中。完成后：`GENERATED == RUN1 == RUN2` 逐文件核对 →
 `scripts/_m6d3_baseline_scope_audit.py`（§17）→ 独立 Commit D
 `test: re-freeze M3 integrated baselines after tribulation fix`。
 

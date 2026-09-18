@@ -54,7 +54,17 @@ def main() -> int:
     args = ap.parse_args()
     diff = git("diff", "--name-only", "%s..HEAD" % args.base, "--",
                "tests/baselines")
-    changed = sorted(p for p in diff.splitlines() if p.strip())
+    committed = [p for p in diff.splitlines() if p.strip()]
+    status = git("status", "--short", "--", "tests/baselines")
+    worktree = []
+    for line in status.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        path = line.split(None, 1)[-1].strip()
+        if path:
+            worktree.append(path)
+    changed = sorted(set(committed) | set(worktree))
 
     original = [p for p in changed if p in ORIGINAL_12]
     integrated = [p for p in changed
