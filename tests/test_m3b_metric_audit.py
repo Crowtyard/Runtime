@@ -512,6 +512,12 @@ def test_ma28_metric_audit_baseline_artifacts(hist300, perf300):
     }
     # candidate 与 committed golden 逐文件比较（telemetry 剥离）；
     # 普通 pytest 只读 golden。
+    if update_mode_enabled():
+        # M6D.3 OPT-1（TEST_INFRA_UPDATE_MODE_REPAIR）：update mode 写入当前 artifact
+        # 即完成，不先要求等于旧 baseline；normal mode 行为逐字不变。
+        for name, artifact in artifacts.items():
+            dump_artifact(artifact, BASELINE_DIR / name)
+        return
     for name in ("metric_audit.json", "episode_state_audit.json",
                  "entity_cardinality_audit.json", "relation_density_audit.json",
                  "growth_projection.json"):
@@ -523,9 +529,6 @@ def test_ma28_metric_audit_baseline_artifacts(hist300, perf300):
     # query_performance.json 是纯机器计时 telemetry：只比较结构（键集合）
     qp_golden = load_artifact(BASELINE_DIR / "query_performance.json")
     assert set(query_performance) == set(qp_golden)
-    if update_mode_enabled():  # 显式更新：scripts/update_baselines.py
-        for name, artifact in artifacts.items():
-            dump_artifact(artifact, BASELINE_DIR / name)
     assert dup["duplicate_semantic_links"] == 0
     assert tr["candidate_transitive_materializations"] == 0
     assert qp["FULL_TABLE_SCAN_RISK"] == []

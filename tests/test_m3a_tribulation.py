@@ -959,6 +959,13 @@ def test_m3a_baseline_300y_artifact(tmp_path):
     # candidate 与 committed golden 逐文件比较（telemetry 剥离）；
     # 普通 pytest 只读 golden。
     artifacts = _build_baseline(env, rep, wall)
+    if update_mode_enabled():
+        # M6D.3 OPT-1（TEST_INFRA_UPDATE_MODE_REPAIR）：update mode 下写入**当前**
+        # artifact 即完成，不要求它等于旧 baseline（否则 compare-before-write 会让
+        # 语义变更后的重冻结永不可达）。normal mode 行为逐字不变。
+        for name, artifact in artifacts.items():
+            dump_artifact(artifact, BASELINE_DIR / name)
+        return
     for name, artifact in artifacts.items():
         golden = load_artifact(BASELINE_DIR / name)
         assert_deterministic_equal(
@@ -971,9 +978,6 @@ def test_m3a_baseline_300y_artifact(tmp_path):
     assert rep2.final_state_hash == golden_summary["final_world_state_hash"]
     assert rep2.final_event_stream_hash \
         == golden_summary["final_event_stream_hash"]
-    if update_mode_enabled():  # 显式更新：scripts/update_baselines.py
-        for name, artifact in artifacts.items():
-            dump_artifact(artifact, BASELINE_DIR / name)
 
 
 def _write_baseline(env, rep: M3aReport, wall: float) -> None:

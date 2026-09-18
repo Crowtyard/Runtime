@@ -975,15 +975,18 @@ def test_hb43_300y_baseline_artifacts(hist300):
     }
     # candidate 与 committed golden 逐文件比较（telemetry 剥离）；
     # 普通 pytest 只读 golden。
+    if update_mode_enabled():
+        # M6D.3 OPT-1（TEST_INFRA_UPDATE_MODE_REPAIR）：update mode 写入当前 artifact
+        # 即完成，不先要求等于旧 baseline；normal mode 行为逐字不变。
+        for name, artifact in artifacts.items():
+            dump_artifact(artifact, BASELINE_DIR / name)
+        return
     for name, artifact in artifacts.items():
         golden = load_artifact(BASELINE_DIR / name)
         assert_deterministic_equal(
             golden, artifact,
             label=f"m3b_causal_history_300y_v1/{name}",
             golden_path=BASELINE_DIR / name)
-    if update_mode_enabled():  # 显式更新：scripts/update_baselines.py
-        for name, artifact in artifacts.items():
-            dump_artifact(artifact, BASELINE_DIR / name)
     assert summary["orphan_links"] == 0 and summary["cycle_count"] == 0
     assert summary["causal_links"] > 0
     assert final_hist["completion"] == "INCOMPLETE"
