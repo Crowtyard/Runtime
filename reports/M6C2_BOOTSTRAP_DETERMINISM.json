@@ -1,0 +1,83 @@
+{
+ "BOOTSTRAP_CANONICAL_HASH_DEFAULT": "83f65a1f1c21025707e21868e964caca24805211336599b2fc7ff01deed50125",
+ "BOOTSTRAP_CANONICAL_HASH_PYHASH0": "83f65a1f1c21025707e21868e964caca24805211336599b2fc7ff01deed50125",
+ "BOOTSTRAP_CANONICAL_HASH_PYHASH42": "83f65a1f1c21025707e21868e964caca24805211336599b2fc7ff01deed50125",
+ "BOOTSTRAP_DETERMINISM": "PASS",
+ "BOOTSTRAP_ROW_DIFF_COUNT": 0,
+ "packet": "M6C2_BOOTSTRAP_DETERMINISM",
+ "per_table_diff": {},
+ "projection_version": "bootstrap-projection-v1",
+ "runs": {
+  "A": {
+   "BOOTSTRAP_CANONICAL_HASH": "83f65a1f1c21025707e21868e964caca24805211336599b2fc7ff01deed50125",
+   "cohort_rule": "RA-COHORT-001 v1.1",
+   "pid": 58000,
+   "python_hashseed": "0",
+   "row_counts": {
+    "ecology_feedback_state": 1,
+    "ecology_state": 1,
+    "ecology_zones": 1,
+    "economic_pressure_state": 84,
+    "population_groups": 2928,
+    "production_recipes": 7,
+    "production_state": 84,
+    "resource_nodes": 7,
+    "resource_profiles": 7,
+    "resource_stocks": 84,
+    "settlement_social_state": 12,
+    "settlements": 12,
+    "social_feedback_state": 12,
+    "tribulation_profiles": 3,
+    "tribulation_schedules": 3
+   }
+  },
+  "B": {
+   "BOOTSTRAP_CANONICAL_HASH": "83f65a1f1c21025707e21868e964caca24805211336599b2fc7ff01deed50125",
+   "cohort_rule": "RA-COHORT-001 v1.1",
+   "pid": 52604,
+   "python_hashseed": "42",
+   "row_counts": {
+    "ecology_feedback_state": 1,
+    "ecology_state": 1,
+    "ecology_zones": 1,
+    "economic_pressure_state": 84,
+    "population_groups": 2928,
+    "production_recipes": 7,
+    "production_state": 84,
+    "resource_nodes": 7,
+    "resource_profiles": 7,
+    "resource_stocks": 84,
+    "settlement_social_state": 12,
+    "settlements": 12,
+    "social_feedback_state": 12,
+    "tribulation_profiles": 3,
+    "tribulation_schedules": 3
+   }
+  },
+  "C": {
+   "BOOTSTRAP_CANONICAL_HASH": "83f65a1f1c21025707e21868e964caca24805211336599b2fc7ff01deed50125",
+   "cohort_rule": "RA-COHORT-001 v1.1",
+   "pid": 34484,
+   "python_hashseed": "<unset>",
+   "row_counts": {
+    "ecology_feedback_state": 1,
+    "ecology_state": 1,
+    "ecology_zones": 1,
+    "economic_pressure_state": 84,
+    "population_groups": 2928,
+    "production_recipes": 7,
+    "production_state": 84,
+    "resource_nodes": 7,
+    "resource_profiles": 7,
+    "resource_stocks": 84,
+    "settlement_social_state": 12,
+    "settlements": 12,
+    "social_feedback_state": 12,
+    "tribulation_profiles": 3,
+    "tribulation_schedules": 3
+   }
+  }
+ },
+ "simulation_started": false,
+ "tables_compared": 15
+}

@@ -1,0 +1,48 @@
+{
+ "BOOTSTRAP_CANONICAL_HASH_PRODUCTION_RAW": "d4c6a7c1a88f53dede6e3ff30b01598d477c51d4275f86f1f6eae40b4d789000",
+ "BOOTSTRAP_EXCLUDED_FIELDS": [
+  "id"
+ ],
+ "BOOTSTRAP_PROJECTION_VERSION": "bootstrap-projection-v1",
+ "MATERIALIZED_BOOTSTRAP_HASH": "15fa1aad5dc5b7f086e27a22d978ff0ba37ba8adda2b51a22fa2d5d2d1d5ef3f",
+ "MUTABLE_REGISTRY_DEFAULTS_USED_FOR_BOOTSTRAP": 0,
+ "NONDETERMINISTIC_FORMAL_IDENTITY_SOURCES": 0,
+ "REFERENCE_ORACLE_BOOTSTRAP_HASH": "15fa1aad5dc5b7f086e27a22d978ff0ba37ba8adda2b51a22fa2d5d2d1d5ef3f",
+ "ROW_EQUIVALENCE_MISMATCHES": 0,
+ "SNAPSHOT_BOOTSTRAP_EQUIVALENCE": "PASS",
+ "SNAPSHOT_EXPECTED_BOOTSTRAP_HASH": "15fa1aad5dc5b7f086e27a22d978ff0ba37ba8adda2b51a22fa2d5d2d1d5ef3f",
+ "SNAPSHOT_RULE_VERSION_MATCH": "PASS",
+ "SNAPSHOT_SHA256": "592d23e2606ef9ff223aa264c64176a82a7f87bc1521d80e33152ffbaf3aa8b1",
+ "datetime_import_justification": "datetime 仅用于 fencing 租约到期比较（assert_fencing_ownership）；不参与任何 formal identity / row value",
+ "guard_cases": [
+  {
+   "case": "rule_version_mismatch",
+   "reason": "snapshot 声明的 derivation rule 版本与 production 实现不一致",
+   "result": "REFUSED"
+  },
+  {
+   "case": "missing_required_snapshot_value",
+   "reason": "snapshot 缺少必需 semantic value（禁止 registry 默认值兜底）",
+   "result": "REFUSED"
+  }
+ ],
+ "nondeterministic_imports": [],
+ "packet": "M6C2_PHASE_A_CLOSURE",
+ "production_rule_versions": {
+  "RA-ALLOC-001": "1.0",
+  "RA-COHORT-001": "1.1",
+  "RA-STRUCT-001": "1.0",
+  "RA-TRIB-001": "1.0"
+ },
+ "row_mismatches": {},
+ "rows_compared": 3246,
+ "snapshot_rule_versions": {
+  "RA-ALLOC-001": "1.0",
+  "RA-COHORT-001": "1.1",
+  "RA-DEMOGRAPHY-STATIONARY-001": "1.0",
+  "RA-MORTALITY-001": "1.0",
+  "RA-STRUCT-001": "1.0",
+  "RA-TRIB-001": "1.0"
+ },
+ "tables_compared": 15
+}
