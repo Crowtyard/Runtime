@@ -24,16 +24,20 @@
         双边际（行 = 群体人数、列 = 聚落人口）同时严格精确；
         输入相同 → 输出逐字节相同（`allocation_digest` 稳定）。
 
-规则 RA-COHORT-001 v1.0（初始 cohort 权重，owner §19 "derive, don't invent"）：
+规则 RA-COHORT-001 v1.1（初始 cohort 权重；owner M6C.2 正式批准
+`APPROVED_PRODUCTION_BOOTSTRAP_RULE`，"derive, don't invent"）：
   仅由**冻结引擎已定义的**人口学结构参数（`SpeciesDemographyProfile.mortality_by_bucket`
   与 `cohort_buckets`）推出初始年龄分布形状：
-      weight[b] = Π_{k<b} (1 - mortality[k])          （存活曲线，精确有理数）
-      share[b]  = weight[b] / Σ_k weight[k]
-      count[b]  = 最大余额整数分配(count 总和 == 该 (聚落×物种) 人口，固定 tie-break)
+      weight[b]   = Π_{k<b} (1 - mortality[k])                （存活曲线，精确有理数）
+      weight[N-1] = weight[N-1] * (1 / mortality[N-1])        （**open-ended 末桶累计**：
+                     age ≥ N-1 的 survivor 全部累计到最后 bucket，与引擎
+                     `bucket_of(age) = min(age, N-1)` + `mortality_of` clamp 语义一致）
+      count[b]    = 最大余额整数分配(Σ count == 该 (聚落×物种) 人口，固定 tie-break)
   说明：这是**初始条件规则**，不声称任何平衡态/增长率结论；它不使用 `birth_rate`，
-  不做迭代求解，不引入 RNG。其**输入**（正式 species profile 的死亡曲线与
-  cohort_buckets）当前为 owner 决策项（D-B1/D-C）→ 输出保持 BLOCKED，
-  本模块只提供可复算的规则实现，不提供任何正式数值。
+  不做迭代求解，不引入 RNG。
+  v1.0（截断末桶、无尾部累计）**已被 owner 批准取代**，其实现以
+  `cohort_counts_v1_0` + `RULE_COHORT_VERSION_SUPERSEDED` 显式保留（provenance），
+  禁止再用于正式 bootstrap；**不得原地改语义**（版本纪律见文末）。
 
 版本纪律：任何语义变更必须升 `RULE_VERSION` 并重算 digest；禁止原地改语义。
 """
@@ -50,7 +54,12 @@ from typing import Iterable, Mapping, Sequence
 RULE_ALLOC_ID = "RA-ALLOC-001"
 RULE_ALLOC_VERSION = "1.0"
 RULE_COHORT_ID = "RA-COHORT-001"
-RULE_COHORT_VERSION = "1.0"
+#: M6C.2：owner 正式批准 `RA-COHORT-001 v1.1 = APPROVED_PRODUCTION_BOOTSTRAP_RULE`
+#: （open-ended final bucket = 年龄 ≥ N-1 的 survivor 全部累计到最后 bucket）。
+#: v1.0 的截断语义**未**被静默改写：它以 `cohort_counts_v1_0` 显式保留为
+#: SUPERSEDED_PRODUCTION_RULE_PROVENANCE，仅用于历史复算/对照。
+RULE_COHORT_VERSION = "1.1"
+RULE_COHORT_VERSION_SUPERSEDED = "1.0"
 
 # --------------------------------------------------------------------------
 # 主人已批准输入（M6C.1 owner directive；SOURCE_CLASS = OWNER_APPROVED）
@@ -260,11 +269,55 @@ def apportion_largest_remainder(weights: Sequence[Fraction], total: int
     return tuple(out)
 
 
-def cohort_counts(mortality_by_bucket: Sequence[Fraction], total: int
-                  ) -> tuple[int, ...]:
-    """RA-COHORT-001 v1.0：给定死亡曲线与人口总数 → 每 bucket 整数人数。"""
+def cohort_counts_v1_0(mortality_by_bucket: Sequence[Fraction], total: int
+                       ) -> tuple[int, ...]:
+    """RA-COHORT-001 **v1.0**（SUPERSEDED_PRODUCTION_RULE_PROVENANCE）。
+
+    历史语义：存活曲线在**全部 bucket** 上分配，末桶**不**聚合开区间尾部
+    （age ≥ N-1 的 survivor 被截断）。owner 已批准 v1.1 取代之；本函数仅为
+    历史复算/对照保留，**不得**再用于正式 bootstrap。
+    """
     return apportion_largest_remainder(
         cohort_survivor_weights(mortality_by_bucket), total)
+
+
+def cohort_open_ended_tail_multiplier(
+        mortality_by_bucket: Sequence[Fraction]) -> Fraction:
+    """末桶（open-ended）尾部乘数 = 1 / m_{N-1}（精确有理数）。
+
+    引擎把 age ≥ N-1 一律 clamp 到最后一个 bucket，并使用**该桶**的死亡率
+    （`SpeciesDemographyProfile.mortality_of` → `bucket_of(age) = min(age, N-1)`），
+    因此"年龄 ≥ N-1 仍存活"的总质量 = w_{N-1} · Σ_{k≥0} (1-m_{N-1})^k
+    = w_{N-1} / m_{N-1}。
+
+    若末桶死亡率 ≤ 0（尾部级数不收敛）→ `AllocationError`（fail-closed，
+    绝不静默截断）。
+    """
+    if not mortality_by_bucket:
+        raise AllocationError("mortality_by_bucket must be non-empty")
+    m_last = Fraction(mortality_by_bucket[-1])
+    if m_last < 0 or m_last >= 1:
+        raise AllocationError("末桶死亡率必须在 (0, 1) 内才能形成开区间尾部")
+    if m_last == 0:
+        raise AllocationError(
+            "末桶死亡率 = 0 ⇒ 开区间尾部不收敛（无法定义 v1.1 初始分布）")
+    return Fraction(1) / m_last
+
+
+def cohort_counts(mortality_by_bucket: Sequence[Fraction], total: int
+                  ) -> tuple[int, ...]:
+    """RA-COHORT-001 **v1.1**（owner: APPROVED_PRODUCTION_BOOTSTRAP_RULE）。
+
+    open-ended final bucket：年龄 ≥ N-1 的 survivor **全部累计到最后 bucket**：
+        weight[b]   = Π_{k<b} (1 - mortality[k])            for b < N-1
+        weight[N-1] = weight[N-1] * (1 / mortality[N-1])    （尾部累计）
+    随后按既有最大余额政策整数分配（tie-break = 下标升序），
+    输出和严格 == total；无浮点、无 RNG、逐字节可复现。
+    """
+    weights = list(cohort_survivor_weights(mortality_by_bucket))
+    weights[-1] = weights[-1] * cohort_open_ended_tail_multiplier(
+        mortality_by_bucket)
+    return apportion_largest_remainder(tuple(weights), total)
 
 
 def cohort_rule_record() -> dict[str, object]:

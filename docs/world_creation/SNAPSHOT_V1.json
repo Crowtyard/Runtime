@@ -1,0 +1,679 @@
+{
+  "clock": {
+    "initial_blessed_tick": 0,
+    "ticks_per_blessed_year": 1000000,
+    "year_us": 86400000000
+  },
+  "ecology": {
+    "initial_habitat_quality": 1000000,
+    "pop_pressure_per_person": 1,
+    "pressure_weights": {
+      "depletion": "1/8",
+      "extraction": "3/8",
+      "population": "2/8",
+      "production": "2/8"
+    },
+    "profile_id": "FORMAL-ECOLOGY-001",
+    "recovery_ceiling": 1000000,
+    "recovery_rate": "1/25",
+    "region_ref": null,
+    "renewable_regen_minor_per_full_quality": 220000000,
+    "root_rows": 3,
+    "semantic_version": "formal-1.0",
+    "sensitivity": "1/279",
+    "settlement_relation": "MAIN-01",
+    "thresholds": [
+      800000,
+      500000,
+      200000
+    ],
+    "zone_count": 1,
+    "zone_id": "ZONE-01"
+  },
+  "economy": {
+    "economic_pressure_rows": 84,
+    "per_capita_demand": "1/4",
+    "production_state_rows": 84,
+    "recipes": [
+      {
+        "capacity_batches_per_year_basis": "global served annual demand x capacity_multiple / output",
+        "input_qty_minor": 10000000,
+        "input_resource_ref": "灵田",
+        "labor_per_batch": 10,
+        "loss": "1/20",
+        "output_resource_ref": "灵田",
+        "recipe_id": "RECIPE-灵田"
+      },
+      {
+        "capacity_batches_per_year_basis": "global served annual demand x capacity_multiple / output",
+        "input_qty_minor": 10000000,
+        "input_resource_ref": "药园",
+        "labor_per_batch": 10,
+        "loss": "1/20",
+        "output_resource_ref": "药园",
+        "recipe_id": "RECIPE-药园"
+      },
+      {
+        "capacity_batches_per_year_basis": "global served annual demand x capacity_multiple / output",
+        "input_qty_minor": 10000000,
+        "input_resource_ref": "果园",
+        "labor_per_batch": 10,
+        "loss": "1/20",
+        "output_resource_ref": "果园",
+        "recipe_id": "RECIPE-果园"
+      },
+      {
+        "capacity_batches_per_year_basis": "global served annual demand x capacity_multiple / output",
+        "input_qty_minor": 10000000,
+        "input_resource_ref": "矿脉",
+        "labor_per_batch": 10,
+        "loss": "1/20",
+        "output_resource_ref": "矿脉",
+        "recipe_id": "RECIPE-矿脉"
+      },
+      {
+        "capacity_batches_per_year_basis": "global served annual demand x capacity_multiple / output",
+        "input_qty_minor": 10000000,
+        "input_resource_ref": "水源",
+        "labor_per_batch": 10,
+        "loss": "1/20",
+        "output_resource_ref": "水源",
+        "recipe_id": "RECIPE-水源"
+      },
+      {
+        "capacity_batches_per_year_basis": "global served annual demand x capacity_multiple / output",
+        "input_qty_minor": 10000000,
+        "input_resource_ref": "林产",
+        "labor_per_batch": 10,
+        "loss": "1/20",
+        "output_resource_ref": "林产",
+        "recipe_id": "RECIPE-林产"
+      },
+      {
+        "capacity_batches_per_year_basis": "global served annual demand x capacity_multiple / output",
+        "input_qty_minor": 10000000,
+        "input_resource_ref": "菌类点",
+        "labor_per_batch": 10,
+        "loss": "1/20",
+        "output_resource_ref": "菌类点",
+        "recipe_id": "RECIPE-菌类点"
+      }
+    ],
+    "semantic_version": "formal-1.0"
+  },
+  "header": {
+    "artifact": "SNAPSHOT_V1",
+    "derivation_rules": {
+      "RA-ALLOC-001": {
+        "status": "APPROVED",
+        "version": "1.0"
+      },
+      "RA-COHORT-001": {
+        "status": "APPROVED_PRODUCTION_BOOTSTRAP_RULE",
+        "superseded": [
+          {
+            "status": "SUPERSEDED_PRODUCTION_RULE_PROVENANCE",
+            "version": "1.0"
+          }
+        ],
+        "version": "1.1"
+      },
+      "RA-DEMOGRAPHY-STATIONARY-001": {
+        "note": "只解释 53/1000 如何被批准；activation 不得重新 calibration",
+        "status": "APPROVED_CALIBRATION_METHOD",
+        "version": "1.0"
+      },
+      "RA-MORTALITY-001": {
+        "status": "APPROVED_FOR_SNAPSHOT_V1",
+        "version": "1.0"
+      },
+      "RA-STRUCT-001": {
+        "status": "APPROVED",
+        "version": "1.0"
+      },
+      "RA-TRIB-001": {
+        "status": "APPROVED",
+        "version": "1.0"
+      }
+    },
+    "engine_baseline": {
+      "alembic_head": "a9d4f2b7c1e8",
+      "simulation_version": "0.3.0"
+    },
+    "engine_verified": true,
+    "formal_activation_allowed": false,
+    "formal_world_materialization_allowed": false,
+    "materialization_spec": "AUTHORITATIVE",
+    "materializer_implementation_allowed": true,
+    "owner_ratified": true,
+    "produced_by": "M6C.2 SNAPSHOT_V1 APPROVAL",
+    "red_lines": [
+      "FORMAL_WORLD_MATERIALIZATION_ALLOWED = FALSE",
+      "FORMAL_ACTIVATION_ALLOWED = FALSE",
+      "WORLD_SEED_CONSUMPTION_ALLOWED = FALSE",
+      "NO_LIVE_DEPLOY"
+    ],
+    "rule_set_version": {
+      "RA-ALLOC-001": "1.0",
+      "RA-COHORT-001": "1.1",
+      "RA-DEMOGRAPHY-STATIONARY-001": "1.0",
+      "RA-MORTALITY-001": "1.0",
+      "RA-STRUCT-001": "1.0",
+      "RA-TRIB-001": "1.0"
+    },
+    "source_candidate": "docs/world_creation/SNAPSHOT_V1_CANDIDATE.json",
+    "status": "APPROVED",
+    "version": "SNAPSHOT_V1",
+    "world_seed_consumption_allowed": false
+  },
+  "history_genesis": {
+    "genesis_count": 1,
+    "genesis_event": "WORLD_SEED_ACTIVATED",
+    "materializer_creates_per_entity_history": false
+  },
+  "population": {
+    "initial_age_advance_carry_ticks": 0,
+    "open_ended_final_bucket": true,
+    "population_group_rows": 2928,
+    "profile": {
+      "birth_rate": "53/1000",
+      "cohort_buckets": 61,
+      "demography_version": "formal-1.0",
+      "emigration_rate": "0",
+      "fertile_window": [
+        15,
+        45
+      ],
+      "lifespan_years": 60,
+      "migration_weights": [
+        "1/2",
+        "1/2"
+      ],
+      "mortality_per_bucket": "1/60",
+      "population_capacity": null,
+      "species_profile_ref": "FORMAL-SPECIES-001"
+    },
+    "rule_id": "RA-COHORT-001",
+    "rule_version": "1.1"
+  },
+  "provenance": {
+    "candidate": "docs/world_creation/SNAPSHOT_V1_CANDIDATE.json",
+    "derived_from": [
+      "services/activation/bootstrap_canon.py",
+      "docs/world_creation/M6C1C_NUMERIC_PACKET_DATA.json",
+      "M6C1D/M6D3 owner-ratified configuration"
+    ],
+    "engine_verification": "M6D3 corrected integrated verification (PASS on all gates)",
+    "owner_ratification": "SNAPSHOT_V1 = APPROVED (owner canon; M6C.2 entry)"
+  },
+  "resource": {
+    "capacity_basis": "ACTUAL_SERVED_ANNUAL_DEMAND (global, not host-local)",
+    "capacity_multiple": "11/10",
+    "consumption_resource_kinds": [
+      "灵田",
+      "药园",
+      "果园",
+      "矿脉",
+      "水源",
+      "林产",
+      "菌类点"
+    ],
+    "initial_stock_policy": "1 local blessed-year baseline demand",
+    "loss": "1/20",
+    "materialized_resource_profile_rows": 7,
+    "minor_units": true,
+    "node_reserve_multiple_of_global_annual": 10000,
+    "nodes": [
+      {
+        "kind": "灵田",
+        "node_id": "NODE-灵田-01",
+        "region_ref": null,
+        "settlement_relation": "MAIN-01",
+        "state": "STABLE"
+      },
+      {
+        "kind": "药园",
+        "node_id": "NODE-药园-01",
+        "region_ref": null,
+        "settlement_relation": "MAIN-01",
+        "state": "STABLE"
+      },
+      {
+        "kind": "果园",
+        "node_id": "NODE-果园-01",
+        "region_ref": null,
+        "settlement_relation": "MAIN-01",
+        "state": "STABLE"
+      },
+      {
+        "kind": "矿脉",
+        "node_id": "NODE-矿脉-01",
+        "region_ref": null,
+        "settlement_relation": "MAIN-01",
+        "state": "STABLE"
+      },
+      {
+        "kind": "水源",
+        "node_id": "NODE-水源-01",
+        "region_ref": null,
+        "settlement_relation": "MAIN-01",
+        "state": "STABLE"
+      },
+      {
+        "kind": "林产",
+        "node_id": "NODE-林产-01",
+        "region_ref": null,
+        "settlement_relation": "MAIN-01",
+        "state": "STABLE"
+      },
+      {
+        "kind": "菌类点",
+        "node_id": "NODE-菌类点-01",
+        "region_ref": null,
+        "settlement_relation": "MAIN-01",
+        "state": "STABLE"
+      }
+    ],
+    "per_capita_demand": "1/4",
+    "policy": "RE-LEAN-v2",
+    "quantity_scale": 1000000,
+    "registry": [
+      {
+        "consumption_category": "CONSUMPTION",
+        "extractability": "EXTRACTABLE",
+        "materialized": true,
+        "production_usability": "INPUT",
+        "quantity_scale": 1000000,
+        "registered": true,
+        "renewability": "RENEWABLE",
+        "resource_id": "灵田",
+        "semantic_version": "formal-1.0",
+        "unit": "unit"
+      },
+      {
+        "consumption_category": "CONSUMPTION",
+        "extractability": "EXTRACTABLE",
+        "materialized": true,
+        "production_usability": "INPUT",
+        "quantity_scale": 1000000,
+        "registered": true,
+        "renewability": "RENEWABLE",
+        "resource_id": "药园",
+        "semantic_version": "formal-1.0",
+        "unit": "unit"
+      },
+      {
+        "consumption_category": "CONSUMPTION",
+        "extractability": "EXTRACTABLE",
+        "materialized": true,
+        "production_usability": "INPUT",
+        "quantity_scale": 1000000,
+        "registered": true,
+        "renewability": "RENEWABLE",
+        "resource_id": "果园",
+        "semantic_version": "formal-1.0",
+        "unit": "unit"
+      },
+      {
+        "consumption_category": "CONSUMPTION",
+        "extractability": "EXTRACTABLE",
+        "materialized": true,
+        "production_usability": "INPUT",
+        "quantity_scale": 1000000,
+        "registered": true,
+        "renewability": "RENEWABLE",
+        "resource_id": "矿脉",
+        "semantic_version": "formal-1.0",
+        "unit": "unit"
+      },
+      {
+        "consumption_category": "CONSUMPTION",
+        "extractability": "EXTRACTABLE",
+        "materialized": true,
+        "production_usability": "INPUT",
+        "quantity_scale": 1000000,
+        "registered": true,
+        "renewability": "RENEWABLE",
+        "resource_id": "水源",
+        "semantic_version": "formal-1.0",
+        "unit": "unit"
+      },
+      {
+        "consumption_category": "CONSUMPTION",
+        "extractability": "EXTRACTABLE",
+        "materialized": true,
+        "production_usability": "INPUT",
+        "quantity_scale": 1000000,
+        "registered": true,
+        "renewability": "RENEWABLE",
+        "resource_id": "林产",
+        "semantic_version": "formal-1.0",
+        "unit": "unit"
+      },
+      {
+        "consumption_category": "CONSUMPTION",
+        "extractability": "EXTRACTABLE",
+        "materialized": true,
+        "production_usability": "INPUT",
+        "quantity_scale": 1000000,
+        "registered": true,
+        "renewability": "RENEWABLE",
+        "resource_id": "菌类点",
+        "semantic_version": "formal-1.0",
+        "unit": "unit"
+      },
+      {
+        "demand_rows": 0,
+        "materialized": false,
+        "node_count": 0,
+        "reason": "canon 第 8 类特殊灵性资源点（未命名）：registry-only",
+        "registered": true,
+        "resource_id": "RESOURCE_SLOT_08",
+        "stock_rows": 0
+      }
+    ],
+    "registry_entries": 8,
+    "stock_cells": 84
+  },
+  "social": {
+    "household_authoritative_bootstrap": false,
+    "materialized_root_rows_per_settlement": 2,
+    "method": "POPULATION_SCALED_DETERMINISTIC_DERIVATION",
+    "model": "S-B",
+    "occupation_authoritative_bootstrap": false,
+    "root_rows": 24
+  },
+  "tribulation": {
+    "effect_semantics": "post-engine state + delta, exactly once",
+    "first_omen_tick": 10000000,
+    "materializer_creates_effects": false,
+    "profiles": [
+      {
+        "envelopes": [
+          {
+            "ecology_pressure": 600,
+            "impact_years": 1,
+            "intensity_fraction": "3/20",
+            "intensity_range": [
+              10,
+              25
+            ],
+            "intensity_typical": 15,
+            "inventory_damage": 1,
+            "population_loss": 7,
+            "precursor_years": 1,
+            "preparation_years": 1,
+            "recovery_years": 3,
+            "resource_damage": 0,
+            "theme": "灵气潮汐",
+            "tier": "REGULAR"
+          },
+          {
+            "ecology_pressure": 8000,
+            "impact_years": 1,
+            "intensity_fraction": "2/5",
+            "intensity_range": [
+              30,
+              50
+            ],
+            "intensity_typical": 40,
+            "inventory_damage": 24,
+            "population_loss": 96,
+            "precursor_years": 1,
+            "preparation_years": 1,
+            "recovery_years": 3,
+            "resource_damage": 12,
+            "theme": "地脉波动",
+            "tier": "MAJOR"
+          },
+          {
+            "ecology_pressure": 37500,
+            "impact_years": 1,
+            "intensity_fraction": "3/4",
+            "intensity_range": [
+              60,
+              85
+            ],
+            "intensity_typical": 75,
+            "inventory_damage": 112,
+            "population_loss": 450,
+            "precursor_years": 1,
+            "preparation_years": 1,
+            "recovery_years": 3,
+            "resource_damage": 56,
+            "theme": "生态失衡",
+            "tier": "CENTENNIAL"
+          }
+        ],
+        "source": "M6C1C/T-B"
+      }
+    ],
+    "schedules": [
+      {
+        "enabled": true,
+        "period_years": 10,
+        "schedule_id": "SCHEDULE-REGULAR",
+        "semantic_version": "formal-1.0",
+        "tier": "REGULAR"
+      },
+      {
+        "enabled": true,
+        "period_years": 50,
+        "schedule_id": "SCHEDULE-MAJOR",
+        "semantic_version": "formal-1.0",
+        "tier": "MAJOR"
+      },
+      {
+        "enabled": true,
+        "period_years": 100,
+        "schedule_id": "SCHEDULE-CENTENNIAL",
+        "semantic_version": "formal-1.0",
+        "tier": "CENTENNIAL"
+      }
+    ]
+  },
+  "validation": {
+    "blocked_required_fields": 0,
+    "planning_only_materialized_fields": 0,
+    "unresolved_required_fields": 0,
+    "working_name_only_identities": [
+      "MAIN-01",
+      "MAIN-02",
+      "MAIN-03",
+      "MAIN-04",
+      "SAT-01",
+      "SAT-02",
+      "SAT-03",
+      "SAT-04",
+      "SAT-05",
+      "SAT-06",
+      "SAT-07",
+      "SAT-08",
+      "RESOURCE_SLOT_08"
+    ]
+  },
+  "world": {
+    "allocation": {
+      "canonical_text": "group,MAIN-01,MAIN-02,MAIN-03,MAIN-04,SAT-01,SAT-02,SAT-03,SAT-04,SAT-05,SAT-06,SAT-07,SAT-08\nGROUP_1,666,666,666,666,167,167,167,167,167,167,167,167\nGROUP_2,500,500,500,500,125,125,125,125,125,125,125,125\nGROUP_3,417,417,417,417,104,104,104,104,104,104,104,104\nGROUP_4,417,417,417,417,104,104,104,104,104,104,104,104\n",
+      "column_totals": [
+        2000,
+        2000,
+        2000,
+        2000,
+        500,
+        500,
+        500,
+        500,
+        500,
+        500,
+        500,
+        500
+      ],
+      "digest": "8dfe3471c1ff9d9c93646df18e4f55335cb93ca634c4afc96a17c86b5b28c457",
+      "matrix": [
+        [
+          666,
+          666,
+          666,
+          666,
+          167,
+          167,
+          167,
+          167,
+          167,
+          167,
+          167,
+          167
+        ],
+        [
+          500,
+          500,
+          500,
+          500,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125,
+          125
+        ],
+        [
+          417,
+          417,
+          417,
+          417,
+          104,
+          104,
+          104,
+          104,
+          104,
+          104,
+          104,
+          104
+        ],
+        [
+          417,
+          417,
+          417,
+          417,
+          104,
+          104,
+          104,
+          104,
+          104,
+          104,
+          104,
+          104
+        ]
+      ],
+      "row_totals": [
+        4000,
+        3000,
+        2500,
+        2500
+      ],
+      "rule_id": "RA-ALLOC-001",
+      "rule_version": "1.0"
+    },
+    "initial_total_population": 12000,
+    "settlement_counts": {
+      "MAIN": 4,
+      "SATELLITE": 8
+    },
+    "settlements": [
+      {
+        "population_capacity": null,
+        "settlement_type": "MAIN",
+        "target_population": 2000,
+        "working_name": "MAIN-01"
+      },
+      {
+        "population_capacity": null,
+        "settlement_type": "MAIN",
+        "target_population": 2000,
+        "working_name": "MAIN-02"
+      },
+      {
+        "population_capacity": null,
+        "settlement_type": "MAIN",
+        "target_population": 2000,
+        "working_name": "MAIN-03"
+      },
+      {
+        "population_capacity": null,
+        "settlement_type": "MAIN",
+        "target_population": 2000,
+        "working_name": "MAIN-04"
+      },
+      {
+        "population_capacity": null,
+        "settlement_type": "SATELLITE",
+        "target_population": 500,
+        "working_name": "SAT-01"
+      },
+      {
+        "population_capacity": null,
+        "settlement_type": "SATELLITE",
+        "target_population": 500,
+        "working_name": "SAT-02"
+      },
+      {
+        "population_capacity": null,
+        "settlement_type": "SATELLITE",
+        "target_population": 500,
+        "working_name": "SAT-03"
+      },
+      {
+        "population_capacity": null,
+        "settlement_type": "SATELLITE",
+        "target_population": 500,
+        "working_name": "SAT-04"
+      },
+      {
+        "population_capacity": null,
+        "settlement_type": "SATELLITE",
+        "target_population": 500,
+        "working_name": "SAT-05"
+      },
+      {
+        "population_capacity": null,
+        "settlement_type": "SATELLITE",
+        "target_population": 500,
+        "working_name": "SAT-06"
+      },
+      {
+        "population_capacity": null,
+        "settlement_type": "SATELLITE",
+        "target_population": 500,
+        "working_name": "SAT-07"
+      },
+      {
+        "population_capacity": null,
+        "settlement_type": "SATELLITE",
+        "target_population": 500,
+        "working_name": "SAT-08"
+      }
+    ],
+    "species": [
+      {
+        "population": 4000,
+        "species": "Hairy Men"
+      },
+      {
+        "population": 3000,
+        "species": "Rockmen"
+      },
+      {
+        "population": 2500,
+        "species": "Mermen"
+      },
+      {
+        "population": 2500,
+        "species": "Mushroommen"
+      }
+    ],
+    "working_name_semantics": "stable technical identity only（MAIN-01..04 / SAT-01..08）；不得解释为最终 lore display name"
+  }
+}
