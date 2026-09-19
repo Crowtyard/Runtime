@@ -1,0 +1,74 @@
+{
+ "APPROVED_SNAPSHOT_LOADS": true,
+ "BOOTSTRAP_DEPENDENCY_GRAPH": "PASS",
+ "DUPLICATE_INVOCATION_REFUSED": true,
+ "GRAPH": {
+  "GRAPH_CYCLES": 0,
+  "LEVELS": 9,
+  "TABLES": [
+   "ecology_feedback_state",
+   "ecology_state",
+   "ecology_zones",
+   "economic_pressure_state",
+   "population_groups",
+   "production_recipes",
+   "production_state",
+   "resource_nodes",
+   "resource_profiles",
+   "resource_stocks",
+   "settlement_social_state",
+   "settlements",
+   "social_feedback_state",
+   "tribulation_profiles",
+   "tribulation_schedules"
+  ],
+  "UNRESOLVED_DEPENDENCIES": 0
+ },
+ "SNAPSHOT_HASH_GUARD": "PASS",
+ "SNAPSHOT_SHA256_IN_USE": "592d23e2606ef9ff223aa264c64176a82a7f87bc1521d80e33152ffbaf3aa8b1",
+ "TEST_FIXTURE_REFERENCES": 0,
+ "TEST_FIXTURE_SCAN_FILES": [
+  "services\\activation\\materializer.py"
+ ],
+ "TEST_FIXTURE_SCAN_HITS": [],
+ "TEST_FIXTURE_SCAN_MODE": "AST imports + code identifiers（不含 docstring）",
+ "TEST_ORACLE_IMPORTED_BY_PRODUCTION": false,
+ "cases": [
+  {
+   "case": "hash_guard_missing_file",
+   "reason": "approved SNAPSHOT_V1 缺失（deployment artifact 未随包发布？）",
+   "result": "REFUSED"
+  },
+  {
+   "case": "hash_guard_tampered_bytes",
+   "reason": "SNAPSHOT_V1 raw-byte SHA256 不符（snapshot 被修改）",
+   "result": "REFUSED"
+  },
+  {
+   "case": "hash_guard_wrong_version",
+   "reason": "SNAPSHOT_V1 raw-byte SHA256 不符（snapshot 被修改）",
+   "result": "REFUSED"
+  },
+  {
+   "case": "hash_guard_owner_ratified_false",
+   "reason": "SNAPSHOT_V1 raw-byte SHA256 不符（snapshot 被修改）",
+   "result": "REFUSED"
+  },
+  {
+   "case": "fencing_missing",
+   "reason": "fencing ownership 缺失（writer_id/token 为空）",
+   "result": "REFUSED"
+  },
+  {
+   "case": "pristine_domain_violation",
+   "reason": "world 不是 pristine domain state（拒绝 silent merge）",
+   "result": "REFUSED"
+  },
+  {
+   "case": "duplicate_invocation_same_transaction",
+   "reason": "world 不是 pristine domain state（拒绝 silent merge）",
+   "result": "REFUSED"
+  }
+ ],
+ "packet": "M6C2_PHASE_A_GUARDS"
+}

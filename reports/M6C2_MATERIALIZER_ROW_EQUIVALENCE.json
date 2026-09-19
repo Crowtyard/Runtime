@@ -1,0 +1,175 @@
+{
+ "MATERIALIZER_ROW_EQUIVALENCE": "PASS",
+ "NON_AUTHORITATIVE_COMPARISON_EXCLUSIONS": {
+  "basis": "state_hash._strip() 明确排除 autoincrement id（插入顺序依赖）；canonical 投影不使用 surrogate PK",
+  "columns": [
+   "id"
+  ]
+ },
+ "TEST_ORACLE_IMPORTED_BY_PRODUCTION": false,
+ "cohort_rule": "RA-COHORT-001 v1.1",
+ "graph": {
+  "GRAPH_CYCLES": 0,
+  "LEVELS": 9,
+  "TABLES": [
+   "ecology_feedback_state",
+   "ecology_state",
+   "ecology_zones",
+   "economic_pressure_state",
+   "population_groups",
+   "production_recipes",
+   "production_state",
+   "resource_nodes",
+   "resource_profiles",
+   "resource_stocks",
+   "settlement_social_state",
+   "settlements",
+   "social_feedback_state",
+   "tribulation_profiles",
+   "tribulation_schedules"
+  ],
+  "UNRESOLVED_DEPENDENCIES": 0
+ },
+ "materializer_counts": {
+  "ecology_feedback_state": 1,
+  "ecology_state": 1,
+  "ecology_zones": 1,
+  "economic_pressure_state": 84,
+  "population_groups": 2928,
+  "production_recipes": 7,
+  "production_state": 84,
+  "resource_nodes": 7,
+  "resource_profiles": 7,
+  "resource_stocks": 84,
+  "settlement_social_state": 12,
+  "settlements": 12,
+  "social_feedback_state": 12,
+  "tribulation_profiles": 3,
+  "tribulation_schedules": 3
+ },
+ "packet": "M6C2_MATERIALIZER_ROW_EQUIVALENCE",
+ "pristine": {
+  "PRISTINE_DOMAIN_STATE": "PASS",
+  "allowed_transient": [
+   "world_runtime",
+   "runtime_lock",
+   "time_ratio_history"
+  ],
+  "checked_tables": 22
+ },
+ "tables": {
+  "ecology_feedback_state": {
+   "columns": 3,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 1,
+   "rows_b": 1
+  },
+  "ecology_state": {
+   "columns": 13,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 1,
+   "rows_b": 1
+  },
+  "ecology_zones": {
+   "columns": 5,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 1,
+   "rows_b": 1
+  },
+  "economic_pressure_state": {
+   "columns": 7,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 84,
+   "rows_b": 84
+  },
+  "population_groups": {
+   "columns": 9,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 2928,
+   "rows_b": 2928
+  },
+  "production_recipes": {
+   "columns": 10,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 7,
+   "rows_b": 7
+  },
+  "production_state": {
+   "columns": 3,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 84,
+   "rows_b": 84
+  },
+  "resource_nodes": {
+   "columns": 12,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 7,
+   "rows_b": 7
+  },
+  "resource_profiles": {
+   "columns": 8,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 7,
+   "rows_b": 7
+  },
+  "resource_stocks": {
+   "columns": 5,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 84,
+   "rows_b": 84
+  },
+  "settlement_social_state": {
+   "columns": 1,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 12,
+   "rows_b": 12
+  },
+  "settlements": {
+   "columns": 5,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 12,
+   "rows_b": 12
+  },
+  "social_feedback_state": {
+   "columns": 1,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 12,
+   "rows_b": 12
+  },
+  "tribulation_profiles": {
+   "columns": 25,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 3,
+   "rows_b": 3
+  },
+  "tribulation_schedules": {
+   "columns": 5,
+   "equal": true,
+   "first_diff": null,
+   "rows_a": 3,
+   "rows_b": 3
+  }
+ },
+ "units": {
+  "global_annual_minor": 3000000000,
+  "node_extraction_capacity_minor": 3300000000,
+  "node_remaining_reserve_minor": 30000000000000,
+  "recipe_input_minor": 10000000,
+  "recipe_output_minor": 9500000
+ },
+ "world_id": "M6C2-EQUIV-001"
+}
