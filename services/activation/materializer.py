@@ -60,6 +60,179 @@ class MaterializerRefused(WorldRuntimeError):
     code = "MATERIALIZER_REFUSED"
 
 
+#: §2 production 侧 derivation rule 版本（必须与 snapshot 声明一致；不一致 → REFUSE，
+#: 绝不自动改用"最新版本"）。RA-STRUCT-001 = materializer 的行结构/基数规则；
+#: RA-TRIB-001 = tribulation profile/schedule 映射规则。
+PRODUCTION_RULE_VERSIONS = {
+    "RA-ALLOC-001": BC.RULE_ALLOC_VERSION,
+    "RA-COHORT-001": BC.RULE_COHORT_VERSION,
+    "RA-STRUCT-001": "1.0",
+    "RA-TRIB-001": "1.0",
+}
+
+#: §3 BOOTSTRAP_CANONICAL_PROJECTION：authoritative bootstrap 表 → 参与投影的字段。
+#: 唯一 exclusion = autoincrement `id`（依据既有 state_hash._strip() contract：
+#: id 依赖插入顺序，且 simulation ordering / formal identity 不使用它）。
+BOOTSTRAP_PROJECTION_VERSION = "bootstrap-projection-v1"
+BOOTSTRAP_EXCLUDED_FIELDS = ("id",)
+BOOTSTRAP_TABLES: dict[str, tuple] = {
+    "settlements": ("working_name", "settlement_type", "region_ref", "state",
+                    "population_capacity"),
+    "population_groups": ("species", "settlement_ref", "age_cohort",
+                          "occupation_group", "count", "age_advance_carry_ticks",
+                          "species_profile_ref", "demography_version"),
+    "resource_profiles": ("resource_id", "unit", "quantity_scale",
+                          "renewability", "extractability",
+                          "consumption_category", "production_usability",
+                          "semantic_version"),
+    "resource_nodes": ("kind", "region_ref", "state", "resource_profile_ref",
+                       "settlement_relation", "remaining_reserve",
+                       "extraction_capacity", "extraction_carry",
+                       "last_extracted_minor", "state_version",
+                       "reserve_ceiling_minor", "regeneration_carry"),
+    "resource_stocks": ("settlement_ref", "resource_profile_ref", "quantity",
+                        "consumption_carry"),
+    "production_recipes": ("recipe_id", "input_resource_ref", "input_qty_minor",
+                           "output_resource_ref", "output_qty_minor",
+                           "capacity_batches_per_year", "labor_per_batch",
+                           "loss_num", "loss_den", "semantic_version"),
+    "production_state": ("settlement_ref", "recipe_ref", "production_carry"),
+    "economic_pressure_state": ("settlement_ref", "resource_profile_ref",
+                                "demand_minor", "fulfilled_minor", "unmet_minor",
+                                "sustained_shortage_steps", "stress_level"),
+    "ecology_zones": ("zone_id", "region_ref", "settlement_relation",
+                      "profile_ref", "semantic_version"),
+    "ecology_state": ("zone_ref", "habitat_quality", "regeneration_capacity",
+                      "ecological_stress", "population_pressure",
+                      "extraction_pressure", "production_pressure",
+                      "depletion_pressure", "external_pressure",
+                      "degradation_carry", "recovery_carry", "quality_min_seen",
+                      "quality_max_seen"),
+    "ecology_feedback_state": ("zone_ref",
+                               "regeneration_capacity_minor_per_year",
+                               "habitat_stress_level"),
+    "settlement_social_state": ("settlement_ref",),
+    "social_feedback_state": ("settlement_ref",),
+    "tribulation_profiles": ("profile_id", "tier", "theme", "intensity_min",
+                             "intensity_max", "precursor_steps",
+                             "preparation_steps", "impact_steps",
+                             "population_risk_num", "population_risk_den",
+                             "resource_damage_num", "resource_damage_den",
+                             "inventory_damage_num", "inventory_damage_den",
+                             "production_disruption_num",
+                             "production_disruption_den",
+                             "social_displacement_num",
+                             "social_displacement_den",
+                             "institution_disruption_num",
+                             "institution_disruption_den", "ecology_pressure",
+                             "recovery_steps", "status", "succession_rules",
+                             "semantic_version"),
+    "tribulation_schedules": ("schedule_id", "tier", "period_years", "enabled",
+                              "semantic_version"),
+}
+
+
+def _require(mapping: Mapping, key: str, where: str):
+    """§1：snapshot 必须显式声明该 semantic value；缺失 → FAIL CLOSED。
+
+    禁止"snapshot 缺值 → registry 默认值 → 仍然物化"。
+    """
+    if key not in mapping or mapping[key] is None:
+        raise MaterializerRefused(
+            "snapshot 缺少必需 semantic value（禁止 registry 默认值兜底）",
+            detail={"where": where, "key": key})
+    return mapping[key]
+
+
+#: §1 必需 semantic value 路径（点分）。任何缺失 → FAIL CLOSED（绝不 registry 兜底）。
+REQUIRED_SNAPSHOT_PATHS = (
+    "world.species", "world.settlements", "world.allocation.matrix",
+    "population.profile.birth_rate", "population.profile.mortality_per_bucket",
+    "population.profile.cohort_buckets", "population.profile.fertile_window",
+    "population.profile.species_profile_ref",
+    "population.profile.demography_version", "population.rule_version",
+    "resource.consumption_resource_kinds", "resource.registry_entries",
+    "resource.materialized_resource_profile_rows", "resource.per_capita_demand",
+    "resource.loss", "resource.capacity_multiple", "resource.quantity_scale",
+    "resource.stock_cells", "resource.node_reserve_multiple_of_global_annual",
+    "economy.recipes", "ecology.profile_id", "ecology.zone_id",
+    "ecology.zone_count", "ecology.sensitivity", "ecology.recovery_rate",
+    "ecology.pop_pressure_per_person", "ecology.initial_habitat_quality",
+    "ecology.recovery_ceiling", "ecology.settlement_relation",
+    "social.profile", "tribulation.profiles", "tribulation.schedules",
+    "tribulation.first_omen_tick",
+)
+
+
+def assert_required_snapshot_values(doc: Mapping) -> dict:
+    """§1：逐条确认必需 semantic value 存在；缺失 → FAIL CLOSED（不落 registry 默认）。"""
+    missing = []
+    for path in REQUIRED_SNAPSHOT_PATHS:
+        node = doc
+        ok = True
+        for part in path.split("."):
+            if isinstance(node, Mapping) and part in node and node[part] is not None:
+                node = node[part]
+            else:
+                ok = False
+                break
+        if not ok or node in (None, "", [], {}):
+            missing.append(path)
+    if missing:
+        raise MaterializerRefused(
+            "snapshot 缺少必需 semantic value（禁止 registry 默认值兜底）",
+            detail={"missing_paths": missing})
+    return {"REQUIRED_SNAPSHOT_VALUES": "PASS", "checked": len(REQUIRED_SNAPSHOT_PATHS),
+            "MUTABLE_REGISTRY_DEFAULTS_USED_FOR_BOOTSTRAP": 0}
+
+
+def assert_rule_versions(doc: Mapping) -> dict:
+    """§2：snapshot 声明的 derivation rule version 必须与 production 实现一致。"""
+    declared = dict((doc.get("header") or {}).get("rule_set_version") or {})
+    mismatches = {}
+    for rule_id, production_version in PRODUCTION_RULE_VERSIONS.items():
+        snapshot_version = declared.get(rule_id)
+        if snapshot_version is None:
+            mismatches[rule_id] = {"snapshot": None,
+                                   "production": production_version}
+        elif str(snapshot_version) != str(production_version):
+            mismatches[rule_id] = {"snapshot": snapshot_version,
+                                   "production": production_version}
+    if mismatches:
+        raise MaterializerRefused(
+            "snapshot 声明的 derivation rule 版本与 production 实现不一致",
+            detail={"mismatches": mismatches})
+    return {"SNAPSHOT_RULE_VERSION_MATCH": "PASS",
+            "rules": {k: str(v) for k, v in PRODUCTION_RULE_VERSIONS.items()}}
+
+
+def _projection_rows(session, world_id: str, table: str, columns: tuple) -> list:
+    model = _TABLE_MODELS[table]
+    with session.no_autoflush:
+        rows = session.execute(
+            select(model).where(model.world_id == world_id)).scalars().all()
+    out = []
+    for row in rows:
+        out.append(tuple(str(getattr(row, c, None)) for c in columns))
+    return sorted(out)
+
+
+def bootstrap_projection(session, world_id: str) -> dict:
+    """§3 BOOTSTRAP_CANONICAL_PROJECTION（唯一 canonical 投影 + digest）。"""
+    tables = {t: _projection_rows(session, world_id, t, c)
+              for t, c in BOOTSTRAP_TABLES.items()}
+    doc = {"projection_version": BOOTSTRAP_PROJECTION_VERSION,
+           "world_id": world_id,
+           "excluded_fields": list(BOOTSTRAP_EXCLUDED_FIELDS),
+           "tables": tables}
+    canonical = json.dumps(doc, sort_keys=True, ensure_ascii=False,
+                           separators=(",", ":"))
+    return {"projection": doc,
+            "BOOTSTRAP_CANONICAL_HASH": hashlib.sha256(
+                canonical.encode("utf-8")).hexdigest(),
+            "row_counts": {t: len(v) for t, v in tables.items()}}
+
+
 def snapshot_path() -> Path:
     """`<plugin_root>/docs/world_creation/SNAPSHOT_V1.json`（不依赖 CWD）。"""
     return Path(__file__).resolve().parents[2] / SNAPSHOT_V1_RELATIVE_PATH
@@ -277,6 +450,8 @@ def materialize_snapshot_v1(session, *, world_id: str, writer_id: str,
     """
     doc = snapshot if snapshot is not None else load_approved_snapshot()
     graph = verify_dependency_graph()
+    rule_guard = assert_rule_versions(doc)
+    value_guard = assert_required_snapshot_values(doc)
     assert_fencing_ownership(session, world_id=world_id, writer_id=writer_id,
                              fencing_token=fencing_token)
     pristine = assert_pristine_domain_state(session)
@@ -479,6 +654,8 @@ def materialize_snapshot_v1(session, *, world_id: str, writer_id: str,
         "counts": counts,
         "graph": graph,
         "pristine": pristine,
+        "rule_guard": rule_guard,
+        "value_guard": value_guard,
         "snapshot_sha256": SNAPSHOT_V1_SHA256,
         "snapshot_version": SNAPSHOT_V1_VERSION,
         "cohort_rule": "%s v%s" % (BC.RULE_COHORT_ID, BC.RULE_COHORT_VERSION),
