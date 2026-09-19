@@ -381,73 +381,97 @@
     "method": "POPULATION_SCALED_DETERMINISTIC_DERIVATION",
     "model": "S-B",
     "occupation_authoritative_bootstrap": false,
+    "profile": {
+      "formation_size": 10,
+      "institution_active_cohesion": 600000,
+      "institution_decline_cohesion": 500000,
+      "institution_dissolve_pop": 60,
+      "institution_dormant_cohesion": 300000,
+      "institution_found_pop": 120,
+      "lineage_found_generation": 3,
+      "lineage_found_size": 100,
+      "lineage_split_households": 160,
+      "mobility": "1/8",
+      "profile_id": "FORMAL-SOCIAL-001",
+      "semantic_version": "formal-1.0",
+      "social_support_k": "1/2",
+      "split_threshold": 80,
+      "stress_thresholds": [
+        300000,
+        600000
+      ]
+    },
     "root_rows": 24
   },
   "tribulation": {
     "effect_semantics": "post-engine state + delta, exactly once",
     "first_omen_tick": 10000000,
     "materializer_creates_effects": false,
-    "profiles": [
-      {
-        "envelopes": [
-          {
-            "ecology_pressure": 600,
-            "impact_years": 1,
-            "intensity_fraction": "3/20",
-            "intensity_range": [
-              10,
-              25
-            ],
-            "intensity_typical": 15,
-            "inventory_damage": 1,
-            "population_loss": 7,
-            "precursor_years": 1,
-            "preparation_years": 1,
-            "recovery_years": 3,
-            "resource_damage": 0,
-            "theme": "灵气潮汐",
-            "tier": "REGULAR"
-          },
-          {
-            "ecology_pressure": 8000,
-            "impact_years": 1,
-            "intensity_fraction": "2/5",
-            "intensity_range": [
-              30,
-              50
-            ],
-            "intensity_typical": 40,
-            "inventory_damage": 24,
-            "population_loss": 96,
-            "precursor_years": 1,
-            "preparation_years": 1,
-            "recovery_years": 3,
-            "resource_damage": 12,
-            "theme": "地脉波动",
-            "tier": "MAJOR"
-          },
-          {
-            "ecology_pressure": 37500,
-            "impact_years": 1,
-            "intensity_fraction": "3/4",
-            "intensity_range": [
-              60,
-              85
-            ],
-            "intensity_typical": 75,
-            "inventory_damage": 112,
-            "population_loss": 450,
-            "precursor_years": 1,
-            "preparation_years": 1,
-            "recovery_years": 3,
-            "resource_damage": 56,
-            "theme": "生态失衡",
-            "tier": "CENTENNIAL"
-          }
-        ],
-        "source": "M6C1C/T-B"
+    "profiles": {
+      "FORMAL-TRIB-CENTENNIAL": {
+        "ecology_pressure": 50000,
+        "impact_steps": 1,
+        "institution_disruption": "1/1000",
+        "intensity_max": 85,
+        "intensity_min": 60,
+        "inventory_damage": "1/40",
+        "population_risk": "1/20",
+        "precursor_steps": 1,
+        "preparation_steps": 1,
+        "production_disruption": "1/500",
+        "recovery_steps": 3,
+        "resource_damage": "1/80",
+        "social_displacement": "1/500",
+        "succession_rules": {
+          "allow_candidate": true,
+          "maturation_steps": 3
+        },
+        "theme": "生态失衡",
+        "tier": "CENTENNIAL"
+      },
+      "FORMAL-TRIB-MAJOR": {
+        "ecology_pressure": 20000,
+        "impact_steps": 1,
+        "institution_disruption": "1/1000",
+        "intensity_max": 50,
+        "intensity_min": 30,
+        "inventory_damage": "1/100",
+        "population_risk": "1/50",
+        "precursor_steps": 1,
+        "preparation_steps": 1,
+        "production_disruption": "1/500",
+        "recovery_steps": 3,
+        "resource_damage": "1/200",
+        "social_displacement": "1/500",
+        "succession_rules": {
+          "allow_candidate": true,
+          "maturation_steps": 3
+        },
+        "theme": "地脉波动",
+        "tier": "MAJOR"
+      },
+      "FORMAL-TRIB-REGULAR": {
+        "ecology_pressure": 4000,
+        "impact_steps": 1,
+        "institution_disruption": "1/1000",
+        "intensity_max": 25,
+        "intensity_min": 10,
+        "inventory_damage": "1/500",
+        "population_risk": "1/250",
+        "precursor_steps": 1,
+        "preparation_steps": 1,
+        "production_disruption": "1/500",
+        "recovery_steps": 3,
+        "resource_damage": "1/1000",
+        "social_displacement": "1/500",
+        "succession_rules": {
+          "allow_candidate": true,
+          "maturation_steps": 3
+        },
+        "theme": "灵气潮汐",
+        "tier": "REGULAR"
       }
-    ],
+    },
     "schedules": [
       {
         "enabled": true,

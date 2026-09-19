@@ -85,6 +85,50 @@ S_B = {"model": "S-B", "method": "POPULATION_SCALED_DETERMINISTIC_DERIVATION",
        "materialized_root_rows_per_settlement": 2,
        "household_authoritative_bootstrap": False,
        "occupation_authoritative_bootstrap": False}
+
+#: T-B formal tribulation profiles（owner-selected; frozen machine payload）
+T_B_PROFILES = {
+    "FORMAL-TRIB-REGULAR": {
+        "tier": "REGULAR", "theme": "灵气潮汐", "intensity_min": 10,
+        "intensity_max": 25, "precursor_steps": 1, "preparation_steps": 1,
+        "impact_steps": 1, "population_risk": "1/250",
+        "resource_damage": "1/1000", "inventory_damage": "1/500",
+        "production_disruption": "1/500", "social_displacement": "1/500",
+        "institution_disruption": "1/1000", "ecology_pressure": 4000,
+        "recovery_steps": 3,
+        "succession_rules": {"allow_candidate": True, "maturation_steps": 3}},
+    "FORMAL-TRIB-MAJOR": {
+        "tier": "MAJOR", "theme": "地脉波动", "intensity_min": 30,
+        "intensity_max": 50, "precursor_steps": 1, "preparation_steps": 1,
+        "impact_steps": 1, "population_risk": "1/50",
+        "resource_damage": "1/200", "inventory_damage": "1/100",
+        "production_disruption": "1/500", "social_displacement": "1/500",
+        "institution_disruption": "1/1000", "ecology_pressure": 20000,
+        "recovery_steps": 3,
+        "succession_rules": {"allow_candidate": True, "maturation_steps": 3}},
+    "FORMAL-TRIB-CENTENNIAL": {
+        "tier": "CENTENNIAL", "theme": "生态失衡", "intensity_min": 60,
+        "intensity_max": 85, "precursor_steps": 1, "preparation_steps": 1,
+        "impact_steps": 1, "population_risk": "1/20",
+        "resource_damage": "1/80", "inventory_damage": "1/40",
+        "production_disruption": "1/500", "social_displacement": "1/500",
+        "institution_disruption": "1/1000", "ecology_pressure": 50000,
+        "recovery_steps": 3,
+        "succession_rules": {"allow_candidate": True, "maturation_steps": 3}},
+}
+
+#: S-B formal social profile（frozen machine payload）
+S_B_PROFILE = {
+    "profile_id": "FORMAL-SOCIAL-001", "formation_size": 10,
+    "split_threshold": 80, "lineage_found_generation": 3,
+    "lineage_found_size": 100, "lineage_split_households": 160,
+    "institution_found_pop": 120, "institution_dissolve_pop": 60,
+    "institution_decline_cohesion": 500000,
+    "institution_dormant_cohesion": 300000,
+    "institution_active_cohesion": 600000, "mobility": "1/8",
+    "stress_thresholds": [300000, 600000], "social_support_k": "1/2",
+    "semantic_version": "formal-1.0",
+}
 T_B = {"periods": {"REGULAR": 10, "MAJOR": 50, "CENTENNIAL": 100},
        "first_omen_tick": 10_000_000,
        "effect_semantics": "post-engine state + delta, exactly once",
@@ -106,13 +150,9 @@ RULE_VERSIONS = {
 }
 
 
-def tribulation_profiles() -> list[dict]:
-    """T-B profiles as machine payload (exact fractions, no redesign)."""
-    packet = json.loads(PACKET.read_text(encoding="utf-8"))
-    candidate = next(c for c in packet["NUMERIC_OD_T1"]["candidates"]
-                     if c["LABEL"] == "T-B")
-    env = candidate.get("ENVELOPES") or candidate.get("POLICY") or {}
-    return [{"source": "M6C1C/T-B", "envelopes": env}]
+def tribulation_profiles() -> dict:
+    """T-B profiles as frozen machine payload (owner-selected; no redesign)."""
+    return {pid: dict(spec) for pid, spec in T_B_PROFILES.items()}
 
 
 def build() -> dict:
@@ -224,7 +264,8 @@ def build() -> dict:
                     "settlement_relation": SETTLEMENT_SLOTS[0][0],
                     "region_ref": None})
     social = dict(S_B)
-    social.update({"root_rows": len(SETTLEMENT_SLOTS) * 2})
+    social.update({"root_rows": len(SETTLEMENT_SLOTS) * 2,
+                   "profile": dict(S_B_PROFILE)})
     tribulation = {"schedules": [
         {"schedule_id": "SCHEDULE-%s" % tier, "tier": tier,
          "period_years": period, "enabled": True,
